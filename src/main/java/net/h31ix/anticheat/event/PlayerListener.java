@@ -135,7 +135,6 @@ public class PlayerListener implements Listener {
              }               
             int id = x.getWorld().getBlockAt(e).getTypeId();
             int id2 = event.getTo().getBlock().getRelative(BlockFace.DOWN).getTypeId();
-            System.out.println(player.getName()+" is walking onto a "+Material.getMaterial(id));
             if(id != 53 && id != 67 && id != 108 && id != 109 && id != 114 && id != 43 && id != 44 && id2 != 53 && id2 != 67 && id2 != 108 && id2 != 109 && id2 != 114 && id2 != 43 && id2 != 44)
             {            
                 if(yd > 0.42D)
