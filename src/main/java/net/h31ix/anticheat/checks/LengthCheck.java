@@ -15,11 +15,7 @@ public class LengthCheck {
     {
         double bx = l1.getX();
         double px = l2.getX();
-        double xdiff = bx-px;
-        if(xdiff < 0)
-        {
-            xdiff = -xdiff;
-        }    
+        double xdiff = Math.abs(bx-px);   
         return xdiff;
     }
     
@@ -27,11 +23,7 @@ public class LengthCheck {
     {
         double bz = l1.getZ();
         double pz = l2.getZ();
-        double zdiff = bz-pz;
-        if(zdiff < 0)
-        {
-            zdiff = -zdiff;
-        }    
+        double zdiff = Math.abs(bz-pz);   
         return zdiff;
     }    
     
@@ -39,11 +31,7 @@ public class LengthCheck {
     {
         double by = l1.getY();
         double py = l2.getY();
-        double ydiff = by-py;
-        if(ydiff < 0)
-        {
-            ydiff = -ydiff;
-        }      
+        double ydiff = Math.abs(by-py);   
         return ydiff;
     }    
     
