@@ -23,6 +23,18 @@ public class LengthCheck {
         return xdiff;
     }
     
+    public double getZDifference()
+    {
+        double bz = l1.getZ();
+        double pz = l2.getZ();
+        double zdiff = bz-pz;
+        if(zdiff < 0)
+        {
+            zdiff = -zdiff;
+        }    
+        return zdiff;
+    }    
+    
     public double getYDifference()
     {
         double by = l1.getY();

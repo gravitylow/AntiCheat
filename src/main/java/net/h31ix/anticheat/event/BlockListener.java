@@ -20,11 +20,11 @@ public class BlockListener implements Listener {
         if(event.getPlayer() != null)
         {
             LengthCheck c = new LengthCheck(event.getBlock().getLocation(),event.getPlayer().getLocation());
-            if(c.getXDifference() > 5L)
+            if(c.getXDifference() > 5.0D)
             {
                 event.setCancelled(true);
             }
-            if(c.getYDifference() > 4.3)
+            if(c.getYDifference() > 4.3D)
             {
                 event.setCancelled(true);
             }
@@ -37,11 +37,7 @@ public class BlockListener implements Listener {
         if(event.getPlayer() != null)
         {        
             LengthCheck c = new LengthCheck(event.getBlock().getLocation(),event.getPlayer().getLocation());
-            if(c.getXDifference() > 5L)
-            {
-                event.setCancelled(true);
-            }
-            if(c.getYDifference() > 4.3)
+            if(c.getXDifference() > 5.0D || c.getZDifference() > 5.0D || c.getYDifference() > 4.3D)
             {
                 event.setCancelled(true);
             }
