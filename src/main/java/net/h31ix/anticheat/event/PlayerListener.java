@@ -1,5 +1,6 @@
-package net.h31ix.anticheat;
+package net.h31ix.anticheat.event;
 
+import net.h31ix.anticheat.Anticheat;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
