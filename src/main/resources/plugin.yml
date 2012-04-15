@@ -1,0 +1,8 @@
+author: H31IX
+database: false
+description: Prevention of hacks and other malicious tinkering on a Minecraft server.
+main: net.h31ix.anticheat.Anticheat
+name: AntiCheat
+startup: postworld
+url: http://H31IX.NET/
+version: '1.0'
