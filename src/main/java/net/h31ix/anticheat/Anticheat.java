@@ -9,6 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Anticheat extends JavaPlugin {
     public ChatManager cm = new ChatManager(this);
+    public AnimationManager am = new AnimationManager(this);
+    public VehicleManager vm = new VehicleManager(this);
     private static final Logger l = Logger.getLogger("Minecraft");
     private long lastTime = System.currentTimeMillis();
     private long time = 0;
