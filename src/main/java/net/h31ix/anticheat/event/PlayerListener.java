@@ -23,7 +23,10 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerChat(PlayerChatEvent event)
     {
-        plugin.cm.addChat(event.getPlayer());
+        if(!plugin.lagged)
+        {        
+            plugin.cm.addChat(event.getPlayer());
+        }
     }
     
     @EventHandler
@@ -35,64 +38,67 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event)
     {
-        Player player = event.getPlayer();
-        LengthCheck c = new LengthCheck(event.getFrom(), event.getTo());
-        double xd = c.getXDifference();
-        double zd = c.getZDifference();
-        double yd = c.getYDifference();
-        Block p1 = player.getLocation().getWorld().getBlockAt(player.getLocation());
-        if(p1.isLiquid())
+        if(!plugin.lagged)
         {
-            if(xd > 0.19D || zd > 0.19D)
+            Player player = event.getPlayer();
+            LengthCheck c = new LengthCheck(event.getFrom(), event.getTo());
+            double xd = c.getXDifference();
+            double zd = c.getZDifference();
+            double yd = c.getYDifference();
+            Block p1 = player.getLocation().getWorld().getBlockAt(player.getLocation());
+            if(p1.isLiquid())
+            {
+                if(xd > 0.19D || zd > 0.19D)
+                {
+                    if(!player.isSprinting() && !player.isFlying())
+                    {
+                        plugin.log(player.getName()+" is walking too fast in water! XSpeed="+xd+" ZSpeed="+zd);
+                        event.setTo(event.getFrom().clone());
+                    }  
+                }
+                else
+                {
+                    if(xd > 0.3D || zd > 0.3D)
+                    {
+                        plugin.log(player.getName()+" is flying/sprinting too fast in water! XSpeed="+xd+" ZSpeed="+zd);
+                        event.setTo(event.getFrom().clone());
+                    }
+                }                
+            }
+            if(player.isSneaking())
+            {
+                if(xd > 0.097D || zd > 0.081D)
+                {
+                    plugin.log(player.getName()+" is sneaking too fast! XSpeed="+xd+" ZSpeed="+zd);
+                    event.setTo(event.getFrom().clone());
+                    player.setSneaking(false);
+                }
+            }
+            else if(xd > 0.32D || zd > 0.32D)
             {
                 if(!player.isSprinting() && !player.isFlying())
                 {
-                    plugin.log(player.getName()+" is walking too fast in water! XSpeed="+xd+" ZSpeed="+zd);
-                    event.setTo(event.getFrom().clone());
-                }  
-            }
-            else
-            {
-                if(xd > 0.3D || zd > 0.3D)
-                {
-                    plugin.log(player.getName()+" is flying/sprinting too fast in water! XSpeed="+xd+" ZSpeed="+zd);
+                    plugin.log(player.getName()+" is walking too fast! XSpeed="+xd+" ZSpeed="+zd);
                     event.setTo(event.getFrom().clone());
                 }
-            }                
-        }
-        if(player.isSneaking())
-        {
-            if(xd > 0.097D || zd > 0.081D)
-            {
-                plugin.log(player.getName()+" is sneaking too fast! XSpeed="+xd+" ZSpeed="+zd);
-                event.setTo(event.getFrom().clone());
-                player.setSneaking(false);
-            }
-        }
-        else if(xd > 0.32D || zd > 0.32D)
-        {
-            if(!player.isSprinting() && !player.isFlying())
-            {
-                plugin.log(player.getName()+" is walking too fast! XSpeed="+xd+" ZSpeed="+zd);
-                event.setTo(event.getFrom().clone());
-            }
-            else
-            {
-                if(xd > 0.62D || zd > 0.62D)
+                else
                 {
-                    plugin.log(player.getName()+" is flying/sprinting too fast! XSpeed="+xd+" ZSpeed="+zd);
-                    event.setTo(event.getFrom().clone());
+                    if(xd > 0.62D || zd > 0.62D)
+                    {
+                        plugin.log(player.getName()+" is flying/sprinting too fast! XSpeed="+xd+" ZSpeed="+zd);
+                        event.setTo(event.getFrom().clone());
+                    }
                 }
             }
-        }
-        if(event.getFrom().getY() < event.getTo().getY())
-        {
-            if(yd > 1D)
+            if(event.getFrom().getY() < event.getTo().getY())
             {
-                plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);
-                event.setTo(event.getFrom().clone());
-            }
-        }        
+                if(yd > 1D)
+                {
+                    plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);
+                    event.setTo(event.getFrom().clone());
+                }
+            } 
+        }
     }
     
 }

@@ -30,14 +30,12 @@ public class EntityListener implements Listener {
                 LengthCheck lc = new LengthCheck(event.getEntity().getLocation(),p.getLocation());
                 if(lc.getXDifference() > 5.0D || lc.getZDifference() > 5.0D || lc.getYDifference() > 4.3D)
                 {
-                    System.out.println("canc");
                     event.setCancelled(true);
                 } 
                 EyeCheck ec = new EyeCheck(p,((CraftEntity)event.getEntity()).getHandle());
                 double off = ec.getOffset();
                 if(off > 0.1D && off != -1) 
                 {
-                    p.sendMessage("canc");
                     event.setCancelled(true);                    
                 }
             }
