@@ -2,6 +2,7 @@ package net.h31ix.anticheat.event;
 
 import net.h31ix.anticheat.AnimationManager;
 import net.h31ix.anticheat.Anticheat;
+import net.h31ix.anticheat.PlayerTracker;
 import net.h31ix.anticheat.VehicleManager;
 import net.h31ix.anticheat.checks.LengthCheck;
 import org.bukkit.block.Block;
@@ -19,12 +20,14 @@ public class PlayerListener implements Listener {
     Anticheat plugin;
     AnimationManager am;
     VehicleManager vm;
-    
+    PlayerTracker tracker;
+     
     public PlayerListener(Anticheat plugin)
     {
         this.plugin = plugin;
         this.am = plugin.am;
         this.vm = plugin.vm;
+        this.tracker = plugin.tracker;
     }
     
     @EventHandler
@@ -83,6 +86,7 @@ public class PlayerListener implements Listener {
                 {
                     if(xd > 2.0D || zd > 2.0D)
                     {
+                        tracker.increaseLevel(player);
                         plugin.log(player.getName()+" is using a boat too fast! XSpeed="+xd+" ZSpeed="+zd);
                         event.setTo(event.getFrom().clone());
                     }
@@ -91,6 +95,7 @@ public class PlayerListener implements Listener {
                 {
                     if(!player.isSprinting() && !player.isFlying())
                     {
+                        tracker.increaseLevel(player);
                         plugin.log(player.getName()+" is walking too fast in water! XSpeed="+xd+" ZSpeed="+zd);
                         event.setTo(event.getFrom().clone());
                     }  
@@ -99,6 +104,7 @@ public class PlayerListener implements Listener {
                 {
                     if(xd > 0.3D || zd > 0.3D)
                     {
+                        tracker.increaseLevel(player);
                         plugin.log(player.getName()+" is flying/sprinting too fast in water! XSpeed="+xd+" ZSpeed="+zd);
                         event.setTo(event.getFrom().clone());
                     }
@@ -112,6 +118,7 @@ public class PlayerListener implements Listener {
                     {
                         if(xd > 0.41D || zd > 0.41D)
                         {
+                            tracker.increaseLevel(player);
                             plugin.log(player.getName()+" is using a vehicle too fast! XSpeed="+xd+" ZSpeed="+zd);
                             event.setTo(event.getFrom().clone());
                         }
@@ -119,17 +126,23 @@ public class PlayerListener implements Listener {
                 }               
                 else if(player.isSneaking())
                 {
-                    if(xd > 0.1D || zd > 0.1D)
+                    if(xd > 0.17D || zd > 0.17D)
                     {
+                        tracker.increaseLevel(player);
                         plugin.log(player.getName()+" is sneaking too fast! XSpeed="+xd+" ZSpeed="+zd);
                         event.setTo(event.getFrom().clone());
                         player.setSneaking(false);
                     }
+                    else
+                    {
+                        tracker.decreaseLevel(player);
+                    }
                 }
                 else if(xd > 0.32D || zd > 0.32D)
                 {
-                    if(!player.isSprinting() && !player.isFlying() && player.getVehicle() == null)
+                    if(!player.isSprinting() && !player.isFlying())
                     {
+                        tracker.increaseLevel(player);
                         plugin.log(player.getName()+" is walking too fast! XSpeed="+xd+" ZSpeed="+zd);
                         event.setTo(event.getFrom().clone());
                     }              
@@ -137,8 +150,13 @@ public class PlayerListener implements Listener {
                     {
                         if(xd > 0.62D || zd > 0.62D)
                         {
+                            tracker.increaseLevel(player);
                             plugin.log(player.getName()+" is flying/sprinting too fast! XSpeed="+xd+" ZSpeed="+zd);
                             event.setTo(event.getFrom().clone());
+                        }
+                        else
+                        {
+                            tracker.decreaseLevel(player);
                         }
                     }
                 }
@@ -146,8 +164,13 @@ public class PlayerListener implements Listener {
                 {
                     if(yd > 1D)
                     {
+                        tracker.increaseLevel(player);
                         plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);
                         event.setTo(event.getFrom().clone());
+                    }
+                    else
+                    {
+                        tracker.decreaseLevel(player);
                     }
                 } 
             }

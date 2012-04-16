@@ -2,6 +2,7 @@ package net.h31ix.anticheat;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.h31ix.anticheat.command.CommandManager;
 import net.h31ix.anticheat.event.BlockListener;
 import net.h31ix.anticheat.event.EntityListener;
 import net.h31ix.anticheat.event.PlayerListener;
@@ -11,10 +12,13 @@ public class Anticheat extends JavaPlugin {
     public ChatManager cm = new ChatManager(this);
     public AnimationManager am = new AnimationManager(this);
     public VehicleManager vm = new VehicleManager(this);
+    public PlayerTracker tracker = new PlayerTracker();
     private static final Logger l = Logger.getLogger("Minecraft");
     private long lastTime = System.currentTimeMillis();
     private long time = 0;
     public boolean lagged = false;
+    
+    public boolean log = false;
     
     @Override
     public void onDisable() {
@@ -25,6 +29,9 @@ public class Anticheat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockListener(this), this);
         getServer().getPluginManager().registerEvents(new EntityListener(this), this);
+        
+        getCommand("anticheat").setExecutor(new CommandManager(this));
+        
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() 
         {
             public void run() 
@@ -40,7 +47,10 @@ public class Anticheat extends JavaPlugin {
     
     public void log(String s)
     {
-        l.log(Level.WARNING,s);
+        if(this.log)
+        {
+            l.log(Level.WARNING,s);
+        }
     }
 }
 

@@ -6,3 +6,6 @@ name: AntiCheat
 startup: postworld
 url: http://H31IX.NET/
 version: '1.0'
+commands:
+  anticheat:
+    description: Control and view info about AntiCheat

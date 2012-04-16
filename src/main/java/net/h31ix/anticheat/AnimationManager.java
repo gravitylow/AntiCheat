@@ -15,23 +15,12 @@ public class AnimationManager {
     
     public void logAnimation(final Player player)
     {
-        animations.put(player, true);
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
-        {
-            public void run() 
-            {
-                animations.put(player, false);
-            }
-        },      10L);        
+        animations.put(player, true);       
     }
     
     public boolean swungArm(Player player)
     {
-        if(animations.get(player) == null)
-        {
-            return false;
-        }
-        if(animations.get(player) == false)
+        if(animations.get(player) == null || animations.get(player) == false)
         {
             return false;
         }
@@ -39,5 +28,10 @@ public class AnimationManager {
         {
             return true;
         }
+    }
+    
+    public void reset(Player player)
+    {
+        animations.put(player,false);
     }
 }

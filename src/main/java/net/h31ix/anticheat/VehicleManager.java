@@ -27,11 +27,7 @@ public class VehicleManager {
     
     public boolean isEntering(Player player)
     {
-        if(enter.get(player) == null)
-        {
-            return false;
-        }
-        if(enter.get(player) == false)
+        if(enter.get(player) == null || enter.get(player) == false)
         {
             return false;
         }
