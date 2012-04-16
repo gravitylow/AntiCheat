@@ -2,13 +2,12 @@ package net.h31ix.anticheat.event;
 
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.checks.LengthCheck;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -18,6 +17,15 @@ public class PlayerListener implements Listener {
     public PlayerListener(Anticheat plugin)
     {
         this.plugin = plugin;
+    }
+    
+    @EventHandler
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
+    {
+        if(!plugin.lagged)
+        {        
+            plugin.cm.addChat(event.getPlayer());
+        }        
     }
     
     @EventHandler
@@ -67,7 +75,7 @@ public class PlayerListener implements Listener {
             }
             if(player.isSneaking())
             {
-                if(xd > 0.097D || zd > 0.081D)
+                if(xd > 0.1D || zd > 0.1D)
                 {
                     plugin.log(player.getName()+" is sneaking too fast! XSpeed="+xd+" ZSpeed="+zd);
                     event.setTo(event.getFrom().clone());
