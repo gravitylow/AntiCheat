@@ -1,5 +1,8 @@
 package net.h31ix.anticheat;
 
+import net.h31ix.anticheat.manage.VehicleManager;
+import net.h31ix.anticheat.manage.ChatManager;
+import net.h31ix.anticheat.manage.AnimationManager;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.h31ix.anticheat.command.CommandManager;
@@ -34,6 +37,7 @@ public class Anticheat extends JavaPlugin {
         
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() 
         {
+            @Override
             public void run() 
             {
                 long l = System.currentTimeMillis();

@@ -1,7 +1,8 @@
-package net.h31ix.anticheat;
+package net.h31ix.anticheat.manage;
 
 import java.util.HashMap;
 import java.util.Map;
+import net.h31ix.anticheat.Anticheat;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

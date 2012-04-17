@@ -1,15 +1,16 @@
 package net.h31ix.anticheat.event;
 
-import net.h31ix.anticheat.AnimationManager;
+import net.h31ix.anticheat.manage.AnimationManager;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.PlayerTracker;
-import net.h31ix.anticheat.VehicleManager;
+import net.h31ix.anticheat.manage.VehicleManager;
 import net.h31ix.anticheat.checks.LengthCheck;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -33,7 +34,10 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerAnimation(PlayerAnimationEvent event)
     {
-        am.logAnimation(event.getPlayer());
+        if(event.getAnimationType() == PlayerAnimationType.ARM_SWING)
+        {
+            am.logAnimation(event.getPlayer());
+        }
     }
     
     @EventHandler

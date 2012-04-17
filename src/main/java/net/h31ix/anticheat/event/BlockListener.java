@@ -1,10 +1,11 @@
 package net.h31ix.anticheat.event;
 
-import net.h31ix.anticheat.AnimationManager;
+import net.h31ix.anticheat.manage.AnimationManager;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.PlayerTracker;
 import net.h31ix.anticheat.checks.LengthCheck;
 import org.bukkit.GameMode;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,6 +27,7 @@ public class BlockListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event)
     {
         Player player = event.getPlayer();
+        Block block = event.getBlock();
         if(player != null)
         {
             LengthCheck c = new LengthCheck(event.getBlock().getLocation(),event.getPlayer().getLocation());
@@ -34,6 +36,10 @@ public class BlockListener implements Listener {
                 plugin.log(player.getName()+" tried to break a block too far away!");
                 tracker.increaseLevel(player);
                 event.setCancelled(true);
+            }
+            else
+            {
+                tracker.decreaseLevel(player);
             }
             if(player.getGameMode() != GameMode.CREATIVE)
             {
@@ -46,10 +52,10 @@ public class BlockListener implements Listener {
                 else
                 {
                     tracker.decreaseLevel(player);
-                    am.reset(player);
                 }                
             }
         }
+        am.reset(player);
     }
     
     @EventHandler

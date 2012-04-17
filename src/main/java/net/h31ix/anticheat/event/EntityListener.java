@@ -1,21 +1,48 @@
 package net.h31ix.anticheat.event;
 
 import net.h31ix.anticheat.Anticheat;
+import net.h31ix.anticheat.PlayerTracker;
 import net.h31ix.anticheat.checks.EyeCheck;
 import net.h31ix.anticheat.checks.LengthCheck;
+import net.h31ix.anticheat.manage.BowManager;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 
 public class EntityListener implements Listener {
     Anticheat plugin;
+    BowManager bm;
+    PlayerTracker tracker;
     
     public EntityListener(Anticheat plugin)
     {
         this.plugin = plugin;
+        bm = new BowManager(plugin);
+        tracker = plugin.tracker;
+    }
+    
+    @EventHandler
+    public void onEntityShootBow(EntityShootBowEvent event)
+    {
+        if(event.getEntity() instanceof Player)
+        {
+            Player player = (Player)event.getEntity();
+            if(!bm.hasShot(player))
+            {
+                tracker.decreaseLevel(player);
+                bm.logShoot((Player)event.getEntity());
+            }
+            else
+            {
+                event.setCancelled(true);
+                tracker.increaseLevel(player);
+                plugin.log(player.getName()+" tried to fire a bow too fast!");
+            }
+        }
     }
     
     @EventHandler
