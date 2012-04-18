@@ -184,7 +184,7 @@ public class PlayerListener implements Listener {
                         plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);
                         event.setTo(event.getFrom().clone());
                     }
-                } 
+                }               
             }
         }
     } 
