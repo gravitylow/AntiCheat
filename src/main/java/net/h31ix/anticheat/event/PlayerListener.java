@@ -5,6 +5,7 @@ import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.PlayerTracker;
 import net.h31ix.anticheat.manage.VehicleManager;
 import net.h31ix.anticheat.checks.LengthCheck;
+import net.h31ix.anticheat.manage.ItemManager;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +14,7 @@ import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
@@ -22,13 +24,31 @@ public class PlayerListener implements Listener {
     AnimationManager am;
     VehicleManager vm;
     PlayerTracker tracker;
+    ItemManager im;
      
     public PlayerListener(Anticheat plugin)
     {
         this.plugin = plugin;
         this.am = plugin.am;
         this.vm = plugin.vm;
+        this.im = plugin.im;
         this.tracker = plugin.tracker;
+    }
+    
+    @EventHandler
+    public void onPlayerDropItem(PlayerDropItemEvent event)
+    {
+        Player player = event.getPlayer();
+        if(!im.hasDropped(player))
+        {
+            im.logDrop(player);
+        }
+        else
+        {
+            plugin.log(player.getName()+" tried to drop blocks too fast!");
+            tracker.increaseLevel(player);
+            event.setCancelled(true);
+        }
     }
     
     @EventHandler

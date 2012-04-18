@@ -9,12 +9,16 @@ import net.h31ix.anticheat.command.CommandManager;
 import net.h31ix.anticheat.event.BlockListener;
 import net.h31ix.anticheat.event.EntityListener;
 import net.h31ix.anticheat.event.PlayerListener;
+import net.h31ix.anticheat.manage.BowManager;
+import net.h31ix.anticheat.manage.ItemManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Anticheat extends JavaPlugin {
     public ChatManager cm = new ChatManager(this);
     public AnimationManager am = new AnimationManager(this);
     public VehicleManager vm = new VehicleManager(this);
+    public ItemManager im = new ItemManager(this);
+    public BowManager bm = new BowManager(this);
     public PlayerTracker tracker = new PlayerTracker();
     private static final Logger l = Logger.getLogger("Minecraft");
     private long lastTime = System.currentTimeMillis();

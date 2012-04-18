@@ -21,7 +21,7 @@ public class EntityListener implements Listener {
     public EntityListener(Anticheat plugin)
     {
         this.plugin = plugin;
-        bm = new BowManager(plugin);
+        bm = plugin.bm;
         tracker = plugin.tracker;
     }
     
