@@ -137,10 +137,6 @@ public class PlayerListener implements Listener {
                         event.setTo(event.getFrom().clone());
                         player.setSneaking(false);
                     }
-                    else
-                    {
-                        tracker.decreaseLevel(player);
-                    }
                 }
                 else if(xd > 0.32D || zd > 0.32D)
                 {
@@ -158,10 +154,6 @@ public class PlayerListener implements Listener {
                             plugin.log(player.getName()+" is flying/sprinting too fast! XSpeed="+xd+" ZSpeed="+zd);
                             event.setTo(event.getFrom().clone());
                         }
-                        else
-                        {
-                            tracker.decreaseLevel(player);
-                        }
                     }
                 }
                 if(event.getFrom().getY() < event.getTo().getY())
@@ -171,10 +163,6 @@ public class PlayerListener implements Listener {
                         tracker.increaseLevel(player);
                         plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);
                         event.setTo(event.getFrom().clone());
-                    }
-                    else
-                    {
-                        tracker.decreaseLevel(player);
                     }
                 } 
             }
