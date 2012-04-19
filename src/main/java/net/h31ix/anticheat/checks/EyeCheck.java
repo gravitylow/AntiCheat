@@ -1,13 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.h31ix.anticheat.checks;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.server.EntityComplex;
 import net.minecraft.server.EntityComplexPart;
 import net.minecraft.server.Entity;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -21,42 +20,39 @@ public class EyeCheck {
         this.entity = entity;
     }
     
-    public double getOffset()
+    public boolean isLooking()
     {
-        //Thanks to Evenprime (NoCheat)
-        if(entity instanceof EntityComplex || entity instanceof EntityComplexPart) 
-        {
-            return -1;
+        //TODO: Fix this mess!
+        /**Location startLoc = player.getEyeLocation();
+        int direction = (int)((-180)+startLoc.getYaw());
+        int radius = 100;
+        int degrees = 30;
+        List<Entity> entitys = new ArrayList<Entity>();
+        int[] startPos = new int[] { (int)startLoc.getX(), (int)startLoc.getZ() };
+        int[] endA = new int[] { (int)(radius * Math.cos(direction - (degrees/2))), (int)(radius * Math.sin(direction - (degrees/2))) };
+        int[] endB = new int[] { (int)(radius * Math.cos(direction + (degrees/2))), (int)(radius * Math.sin(direction + (degrees/2))) };
+       
+        Location l = entity.getBukkitEntity().getLocation();
+        if (!isPointInCircle(startPos[0], startPos[1], radius, l.getBlockX(), l.getBlockZ())) {
+            return false;
         }
-        
-        final float width = entity.length > entity.width ? entity.length : entity.width;
-        final double height = entity.boundingBox.e - entity.boundingBox.b;
-        final double off = directionCheck(player, entity.locX, entity.locY + (height / 2D), entity.locZ, width, height, 75);
-        return off;
+        else
+        {
+            return true;
+        }**/
+        return true; 
     }
     
-    public final double directionCheck(final Player player, final double targetX, final double targetY, final double targetZ, final double targetWidth, final double targetHeight, final double precision) 
-    {
-        //Thanks to Evenprime (NoCheat)
-        final Location eyes = player.getPlayer().getEyeLocation();
-        final double factor = Math.sqrt(Math.pow(eyes.getX() - targetX, 2) + Math.pow(eyes.getY() - targetY, 2) + Math.pow(eyes.getZ() - targetZ, 2));
-        final Vector direction = eyes.getDirection();
-        final double x = ((double) targetX) - eyes.getX();
-        final double y = ((double) targetY) - eyes.getY();
-        final double z = ((double) targetZ) - eyes.getZ();
-        final double xPrediction = factor * direction.getX();
-        final double yPrediction = factor * direction.getY();
-        final double zPrediction = factor * direction.getZ();
-        double off = 0.0D;
-        off += Math.max(Math.abs(x - xPrediction) - (targetWidth / 2 + precision), 0.0D);
-        off += Math.max(Math.abs(z - zPrediction) - (targetWidth / 2 + precision), 0.0D);
-        off += Math.max(Math.abs(y - yPrediction) - (targetHeight / 2 + precision), 0.0D);
-        if(off > 1) {
-            off = Math.sqrt(off);
+        private static int[] getVectorForPoints(int x1, int y1, int x2, int y2) {
+            return new int[] { Math.abs(x2-x1), Math.abs(y2-y1) };
         }
-        return off;
-    }    
-        
-        
-    
+
+        private static boolean isPointInCircle(int cx, int cy, int radius, int px, int py) {
+            double dist = (px-cx)^2 + (py-cy)^2;
+            return dist < (radius^2);
+        }
+
+        private static double getAngleBetweenVectors(int[] vector1, int[] vector2){
+            return Math.atan2(vector2[1], vector2[0]) - Math.atan2(vector1[1], vector1[0]);
+        }    
 }

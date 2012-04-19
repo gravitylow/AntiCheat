@@ -6,9 +6,11 @@ import net.h31ix.anticheat.PlayerTracker;
 import net.h31ix.anticheat.manage.VehicleManager;
 import net.h31ix.anticheat.checks.LengthCheck;
 import net.h31ix.anticheat.manage.ItemManager;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
@@ -51,7 +53,7 @@ public class PlayerListener implements Listener {
         }
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerAnimation(PlayerAnimationEvent event)
     {
         if(event.getAnimationType() == PlayerAnimationType.ARM_SWING)
@@ -178,7 +180,17 @@ public class PlayerListener implements Listener {
                 }
                 if(event.getFrom().getY() < event.getTo().getY())
                 {
-                    if(yd > 1D)
+                    //TODO: This is a little hacky. Any better way to figure this out?
+                    if(yd <= 0.11761 && yd >= 0.11759)
+                    {
+                        if(player.getLocation().getBlock().getType() != Material.VINE && player.getLocation().getBlock().getType() != Material.LADDER)
+                        {
+                            plugin.log(player.getName()+" tried to climb a wall!");
+                            tracker.increaseLevel(player);
+                            event.setTo(event.getFrom().clone());
+                        }
+                    }
+                    else if(yd > 1D)
                     {
                         tracker.increaseLevel(player);
                         plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);

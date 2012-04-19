@@ -60,9 +60,9 @@ public class EntityListener implements Listener {
                     event.setCancelled(true);
                 } 
                 EyeCheck ec = new EyeCheck(p,((CraftEntity)event.getEntity()).getHandle());
-                double off = ec.getOffset();
-                if(off > 0.1D && off != -1) 
+                if(ec.isLooking()) 
                 {
+                    plugin.log(p.getName()+" tried to hit an entity they were not looking at!");
                     event.setCancelled(true);                    
                 }
             }

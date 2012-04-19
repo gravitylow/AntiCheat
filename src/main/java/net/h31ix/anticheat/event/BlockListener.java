@@ -60,26 +60,18 @@ public class BlockListener implements Listener {
         Player player = event.getPlayer();
         if(player != null)
         {      
-            if(!am.swungArm(player))
+            //TODO: For some reason, animations are called after block place, so add an eye check here.
+            LengthCheck c = new LengthCheck(event.getBlock().getLocation(),event.getPlayer().getLocation());
+            if(c.getXDifference() > 6.0D || c.getZDifference() > 6.0D || c.getYDifference() > 6.0D)
             {
                 tracker.increaseLevel(player);
-                plugin.log(player.getName()+" didn't swing their arm on a block place!");
+                plugin.log(player.getName()+" tried to place a block too far away!");
                 event.setCancelled(true);
-            }
+            }    
             else
             {
-                LengthCheck c = new LengthCheck(event.getBlock().getLocation(),event.getPlayer().getLocation());
-                if(c.getXDifference() > 6.0D || c.getZDifference() > 6.0D || c.getYDifference() > 6.0D)
-                {
-                    tracker.increaseLevel(player);
-                    plugin.log(player.getName()+" tried to place a block too far away!");
-                    event.setCancelled(true);
-                }    
-                else
-                {
-                    tracker.decreaseLevel(player);
-                }
-            }                             
+                tracker.decreaseLevel(player);
+            }                          
         } 
         am.reset(player);
     }
