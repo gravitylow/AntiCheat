@@ -50,7 +50,7 @@ public class ExemptManager {
             {
                 hit.put(player, false);
             }
-        },      15L);        
+        },      50L);        
     }
     
     public boolean isHit(Player player)

@@ -97,9 +97,9 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event)
     {
-        if(!plugin.lagged)
+        Player player = event.getPlayer();
+        if(!plugin.lagged && !ex.isHit(player))
         {
-            Player player = event.getPlayer();
             LengthCheck c = new LengthCheck(event.getFrom(), event.getTo());
             double xd = c.getXDifference();
             double zd = c.getZDifference();
@@ -118,7 +118,7 @@ public class PlayerListener implements Listener {
                 }                
                 else if(xd > 0.19D || zd > 0.19D)
                 {
-                    if(!player.isSprinting() && !player.isFlying() && !ex.isHit(player))
+                    if(!player.isSprinting() && !player.isFlying())
                     {
                         tracker.increaseLevel(player);
                         plugin.log(player.getName()+" is walking too fast in water! XSpeed="+xd+" ZSpeed="+zd);
@@ -161,7 +161,7 @@ public class PlayerListener implements Listener {
                 }
                 else if(xd > 0.32D || zd > 0.32D)
                 {
-                    if(!player.isSprinting() && !player.isFlying() && !ex.isHit(player))
+                    if(!player.isSprinting() && !player.isFlying())
                     {
                         tracker.increaseLevel(player);
                         plugin.log(player.getName()+" is walking too fast! XSpeed="+xd+" ZSpeed="+zd);
