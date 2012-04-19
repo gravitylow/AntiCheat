@@ -113,7 +113,6 @@ public class PlayerListener implements Listener {
                     {
                         tracker.increaseLevel(player);
                         plugin.log(player.getName()+" is using a boat too fast! XSpeed="+xd+" ZSpeed="+zd);
-                        event.setTo(event.getFrom().clone());
                     }
                 }                
                 else if(xd > 0.19D || zd > 0.19D)

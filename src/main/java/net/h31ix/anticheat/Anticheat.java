@@ -51,6 +51,8 @@ public class Anticheat extends JavaPlugin {
                 lagged = time > 1500;
             }
         },      200L, 200L);
+        l.log(Level.INFO,"--[Thanks for using a DEV build of AntiCheat!]--");
+        l.log(Level.INFO,"If you notice any bugs, PLEASE report them on BukkitDev!");
     }
     
     public void log(String s)

@@ -22,6 +22,7 @@ public class CommandManager implements CommandExecutor {
         this.plugin = plugin;
         this.tracker = plugin.tracker;
     }
+    @Override
     public boolean onCommand(CommandSender cs, Command cmd, String alias, String[] args) {
         if(args.length == 2)
         {
