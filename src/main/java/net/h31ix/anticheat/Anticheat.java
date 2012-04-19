@@ -1,6 +1,6 @@
 package net.h31ix.anticheat;
 
-import net.h31ix.anticheat.manage.VehicleManager;
+import net.h31ix.anticheat.manage.ExemptManager;
 import net.h31ix.anticheat.manage.ChatManager;
 import net.h31ix.anticheat.manage.AnimationManager;
 import java.util.logging.Level;
@@ -16,7 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Anticheat extends JavaPlugin {
     public ChatManager cm = new ChatManager(this);
     public AnimationManager am = new AnimationManager(this);
-    public VehicleManager vm = new VehicleManager(this);
+    public ExemptManager ex = new ExemptManager(this);
     public ItemManager im = new ItemManager(this);
     public BowManager bm = new BowManager(this);
     public PlayerTracker tracker = new PlayerTracker();

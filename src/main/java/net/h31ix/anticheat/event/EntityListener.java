@@ -5,6 +5,7 @@ import net.h31ix.anticheat.PlayerTracker;
 import net.h31ix.anticheat.checks.EyeCheck;
 import net.h31ix.anticheat.checks.LengthCheck;
 import net.h31ix.anticheat.manage.BowManager;
+import net.h31ix.anticheat.manage.ExemptManager;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,6 +17,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 public class EntityListener implements Listener {
     Anticheat plugin;
     BowManager bm;
+    ExemptManager ex;
     PlayerTracker tracker;
     
     public EntityListener(Anticheat plugin)
@@ -23,6 +25,7 @@ public class EntityListener implements Listener {
         this.plugin = plugin;
         bm = plugin.bm;
         tracker = plugin.tracker;
+        ex = plugin.ex;
     }
     
     @EventHandler
@@ -48,22 +51,28 @@ public class EntityListener implements Listener {
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event)
     {
-        if (event instanceof EntityDamageByEntityEvent)
+        if(event.getEntity() instanceof Player)
         {
-            EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
-            if (e.getDamager() instanceof Player)
+            Player player = (Player)event.getEntity();
+            if (event instanceof EntityDamageByEntityEvent)
             {
-                Player p = (Player) e.getDamager();   
-                LengthCheck lc = new LengthCheck(event.getEntity().getLocation(),p.getLocation());
-                if(lc.getXDifference() > 5.0D || lc.getZDifference() > 5.0D || lc.getYDifference() > 4.3D)
+                EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+                if (e.getDamager() instanceof Player)
                 {
-                    event.setCancelled(true);
-                } 
-                EyeCheck ec = new EyeCheck(p,((CraftEntity)event.getEntity()).getHandle());
-                if(ec.isLooking()) 
-                {
-                    plugin.log(p.getName()+" tried to hit an entity they were not looking at!");
-                    event.setCancelled(true);                    
+                    Player p = (Player) e.getDamager(); 
+                    ex.logHit(p);
+                    ex.logHit(player);
+                    LengthCheck lc = new LengthCheck(event.getEntity().getLocation(),p.getLocation());
+                    if(lc.getXDifference() > 5.0D || lc.getZDifference() > 5.0D || lc.getYDifference() > 4.3D)
+                    {
+                        event.setCancelled(true);
+                    } 
+                    EyeCheck ec = new EyeCheck(p,((CraftEntity)event.getEntity()).getHandle());
+                    if(!ec.isLooking()) 
+                    {
+                        plugin.log(p.getName()+" tried to hit an entity they were not looking at!");
+                        event.setCancelled(true);                    
+                    }
                 }
             }
         }

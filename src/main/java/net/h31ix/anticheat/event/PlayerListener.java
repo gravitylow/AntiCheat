@@ -3,7 +3,7 @@ package net.h31ix.anticheat.event;
 import net.h31ix.anticheat.manage.AnimationManager;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.PlayerTracker;
-import net.h31ix.anticheat.manage.VehicleManager;
+import net.h31ix.anticheat.manage.ExemptManager;
 import net.h31ix.anticheat.checks.LengthCheck;
 import net.h31ix.anticheat.manage.ItemManager;
 import org.bukkit.Material;
@@ -24,7 +24,7 @@ import org.bukkit.event.vehicle.VehicleEnterEvent;
 public class PlayerListener implements Listener {
     Anticheat plugin;
     AnimationManager am;
-    VehicleManager vm;
+    ExemptManager ex;
     PlayerTracker tracker;
     ItemManager im;
      
@@ -32,7 +32,7 @@ public class PlayerListener implements Listener {
     {
         this.plugin = plugin;
         this.am = plugin.am;
-        this.vm = plugin.vm;
+        this.ex = plugin.ex;
         this.im = plugin.im;
         this.tracker = plugin.tracker;
     }
@@ -67,7 +67,7 @@ public class PlayerListener implements Listener {
     {
         if(event.getEntered() instanceof Player)
         {
-            vm.logEnter((Player)event.getEntered());
+            ex.logEnter((Player)event.getEntered());
         }
     }    
     
@@ -119,7 +119,7 @@ public class PlayerListener implements Listener {
                 }                
                 else if(xd > 0.19D || zd > 0.19D)
                 {
-                    if(!player.isSprinting() && !player.isFlying())
+                    if(!player.isSprinting() && !player.isFlying() && !ex.isHit(player))
                     {
                         tracker.increaseLevel(player);
                         plugin.log(player.getName()+" is walking too fast in water! XSpeed="+xd+" ZSpeed="+zd);
@@ -140,7 +140,7 @@ public class PlayerListener implements Listener {
             {
                 if (player.getVehicle() != null)
                 {
-                    if(!vm.isEntering(player))
+                    if(!ex.isEntering(player))
                     {
                         if(xd > 0.41D || zd > 0.41D)
                         {
@@ -162,7 +162,7 @@ public class PlayerListener implements Listener {
                 }
                 else if(xd > 0.32D || zd > 0.32D)
                 {
-                    if(!player.isSprinting() && !player.isFlying())
+                    if(!player.isSprinting() && !player.isFlying() && !ex.isHit(player))
                     {
                         tracker.increaseLevel(player);
                         plugin.log(player.getName()+" is walking too fast! XSpeed="+xd+" ZSpeed="+zd);
