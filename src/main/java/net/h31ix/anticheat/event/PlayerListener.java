@@ -48,7 +48,6 @@ public class PlayerListener implements Listener {
         else
         {
             plugin.log(player.getName()+" tried to drop blocks too fast!");
-            tracker.increaseLevel(player);
             event.setCancelled(true);
         }
     }

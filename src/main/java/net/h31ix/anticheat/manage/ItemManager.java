@@ -19,6 +19,7 @@ public class ItemManager {
         drop.put(player, true);
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
         {
+            @Override
             public void run() 
             {
                 drop.put(player, false);

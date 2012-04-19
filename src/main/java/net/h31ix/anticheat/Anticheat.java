@@ -57,7 +57,7 @@ public class Anticheat extends JavaPlugin {
     {
         if(this.log)
         {
-            l.log(Level.WARNING,s);
+            l.log(Level.WARNING,"[AntiCheat] "+s);
         }
     }
 }

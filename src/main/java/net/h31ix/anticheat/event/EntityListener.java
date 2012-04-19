@@ -61,7 +61,6 @@ public class EntityListener implements Listener {
                 {
                     Player p = (Player) e.getDamager(); 
                     ex.logHit(p);
-                    ex.logHit(player);
                     LengthCheck lc = new LengthCheck(event.getEntity().getLocation(),p.getLocation());
                     if(lc.getXDifference() > 5.0D || lc.getZDifference() > 5.0D || lc.getYDifference() > 4.3D)
                     {
@@ -74,6 +73,7 @@ public class EntityListener implements Listener {
                         event.setCancelled(true);                    
                     }
                 }
+                ex.logHit(player);
             }
         }
     }     
