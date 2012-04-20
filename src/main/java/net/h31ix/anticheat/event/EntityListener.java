@@ -7,6 +7,7 @@ import net.h31ix.anticheat.checks.LengthCheck;
 import net.h31ix.anticheat.manage.BowManager;
 import net.h31ix.anticheat.manage.ExemptManager;
 import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -56,11 +57,16 @@ public class EntityListener implements Listener {
             Player player = (Player)event.getEntity();
             if (event instanceof EntityDamageByEntityEvent)
             {
+                int time = 50;
                 EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
                 if (e.getDamager() instanceof Player)
                 {
                     Player p = (Player) e.getDamager(); 
-                    ex.logHit(p);
+                    if(p.getInventory().getItemInHand().getEnchantments().containsKey(Enchantment.KNOCKBACK))
+                    {
+                        time = 100;
+                    }
+                    ex.logHit(p,50);
                     LengthCheck lc = new LengthCheck(event.getEntity().getLocation(),p.getLocation());
                     if(lc.getXDifference() > 5.0D || lc.getZDifference() > 5.0D || lc.getYDifference() > 4.3D)
                     {
@@ -73,7 +79,7 @@ public class EntityListener implements Listener {
                         event.setCancelled(true);                    
                     }
                 }
-                ex.logHit(player);
+                ex.logHit(player,time);
             }
         }
     }     

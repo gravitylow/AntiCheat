@@ -40,7 +40,7 @@ public class ExemptManager {
         }
     }
     
-    public void logHit(final Player player)
+    public void logHit(final Player player, int time)
     {
         hit.put(player, true);
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
@@ -50,7 +50,7 @@ public class ExemptManager {
             {
                 hit.put(player, false);
             }
-        },      50L);        
+        },      time);        
     }
     
     public boolean isHit(Player player)
