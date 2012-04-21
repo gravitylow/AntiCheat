@@ -1,8 +1,6 @@
 package net.h31ix.anticheat;
 
-import net.h31ix.anticheat.manage.ExemptManager;
-import net.h31ix.anticheat.manage.ChatManager;
-import net.h31ix.anticheat.manage.AnimationManager;
+import net.h31ix.anticheat.manage.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.h31ix.anticheat.command.CommandManager;
@@ -19,6 +17,7 @@ public class Anticheat extends JavaPlugin {
     public ExemptManager ex = new ExemptManager(this);
     public ItemManager im = new ItemManager(this);
     public BowManager bm = new BowManager(this);
+    public HealthManager hm = new HealthManager();
     public PlayerTracker tracker = new PlayerTracker();
     private static final Logger l = Logger.getLogger("Minecraft");
     private long lastTime = System.currentTimeMillis();

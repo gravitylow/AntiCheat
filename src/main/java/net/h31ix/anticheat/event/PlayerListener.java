@@ -1,11 +1,10 @@
 package net.h31ix.anticheat.event;
 
-import net.h31ix.anticheat.manage.AnimationManager;
+import net.h31ix.anticheat.manage.*;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.PlayerTracker;
-import net.h31ix.anticheat.manage.ExemptManager;
-import net.h31ix.anticheat.checks.LengthCheck;
-import net.h31ix.anticheat.manage.ItemManager;
+import net.h31ix.anticheat.checks.*;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -27,6 +26,7 @@ public class PlayerListener implements Listener {
     ExemptManager ex;
     PlayerTracker tracker;
     ItemManager im;
+    HealthManager hm;
      
     public PlayerListener(Anticheat plugin)
     {
@@ -35,6 +35,7 @@ public class PlayerListener implements Listener {
         this.ex = plugin.ex;
         this.im = plugin.im;
         this.tracker = plugin.tracker;
+        this.hm = plugin.hm;
     }
     
     @EventHandler
@@ -100,6 +101,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         if(!plugin.lagged && !ex.isHit(player))
         {
+            hm.log(player);
             LengthCheck c = new LengthCheck(event.getFrom(), event.getTo());
             double xd = c.getXDifference();
             double zd = c.getZDifference();
@@ -194,7 +196,19 @@ public class PlayerListener implements Listener {
                         plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);
                         event.setTo(event.getFrom().clone());
                     }
-                }               
+                } 
+                if(event.getFrom().getY() > event.getTo().getY())
+                {         
+                    if(player.getGameMode() != GameMode.CREATIVE)
+                    {
+                        hm.log(player);
+                        if(hm.checkFall(player))
+                        {
+                            plugin.log(player.getName()+" tried to avoid fall damage!");
+                            tracker.increaseLevel(player);
+                        }
+                    }
+                }       
             }
         }
     } 
