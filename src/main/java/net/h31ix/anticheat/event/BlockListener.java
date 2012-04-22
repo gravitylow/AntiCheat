@@ -3,6 +3,7 @@ package net.h31ix.anticheat.event;
 import net.h31ix.anticheat.manage.AnimationManager;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.PlayerTracker;
+import net.h31ix.anticheat.checks.EyeCheck;
 import net.h31ix.anticheat.checks.LengthCheck;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -15,6 +16,7 @@ public class BlockListener implements Listener {
     Anticheat plugin;
     AnimationManager am;
     PlayerTracker tracker;
+    EyeCheck e = new EyeCheck();
     
     public BlockListener(Anticheat plugin)
     {
@@ -29,7 +31,7 @@ public class BlockListener implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         if(player != null)
-        {
+        {         
             if(!am.swungArm(player))
             {
                 tracker.increaseLevel(player);
@@ -38,7 +40,7 @@ public class BlockListener implements Listener {
             }
             else
             {
-                LengthCheck c = new LengthCheck(event.getBlock().getLocation(),event.getPlayer().getLocation());
+                LengthCheck c = new LengthCheck(block.getLocation(),event.getPlayer().getLocation());
                 if(c.getXDifference() > 6.0D || c.getZDifference() > 6.0D || c.getYDifference() > 6.0D)
                 {
                     plugin.log(player.getName()+" tried to break a block too far away!");
@@ -58,10 +60,16 @@ public class BlockListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent event)
     {
         Player player = event.getPlayer();
+        Block block = event.getBlock();
         if(player != null)
         {      
-            //TODO: For some reason, animations are called after block place, so add an eye check here.
-            LengthCheck c = new LengthCheck(event.getBlock().getLocation(),event.getPlayer().getLocation());
+            if(!e.canSee(player, block))
+            {
+                tracker.increaseLevel(player);
+                plugin.log(player.getName()+" tried to place a block that they couldn't see!");
+                event.setCancelled(true);                    
+            }
+            LengthCheck c = new LengthCheck(block.getLocation(),event.getPlayer().getLocation());
             if(c.getXDifference() > 6.0D || c.getZDifference() > 6.0D || c.getYDifference() > 6.0D)
             {
                 tracker.increaseLevel(player);

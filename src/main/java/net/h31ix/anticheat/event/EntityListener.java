@@ -6,7 +6,6 @@ import net.h31ix.anticheat.checks.EyeCheck;
 import net.h31ix.anticheat.checks.LengthCheck;
 import net.h31ix.anticheat.manage.BowManager;
 import net.h31ix.anticheat.manage.ExemptManager;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -52,16 +51,16 @@ public class EntityListener implements Listener {
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event)
     {
-        if(event.getEntity() instanceof Player)
-        {
-            Player player = (Player)event.getEntity();
-            if (event instanceof EntityDamageByEntityEvent)
-            {
-                int time = 50;
-                EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
-                if (e.getDamager() instanceof Player)
+        if (event instanceof EntityDamageByEntityEvent)
+        {       
+            EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+            if (e.getDamager() instanceof Player)
+            {         
+                Player p = (Player) e.getDamager(); 
+                if(event.getEntity() instanceof Player)
                 {
-                    Player p = (Player) e.getDamager(); 
+                    Player player = (Player)event.getEntity();
+                    int time = 50;
                     if(p.getInventory().getItemInHand().getEnchantments().containsKey(Enchantment.KNOCKBACK))
                     {
                         time = 100;
@@ -72,15 +71,9 @@ public class EntityListener implements Listener {
                     {
                         event.setCancelled(true);
                     } 
-                    EyeCheck ec = new EyeCheck(p,((CraftEntity)event.getEntity()).getHandle());
-                    if(!ec.isLooking()) 
-                    {
-                        plugin.log(p.getName()+" tried to hit an entity they were not looking at!");
-                        event.setCancelled(true);                    
-                    }
+                    ex.logHit(player,time);
                 }
-                ex.logHit(player,time);
             }
-        }
+        }     
     }     
 }
