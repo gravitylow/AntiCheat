@@ -7,6 +7,7 @@ import net.h31ix.anticheat.checks.*;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -142,7 +143,7 @@ public class PlayerListener implements Listener {
                 {
                     if(!ex.isEntering(player))
                     {
-                        if(xd > 0.41D || zd > 0.41D)
+                        if(xd > 0.6D || zd > 0.6D)
                         {
                             tracker.increaseLevel(player);
                             plugin.log(player.getName()+" is using a vehicle too fast! XSpeed="+xd+" ZSpeed="+zd);
@@ -199,7 +200,8 @@ public class PlayerListener implements Listener {
                 } 
                 if(event.getFrom().getY() > event.getTo().getY())
                 {         
-                    if(player.getGameMode() != GameMode.CREATIVE)
+                    
+                    if(player.getGameMode() != GameMode.CREATIVE && player.getVehicle() == null)
                     {
                         hm.log(player);
                         if(hm.checkFall(player))
