@@ -7,7 +7,6 @@ import net.h31ix.anticheat.checks.*;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,6 +16,7 @@ import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
@@ -37,6 +37,14 @@ public class PlayerListener implements Listener {
         this.im = plugin.im;
         this.tracker = plugin.tracker;
         this.hm = plugin.hm;
+    }
+    
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event)
+    {
+       event.getPlayer().sendMessage("§f §f §1 §0 §2 §4");
+       event.getPlayer().sendMessage("§f §f §2 §0 §4 §8");
+       event.getPlayer().sendMessage("§f §f §4 §0 §9 §6");            
     }
     
     @EventHandler
@@ -191,7 +199,7 @@ public class PlayerListener implements Listener {
                             event.setTo(event.getFrom().clone());
                         }
                     }
-                    else if(yd > 1D)
+                    else if(yd > 0.5D)
                     {
                         tracker.increaseLevel(player);
                         plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);
