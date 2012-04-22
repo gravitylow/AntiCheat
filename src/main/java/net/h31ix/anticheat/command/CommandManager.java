@@ -32,12 +32,12 @@ public class CommandManager implements CommandExecutor {
                 {
                     if(args[1].equalsIgnoreCase("enable"))
                     {
-                        plugin.log = true;
+                        plugin.config.setLog(true);
                         cs.sendMessage("Logging enabled. Check the console.");
                     }
                     else if(args[1].equalsIgnoreCase("disable"))
                     {
-                        plugin.log = false;
+                        plugin.config.setLog(false);
                         cs.sendMessage("Logs will no longer be sent to the console.");
                     }   
                     else

@@ -1,5 +1,6 @@
 package net.h31ix.anticheat;
 
+import java.io.File;
 import net.h31ix.anticheat.manage.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,13 +19,13 @@ public class Anticheat extends JavaPlugin {
     public ItemManager im = new ItemManager(this);
     public BowManager bm = new BowManager(this);
     public HealthManager hm = new HealthManager();
-    public PlayerTracker tracker = new PlayerTracker();
+    public Configuration config;
+    public PlayerTracker tracker;
     private static final Logger l = Logger.getLogger("Minecraft");
     private long lastTime = System.currentTimeMillis();
     private long time = 0;
     public boolean lagged = false;
-    
-    public boolean log = false;
+    public boolean log;
     
     @Override
     public void onDisable() {
@@ -32,6 +33,14 @@ public class Anticheat extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if(!new File(this.getDataFolder()+"\\config.yml").exists())
+        {
+            this.saveDefaultConfig();
+        }
+        config = new Configuration(this);
+        tracker = new PlayerTracker(this);
+        log = config.logConsole;
+        
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockListener(this), this);
         getServer().getPluginManager().registerEvents(new EntityListener(this), this);

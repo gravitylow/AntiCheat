@@ -6,12 +6,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class PlayerTracker {
-    
     public Map<Player,Integer> level = new HashMap<Player,Integer>();
+    Anticheat plugin;
+    Configuration config;
     
-    public PlayerTracker()
+    public PlayerTracker(Anticheat plugin)
     {
-        
+        this.plugin = plugin;
+        this.config = plugin.config;
     }
     
     public void increaseLevel(Player player)
@@ -26,6 +28,7 @@ public class PlayerTracker {
             level.put(player, playerLevel+2);
             if(playerLevel <= 10 && playerLevel+1 > 10 && playerLevel+1 <= 40)
             {
+                execute("Medium",player);                           
                 for(Player p : player.getServer().getOnlinePlayers())
                 {
                     if(p.hasPermission("anticheat.admin"))
@@ -37,6 +40,7 @@ public class PlayerTracker {
             }
             if(playerLevel <= 40 && playerLevel+1 > 40)
             {
+                execute("High",player);
                 for(Player p : player.getServer().getOnlinePlayers())
                 {
                     if(p.hasPermission("anticheat.admin"))
@@ -69,4 +73,25 @@ public class PlayerTracker {
             return 0;
         }
     }
+    
+    public void execute(String level, Player player)
+    {
+        String result = config.getResult(level);
+        if(result.equalsIgnoreCase("KICK"))
+        {
+            player.kickPlayer(ChatColor.RED+"Kicked by AntiCheat");
+            player.getServer().broadcastMessage(ChatColor.RED+"[AntiCheat] "+player.getName()+" was kicked for hacking.");
+        }
+        else if(result.equalsIgnoreCase("WARN"))
+        {
+            player.sendMessage(ChatColor.RED+"[AntiCheat] Hacks are not allowed on this server.");
+            player.sendMessage(ChatColor.RED+"[AntiCheat] If you continue to use hacks, action will be taken.");
+        } 
+        else if(result.equalsIgnoreCase("BAN"))
+        {
+            player.setBanned(true);
+            player.kickPlayer(ChatColor.RED+"Banned by AntiCheat");
+            player.getServer().broadcastMessage(ChatColor.RED+"[AntiCheat] "+player.getName()+" was banned for hacking.");
+        }          
+    }   
 }
