@@ -31,7 +31,7 @@ public class BlockListener implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         if(player != null)
-        {         
+        {     
             if(!am.swungArm(player))
             {
                 tracker.increaseLevel(player);
@@ -63,7 +63,7 @@ public class BlockListener implements Listener {
         Block block = event.getBlock();
         if(player != null)
         {      
-            if(!e.canSee(player, block))
+            if(!e.canSee(player, block) && !player.getWorld().getBlockAt(player.getLocation()).isLiquid())
             {
                 tracker.increaseLevel(player);
                 plugin.log(player.getName()+" tried to place a block that they couldn't see!");
