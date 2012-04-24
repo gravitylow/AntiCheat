@@ -19,6 +19,7 @@ public class Anticheat extends JavaPlugin {
     public ItemManager im = new ItemManager(this);
     public BowManager bm = new BowManager(this);
     public HealthManager hm = new HealthManager();
+    public LoginManager lm = new LoginManager(this);
     public Configuration config;
     public PlayerTracker tracker;
     private static final Logger l = Logger.getLogger("Minecraft");

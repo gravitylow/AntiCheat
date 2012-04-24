@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 
@@ -28,6 +29,7 @@ public class PlayerListener implements Listener {
     PlayerTracker tracker;
     ItemManager im;
     HealthManager hm;
+    LoginManager lm;
     
     public PlayerListener(Anticheat plugin)
     {
@@ -37,6 +39,16 @@ public class PlayerListener implements Listener {
         this.im = plugin.im;
         this.tracker = plugin.tracker;
         this.hm = plugin.hm;
+        this.lm = plugin.lm;
+    }
+    
+    @EventHandler
+    public void onPlayerLogin(PlayerLoginEvent event)
+    {
+        if(!lm.log()) 
+        {
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Please do not flood the server!");
+        }
     }
     
     @EventHandler
@@ -92,9 +104,15 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerChat(PlayerChatEvent event)
     {
+        Player player = event.getPlayer();
+        if(player.getLocation().equals(player.getWorld().getSpawnLocation()))
+        {
+            event.setCancelled(true);
+            player.sendMessage("Please move from spawn before speaking.");
+        }        
         if(!plugin.lagged)
         {        
-            plugin.cm.addChat(event.getPlayer());
+            plugin.cm.addChat(player);
         }
     }
     
