@@ -4,7 +4,7 @@ import org.bukkit.Location;
 
 public class LengthCheck {
     Location l1, l2;
-    
+    //Used for checking how far a player travels on an event and how far they are from another location
     public LengthCheck(Location l1, Location l2)
     {
         this.l1 = l1;

@@ -11,16 +11,6 @@
             <url>http://repo.bukkit.org/content/repositories/releases/</url>
         </repository>
     </repositories>
-    <profiles>
-        <profile>
-            <id>jenkins</id>
-            <activation>
-                <property>
-                    <name>env.BUILD_NUMBER</name>
-                </property>
-            </activation>   
-        </profile>
-    </profiles>
     <build>
         <plugins>
             <plugin>

@@ -47,6 +47,7 @@ public class PlayerListener implements Listener {
     {
         if(!lm.log()) 
         {
+            //Make sure a player has not joined in the last .5th of a second
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Please do not flood the server!");
         }
     }
@@ -54,6 +55,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event)
     {
+       //Disable zombe's mods
        event.getPlayer().sendMessage("§f §f §1 §0 §2 §4");
        event.getPlayer().sendMessage("§f §f §2 §0 §4 §8");
        event.getPlayer().sendMessage("§f §f §4 §0 §9 §6");            
@@ -65,6 +67,8 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         if(!im.hasDropped(player))
         {
+            //Make sure the player isn't spamming drops
+            //For a normal user this is no big deal, but to hackers it gets rid of most of the items in their inventory
             im.logDrop(player);
         }
         else
@@ -79,6 +83,7 @@ public class PlayerListener implements Listener {
     {
         if(event.getAnimationType() == PlayerAnimationType.ARM_SWING)
         {
+            //Log animations for future checks
             am.logAnimation(event.getPlayer());
         }
     }
@@ -88,6 +93,7 @@ public class PlayerListener implements Listener {
     {
         if(event.getEntered() instanceof Player)
         {
+            //Give the player a grace period as they enter a vehicle, as they move very fast.
             ex.logEnter((Player)event.getEntered());
         }
     }    
@@ -97,6 +103,7 @@ public class PlayerListener implements Listener {
     {
         if(!plugin.lagged)
         {        
+            //Block command spamming (consider them chats)
             plugin.cm.addChat(event.getPlayer());
         }        
     }
@@ -107,11 +114,13 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         if(player.getLocation().equals(player.getWorld().getSpawnLocation()))
         {
+            //Make sure the player is not a potential spambot
             event.setCancelled(true);
             player.sendMessage("Please move from spawn before speaking.");
         }        
         if(!plugin.lagged)
         {        
+            //Block chat spamming
             plugin.cm.addChat(player);
         }
     }
@@ -119,6 +128,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event)
     {
+        //Clear the player's chat level when they disconnect
         plugin.cm.clear(event.getPlayer());
     }
     
@@ -128,14 +138,18 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         if(!plugin.lagged && !ex.isHit(player))
         {
+            //Log the player's health level
             hm.log(player);
+            //Get distances for hack checks.
             LengthCheck c = new LengthCheck(event.getFrom(), event.getTo());
             double xd = c.getXDifference();
             double zd = c.getZDifference();
             double yd = c.getYDifference();
             Block p1 = player.getLocation().getWorld().getBlockAt(player.getLocation());
+            //Is the player in water?
             if(p1.isLiquid())
             {
+                //Are they using a boat? If so give them a bit more leniency
                 if (player.getVehicle() != null)
                 {
                     if(xd > 2.0D || zd > 2.0D)
@@ -146,6 +160,7 @@ public class PlayerListener implements Listener {
                 }                
                 else if(xd > 0.19D || zd > 0.19D)
                 {
+                    //Otherwise check for normal walking speeds, making sure they aren't using 'jesus' hacks
                     if(!player.isSprinting() && !player.isFlying())
                     {
                         tracker.increaseLevel(player);
@@ -155,6 +170,7 @@ public class PlayerListener implements Listener {
                 }
                 else
                 {
+                    //If they are flying/sprinting give them a bit of slack
                     if(xd > 0.3D || zd > 0.3D)
                     {
                         tracker.increaseLevel(player);
@@ -165,8 +181,10 @@ public class PlayerListener implements Listener {
             }
             else
             {
+                //Are they in a vehicle?
                 if (player.getVehicle() != null)
                 {
+                    //If they are just entering it, skip the check. They are moving way too fast naturally.
                     if(!ex.isEntering(player))
                     {
                         if(xd > 0.6D || zd > 0.6D)
@@ -176,17 +194,21 @@ public class PlayerListener implements Listener {
                             event.setTo(event.getFrom().clone());
                         }
                     }
-                }               
+                }        
+                //Otherwise, are they sneaking?
                 else if(player.isSneaking())
                 {
+                    //Make sure they are at normal sneak speeds. (not using sneak hacks)
                     if(xd > 0.17D || zd > 0.17D)
                     {
                         tracker.increaseLevel(player);
                         plugin.log(player.getName()+" is sneaking too fast! XSpeed="+xd+" ZSpeed="+zd);
                         event.setTo(event.getFrom().clone());
+                        //If they are, force them out of it.
                         player.setSneaking(false);
                     }
                 }
+                //Otherwise set a hardcoded limit to any other traveling
                 else if(xd > 0.32D || zd > 0.32D)
                 {
                     if(!player.isSprinting() && !player.isFlying())
@@ -197,6 +219,7 @@ public class PlayerListener implements Listener {
                     }              
                     else
                     {
+                        //If they are sprinting or flying give slack
                         if(xd > 0.62D || zd > 0.62D)
                         {
                             tracker.increaseLevel(player);
@@ -205,18 +228,22 @@ public class PlayerListener implements Listener {
                         }
                     }
                 }
+                //If the player is ascending
                 if(event.getFrom().getY() < event.getTo().getY())
                 {
                     //TODO: This is a little hacky. Any better way to figure this out?
+                    //Are they climbing something?
                     if(yd <= 0.11761 && yd >= 0.11759)
                     {
                         if(player.getLocation().getBlock().getType() != Material.VINE && player.getLocation().getBlock().getType() != Material.LADDER)
                         {
+                            //If it's not climbable, block it.
                             plugin.log(player.getName()+" tried to climb a wall!");
                             tracker.increaseLevel(player);
                             event.setTo(event.getFrom().clone());
                         }
                     }
+                    //Otherwise check for fast ascension
                     else if(yd > 0.5D)
                     {
                         tracker.increaseLevel(player);
@@ -224,14 +251,17 @@ public class PlayerListener implements Listener {
                         event.setTo(event.getFrom().clone());
                     }
                 } 
+                //If they are falling
                 if(event.getFrom().getY() > event.getTo().getY())
                 {         
-                    
+                    //Ignore players in creative or in vehicles, they give a fall distance of 0 naturally.
                     if(player.getGameMode() != GameMode.CREATIVE && player.getVehicle() == null)
                     {
                         hm.log(player);
+                        //Log health (for nofall detection)
                         if(hm.checkFall(player))
                         {
+                            //If the player is falling but has a 0 fall distance
                             plugin.log(player.getName()+" tried to avoid fall damage!");
                             tracker.increaseLevel(player);
                         }

@@ -17,6 +17,7 @@ public class ExemptManager {
     
     public void logEnter(final Player player)
     {
+        //For ignoring players entering vehicles
         enter.put(player, true);
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
         {

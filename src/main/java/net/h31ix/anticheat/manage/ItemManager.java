@@ -16,6 +16,7 @@ public class ItemManager {
     
     public void logDrop(final Player player)
     {
+        //Stop players from dropping blocks too fast.
         drop.put(player, true);
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
         {

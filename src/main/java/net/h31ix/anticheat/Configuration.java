@@ -29,7 +29,7 @@ public class Configuration {
     {
         config.set("Logging.Log to console", b);
         this.logConsole = b;
-        plugin.log = b;
+        plugin.logConsole = b;
         try {
             config.save(configFile);
         } catch (IOException ex) {

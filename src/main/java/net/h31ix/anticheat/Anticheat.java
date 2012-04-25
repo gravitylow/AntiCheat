@@ -10,9 +10,11 @@ import net.h31ix.anticheat.event.EntityListener;
 import net.h31ix.anticheat.event.PlayerListener;
 import net.h31ix.anticheat.manage.BowManager;
 import net.h31ix.anticheat.manage.ItemManager;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Anticheat extends JavaPlugin {
+    //Define and initialize managers, used for various checks and tasks in the listeners.
     public ChatManager cm = new ChatManager(this);
     public AnimationManager am = new AnimationManager(this);
     public ExemptManager ex = new ExemptManager(this);
@@ -20,13 +22,16 @@ public class Anticheat extends JavaPlugin {
     public BowManager bm = new BowManager(this);
     public HealthManager hm = new HealthManager();
     public LoginManager lm = new LoginManager(this);
-    public Configuration config;
-    public PlayerTracker tracker;
+    //End Managers
+    
+    public Configuration config; 
+    public PlayerTracker tracker; //PlayerTracker for monitoring levels
     private static final Logger l = Logger.getLogger("Minecraft");
     private long lastTime = System.currentTimeMillis();
     private long time = 0;
-    public boolean lagged = false;
-    public boolean log;
+    public boolean lagged = false; 
+    public boolean logConsole;
+    public FileConfiguration log;
     
     @Override
     public void onDisable() {
@@ -37,10 +42,10 @@ public class Anticheat extends JavaPlugin {
         if(!new File(this.getDataFolder()+"\\config.yml").exists())
         {
             this.saveDefaultConfig();
-        }
+        }     
         config = new Configuration(this);
         tracker = new PlayerTracker(this);
-        log = config.logConsole;
+        logConsole = config.logConsole;
         
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockListener(this), this);
@@ -66,7 +71,7 @@ public class Anticheat extends JavaPlugin {
     
     public void log(String s)
     {
-        if(this.log)
+        if(this.logConsole)
         {
             l.log(Level.WARNING,"[AntiCheat] "+s);
         }

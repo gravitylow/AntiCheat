@@ -21,6 +21,8 @@ public class HealthManager {
     
     public boolean checkFall(Player player)
     {
+        //Sometimes a player's fall distance is 0 when they reach the peak of their jump
+        //To combat false positives, the player must have 10 fall distance values of 0 in a row to trigger.
         if(fall.get(player) == 0)
         {
             if(fallvl.get(player) == null)

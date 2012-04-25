@@ -29,6 +29,7 @@ public class BowManager {
     
     public boolean hasShot(Player player)
     {
+        //If the player has shot in the last .5 seconds
         if(shot.get(player) == null || shot.get(player) == false)
         {
             return false;

@@ -1,7 +1,6 @@
 package net.h31ix.anticheat.manage;
 
 import net.h31ix.anticheat.Anticheat;
-import org.bukkit.entity.Player;
 
 public class LoginManager {
     Anticheat plugin;
@@ -14,6 +13,7 @@ public class LoginManager {
     
     public boolean log()
     {
+        //Log players entering the server. Don't allow them to join way too fast.
         if(join == true)
         {
             return false;

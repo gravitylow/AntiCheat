@@ -32,6 +32,7 @@ public class BlockListener implements Listener {
         Block block = event.getBlock();
         if(player != null)
         {     
+            //Check if an animation was done before this
             if(!am.swungArm(player))
             {
                 tracker.increaseLevel(player);
@@ -40,6 +41,7 @@ public class BlockListener implements Listener {
             }
             else
             {
+                //If so, check the distance from the block. Is it too far away?
                 LengthCheck c = new LengthCheck(block.getLocation(),event.getPlayer().getLocation());
                 if(c.getXDifference() > 6.0D || c.getZDifference() > 6.0D || c.getYDifference() > 6.0D)
                 {
@@ -63,12 +65,16 @@ public class BlockListener implements Listener {
         Block block = event.getBlock();
         if(player != null)
         {      
+            //Check if the player can see the block they are placing
+            //This is mostly used for preventing build/autobuild hacks (Logic not yet finished)
             if(!e.canSee(player, block) && !player.getWorld().getBlockAt(player.getLocation()).isLiquid())
             {
-                tracker.increaseLevel(player);
+                //TODO: this is causing false alerts. Re-work the vision logic?
+                //tracker.increaseLevel(player);
                 plugin.log(player.getName()+" tried to place a block that they couldn't see!");
                 event.setCancelled(true);                    
             }
+            //Is the player too far away?
             LengthCheck c = new LengthCheck(block.getLocation(),event.getPlayer().getLocation());
             if(c.getXDifference() > 6.0D || c.getZDifference() > 6.0D || c.getYDifference() > 6.0D)
             {
