@@ -243,12 +243,15 @@ public class PlayerListener implements Listener {
                             event.setTo(event.getFrom().clone());
                         }
                     }
-                    //Otherwise check for fast ascension
-                    else if(yd > 0.5D)
+                    else if(player.getGameMode() != GameMode.CREATIVE && player.getVehicle() == null)
                     {
-                        tracker.increaseLevel(player);
-                        plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);
-                        event.setTo(event.getFrom().clone());
+                        //Otherwise check for fast ascension
+                        if(yd > 0.5D)
+                        {
+                            tracker.increaseLevel(player);
+                            plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);
+                            event.setTo(event.getFrom().clone());
+                        }
                     }
                 } 
                 //If they are falling
