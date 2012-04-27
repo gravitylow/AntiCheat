@@ -2,7 +2,6 @@ package net.h31ix.anticheat.event;
 
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.PlayerTracker;
-import net.h31ix.anticheat.checks.EyeCheck;
 import net.h31ix.anticheat.checks.LengthCheck;
 import net.h31ix.anticheat.manage.BowManager;
 import net.h31ix.anticheat.manage.ExemptManager;
@@ -33,18 +32,21 @@ public class EntityListener implements Listener {
     {
         if(event.getEntity() instanceof Player)
         {
-            //This mostly prevents bow spam, hopefully more auto-firing in the future
             Player player = (Player)event.getEntity();
-            if(!bm.hasShot(player))
-            {
-                tracker.decreaseLevel(player);
-                bm.logShoot((Player)event.getEntity());
-            }
-            else
-            {
-                event.setCancelled(true);
-                tracker.increaseLevel(player);
-                plugin.log(player.getName()+" tried to fire a bow too fast!");
+            if(!player.hasPermission("anticheat.autofire"))
+            {            
+                //This mostly prevents bow spam, hopefully more auto-firing in the future
+                if(!bm.hasShot(player))
+                {
+                    tracker.decreaseLevel(player);
+                    bm.logShoot((Player)event.getEntity());
+                }
+                else
+                {
+                    event.setCancelled(true);
+                    tracker.increaseLevel(player);
+                    plugin.log(player.getName()+" tried to fire a bow too fast!");
+                }
             }
         }
     }
@@ -70,13 +72,16 @@ public class EntityListener implements Listener {
                         time = 100;
                     }
                     ex.logHit(p,50);
-                    //Make sure they are close enough to the entity to hit them
-                    LengthCheck lc = new LengthCheck(event.getEntity().getLocation(),p.getLocation());
-                    if(lc.getXDifference() > 5.0D || lc.getZDifference() > 5.0D || lc.getYDifference() > 4.3D)
-                    {
-                        event.setCancelled(true);
-                    } 
-                    ex.logHit(player,time);
+                    if(!p.hasPermission("anticheat.longreach"))
+                    {                      
+                        //Make sure they are close enough to the entity to hit them
+                        LengthCheck lc = new LengthCheck(event.getEntity().getLocation(),p.getLocation());
+                        if(lc.getXDifference() > 5.0D || lc.getZDifference() > 5.0D || lc.getYDifference() > 4.3D)
+                        {
+                            event.setCancelled(true);
+                        } 
+                        ex.logHit(player,time);
+                    }
                 }
             }
         }     
