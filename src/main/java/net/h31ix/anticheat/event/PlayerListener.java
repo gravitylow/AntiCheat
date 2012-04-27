@@ -7,6 +7,7 @@ import net.h31ix.anticheat.checks.*;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -31,6 +32,7 @@ public class PlayerListener implements Listener {
     ItemManager im;
     HealthManager hm;
     LoginManager lm;
+    FlyManager fm;
     
     public PlayerListener(Anticheat plugin)
     {
@@ -41,6 +43,7 @@ public class PlayerListener implements Listener {
         this.tracker = plugin.tracker;
         this.hm = plugin.hm;
         this.lm = plugin.lm;
+        this.fm = plugin.fm;
     }
     
     @EventHandler
@@ -200,7 +203,7 @@ public class PlayerListener implements Listener {
                 else if(player.isSneaking())
                 {
                     //Make sure they are at normal sneak speeds. (not using sneak hacks)
-                    if(xd > 0.17D || zd > 0.17D)
+                    if(xd > 0.2D || zd > 0.2D)
                     {
                         tracker.increaseLevel(player);
                         plugin.log(player.getName()+" is sneaking too fast! XSpeed="+xd+" ZSpeed="+zd);
@@ -210,7 +213,7 @@ public class PlayerListener implements Listener {
                     }
                 }
                 //Otherwise set a hardcoded limit to any other traveling
-                else if(xd > 0.32D || zd > 0.32D)
+                else if(xd > 0.4D || zd > 0.4D)
                 {
                     if(!player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED))
                     {
@@ -223,7 +226,7 @@ public class PlayerListener implements Listener {
                         else
                         {
                             //If they are sprinting or flying give slack
-                            if(xd > 0.62D || zd > 0.62D)
+                            if(xd > 0.7D || zd > 0.7D)
                             {
                                 tracker.increaseLevel(player);
                                 plugin.log(player.getName()+" is sprinting too fast! XSpeed="+xd+" ZSpeed="+zd);
@@ -277,7 +280,20 @@ public class PlayerListener implements Listener {
                 //No change in Y
                 else
                 {
-                    
+                    Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
+                    if(block.getType() == Material.AIR && block.getRelative(BlockFace.NORTH).getType() == Material.AIR && block.getRelative(BlockFace.EAST).getType() == Material.AIR && block.getRelative(BlockFace.SOUTH).getType() == Material.AIR && block.getRelative(BlockFace.WEST).getType() == Material.AIR)
+                    { 
+                        if (fm.checkFly(player))
+                        {
+                            event.setTo(event.getFrom().clone());
+                            plugin.log(player.getName()+" tried to fly!");
+                            tracker.increaseLevel(player);
+                        }
+                        else
+                        {
+                            tracker.decreaseLevel(player);
+                        }
+                    }
                 }
             }
         }
