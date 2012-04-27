@@ -21,6 +21,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
+import org.bukkit.potion.PotionEffectType;
 
 public class PlayerListener implements Listener {
     Anticheat plugin;
@@ -211,20 +212,23 @@ public class PlayerListener implements Listener {
                 //Otherwise set a hardcoded limit to any other traveling
                 else if(xd > 0.32D || zd > 0.32D)
                 {
-                    if(!player.isSprinting() && !player.isFlying())
+                    if(!player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED))
                     {
-                        tracker.increaseLevel(player);
-                        plugin.log(player.getName()+" is walking too fast! XSpeed="+xd+" ZSpeed="+zd);
-                        event.setTo(event.getFrom().clone());
-                    }              
-                    else
-                    {
-                        //If they are sprinting or flying give slack
-                        if(xd > 0.62D || zd > 0.62D)
+                        if(!player.isSprinting())
                         {
                             tracker.increaseLevel(player);
-                            plugin.log(player.getName()+" is flying/sprinting too fast! XSpeed="+xd+" ZSpeed="+zd);
+                            plugin.log(player.getName()+" is walking too fast! XSpeed="+xd+" ZSpeed="+zd);
                             event.setTo(event.getFrom().clone());
+                        }              
+                        else
+                        {
+                            //If they are sprinting or flying give slack
+                            if(xd > 0.62D || zd > 0.62D)
+                            {
+                                tracker.increaseLevel(player);
+                                plugin.log(player.getName()+" is sprinting too fast! XSpeed="+xd+" ZSpeed="+zd);
+                                event.setTo(event.getFrom().clone());
+                            }
                         }
                     }
                 }
@@ -243,7 +247,7 @@ public class PlayerListener implements Listener {
                             event.setTo(event.getFrom().clone());
                         }
                     }
-                    else if(player.getGameMode() != GameMode.CREATIVE && player.getVehicle() == null)
+                    else if(!player.isFlying() && player.getVehicle() == null)
                     {
                         //Otherwise check for fast ascension
                         if(yd > 0.5D)
