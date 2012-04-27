@@ -259,7 +259,7 @@ public class PlayerListener implements Listener {
                     }
                 } 
                 //If they are falling
-                if(event.getFrom().getY() > event.getTo().getY())
+                else if(event.getFrom().getY() > event.getTo().getY())
                 {         
                     //Ignore players in creative or in vehicles, they give a fall distance of 0 naturally.
                     if(player.getGameMode() != GameMode.CREATIVE && player.getVehicle() == null)
@@ -273,7 +273,12 @@ public class PlayerListener implements Listener {
                             tracker.increaseLevel(player);
                         }
                     }
-                }       
+                } 
+                //No change in Y
+                else
+                {
+                    
+                }
             }
         }
     } 

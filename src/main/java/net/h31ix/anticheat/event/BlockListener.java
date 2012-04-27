@@ -5,6 +5,7 @@ import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.PlayerTracker;
 import net.h31ix.anticheat.checks.EyeCheck;
 import net.h31ix.anticheat.checks.LengthCheck;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -65,14 +66,17 @@ public class BlockListener implements Listener {
         Block block = event.getBlock();
         if(player != null)
         {      
-            //Check if the player can see the block they are placing
-            //This is mostly used for preventing build/autobuild hacks (Logic not yet finished)
-            if(!e.canSee(player, block) && !player.getWorld().getBlockAt(player.getLocation()).isLiquid())
+            if(block.getType() != Material.LADDER)
             {
-                //TODO: this is causing false alerts. Re-work the vision logic?
-                //tracker.increaseLevel(player);
-                plugin.log(player.getName()+" tried to place a block that they couldn't see!");
-                event.setCancelled(true);                    
+                //Check if the player can see the block they are placing
+                //This is mostly used for preventing build/autobuild hacks (Logic not yet finished)
+                if(!e.canSee(player, block) && !player.getWorld().getBlockAt(player.getLocation()).isLiquid())
+                {
+                    //TODO: this is causing false alerts. Re-work the vision logic?
+                    //tracker.increaseLevel(player);
+                    plugin.log(player.getName()+" tried to place a block that they couldn't see!");
+                    event.setCancelled(true);                    
+                }
             }
             //Is the player too far away?
             LengthCheck c = new LengthCheck(block.getLocation(),event.getPlayer().getLocation());
