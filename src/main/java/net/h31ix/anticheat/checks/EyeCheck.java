@@ -21,7 +21,7 @@ public class EyeCheck {
         {
             Location loc = b.getLocation();
             double d = loc.distance(bloc);
-            if(d <= 1.5D)
+            if(d <= 2D)
             {
                 see = true;
             }

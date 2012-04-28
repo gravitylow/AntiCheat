@@ -32,7 +32,7 @@ public class BlockListener implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         if(player != null)
-        {     
+        {            
             //Check if an animation was done before this
             if(!am.swungArm(player))
             {
@@ -42,7 +42,7 @@ public class BlockListener implements Listener {
                     plugin.log(player.getName()+" didn't swing their arm on a block break!");
                     event.setCancelled(true);
                 }
-            }
+            }          
             else
             {
                 if(!player.hasPermission("anticheat.longreach"))
@@ -78,10 +78,8 @@ public class BlockListener implements Listener {
                 //This is mostly used for preventing build/autobuild hacks (Logic not yet finished)
                 if(!e.canSee(player, block) && !player.getWorld().getBlockAt(player.getLocation()).isLiquid())
                 {
-                    //TODO: this is causing false alerts. Re-work the vision logic?
-                    //tracker.increaseLevel(player);
                     plugin.log(player.getName()+" tried to place a block that they couldn't see!");
-                    //event.setCancelled(true);                    
+                    event.setCancelled(true);                    
                 }
             }
             if(!player.hasPermission("anticheat.longreach"))
