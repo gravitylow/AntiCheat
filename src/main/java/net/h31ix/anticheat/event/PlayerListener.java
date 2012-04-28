@@ -260,79 +260,95 @@ public class PlayerListener implements Listener {
                         }
                     }
                 }
-                //If the player is ascending
-                if(event.getFrom().getY() < event.getTo().getY())
+            }
+            //If the player is ascending
+            if(event.getFrom().getY() < event.getTo().getY())
+            {
+                //TODO: This is a little hacky. Any better way to figure this out?
+                //Are they climbing something?
+                if(yd <= 0.11761 && yd >= 0.11759)
                 {
-                    //TODO: This is a little hacky. Any better way to figure this out?
-                    //Are they climbing something?
-                    if(yd <= 0.11761 && yd >= 0.11759)
-                    {
-                        if(!player.hasPermission("anticheat.spider"))
-                        {                              
-                            if(player.getLocation().getBlock().getType() != Material.VINE && player.getLocation().getBlock().getType() != Material.LADDER)
-                            {
-                                //If it's not climbable, block it.
-                                plugin.log(player.getName()+" tried to climb a wall!");
-                                tracker.increaseLevel(player);
-                                event.setTo(event.getFrom().clone());
-                            }
-                        }
-                    }
-                    else if(!player.isFlying() && player.getVehicle() == null)
-                    {
-                        if(!player.hasPermission("anticheat.flyhack"))
-                        {                              
-                            //Otherwise check for fast ascension
-                            if(yd > 0.5D)
-                            {
-                                tracker.increaseLevel(player);
-                                plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);
-                                event.setTo(event.getFrom().clone());
-                            }
-                        }
-                    }
-                } 
-                //If they are falling
-                else if(event.getFrom().getY() > event.getTo().getY())
-                {         
-                    //Ignore players in creative or in vehicles, they give a fall distance of 0 naturally.
-                    if(player.getGameMode() != GameMode.CREATIVE && player.getVehicle() == null)
-                    {
-                        if(!player.hasPermission("anticheat.nofall"))
-                        {                             
-                            hm.log(player);
-                            //Log health (for nofall detection)
-                            if(hm.checkFall(player))
-                            {
-                                //If the player is falling but has a 0 fall distance
-                                plugin.log(player.getName()+" tried to avoid fall damage!");
-                                tracker.increaseLevel(player);
-                            }
-                        }
-                    }
-                } 
-                //No change in Y
-                else
-                {
-                    Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
-                    if(block.getType() == Material.AIR && block.getRelative(BlockFace.NORTH).getType() == Material.AIR && block.getRelative(BlockFace.EAST).getType() == Material.AIR && block.getRelative(BlockFace.SOUTH).getType() == Material.AIR && block.getRelative(BlockFace.WEST).getType() == Material.AIR)
-                    { 
-                        if(!player.hasPermission("anticheat.flyhack"))
-                        {                             
-                            if (fm.checkFly(player))
-                            {
-                                event.setTo(event.getFrom().clone());
-                                plugin.log(player.getName()+" tried to fly!");
-                                tracker.increaseLevel(player);
-                            }
-                            else
-                            {
-                                tracker.decreaseLevel(player);
-                            }
+                    if(!player.hasPermission("anticheat.spider"))
+                    {                              
+                        if(player.getLocation().getBlock().getType() != Material.VINE && player.getLocation().getBlock().getType() != Material.LADDER)
+                        {
+                            //If it's not climbable, block it.
+                            plugin.log(player.getName()+" tried to climb a wall!");
+                            tracker.increaseLevel(player);
+                            event.setTo(event.getFrom().clone());
                         }
                     }
                 }
-            }
+                else if(!player.isFlying() && player.getVehicle() == null)
+                {
+                    if(!player.hasPermission("anticheat.flyhack"))
+                    {                              
+                        //Otherwise check for fast ascension
+                        if(yd > 0.5D)
+                        {
+                            tracker.increaseLevel(player);
+                            plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);
+                            event.setTo(event.getFrom().clone());
+                        }
+                    }
+                }
+            } 
+            //If they are falling
+            else if(event.getFrom().getY() > event.getTo().getY())
+            {         
+                //Ignore players in creative or in vehicles, they give a fall distance of 0 naturally.
+                if(player.getGameMode() != GameMode.CREATIVE && player.getVehicle() == null)
+                {
+                    if(!player.hasPermission("anticheat.nofall"))
+                    {                             
+                        hm.log(player);
+                        //Log health (for nofall detection)
+                        if(hm.checkFall(player))
+                        {
+                            //If the player is falling but has a 0 fall distance
+                            plugin.log(player.getName()+" tried to avoid fall damage!");
+                            tracker.increaseLevel(player);
+                        }
+                    }
+                }
+            } 
+            //No change in Y
+            else
+            {
+                Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
+                if(!canStand(block) && !canStand(block.getRelative(BlockFace.NORTH)) && !canStand(block.getRelative(BlockFace.EAST)) && !canStand(block.getRelative(BlockFace.SOUTH))&& !canStand(block.getRelative(BlockFace.WEST)))
+                { 
+                    if(!player.hasPermission("anticheat.flyhack"))
+                    {                             
+                        if (fm.checkFly(player))
+                        {
+                            event.setTo(event.getFrom().clone());
+                            plugin.log(player.getName()+" tried to fly!");
+                            tracker.increaseLevel(player);
+                        }
+                        else
+                        {
+                            tracker.decreaseLevel(player);
+                        }
+                    }
+                }
+            }            
         }
     } 
+    
+    public boolean canStand(Block block)
+    {
+        if(block.isLiquid())
+        {
+            return false;
+        }
+        else if (block.getType() == Material.AIR)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
 }
