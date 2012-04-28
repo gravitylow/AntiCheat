@@ -338,7 +338,7 @@ public class PlayerListener implements Listener {
     
     public boolean canStand(Block block)
     {
-        if(block.getRelative(BlockFace.UP).getType() == Material.STEP)
+        if(block.getRelative(BlockFace.UP).getType() == Material.STEP || block.getRelative(BlockFace.UP).getTypeId() == 111)
         {
             return true;
         }        
