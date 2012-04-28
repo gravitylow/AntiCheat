@@ -1,6 +1,7 @@
 package net.h31ix.anticheat;
 
 import java.io.File;
+import java.util.List;
 import net.h31ix.anticheat.manage.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,6 +12,7 @@ import net.h31ix.anticheat.event.PlayerListener;
 import net.h31ix.anticheat.manage.BowManager;
 import net.h31ix.anticheat.manage.ItemManager;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Anticheat extends JavaPlugin {
@@ -33,6 +35,7 @@ public class Anticheat extends JavaPlugin {
     public boolean lagged = false; 
     public boolean logConsole;
     public FileConfiguration log;
+    private List<String> worlds;
     
     @Override
     public void onDisable() {
@@ -47,7 +50,7 @@ public class Anticheat extends JavaPlugin {
         config = new Configuration(this);
         tracker = new PlayerTracker(this);
         logConsole = config.logConsole;
-        
+        worlds = config.getWorlds();
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockListener(this), this);
         getServer().getPluginManager().registerEvents(new EntityListener(this), this);
@@ -76,6 +79,21 @@ public class Anticheat extends JavaPlugin {
         {
             l.log(Level.WARNING,"[AntiCheat] "+s);
         }
+    }
+    
+    public boolean check(Player player)
+    {
+        boolean check = false;
+        String pworld = player.getWorld().getName();
+        for(String world : worlds)
+        {
+            if(world.equals(pworld))
+            {
+                check = true;
+                break;
+            }
+        }
+        return check;
     }
 }
 

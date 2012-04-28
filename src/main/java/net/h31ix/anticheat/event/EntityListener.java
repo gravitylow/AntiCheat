@@ -33,19 +33,22 @@ public class EntityListener implements Listener {
         if(event.getEntity() instanceof Player)
         {
             Player player = (Player)event.getEntity();
-            if(!player.hasPermission("anticheat.autofire"))
-            {            
-                //This mostly prevents bow spam, hopefully more auto-firing in the future
-                if(!bm.hasShot(player))
-                {
-                    tracker.decreaseLevel(player);
-                    bm.logShoot((Player)event.getEntity());
-                }
-                else
-                {
-                    event.setCancelled(true);
-                    tracker.increaseLevel(player);
-                    plugin.log(player.getName()+" tried to fire a bow too fast!");
+            if(plugin.check(player))
+            {
+                if(!player.hasPermission("anticheat.autofire"))
+                {            
+                    //This mostly prevents bow spam, hopefully more auto-firing in the future
+                    if(!bm.hasShot(player))
+                    {
+                        tracker.decreaseLevel(player);
+                        bm.logShoot((Player)event.getEntity());
+                    }
+                    else
+                    {
+                        event.setCancelled(true);
+                        tracker.increaseLevel(player);
+                        plugin.log(player.getName()+" tried to fire a bow too fast!");
+                    }
                 }
             }
         }
@@ -60,27 +63,30 @@ public class EntityListener implements Listener {
             if (e.getDamager() instanceof Player)
             {         
                 Player p = (Player) e.getDamager(); 
-                if(event.getEntity() instanceof Player)
-                {
-                    Player player = (Player)event.getEntity();
-                    //Being damaged causes the player to move really fast, usually triggering a warning and
-                    //A teleport, so give them a grace period after damaging someone or being hit for recovery.
-                    int time = 50;
-                    if(p.getInventory().getItemInHand().getEnchantments().containsKey(Enchantment.KNOCKBACK))
+                if(plugin.check(p))
+                {                
+                    if(event.getEntity() instanceof Player)
                     {
-                        //If they were hit using knockback supply double recovery time
-                        time = 100;
-                    }
-                    ex.logHit(p,50);
-                    if(!p.hasPermission("anticheat.longreach"))
-                    {                      
-                        //Make sure they are close enough to the entity to hit them
-                        LengthCheck lc = new LengthCheck(event.getEntity().getLocation(),p.getLocation());
-                        if(lc.getXDifference() > 5.0D || lc.getZDifference() > 5.0D || lc.getYDifference() > 4.3D)
+                        Player player = (Player)event.getEntity();
+                        //Being damaged causes the player to move really fast, usually triggering a warning and
+                        //A teleport, so give them a grace period after damaging someone or being hit for recovery.
+                        int time = 50;
+                        if(p.getInventory().getItemInHand().getEnchantments().containsKey(Enchantment.KNOCKBACK))
                         {
-                            event.setCancelled(true);
-                        } 
-                        ex.logHit(player,time);
+                            //If they were hit using knockback supply double recovery time
+                            time = 100;
+                        }
+                        ex.logHit(p,50);
+                        if(!p.hasPermission("anticheat.longreach"))
+                        {                      
+                            //Make sure they are close enough to the entity to hit them
+                            LengthCheck lc = new LengthCheck(event.getEntity().getLocation(),p.getLocation());
+                            if(lc.getXDifference() > 5.0D || lc.getZDifference() > 5.0D || lc.getYDifference() > 4.3D)
+                            {
+                                event.setCancelled(true);
+                            } 
+                            ex.logHit(player,time);
+                        }
                     }
                 }
             }

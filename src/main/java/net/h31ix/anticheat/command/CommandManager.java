@@ -102,6 +102,14 @@ public class CommandManager implements CommandExecutor {
                     }
                 }
             }
+            else if(args[0].equalsIgnoreCase("reload"))
+            {
+                if(hasPermission("admin",cs))
+                {
+                    plugin.config.load();
+                    cs.sendMessage(green+"AntiCheat configuration reloaded.");
+                }
+            }            
             else
             {
                 cs.sendMessage("Unrecognized command.");

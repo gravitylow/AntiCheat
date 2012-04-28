@@ -32,37 +32,40 @@ public class BlockListener implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         if(player != null)
-        {            
-            //Check if an animation was done before this
-            if(!am.swungArm(player))
-            {
-                if(!player.hasPermission("anticheat.noswing"))
+        {     
+            if(plugin.check(player))
+            {                
+                //Check if an animation was done before this
+                if(!am.swungArm(player))
                 {
-                    tracker.increaseLevel(player);
-                    plugin.log(player.getName()+" didn't swing their arm on a block break!");
-                    event.setCancelled(true);
-                }
-            }          
-            else
-            {
-                if(!player.hasPermission("anticheat.longreach"))
-                {                
-                    //If so, check the distance from the block. Is it too far away?
-                    LengthCheck c = new LengthCheck(block.getLocation(),event.getPlayer().getLocation());
-                    if(c.getXDifference() > 6.0D || c.getZDifference() > 6.0D || c.getYDifference() > 6.0D)
+                    if(!player.hasPermission("anticheat.noswing"))
                     {
-                        plugin.log(player.getName()+" tried to break a block too far away!");
                         tracker.increaseLevel(player);
+                        plugin.log(player.getName()+" didn't swing their arm on a block break!");
                         event.setCancelled(true);
                     }
-                    else
-                    {
-                        tracker.decreaseLevel(player);
+                }          
+                else
+                {
+                    if(!player.hasPermission("anticheat.longreach"))
+                    {                
+                        //If so, check the distance from the block. Is it too far away?
+                        LengthCheck c = new LengthCheck(block.getLocation(),event.getPlayer().getLocation());
+                        if(c.getXDifference() > 6.0D || c.getZDifference() > 6.0D || c.getYDifference() > 6.0D)
+                        {
+                            plugin.log(player.getName()+" tried to break a block too far away!");
+                            tracker.increaseLevel(player);
+                            event.setCancelled(true);
+                        }
+                        else
+                        {
+                            tracker.decreaseLevel(player);
+                        }
                     }
-                }
-            }                         
+                }                         
+            }
+            am.reset(player);
         }
-        am.reset(player);
     }
     
     @EventHandler
@@ -72,32 +75,35 @@ public class BlockListener implements Listener {
         Block block = event.getBlock();
         if(player != null)
         {      
-            if(block.getType() != Material.LADDER)
-            {
-                //Check if the player can see the block they are placing
-                //This is mostly used for preventing build/autobuild hacks (Logic not yet finished)
-                if(!e.canSee(player, block) && !player.getWorld().getBlockAt(player.getLocation()).isLiquid())
-                {
-                    plugin.log(player.getName()+" tried to place a block that they couldn't see!");
-                    event.setCancelled(true);                    
-                }
-            }
-            if(!player.hasPermission("anticheat.longreach"))
+            if(plugin.check(player))
             {            
-                //Is the player too far away?
-                LengthCheck c = new LengthCheck(block.getLocation(),event.getPlayer().getLocation());
-                if(c.getXDifference() > 6.0D || c.getZDifference() > 6.0D || c.getYDifference() > 6.0D)
+                if(block.getType() != Material.LADDER)
                 {
-                    tracker.increaseLevel(player);
-                    plugin.log(player.getName()+" tried to place a block too far away!");
-                    event.setCancelled(true);
-                }    
-                else
-                {
-                    tracker.decreaseLevel(player);
+                    //Check if the player can see the block they are placing
+                    //This is mostly used for preventing build/autobuild hacks (Logic not yet finished)
+                    if(!e.canSee(player, block) && !player.getWorld().getBlockAt(player.getLocation()).isLiquid())
+                    {
+                        plugin.log(player.getName()+" tried to place a block that they couldn't see!");
+                        event.setCancelled(true);                    
+                    }
                 }
-            }
-        } 
-        am.reset(player);
+                if(!player.hasPermission("anticheat.longreach"))
+                {            
+                    //Is the player too far away?
+                    LengthCheck c = new LengthCheck(block.getLocation(),event.getPlayer().getLocation());
+                    if(c.getXDifference() > 6.0D || c.getZDifference() > 6.0D || c.getYDifference() > 6.0D)
+                    {
+                        tracker.increaseLevel(player);
+                        plugin.log(player.getName()+" tried to place a block too far away!");
+                        event.setCancelled(true);
+                    }    
+                    else
+                    {
+                        tracker.decreaseLevel(player);
+                    }
+                }
+            } 
+            am.reset(player);
+        }
     }
 }
