@@ -221,7 +221,7 @@ public class PlayerListener implements Listener {
                 //Otherwise, are they sneaking?
                 else if(player.isSneaking())
                 {
-                    if(!player.hasPermission("anticheat.sneakhack"))
+                    if(!player.hasPermission("anticheat.sneakhack") && !player.isFlying())
                     {                      
                         //Make sure they are at normal sneak speeds. (not using sneak hacks)
                         if(xd > 0.2D || zd > 0.2D)
@@ -315,7 +315,7 @@ public class PlayerListener implements Listener {
             //No change in Y
             else
             {
-                if(!player.hasPermission("anticheat.flyhack"))
+                if(!player.hasPermission("anticheat.flyhack") && !player.isFlying())
                 {                  
                     Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
                     if(!player.isSneaking())
@@ -357,7 +357,7 @@ public class PlayerListener implements Listener {
     
     public boolean canStand(Block block)
     {
-        if(block.getRelative(BlockFace.UP).getType() == Material.STEP || block.getRelative(BlockFace.UP).getTypeId() == 111)
+        if(block.getRelative(BlockFace.UP).getType() == Material.STEP || block.getRelative(BlockFace.UP).getType() == Material.SOUL_SAND || block.getRelative(BlockFace.UP).getTypeId() == 111)
         {
             return true;
         }        
