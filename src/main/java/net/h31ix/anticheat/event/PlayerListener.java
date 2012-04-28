@@ -338,6 +338,10 @@ public class PlayerListener implements Listener {
     
     public boolean canStand(Block block)
     {
+        if(block.getRelative(BlockFace.UP).getType() == Material.STEP)
+        {
+            return true;
+        }        
         if(block.isLiquid())
         {
             return false;
