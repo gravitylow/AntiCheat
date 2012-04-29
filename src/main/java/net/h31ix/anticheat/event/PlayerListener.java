@@ -323,38 +323,19 @@ public class PlayerListener implements Listener {
                     if(!player.hasPermission("anticheat.flyhack") && !player.isFlying() && player.getVehicle() == null)
                     {                  
                         Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
-                        if(!player.isSneaking())
+                        if(!canStand(block) && !canStand(block.getRelative(BlockFace.NORTH)) && !canStand(block.getRelative(BlockFace.EAST)) && !canStand(block.getRelative(BlockFace.SOUTH)) && !canStand(block.getRelative(BlockFace.WEST)) && !canStand(block.getRelative(BlockFace.NORTH_WEST)) && !canStand(block.getRelative(BlockFace.NORTH_EAST)) && !canStand(block.getRelative(BlockFace.SOUTH_WEST)) && !canStand(block.getRelative(BlockFace.SOUTH_EAST)))
                         {
-                            if(!canStand(block) && !canStand(block.getRelative(BlockFace.NORTH)) && !canStand(block.getRelative(BlockFace.EAST)) && !canStand(block.getRelative(BlockFace.SOUTH)) && !canStand(block.getRelative(BlockFace.WEST)))
-                            {                            
-                                if (fm.checkFly(player))
-                                {
-                                    event.setTo(event.getFrom().clone());
-                                    plugin.log(player.getName()+" tried to fly!");
-                                    tracker.increaseLevel(player);
-                                }
-                                else
-                                {
-                                    tracker.decreaseLevel(player);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if(!canStand(block) && !canStand(block.getRelative(BlockFace.NORTH)) && !canStand(block.getRelative(BlockFace.EAST)) && !canStand(block.getRelative(BlockFace.SOUTH)) && !canStand(block.getRelative(BlockFace.WEST)) && !canStand(block.getRelative(BlockFace.NORTH_WEST)) && !canStand(block.getRelative(BlockFace.NORTH_EAST)) && !canStand(block.getRelative(BlockFace.SOUTH_WEST)) && !canStand(block.getRelative(BlockFace.SOUTH_EAST)))
+                            if (fm.checkFly(player))
                             {
-                                if (fm.checkFly(player))
-                                {
-                                    event.setTo(event.getFrom().clone());
-                                    plugin.log(player.getName()+" tried to fly!");
-                                    tracker.increaseLevel(player);
-                                }
-                                else
-                                {
-                                    tracker.decreaseLevel(player);
-                                }                            
+                                event.setTo(event.getFrom().clone());
+                                plugin.log(player.getName()+" tried to fly!");
+                                tracker.increaseLevel(player);
                             }
-                        }                    
+                            else
+                            {
+                                tracker.decreaseLevel(player);
+                            }  
+                        }               
                     }
                 }
             }            
