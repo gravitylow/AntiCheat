@@ -320,7 +320,7 @@ public class PlayerListener implements Listener {
                 //No change in Y
                 else
                 {
-                    if(!player.hasPermission("anticheat.flyhack") && !player.isFlying())
+                    if(!player.hasPermission("anticheat.flyhack") && !player.isFlying() && player.getVehicle() == null)
                     {                  
                         Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
                         if(!player.isSneaking())
