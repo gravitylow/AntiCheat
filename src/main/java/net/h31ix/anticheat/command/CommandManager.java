@@ -126,7 +126,7 @@ public class CommandManager implements CommandExecutor {
     {
         if(cs instanceof Player)
         {
-            if(((Player)cs).hasPermission(permission))
+            if(((Player)cs).hasPermission("anticheat."+permission))
             {
                 return true;
             }
