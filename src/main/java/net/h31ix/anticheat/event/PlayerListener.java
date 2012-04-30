@@ -24,6 +24,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.potion.PotionEffectType;
 
@@ -158,7 +159,7 @@ public class PlayerListener implements Listener {
     public void onPlayerTeleport(PlayerTeleportEvent event)
     {
         Player player = event.getPlayer();
-        if(!player.hasPermission("anticheat.teleport") && !tp.didTeleport(player))
+        if(!player.hasPermission("anticheat.teleport") && !tp.didTeleport(player) && event.getCause() == TeleportCause.UNKNOWN)
         {            
             plugin.log(player.getName()+" tried to teleport without cause!");
             tracker.increaseLevel(player,3);
