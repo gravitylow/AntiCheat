@@ -25,6 +25,7 @@ public class Anticheat extends JavaPlugin {
     public HealthManager hm = new HealthManager(this);
     public LoginManager lm = new LoginManager(this);
     public FoodManager fom = new FoodManager(this);
+    public TeleportManager tp = new TeleportManager(this);
     public FlyManager fm = new FlyManager();
     //End Managers
     
@@ -95,6 +96,12 @@ public class Anticheat extends JavaPlugin {
             }
         }
         return check;
+    }
+    
+    //Avoid catching our own teleportations
+    public void logTeleport()
+    {
+        
     }
 }
 
