@@ -12,11 +12,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -35,6 +37,7 @@ public class PlayerListener implements Listener {
     HealthManager hm;
     LoginManager lm;
     FlyManager fm;
+    BowManager bm;
     
     public PlayerListener(Anticheat plugin)
     {
@@ -46,6 +49,7 @@ public class PlayerListener implements Listener {
         this.hm = plugin.hm;
         this.lm = plugin.lm;
         this.fm = plugin.fm;
+        this.bm = plugin.bm;
     }
     
     @EventHandler
@@ -153,10 +157,13 @@ public class PlayerListener implements Listener {
         if(event.getCause() == TeleportCause.UNKNOWN && !lm.join)
         {
             Player player = event.getPlayer();
-            plugin.log(player.getName()+" tried to teleport without cause!");
-            tracker.increaseLevel(player,11);
-            event.setCancelled(true);
-            player.teleport(event.getFrom().clone());
+            if(!player.hasPermission("anticheat.instaheal"))
+            {            
+                plugin.log(player.getName()+" tried to teleport without cause!");
+                tracker.increaseLevel(player,11);
+                event.setCancelled(true);
+                player.teleport(event.getFrom().clone());
+            }
         }
     }
     
@@ -165,6 +172,19 @@ public class PlayerListener implements Listener {
     {
         //Clear the player's chat level when they disconnect
         plugin.cm.clear(event.getPlayer());
+    }
+    
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event)
+    {
+        if(event.getAction() == Action.RIGHT_CLICK_AIR)
+        {
+            Player player = event.getPlayer();
+            if(player.getInventory().getItemInHand().getType() == Material.BOW)
+            {
+                bm.logWindUp(player);
+            }
+        }
     }
     
     @EventHandler
@@ -302,9 +322,9 @@ public class PlayerListener implements Listener {
                     else if(!player.isFlying() && player.getVehicle() == null)
                     {
                         if(!player.hasPermission("anticheat.flyhack"))
-                        {                              
+                        {     
                             //Otherwise check for fast ascension
-                            if(yd > 0.5D)
+                            if(yd > 0.45D)
                             {
                                 tracker.increaseLevel(player,2);
                                 plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);

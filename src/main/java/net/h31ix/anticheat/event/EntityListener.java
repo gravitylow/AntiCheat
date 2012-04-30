@@ -42,7 +42,6 @@ public class EntityListener implements Listener {
             {
                 if(!player.hasPermission("anticheat.autofire"))
                 {            
-                    //This mostly prevents bow spam, hopefully more auto-firing in the future
                     if(!bm.hasShot(player))
                     {
                         tracker.decreaseLevel(player);
@@ -53,6 +52,16 @@ public class EntityListener implements Listener {
                         event.setCancelled(true);
                         tracker.increaseLevel(player,2);
                         plugin.log(player.getName()+" tried to fire a bow too fast!");
+                    }
+                    if(bm.justWoundUp(player))
+                    {
+                        event.setCancelled(true);
+                        tracker.increaseLevel(player,2);
+                        plugin.log(player.getName()+" tried to fire a bow too fast!");                        
+                    }
+                    else
+                    {
+                        tracker.decreaseLevel(player);
                     }
                 }
             }
@@ -67,15 +76,18 @@ public class EntityListener implements Listener {
             Player player = (Player)event.getEntity();
             if(event.getRegainReason() == RegainReason.SATIATED)
             {
-                if(hm.justHealed(player))
+                if(!player.hasPermission("anticheat.instaheal"))
                 {
-                    event.setCancelled(true);
-                    tracker.increaseLevel(player,3);
-                    plugin.log(player.getName()+" tried to heal too fast!");
-                }
-                else
-                {
-                    hm.logHeal(player);
+                    if(hm.justHealed(player))
+                    {
+                        event.setCancelled(true);
+                        tracker.increaseLevel(player,3);
+                        plugin.log(player.getName()+" tried to heal too fast!");
+                    }
+                    else
+                    {
+                        hm.logHeal(player);
+                    }
                 }
             }
         }
