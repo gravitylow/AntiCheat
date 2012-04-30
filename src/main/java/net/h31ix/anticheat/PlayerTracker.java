@@ -16,17 +16,17 @@ public class PlayerTracker {
         this.config = plugin.config;
     }
     
-    public void increaseLevel(Player player)
+    public void increaseLevel(Player player, int i)
     {
         if(level.get(player) == null || level.get(player) == 0)
         {
-            level.put(player,2);
+            level.put(player,i);
         }
         else
         {
             int playerLevel = level.get(player);
-            level.put(player, playerLevel+2);
-            if(playerLevel <= 10 && playerLevel+1 > 10 && playerLevel+1 <= 40)
+            level.put(player, playerLevel+i);
+            if(playerLevel <= 10 && playerLevel+i > 10 && playerLevel+1 <= 40)
             {
                 execute("Medium",player);                           
                 for(Player p : player.getServer().getOnlinePlayers())
@@ -38,7 +38,7 @@ public class PlayerTracker {
                     }
                 }
             }
-            if(playerLevel <= 40 && playerLevel+1 > 40)
+            if(playerLevel <= 40 && playerLevel+i > 40)
             {
                 execute("High",player);
                 for(Player p : player.getServer().getOnlinePlayers())

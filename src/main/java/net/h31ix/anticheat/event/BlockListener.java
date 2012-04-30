@@ -40,7 +40,7 @@ public class BlockListener implements Listener {
                 {
                     if(!player.hasPermission("anticheat.noswing"))
                     {
-                        tracker.increaseLevel(player);
+                        tracker.increaseLevel(player,2);
                         plugin.log(player.getName()+" didn't swing their arm on a block break!");
                         event.setCancelled(true);
                     }
@@ -54,7 +54,7 @@ public class BlockListener implements Listener {
                         if(c.getXDifference() > 6.0D || c.getZDifference() > 6.0D || c.getYDifference() > 6.0D)
                         {
                             plugin.log(player.getName()+" tried to break a block too far away!");
-                            tracker.increaseLevel(player);
+                            tracker.increaseLevel(player,2);
                             event.setCancelled(true);
                         }
                         else
@@ -93,7 +93,7 @@ public class BlockListener implements Listener {
                     LengthCheck c = new LengthCheck(block.getLocation(),event.getPlayer().getLocation());
                     if(c.getXDifference() > 6.0D || c.getZDifference() > 6.0D || c.getYDifference() > 6.0D)
                     {
-                        tracker.increaseLevel(player);
+                        tracker.increaseLevel(player,2);
                         plugin.log(player.getName()+" tried to place a block too far away!");
                         event.setCancelled(true);
                     }    

@@ -2,21 +2,26 @@ package net.h31ix.anticheat.manage;
 
 import java.util.HashMap;
 import java.util.Map;
+import net.h31ix.anticheat.Anticheat;
 import org.bukkit.entity.Player;
 
 public class HealthManager {
+    Anticheat plugin;
+    
     public Map<Player,Float> fall = new HashMap<Player,Float>();
+    public Map<Player,Boolean> healed = new HashMap<Player,Boolean>();
     public Map<Player,Integer> health = new HashMap<Player,Integer>();
     public Map<Player,Integer> fallvl = new HashMap<Player,Integer>();
     
-    public HealthManager()
+    public HealthManager(Anticheat plugin)
     {
+        this.plugin = plugin;
     }   
     
-    public void log(Player player)
+    public void log(final Player player)
     {
         fall.put(player, player.getFallDistance()); 
-        health.put(player, player.getHealth());
+        health.put(player, player.getHealth());          
     }
     
     public boolean checkFall(Player player)
@@ -51,6 +56,31 @@ public class HealthManager {
         }
     }
     
+    public void logHeal(final Player player)
+    {
+        healed.put(player, true);
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                healed.put(player, false);
+            }
+        },      35L);         
+    }
+    
+    public boolean justHealed(Player player)
+    {
+        if(healed.get(player) != null)
+        {
+            return healed.get(player);
+        }
+        else
+        {
+            return false;
+        }        
+    }
+    
     public float getFall(Player player)
     {
         if(fall.get(player) != null)
@@ -73,6 +103,5 @@ public class HealthManager {
         {
             return 0;
         }        
-    }
-       
+    }      
 }

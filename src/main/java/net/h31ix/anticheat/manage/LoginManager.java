@@ -4,7 +4,7 @@ import net.h31ix.anticheat.Anticheat;
 
 public class LoginManager {
     Anticheat plugin;
-    boolean join;
+    public boolean join;
     
     public LoginManager(Anticheat plugin)
     {

@@ -22,7 +22,7 @@ public class Anticheat extends JavaPlugin {
     public ExemptManager ex = new ExemptManager(this);
     public ItemManager im = new ItemManager(this);
     public BowManager bm = new BowManager(this);
-    public HealthManager hm = new HealthManager();
+    public HealthManager hm = new HealthManager(this);
     public LoginManager lm = new LoginManager(this);
     public FlyManager fm = new FlyManager();
     //End Managers

@@ -5,12 +5,15 @@ import net.h31ix.anticheat.PlayerTracker;
 import net.h31ix.anticheat.checks.LengthCheck;
 import net.h31ix.anticheat.manage.BowManager;
 import net.h31ix.anticheat.manage.ExemptManager;
+import net.h31ix.anticheat.manage.HealthManager;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
 public class EntityListener implements Listener {
@@ -18,6 +21,7 @@ public class EntityListener implements Listener {
     BowManager bm;
     ExemptManager ex;
     PlayerTracker tracker;
+    HealthManager hm;
     
     public EntityListener(Anticheat plugin)
     {
@@ -25,6 +29,7 @@ public class EntityListener implements Listener {
         bm = plugin.bm;
         tracker = plugin.tracker;
         ex = plugin.ex;
+        hm = plugin.hm;
     }
     
     @EventHandler
@@ -46,9 +51,31 @@ public class EntityListener implements Listener {
                     else
                     {
                         event.setCancelled(true);
-                        tracker.increaseLevel(player);
+                        tracker.increaseLevel(player,2);
                         plugin.log(player.getName()+" tried to fire a bow too fast!");
                     }
+                }
+            }
+        }
+    }
+    
+    @EventHandler
+    public void onEntityRegainHealth(EntityRegainHealthEvent event)
+    {
+        if(event.getEntity() instanceof Player)
+        {
+            Player player = (Player)event.getEntity();
+            if(event.getRegainReason() == RegainReason.SATIATED)
+            {
+                if(hm.justHealed(player))
+                {
+                    event.setCancelled(true);
+                    tracker.increaseLevel(player,3);
+                    plugin.log(player.getName()+" tried to heal too fast!");
+                }
+                else
+                {
+                    hm.logHeal(player);
                 }
             }
         }
@@ -59,6 +86,18 @@ public class EntityListener implements Listener {
     {
         if (event instanceof EntityDamageByEntityEvent)
         {       
+            if(event.getEntity() instanceof Player)
+            {
+                final Player player = (Player)event.getEntity();
+                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
+                {
+                    @Override
+                    public void run() 
+                    {
+                        //Check damage ticks?
+                    }
+                },      2);                   
+            }
             EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
             if (e.getDamager() instanceof Player)
             {         
@@ -76,7 +115,7 @@ public class EntityListener implements Listener {
                             //If they were hit using knockback supply double recovery time
                             time = 100;
                         }
-                        ex.logHit(p,50);
+                        ex.logHit(p,time);                       
                         if(!p.hasPermission("anticheat.longreach"))
                         {                      
                             //Make sure they are close enough to the entity to hit them
@@ -85,11 +124,11 @@ public class EntityListener implements Listener {
                             {
                                 event.setCancelled(true);
                             } 
-                            ex.logHit(player,time);
                         }
+                        ex.logHit(player,time);
                     }
                 }
-            }
+            }  
         }     
     }     
 }
