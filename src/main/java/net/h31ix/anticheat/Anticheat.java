@@ -24,6 +24,7 @@ public class Anticheat extends JavaPlugin {
     public BowManager bm = new BowManager(this);
     public HealthManager hm = new HealthManager(this);
     public LoginManager lm = new LoginManager(this);
+    public FoodManager fom = new FoodManager(this);
     public FlyManager fm = new FlyManager();
     //End Managers
     

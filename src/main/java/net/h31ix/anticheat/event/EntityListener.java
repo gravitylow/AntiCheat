@@ -3,9 +3,7 @@ package net.h31ix.anticheat.event;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.PlayerTracker;
 import net.h31ix.anticheat.checks.LengthCheck;
-import net.h31ix.anticheat.manage.BowManager;
-import net.h31ix.anticheat.manage.ExemptManager;
-import net.h31ix.anticheat.manage.HealthManager;
+import net.h31ix.anticheat.manage.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,6 +13,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 
 public class EntityListener implements Listener {
     Anticheat plugin;
@@ -22,14 +21,16 @@ public class EntityListener implements Listener {
     ExemptManager ex;
     PlayerTracker tracker;
     HealthManager hm;
+    FoodManager fom;
     
     public EntityListener(Anticheat plugin)
     {
         this.plugin = plugin;
-        bm = plugin.bm;
-        tracker = plugin.tracker;
-        ex = plugin.ex;
-        hm = plugin.hm;
+        this.bm = plugin.bm;
+        this.tracker = plugin.tracker;
+        this.ex = plugin.ex;
+        this.hm = plugin.hm;
+        this.fom = plugin.fom;
     }
     
     @EventHandler
@@ -87,9 +88,29 @@ public class EntityListener implements Listener {
                     else
                     {
                         hm.logHeal(player);
-                    }
+                        tracker.decreaseLevel(player);
+                    }                       
                 }
             }
+        }
+    }
+    
+    @EventHandler
+    public void onFoodLevelChange(FoodLevelChangeEvent event)
+    {
+        if(event.getEntity() instanceof Player)
+        {
+            Player player = (Player)event.getEntity();
+            if(fom.justStarted(player))
+            {
+                event.setCancelled(true);
+                tracker.increaseLevel(player,3);
+                plugin.log(player.getName()+" tried to eat too fast!");
+            }
+            else
+            {
+                tracker.decreaseLevel(player);
+            }             
         }
     }
     

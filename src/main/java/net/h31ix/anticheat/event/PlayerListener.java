@@ -38,6 +38,7 @@ public class PlayerListener implements Listener {
     LoginManager lm;
     FlyManager fm;
     BowManager bm;
+    FoodManager fom;
     
     public PlayerListener(Anticheat plugin)
     {
@@ -50,6 +51,7 @@ public class PlayerListener implements Listener {
         this.lm = plugin.lm;
         this.fm = plugin.fm;
         this.bm = plugin.bm;
+        this.fom = plugin.fom;
     }
     
     @EventHandler
@@ -180,9 +182,14 @@ public class PlayerListener implements Listener {
         if(event.getAction() == Action.RIGHT_CLICK_AIR)
         {
             Player player = event.getPlayer();
-            if(player.getInventory().getItemInHand().getType() == Material.BOW)
+            Material m = player.getInventory().getItemInHand().getType();
+            if(m == Material.BOW)
             {
                 bm.logWindUp(player);
+            }
+            else if(m == Material.COOKED_BEEF || m == Material.COOKED_CHICKEN || m == Material.COOKED_FISH || m == Material.GRILLED_PORK || m == Material.PORK || m == Material.MUSHROOM_SOUP ||  m == Material.RAW_BEEF || m == Material.RAW_CHICKEN || m == Material.RAW_FISH || m == Material.APPLE || m == Material.GOLDEN_APPLE || m == Material.MELON || m == Material.COOKIE || m == Material.SPIDER_EYE || m == Material.ROTTEN_FLESH)
+            {
+                fom.logStart(player);
             }
         }
     }
