@@ -24,7 +24,6 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.potion.PotionEffectType;
 
@@ -156,16 +155,12 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event)
     {
-        if(event.getCause() == TeleportCause.UNKNOWN && !lm.join)
-        {
-            Player player = event.getPlayer();
-            if(!player.hasPermission("anticheat.instaheal"))
-            {            
-                plugin.log(player.getName()+" tried to teleport without cause!");
-                tracker.increaseLevel(player,11);
-                event.setCancelled(true);
-                player.teleport(event.getFrom().clone());
-            }
+        Player player = event.getPlayer();
+        if(!player.hasPermission("anticheat.teleport"))
+        {            
+            plugin.log(player.getName()+" tried to teleport without cause!");
+            tracker.increaseLevel(player,3);
+            event.setCancelled(true);
         }
     }
     
@@ -331,7 +326,7 @@ public class PlayerListener implements Listener {
                         if(!player.hasPermission("anticheat.flyhack"))
                         {     
                             //Otherwise check for fast ascension
-                            if(yd > 0.45D)
+                            if(yd > 0.5D)
                             {
                                 tracker.increaseLevel(player,2);
                                 plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);
