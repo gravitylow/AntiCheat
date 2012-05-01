@@ -1,10 +1,9 @@
 package net.h31ix.anticheat.event;
 
-import net.h31ix.anticheat.manage.AnimationManager;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.PlayerTracker;
-import net.h31ix.anticheat.checks.EyeCheck;
-import net.h31ix.anticheat.checks.LengthCheck;
+import net.h31ix.anticheat.checks.*;
+import net.h31ix.anticheat.manage.*;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -18,12 +17,14 @@ public class BlockListener implements Listener {
     AnimationManager am;
     PlayerTracker tracker;
     EyeCheck e = new EyeCheck();
+    BlockManager blm;
     
     public BlockListener(Anticheat plugin)
     {
         this.plugin = plugin;
         this.am = plugin.am;
         this.tracker = plugin.tracker;
+        this.blm = plugin.blm;
     }
     
     @EventHandler
@@ -62,6 +63,40 @@ public class BlockListener implements Listener {
                             tracker.decreaseLevel(player);
                         }
                     }
+                    if (!player.hasPermission("anticheat.fastbreak"))
+                    {
+                        if(block.getType() != Material.RED_MUSHROOM 
+                                && block.getType() != Material.RED_ROSE 
+                                && block.getType() != Material.BROWN_MUSHROOM 
+                                && block.getType() != Material.YELLOW_FLOWER 
+                                && block.getType() != Material.REDSTONE 
+                                && block.getType() != Material.REDSTONE_TORCH_OFF 
+                                && block.getType() != Material.REDSTONE_TORCH_ON 
+                                && block.getType() != Material.REDSTONE_WIRE 
+                                && block.getType() != Material.GRASS 
+                                && block.getType() != Material.PAINTING 
+                                && block.getType() != Material.WHEAT 
+                                && block.getType() != Material.SUGAR_CANE 
+                                && block.getType() != Material.SUGAR_CANE_BLOCK 
+                                && block.getType() != Material.DIODE 
+                                && block.getType() != Material.DIODE_BLOCK_OFF 
+                                && block.getType() != Material.DIODE_BLOCK_ON
+                                && block.getType() != Material.SAPLING
+                                && block.getType() != Material.TORCH
+                                && block.getType() != Material.SNOW)
+                        {
+                            if (!blm.justBroke(player))
+                            {
+                                blm.logBreak(player);
+                            }
+                            else
+                            {
+                                plugin.log(player.getName() + " tried to break a block too fast!");
+                                tracker.increaseLevel(player, 2);
+                                event.setCancelled(true);
+                            }
+                        }
+                    }                    
                 }                         
             }
             am.reset(player);
@@ -102,6 +137,19 @@ public class BlockListener implements Listener {
                         tracker.decreaseLevel(player);
                     }
                 }
+                if (!player.hasPermission("anticheat.fastplace"))
+                {
+                    if (!blm.justPlaced(player))
+                    {
+                        blm.logPlace(player);
+                    }
+                    else
+                    {
+                        plugin.log(player.getName() + " tried to place a block too fast!");
+                        tracker.increaseLevel(player, 2);
+                        event.setCancelled(true);
+                    }
+                }                 
             } 
             am.reset(player);
         }
