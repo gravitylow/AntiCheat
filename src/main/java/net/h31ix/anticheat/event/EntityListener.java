@@ -132,14 +132,14 @@ public class EntityListener implements Listener {
                 },      2);                   
             }
             EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
-            if (e.getDamager() instanceof Player)
-            {         
-                Player p = (Player) e.getDamager(); 
-                if(plugin.check(p))
-                {                
-                    if(event.getEntity() instanceof Player)
-                    {
-                        Player player = (Player)event.getEntity();
+            if(event.getEntity() instanceof Player)
+            {      
+                Player player = (Player)event.getEntity();
+                if(plugin.check(player))
+                {
+                    if (e.getDamager() instanceof Player)
+                    {         
+                        Player p = (Player) e.getDamager();            
                         //Being damaged causes the player to move really fast, usually triggering a warning and
                         //A teleport, so give them a grace period after damaging someone or being hit for recovery.
                         int time = 50;
@@ -159,6 +159,10 @@ public class EntityListener implements Listener {
                             } 
                         }
                         ex.logHit(player,time);
+                    }
+                    else
+                    {
+                        ex.logHit(player,50);
                     }
                 }
             }  

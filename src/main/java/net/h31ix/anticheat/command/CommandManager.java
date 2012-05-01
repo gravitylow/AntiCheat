@@ -141,5 +141,20 @@ public class CommandManager implements CommandExecutor {
             return true;
         }
     }
-    
+    public static void sort(int a[],int n)
+    {
+        int i, j,t=0;
+        for(i = 0; i < n; i++)
+        {
+            for(j = 1; j < (n-i); j++)
+            {
+                if(a[j-1] > a[j])
+                {
+                    t = a[j-1];
+                    a[j-1]=a[j];
+                    a[j]=t;
+                }
+            }
+        }
+    }    
 }

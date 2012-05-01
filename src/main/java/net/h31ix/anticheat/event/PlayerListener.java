@@ -161,6 +161,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         if(!player.hasPermission("anticheat.teleport") && !tp.didTeleport(player) && event.getCause() == TeleportCause.UNKNOWN)
         {            
+            System.out.println(event.getFrom().getBlock().getRelative(BlockFace.DOWN).getType().name());
             plugin.log(player.getName()+" tried to teleport without cause!");
             tracker.increaseLevel(player,3);
             event.setCancelled(true);
