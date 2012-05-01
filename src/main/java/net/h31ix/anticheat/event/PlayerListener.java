@@ -23,8 +23,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.potion.PotionEffectType;
 
@@ -39,7 +37,6 @@ public class PlayerListener implements Listener {
     FlyManager fm;
     BowManager bm;
     FoodManager fom;
-    TeleportManager tp;
     
     public PlayerListener(Anticheat plugin)
     {
@@ -53,7 +50,6 @@ public class PlayerListener implements Listener {
         this.fm = plugin.fm;
         this.bm = plugin.bm;
         this.fom = plugin.fom;
-        this.tp = plugin.tp;
     }
     
     @EventHandler
@@ -156,19 +152,6 @@ public class PlayerListener implements Listener {
     }
     
     @EventHandler
-    public void onPlayerTeleport(PlayerTeleportEvent event)
-    {
-        Player player = event.getPlayer();
-        if(!player.hasPermission("anticheat.teleport") && !tp.didTeleport(player) && event.getCause() == TeleportCause.UNKNOWN)
-        {            
-            System.out.println(event.getFrom().getBlock().getRelative(BlockFace.DOWN).getType().name());
-            plugin.log(player.getName()+" tried to teleport without cause!");
-            tracker.increaseLevel(player,3);
-            event.setCancelled(true);
-        }
-    }
-    
-    @EventHandler
     public void onPlayerKick(PlayerKickEvent event)
     {
         //Clear the player's chat level when they disconnect
@@ -230,7 +213,6 @@ public class PlayerListener implements Listener {
                             {
                                 tracker.increaseLevel(player,2);
                                 plugin.log(player.getName()+" is walking too fast in water! XSpeed="+xd+" ZSpeed="+zd);
-                                tp.logTeleport(player);
                                 event.setTo(event.getFrom().clone());
                             } 
                         }
@@ -244,7 +226,6 @@ public class PlayerListener implements Listener {
                             {
                                 tracker.increaseLevel(player,2);
                                 plugin.log(player.getName()+" is flying/sprinting too fast in water! XSpeed="+xd+" ZSpeed="+zd);
-                                tp.logTeleport(player);
                                 event.setTo(event.getFrom().clone());
                             }
                         }
@@ -262,7 +243,6 @@ public class PlayerListener implements Listener {
                             {
                                 tracker.increaseLevel(player,2);
                                 plugin.log(player.getName()+" is using a vehicle too fast! XSpeed="+xd+" ZSpeed="+zd);
-                                tp.logTeleport(player);
                                 event.setTo(event.getFrom().clone());
                             }
                         }
@@ -277,7 +257,6 @@ public class PlayerListener implements Listener {
                             {
                                 tracker.increaseLevel(player,2);
                                 plugin.log(player.getName()+" is sneaking too fast! XSpeed="+xd+" ZSpeed="+zd);
-                                tp.logTeleport(player);
                                 event.setTo(event.getFrom().clone());
                                 //If they are, force them out of it.
                                 player.setSneaking(false);
@@ -295,7 +274,6 @@ public class PlayerListener implements Listener {
                                 {
                                     tracker.increaseLevel(player,2);
                                     plugin.log(player.getName()+" is walking too fast! XSpeed="+xd+" ZSpeed="+zd);
-                                    tp.logTeleport(player);
                                     event.setTo(event.getFrom().clone());
                                 }              
                                 else
@@ -305,7 +283,6 @@ public class PlayerListener implements Listener {
                                     {
                                         tracker.increaseLevel(player,2);
                                         plugin.log(player.getName()+" is sprinting too fast! XSpeed="+xd+" ZSpeed="+zd);
-                                        tp.logTeleport(player);
                                         event.setTo(event.getFrom().clone());
                                     }
                                 }
@@ -327,7 +304,6 @@ public class PlayerListener implements Listener {
                                 //If it's not climbable, block it.
                                 plugin.log(player.getName()+" tried to climb a wall!");
                                 tracker.increaseLevel(player,3);
-                                tp.logTeleport(player);
                                 event.setTo(event.getFrom().clone());
                             }
                         }
@@ -341,7 +317,6 @@ public class PlayerListener implements Listener {
                             {
                                 tracker.increaseLevel(player,2);
                                 plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);
-                                tp.logTeleport(player);
                                 event.setTo(event.getFrom().clone());
                             }
                         }
