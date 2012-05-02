@@ -74,6 +74,11 @@ public class PlayerTracker {
         }
     }
     
+    public void reset(Player player)
+    {
+        level.put(player,0);
+    }    
+    
     public void execute(String level, Player player)
     {
         String result = config.getResult(level);

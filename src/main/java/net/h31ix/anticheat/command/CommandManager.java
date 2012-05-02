@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.PlayerTracker;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,6 +18,11 @@ public class CommandManager implements CommandExecutor {
     ChatColor red = ChatColor.RED;
     ChatColor yellow = ChatColor.YELLOW;
     ChatColor green = ChatColor.GREEN;
+    ChatColor white = ChatColor.WHITE;
+    List<Player> high = new ArrayList<Player>();
+    List<Player> med = new ArrayList<Player>();
+    List<Player> low = new ArrayList<Player>();  
+    Server server = Bukkit.getServer();
     
     public CommandManager(Anticheat plugin)
     {
@@ -32,50 +39,88 @@ public class CommandManager implements CommandExecutor {
                 {
                     if(args[1].equalsIgnoreCase("enable"))
                     {
-                        plugin.config.setLog(true);
-                        cs.sendMessage("Logging enabled. Check the console.");
+                        if(!plugin.config.logConsole)
+                        {
+                            plugin.config.setLog(true);
+                            cs.sendMessage(green+"Console logging enabled.");                            
+                        }
+                        else
+                        {
+                            cs.sendMessage(green+"Console logging is already enabled!");
+                        }
                     }
                     else if(args[1].equalsIgnoreCase("disable"))
                     {
-                        plugin.config.setLog(false);
-                        cs.sendMessage("Logs will no longer be sent to the console.");
+                        if(plugin.config.logConsole)
+                        {
+                            plugin.config.setLog(false);
+                            cs.sendMessage(green+"Console logging disabled.");                            
+                        }
+                        else
+                        {
+                            cs.sendMessage(green+"Console logging is already disabled!");
+                        }
                     }   
                     else
                     {
-                        cs.sendMessage("Usage: /anticheat log [enable/disable]");
+                        cs.sendMessage(red+"Usage: /anticheat log [enable/disable]");
                     }
                 }
             }
+            else if(args[0].equalsIgnoreCase("pardon"))
+            {   
+                if(hasPermission("admin",cs))
+                {
+                    List<Player> list = server.matchPlayer(args[1]);
+                    if(list.size() == 1)
+                    {
+                        Player player = list.get(0);
+                        getPlayers();
+                        if(low.contains(player))
+                        {
+                            cs.sendMessage(player.getName()+red+" is already in Low Level!");
+                        }
+                        else if (med.contains(player) || high.contains(player))
+                        {
+                            tracker.reset(player);
+                            cs.sendMessage(player.getName()+green+" has been reset to Low Level.");
+                        }
+                    }
+                    else if(list.size() > 1)
+                    {
+                        cs.sendMessage(red+"Multiple players found by name: "+white+args[1]+red+".");
+                    }
+                    else
+                    {
+                        cs.sendMessage(red+"Player: "+white+args[1]+red+" not found.");
+                    }
+                }                
+            }                 
             else
             {
-                cs.sendMessage("Unrecognized command.");
+                cs.sendMessage(red+"Unrecognized command.");
             }            
         }
         else if (args.length == 1)
         {
-            if(args[0].equalsIgnoreCase("report"))
+            if(args[0].equalsIgnoreCase("help"))
+            {   
+                if(hasPermission("admin",cs))
+                {
+                    cs.sendMessage("----------------------["+green+"AntiCheat"+white+"]----------------------");
+                    cs.sendMessage("/AntiCheat "+green+"log [Enable/Disable]"+white+" - toggle logging");
+                    cs.sendMessage("/AntiCheat "+green+"report"+white+" - get a detailed cheat report");
+                    cs.sendMessage("/AntiCheat "+green+"reload"+white+" - reload AntiCheat configuration");
+                    cs.sendMessage("/AntiCheat "+green+"help"+white+" - access this page");
+                    cs.sendMessage("/AntiCheat "+green+"pardon [user]"+white+" - reset user's level");
+                    cs.sendMessage("-----------------------------------------------------");
+                }                
+            }           
+            else if(args[0].equalsIgnoreCase("report"))
             {
                 if(hasPermission("admin",cs))
                 {
-                    List<Player> high = new ArrayList<Player>();
-                    List<Player> med = new ArrayList<Player>();
-                    List<Player> low = new ArrayList<Player>();
-                    for(Player player : cs.getServer().getOnlinePlayers())
-                    {
-                        int level = tracker.getLevel(player);
-                        if(level <= 10)
-                        {
-                            low.add(player);
-                        }
-                        else if(level <= 40)
-                        {
-                            med.add(player);
-                        }
-                        else
-                        {
-                            high.add(player);
-                        }
-                    }
+                    getPlayers();
                     if(!low.isEmpty())
                     {
                         cs.sendMessage(green+"----Level: Low (Not likely hacking)----");
@@ -112,12 +157,12 @@ public class CommandManager implements CommandExecutor {
             }            
             else
             {
-                cs.sendMessage("Unrecognized command.");
+                cs.sendMessage(red+"Unrecognized command.");
             }              
         }
         else
         {
-            cs.sendMessage("Unrecognized command.");
+            cs.sendMessage(red+"Unrecognized command.");
         }          
         return true;
     }
@@ -140,6 +185,28 @@ public class CommandManager implements CommandExecutor {
         {
             return true;
         }
+    }
+    public void getPlayers()
+    {
+        high.clear();
+        med.clear();
+        low.clear();
+        for(Player player : server.getOnlinePlayers())
+        {
+            int level = tracker.getLevel(player);
+            if(level <= 10)
+            {
+                low.add(player);
+            }
+            else if(level <= 40)
+            {
+                med.add(player);
+            }
+            else
+            {
+                high.add(player);
+            }
+        }        
     }
     public static void sort(int a[],int n)
     {
