@@ -22,6 +22,7 @@ public class EntityListener implements Listener {
     PlayerTracker tracker;
     HealthManager hm;
     FoodManager fom;
+    AnimationManager am;
     
     public EntityListener(Anticheat plugin)
     {
@@ -31,6 +32,7 @@ public class EntityListener implements Listener {
         this.ex = plugin.ex;
         this.hm = plugin.hm;
         this.fom = plugin.fom;
+        this.am = plugin.am;
     }
     
     @EventHandler
@@ -77,7 +79,7 @@ public class EntityListener implements Listener {
             Player player = (Player)event.getEntity();
             if(event.getRegainReason() == RegainReason.SATIATED)
             {
-                if(!player.hasPermission("anticheat.instaheal"))
+                if(!player.hasPermission("anticheat.instantheal"))
                 {
                     if(hm.justHealed(player))
                     {
@@ -101,16 +103,19 @@ public class EntityListener implements Listener {
         if(event.getEntity() instanceof Player)
         {
             Player player = (Player)event.getEntity();
-            if(fom.justStarted(player))
+            if(!player.hasPermission("anticheat.instanteat"))
             {
-                event.setCancelled(true);
-                tracker.increaseLevel(player,3);
-                plugin.log(player.getName()+" tried to eat too fast!");
+                if(fom.justStarted(player))
+                {
+                    event.setCancelled(true);
+                    tracker.increaseLevel(player,3);
+                    plugin.log(player.getName()+" tried to eat too fast!");
+                }
+                else
+                {
+                    tracker.decreaseLevel(player);
+                }   
             }
-            else
-            {
-                tracker.decreaseLevel(player);
-            }             
         }
     }
     
@@ -119,18 +124,6 @@ public class EntityListener implements Listener {
     {
         if (event instanceof EntityDamageByEntityEvent)
         {       
-            if(event.getEntity() instanceof Player)
-            {
-                final Player player = (Player)event.getEntity();
-                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
-                {
-                    @Override
-                    public void run() 
-                    {
-                        //Check damage ticks?
-                    }
-                },      2);                   
-            }
             EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
             if(event.getEntity() instanceof Player)
             {      

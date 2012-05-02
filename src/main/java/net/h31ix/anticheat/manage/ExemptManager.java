@@ -26,7 +26,7 @@ public class ExemptManager {
             {
                 enter.put(player, false);
             }
-        },      10L);        
+        },      20L);        
     }
     
     public boolean isEntering(Player player)

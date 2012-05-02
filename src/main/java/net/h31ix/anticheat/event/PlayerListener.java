@@ -24,6 +24,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
 
 public class PlayerListener implements Listener {
@@ -161,10 +162,11 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event)
     {
+        Player player = event.getPlayer();
+        PlayerInventory inv = player.getInventory();
         if(event.getAction() == Action.RIGHT_CLICK_AIR)
         {
-            Player player = event.getPlayer();
-            Material m = player.getInventory().getItemInHand().getType();
+            Material m = inv.getItemInHand().getType();
             if(m == Material.BOW)
             {
                 bm.logWindUp(player);
