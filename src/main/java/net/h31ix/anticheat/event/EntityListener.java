@@ -2,6 +2,7 @@ package net.h31ix.anticheat.event;
 
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.PlayerTracker;
+import net.h31ix.anticheat.checks.EyeCheck;
 import net.h31ix.anticheat.checks.LengthCheck;
 import net.h31ix.anticheat.manage.*;
 import org.bukkit.enchantments.Enchantment;
@@ -123,8 +124,14 @@ public class EntityListener implements Listener {
     public void onEntityDamage(EntityDamageEvent event)
     {
         if (event instanceof EntityDamageByEntityEvent)
-        {       
+        {
             EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+            if (e.getDamager() instanceof Player)
+            {           
+                Player p = (Player) e.getDamager();
+                System.out.println("CAUSE: "+event.getCause().name());
+                System.out.println("DAMAGE: "+event.getDamage());
+            }       
             if(event.getEntity() instanceof Player)
             {      
                 Player player = (Player)event.getEntity();
@@ -148,6 +155,8 @@ public class EntityListener implements Listener {
                             LengthCheck lc = new LengthCheck(event.getEntity().getLocation(),p.getLocation());
                             if(lc.getXDifference() > 5.0D || lc.getZDifference() > 5.0D || lc.getYDifference() > 4.3D)
                             {
+                                tracker.increaseLevel(player,2);
+                                plugin.log(player.getName()+" tried to hit an entity too far away!");                                
                                 event.setCancelled(true);
                             } 
                         }
