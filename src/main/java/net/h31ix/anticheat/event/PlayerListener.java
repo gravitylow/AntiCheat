@@ -211,7 +211,7 @@ public class PlayerListener implements Listener {
                         if(!player.hasPermission("anticheat.waterwalk"))
                         {                    
                             //Otherwise check for normal walking speeds, making sure they aren't using 'jesus' hacks
-                            if(!player.isSprinting() && !player.isFlying())
+                            if(!player.isSprinting() && !player.isFlying() && player.getNearbyEntities(1, 1, 1).isEmpty())
                             {
                                 tracker.increaseLevel(player,2);
                                 plugin.log(player.getName()+" is walking too fast in water! XSpeed="+xd+" ZSpeed="+zd);
