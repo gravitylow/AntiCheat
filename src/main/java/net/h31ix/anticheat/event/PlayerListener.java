@@ -67,10 +67,16 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event)
     {
        Player player = event.getPlayer();
-       if(!player.hasPermission("anticheat.zombe"))
+       if(!player.hasPermission("anticheat.zombe.fly"))
+       {       
+           player.sendMessage("งf งf ง1 ง0 ง2 ง4");
+       }
+       if(!player.hasPermission("anticheat.zombe.cheat"))
        {
-           player.sendMessage("ยงf ยงf ยง1 ยง0 ยง2 ยง4");
-           player.sendMessage("ยงf ยงf ยง2 ยง0 ยง4 ยง8");
+           player.sendMessage("งf งf ง2 ง0 ง4 ง8");
+       }
+       if(!player.hasPermission("anticheat.zombe.noclip"))
+       {
            player.sendMessage("ยงf ยงf ยง4 ยง0 ยง9 ยง6");            
        }           
     }

@@ -6,6 +6,7 @@ import net.h31ix.anticheat.checks.*;
 import net.h31ix.anticheat.manage.*;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -63,7 +64,7 @@ public class BlockListener implements Listener {
                             tracker.decreaseLevel(player);
                         }
                     }
-                    if (!player.hasPermission("anticheat.fastbreak"))
+                    if (!player.hasPermission("anticheat.fastbreak") && !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED))
                     {
                         if(block.getType() != Material.RED_MUSHROOM 
                                 && block.getType() != Material.RED_ROSE 
