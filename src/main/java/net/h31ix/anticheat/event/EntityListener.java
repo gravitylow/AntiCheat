@@ -129,8 +129,6 @@ public class EntityListener implements Listener {
             if (e.getDamager() instanceof Player)
             {           
                 Player p = (Player) e.getDamager();
-                System.out.println("CAUSE: "+event.getCause().name());
-                System.out.println("DAMAGE: "+event.getDamage());
             }       
             if(event.getEntity() instanceof Player)
             {      
