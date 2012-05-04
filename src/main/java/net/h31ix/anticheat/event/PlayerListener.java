@@ -69,11 +69,11 @@ public class PlayerListener implements Listener {
        Player player = event.getPlayer();
        if(!player.hasPermission("anticheat.zombe.fly"))
        {       
-           player.sendMessage("งf งf ง1 ง0 ง2 ง4");
+           player.sendMessage("ยงf ยงf ยง1 ยง0 ยง2 ยง4");
        }
        if(!player.hasPermission("anticheat.zombe.cheat"))
        {
-           player.sendMessage("งf งf ง2 ง0 ง4 ง8");
+           player.sendMessage("ยงf ยงf ยง2 ยง0 ยง4 ยง8");
        }
        if(!player.hasPermission("anticheat.zombe.noclip"))
        {
