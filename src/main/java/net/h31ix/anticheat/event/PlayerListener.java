@@ -238,16 +238,7 @@ public class PlayerListener implements Listener {
                     //Are they in a vehicle?
                     if (player.getVehicle() != null)
                     {
-                        //If they are just entering it, skip the check. They are moving way too fast naturally.
-                        if(!ex.isEntering(player))
-                        {
-                            if(xd > 0.6D || zd > 0.6D)
-                            {
-                                tracker.increaseLevel(player,2);
-                                plugin.log(player.getName()+" is using a vehicle too fast! XSpeed="+xd+" ZSpeed="+zd);
-                                event.setTo(event.getFrom().clone());
-                            }
-                        }
+                        //Nothing to do
                     }        
                     //Otherwise, are they sneaking?
                     else if(player.isSneaking())
