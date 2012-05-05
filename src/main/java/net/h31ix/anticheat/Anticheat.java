@@ -6,11 +6,8 @@ import net.h31ix.anticheat.manage.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.h31ix.anticheat.command.CommandManager;
-import net.h31ix.anticheat.event.BlockListener;
-import net.h31ix.anticheat.event.EntityListener;
-import net.h31ix.anticheat.event.PlayerListener;
-import net.h31ix.anticheat.manage.BowManager;
-import net.h31ix.anticheat.manage.ItemManager;
+import net.h31ix.anticheat.event.*;
+import net.h31ix.anticheat.xray.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,6 +28,7 @@ public class Anticheat extends JavaPlugin {
     
     public Configuration config; 
     public PlayerTracker tracker; //PlayerTracker for monitoring levels
+    public XRayTracker xtracker; //XRay tracker for monitoring ores
     private static final Logger l = Logger.getLogger("Minecraft");
     private long lastTime = System.currentTimeMillis();
     private long time = 0;
@@ -51,11 +49,13 @@ public class Anticheat extends JavaPlugin {
         }     
         config = new Configuration(this);
         tracker = new PlayerTracker(this);
+        xtracker = new XRayTracker();
         logConsole = config.logConsole;
         worlds = config.getWorlds();
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockListener(this), this);
         getServer().getPluginManager().registerEvents(new EntityListener(this), this);
+        getServer().getPluginManager().registerEvents(new XRayListener(this), this);
         
         getCommand("anticheat").setExecutor(new CommandManager(this));
         

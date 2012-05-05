@@ -4,18 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.PlayerTracker;
+import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 
 public class CommandManager implements CommandExecutor {
     Anticheat plugin;
     PlayerTracker tracker;
+    XRayTracker xtracker;
     ChatColor red = ChatColor.RED;
     ChatColor yellow = ChatColor.YELLOW;
     ChatColor green = ChatColor.GREEN;
@@ -29,6 +30,7 @@ public class CommandManager implements CommandExecutor {
     {
         this.plugin = plugin;
         this.tracker = plugin.tracker;
+        this.xtracker = plugin.xtracker;
     }
     @Override
     public boolean onCommand(CommandSender cs, Command cmd, String alias, String[] args) {
@@ -66,6 +68,26 @@ public class CommandManager implements CommandExecutor {
                     {
                         cs.sendMessage(red+"Usage: /anticheat log [enable/disable]");
                     }
+                }
+            }
+            else if(args[0].equalsIgnoreCase("xray"))
+            {   
+                if(hasPermission("admin",cs))
+                {
+                    List<Player> list = server.matchPlayer(args[1]);
+                    if(list.size() == 1)
+                    {
+                        Player player = list.get(0);
+                        xtracker.sendStats(cs, player);
+                    }
+                    else if(list.size() > 1)
+                    {
+                        cs.sendMessage(red+"Multiple players found by name: "+white+args[1]+red+".");
+                    }
+                    else
+                    {
+                        cs.sendMessage(red+"Player: "+white+args[1]+red+" not found.");
+                    }                    
                 }
             }
             else if(args[0].equalsIgnoreCase("pardon"))
@@ -114,9 +136,10 @@ public class CommandManager implements CommandExecutor {
                     cs.sendMessage("/AntiCheat "+green+"reload"+white+" - reload AntiCheat configuration");
                     cs.sendMessage("/AntiCheat "+green+"help"+white+" - access this page");
                     cs.sendMessage("/AntiCheat "+green+"pardon [user]"+white+" - reset user's level");
+                    cs.sendMessage("/AntiCheat "+green+"xray [user]"+white+" - check user's xray levels");
                     cs.sendMessage("-----------------------------------------------------");
                 }                
-            }           
+            }       
             else if(args[0].equalsIgnoreCase("report"))
             {
                 if(hasPermission("admin",cs))
