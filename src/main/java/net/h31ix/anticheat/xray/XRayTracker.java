@@ -70,38 +70,38 @@ public class XRayTracker {
         }  
         cs.sendMessage("--------------------["+green+"X-Ray Stats"+white+"]---------------------");
         ChatColor color = ChatColor.WHITE;
-        if(d >= b/3 && b > 50)
+        if(d >= b/3 && t > 50)
         {
             color = ChatColor.RED;
         }
         cs.sendMessage(gray+"Total blocks broken: "+white+t);
         cs.sendMessage(gray+"Percent diamond ore: "+color+round(d,1)+"%");
         color = ChatColor.WHITE;
-        if(g >= b/3 && b > 50)
+        if(g >= b/3 && t > 50)
         {
             color = ChatColor.RED;
         }        
         cs.sendMessage(gray+"Percent gold ore: "+color+round(g,1)+"%");
         color = ChatColor.WHITE;
-        if(i >= b/3 && b > 50)
+        if(i >= b/3 && t > 50)
         {
             color = ChatColor.RED;
         }        
         cs.sendMessage(gray+"Percent iron ore: "+color+round(i,1)+"%");
         color = ChatColor.WHITE;
-        if(c >= b/3 && b > 50)
+        if(c >= b/3 && t > 50)
         {
             color = ChatColor.RED;
         }            
         cs.sendMessage(gray+"Percent coal ore: "+color+round(c,1)+"%");
         color = ChatColor.WHITE;
-        if(la >= b/3 && b > 50)
+        if(la >= b/3 && t > 50)
         {
             color = ChatColor.RED;
         }            
         cs.sendMessage(gray+"Percent lapis ore: "+color+round(la,1)+"%");
         color = ChatColor.WHITE;
-        if(r >= b/3 && b > 50)
+        if(r >= b/3 && t > 50)
         {
             color = ChatColor.RED;
         }            
