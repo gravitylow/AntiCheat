@@ -232,13 +232,19 @@ public class PlayerListener implements Listener {
                     //Nothing to do
                 }        
                 //Otherwise, are they sneaking?
-                else if(player.isSneaking() && !player.hasPermission("anticheat.sneakhack") && !player.isFlying() && xd > 0.2D || zd > 0.2D)
+                else if(player.isSneaking())
                 {
-                    tracker.increaseLevel(player,2);
-                    plugin.log(player.getName()+" is sneaking too fast! "+speed);
-                    event.setTo(event.getFrom().clone());
-                    //If they are, force them out of it.
-                    player.setSneaking(false);
+                    if(!player.hasPermission("anticheat.sneakhack") && !player.isFlying()) 
+                    {       
+                        if(xd > 0.2D || zd > 0.2D)
+                        {
+                            tracker.increaseLevel(player,2);
+                            plugin.log(player.getName()+" is sneaking too fast! "+speed);
+                            event.setTo(event.getFrom().clone());
+                            //If they are, force them out of it.
+                            player.setSneaking(false);
+                        }
+                    }
                 }
                 //Otherwise set a hardcoded limit to any other traveling
                 else if(xd > 0.4D || zd > 0.4D)
