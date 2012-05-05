@@ -65,37 +65,41 @@ public class BlockListener implements Listener {
                             tracker.decreaseLevel(player);
                         }
                     }
-                    if (!player.hasPermission("anticheat.fastbreak") && !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED))
+                    if (!player.hasPermission("anticheat.fastbreak"))
                     {
-                        if(block.getType() != Material.RED_MUSHROOM 
-                                && block.getType() != Material.RED_ROSE 
-                                && block.getType() != Material.BROWN_MUSHROOM 
-                                && block.getType() != Material.YELLOW_FLOWER 
-                                && block.getType() != Material.REDSTONE 
-                                && block.getType() != Material.REDSTONE_TORCH_OFF 
-                                && block.getType() != Material.REDSTONE_TORCH_ON 
-                                && block.getType() != Material.REDSTONE_WIRE 
-                                && block.getType() != Material.GRASS 
-                                && block.getType() != Material.PAINTING 
-                                && block.getType() != Material.WHEAT 
-                                && block.getType() != Material.SUGAR_CANE 
-                                && block.getType() != Material.SUGAR_CANE_BLOCK 
-                                && block.getType() != Material.DIODE 
-                                && block.getType() != Material.DIODE_BLOCK_OFF 
-                                && block.getType() != Material.DIODE_BLOCK_ON
-                                && block.getType() != Material.SAPLING
-                                && block.getType() != Material.TORCH
-                                && block.getType() != Material.SNOW)
+                        if(!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED))
                         {
-                            if (!blm.justBroke(player))
+                            if(block.getType() != Material.RED_MUSHROOM 
+                                    && block.getType() != Material.RED_ROSE 
+                                    && block.getType() != Material.BROWN_MUSHROOM 
+                                    && block.getType() != Material.YELLOW_FLOWER 
+                                    && block.getType() != Material.REDSTONE 
+                                    && block.getType() != Material.REDSTONE_TORCH_OFF 
+                                    && block.getType() != Material.REDSTONE_TORCH_ON 
+                                    && block.getType() != Material.REDSTONE_WIRE 
+                                    && block.getType() != Material.GRASS 
+                                    && block.getType() != Material.LONG_GRASS
+                                    && block.getType() != Material.PAINTING 
+                                    && block.getType() != Material.WHEAT 
+                                    && block.getType() != Material.SUGAR_CANE 
+                                    && block.getType() != Material.SUGAR_CANE_BLOCK 
+                                    && block.getType() != Material.DIODE 
+                                    && block.getType() != Material.DIODE_BLOCK_OFF 
+                                    && block.getType() != Material.DIODE_BLOCK_ON
+                                    && block.getType() != Material.SAPLING
+                                    && block.getType() != Material.TORCH
+                                    && block.getType() != Material.SNOW)
                             {
-                                blm.logBreak(player);
-                            }
-                            else
-                            {
-                                plugin.log(player.getName() + " tried to break a block too fast!");
-                                tracker.increaseLevel(player, 2);
-                                event.setCancelled(true);
+                                if (!blm.justBroke(player))
+                                {
+                                    blm.logBreak(player);
+                                }
+                                else
+                                {
+                                    plugin.log(player.getName() + " tried to break a block too fast!");
+                                    tracker.increaseLevel(player, 2);
+                                    event.setCancelled(true);
+                                }
                             }
                         }
                     }                    
