@@ -6,8 +6,8 @@ import net.h31ix.anticheat.Anticheat;
 import org.bukkit.entity.Player;
 
 public class FoodManager {
-    public Map<Player,Boolean> start = new HashMap<Player,Boolean>();
-    Anticheat plugin;
+    private Map<Player,Boolean> start = new HashMap<Player,Boolean>();
+    private Anticheat plugin;
     
     public FoodManager(Anticheat plugin)
     {
@@ -29,13 +29,13 @@ public class FoodManager {
     
     public boolean justStarted(Player player)
     {
-        if(start.get(player) == null || start.get(player) == false)
+        if(start.get(player) == null)
         {
             return false;
         }
         else
         {
-            return true;
+            return start.get(player);
         }        
     }
 }

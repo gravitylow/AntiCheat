@@ -3,6 +3,7 @@ package net.h31ix.anticheat.command;
 import java.util.ArrayList;
 import java.util.List;
 import net.h31ix.anticheat.Anticheat;
+import net.h31ix.anticheat.Configuration;
 import net.h31ix.anticheat.PlayerTracker;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.Bukkit;
@@ -14,23 +15,23 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CommandManager implements CommandExecutor {
-    Anticheat plugin;
-    PlayerTracker tracker;
-    XRayTracker xtracker;
-    ChatColor red = ChatColor.RED;
-    ChatColor yellow = ChatColor.YELLOW;
-    ChatColor green = ChatColor.GREEN;
-    ChatColor white = ChatColor.WHITE;
-    List<Player> high = new ArrayList<Player>();
-    List<Player> med = new ArrayList<Player>();
-    List<Player> low = new ArrayList<Player>();  
-    Server server = Bukkit.getServer();
+    private Configuration config;
+    private PlayerTracker tracker;
+    private XRayTracker xtracker;
+    private static final ChatColor red = ChatColor.RED;
+    private static final ChatColor yellow = ChatColor.YELLOW;
+    private static final ChatColor green = ChatColor.GREEN;
+    private static final ChatColor white = ChatColor.WHITE;
+    private List<Player> high = new ArrayList<Player>();
+    private List<Player> med = new ArrayList<Player>();
+    private List<Player> low = new ArrayList<Player>();  
+    private static final Server server = Bukkit.getServer();
     
     public CommandManager(Anticheat plugin)
     {
-        this.plugin = plugin;
-        this.tracker = plugin.tracker;
-        this.xtracker = plugin.xtracker;
+        this.tracker = plugin.getPlayerTracker();
+        this.xtracker = plugin.getXRayTracker();
+        this.config = plugin.getConfiguration();
     }
     @Override
     public boolean onCommand(CommandSender cs, Command cmd, String alias, String[] args) {
@@ -42,9 +43,9 @@ public class CommandManager implements CommandExecutor {
                 {
                     if(args[1].equalsIgnoreCase("enable"))
                     {
-                        if(!plugin.config.logConsole)
+                        if(!config.logConsole())
                         {
-                            plugin.config.setLog(true);
+                            config.setLog(true);
                             cs.sendMessage(green+"Console logging enabled.");                            
                         }
                         else
@@ -54,9 +55,9 @@ public class CommandManager implements CommandExecutor {
                     }
                     else if(args[1].equalsIgnoreCase("disable"))
                     {
-                        if(plugin.config.logConsole)
+                        if(config.logConsole())
                         {
-                            plugin.config.setLog(false);
+                            config.setLog(false);
                             cs.sendMessage(green+"Console logging disabled.");                            
                         }
                         else
@@ -74,23 +75,30 @@ public class CommandManager implements CommandExecutor {
             {   
                 if(hasPermission("admin",cs))
                 {
-                    List<Player> list = server.matchPlayer(args[1]);
-                    if(list.size() == 1)
+                    if(config.logXRay())
                     {
-                        Player player = list.get(0);
-                        xtracker.sendStats(cs, player);
-                    }
-                    else if(list.size() > 1)
-                    {
-                        cs.sendMessage(red+"Multiple players found by name: "+white+args[1]+red+".");
+                        List<Player> list = server.matchPlayer(args[1]);
+                        if(list.size() == 1)
+                        {
+                            Player player = list.get(0);
+                            xtracker.sendStats(cs, player);
+                        }
+                        else if(list.size() > 1)
+                        {
+                            cs.sendMessage(red+"Multiple players found by name: "+white+args[1]+red+".");
+                        }
+                        else
+                        {
+                            cs.sendMessage(red+"Player: "+white+args[1]+red+" not found.");
+                        } 
                     }
                     else
                     {
-                        cs.sendMessage(red+"Player: "+white+args[1]+red+" not found.");
-                    }                    
+                        cs.sendMessage(red+"XRay logging is off in the config.");
+                    }
                 }
             }
-            else if(args[0].equalsIgnoreCase("pardon"))
+            else if(args[0].equalsIgnoreCase("reset"))
             {   
                 if(hasPermission("admin",cs))
                 {
@@ -108,6 +116,8 @@ public class CommandManager implements CommandExecutor {
                             tracker.reset(player);
                             cs.sendMessage(player.getName()+green+" has been reset to Low Level.");
                         }
+                        xtracker.reset(player);
+                        cs.sendMessage(player.getName()+green+"'s XRay stats have been reset.");
                     }
                     else if(list.size() > 1)
                     {
@@ -135,7 +145,7 @@ public class CommandManager implements CommandExecutor {
                     cs.sendMessage("/AntiCheat "+green+"report"+white+" - get a detailed cheat report");
                     cs.sendMessage("/AntiCheat "+green+"reload"+white+" - reload AntiCheat configuration");
                     cs.sendMessage("/AntiCheat "+green+"help"+white+" - access this page");
-                    cs.sendMessage("/AntiCheat "+green+"pardon [user]"+white+" - reset user's level");
+                    cs.sendMessage("/AntiCheat "+green+"reset [user]"+white+" - reset user's hack level");
                     cs.sendMessage("/AntiCheat "+green+"xray [user]"+white+" - check user's xray levels");
                     cs.sendMessage("-----------------------------------------------------");
                 }                
@@ -175,7 +185,7 @@ public class CommandManager implements CommandExecutor {
             {
                 if(hasPermission("admin",cs))
                 {
-                    plugin.config.load();
+                    config.load();
                     cs.sendMessage(green+"AntiCheat configuration reloaded.");
                 }
             }            

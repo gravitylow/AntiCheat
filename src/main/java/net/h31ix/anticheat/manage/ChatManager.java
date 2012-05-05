@@ -7,16 +7,18 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class ChatManager {
-    Anticheat plugin;
-    ChatColor red = ChatColor.RED;
+    private Anticheat plugin;
+    private static final ChatColor red = ChatColor.RED;
+    private Map<Player,Integer> chatLevel = new HashMap<Player,Integer>();
+    private Map<Player,Integer> kicks = new HashMap<Player,Integer>();    
+    private static final int CHAT_WARN_LEVEL = 7;
+    private static final int CHAT_KICK_LEVEL = 10;
+    private static final int CHAT_BAN_LEVEL = 3;
     
     public ChatManager(Anticheat plugin)
     {
         this.plugin = plugin;
     }
-    
-    private Map<Player,Integer> chatLevel = new HashMap<Player,Integer>();
-    private Map<Player,Integer> kicks = new HashMap<Player,Integer>();
     
     public void addChat(final Player player)
     {
@@ -25,6 +27,7 @@ public class ChatManager {
             chatLevel.put(player, 1);
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
             {
+                @Override
                 public void run() 
                 {
                     clear(player);
@@ -46,11 +49,11 @@ public class ChatManager {
     
     public void check(Player player, int amount)
     {
-        if(amount >= 7)
+        if(amount >= CHAT_WARN_LEVEL)
         {
             player.sendMessage(red+"Please stop flooding the server!");
         }
-        if (amount >= 10)
+        if (amount >= CHAT_KICK_LEVEL)
         {
             int kick = 0;
             if(kicks.get(player) == null || kicks.get(player) == 0)
@@ -64,7 +67,7 @@ public class ChatManager {
                 kicks.put(player, kick);
             }
             
-            if(kicks.get(player) <=3)
+            if(kicks.get(player) <= CHAT_BAN_LEVEL)
             {
                 player.kickPlayer(red+"Spamming, kick "+kick+"/3");
                 plugin.getServer().broadcastMessage(red+player.getName()+" was kicked for spamming.");

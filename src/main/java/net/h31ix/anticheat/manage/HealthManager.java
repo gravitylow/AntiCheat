@@ -6,12 +6,11 @@ import net.h31ix.anticheat.Anticheat;
 import org.bukkit.entity.Player;
 
 public class HealthManager {
-    Anticheat plugin;
-    
-    public Map<Player,Float> fall = new HashMap<Player,Float>();
-    public Map<Player,Boolean> healed = new HashMap<Player,Boolean>();
-    public Map<Player,Integer> health = new HashMap<Player,Integer>();
-    public Map<Player,Integer> fallvl = new HashMap<Player,Integer>();
+    private Anticheat plugin;
+    private Map<Player,Float> fall = new HashMap<Player,Float>();
+    private Map<Player,Boolean> healed = new HashMap<Player,Boolean>();
+    private Map<Player,Integer> health = new HashMap<Player,Integer>();
+    private Map<Player,Integer> fallvl = new HashMap<Player,Integer>();
     
     public HealthManager(Anticheat plugin)
     {

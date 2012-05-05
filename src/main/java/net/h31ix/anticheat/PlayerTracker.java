@@ -6,14 +6,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class PlayerTracker {
-    public Map<Player,Integer> level = new HashMap<Player,Integer>();
-    Anticheat plugin;
-    Configuration config;
+    private Map<Player,Integer> level = new HashMap<Player,Integer>();
+    private Configuration config;
+    private static final int MED_THRESHOLD = 10;
+    private static final int HIGH_THRESHOLD = 40;
     
     public PlayerTracker(Anticheat plugin)
     {
-        this.plugin = plugin;
-        this.config = plugin.config;
+        this.config = plugin.getConfiguration();
     }
     
     public void increaseLevel(Player player, int i)
@@ -26,7 +26,7 @@ public class PlayerTracker {
         {
             int playerLevel = level.get(player);
             level.put(player, playerLevel+i);
-            if(playerLevel <= 10 && playerLevel+i > 10 && playerLevel+1 <= 40)
+            if(playerLevel <= MED_THRESHOLD && playerLevel+i > MED_THRESHOLD && playerLevel+1 <= HIGH_THRESHOLD)
             {
                 execute("Medium",player);                           
                 for(Player p : player.getServer().getOnlinePlayers())
@@ -38,7 +38,7 @@ public class PlayerTracker {
                     }
                 }
             }
-            if(playerLevel <= 40 && playerLevel+i > 40)
+            if(playerLevel <= HIGH_THRESHOLD && playerLevel+i > HIGH_THRESHOLD)
             {
                 execute("High",player);
                 for(Player p : player.getServer().getOnlinePlayers())

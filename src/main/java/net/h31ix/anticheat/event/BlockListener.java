@@ -14,17 +14,18 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BlockListener implements Listener {
-    Anticheat plugin;
-    AnimationManager am;
-    PlayerTracker tracker;
-    EyeCheck e = new EyeCheck();
-    BlockManager blm;
+    private Anticheat plugin;
+    private AnimationManager am;
+    private PlayerTracker tracker;
+    private static final EyeCheck e = new EyeCheck();
+    private BlockManager blm;
+    private static final double BLOCK_MAX_DISTANCE = 6.0;
     
     public BlockListener(Anticheat plugin)
     {
         this.plugin = plugin;
         this.am = plugin.am;
-        this.tracker = plugin.tracker;
+        this.tracker = plugin.getPlayerTracker();
         this.blm = plugin.blm;
     }
     
@@ -53,7 +54,7 @@ public class BlockListener implements Listener {
                     {                
                         //If so, check the distance from the block. Is it too far away?
                         LengthCheck c = new LengthCheck(block.getLocation(),event.getPlayer().getLocation());
-                        if(c.getXDifference() > 6.0D || c.getZDifference() > 6.0D || c.getYDifference() > 6.0D)
+                        if(c.getXDifference() > BLOCK_MAX_DISTANCE || c.getZDifference() > BLOCK_MAX_DISTANCE || c.getYDifference() > BLOCK_MAX_DISTANCE)
                         {
                             plugin.log(player.getName()+" tried to break a block too far away!");
                             tracker.increaseLevel(player,2);
@@ -113,21 +114,16 @@ public class BlockListener implements Listener {
         {      
             if(plugin.check(player))
             {            
-                if(block.getType() != Material.LADDER)
+                if(block.getType() != Material.LADDER && !e.canSee(player, block) && !player.getWorld().getBlockAt(player.getLocation()).isLiquid())
                 {
-                    //Check if the player can see the block they are placing
-                    //This is mostly used for preventing build/autobuild hacks (Logic not yet finished)
-                    if(!e.canSee(player, block) && !player.getWorld().getBlockAt(player.getLocation()).isLiquid())
-                    {
-                        plugin.log(player.getName()+" tried to place a block that they couldn't see!");
-                        event.setCancelled(true);                    
-                    }
+                    plugin.log(player.getName()+" tried to place a block that they couldn't see!");
+                    event.setCancelled(true);                    
                 }
                 if(!player.hasPermission("anticheat.longreach"))
                 {            
                     //Is the player too far away?
                     LengthCheck c = new LengthCheck(block.getLocation(),event.getPlayer().getLocation());
-                    if(c.getXDifference() > 6.0D || c.getZDifference() > 6.0D || c.getYDifference() > 6.0D)
+                    if(c.getXDifference() > BLOCK_MAX_DISTANCE || c.getZDifference() > BLOCK_MAX_DISTANCE || c.getYDifference() > BLOCK_MAX_DISTANCE)
                     {
                         tracker.increaseLevel(player,2);
                         plugin.log(player.getName()+" tried to place a block too far away!");

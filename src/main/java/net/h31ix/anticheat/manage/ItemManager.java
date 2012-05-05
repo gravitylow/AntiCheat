@@ -6,8 +6,8 @@ import net.h31ix.anticheat.Anticheat;
 import org.bukkit.entity.Player;
 
 public class ItemManager {
-    public Map<Player,Boolean> drop = new HashMap<Player,Boolean>();
-    Anticheat plugin;
+    private Map<Player,Boolean> drop = new HashMap<Player,Boolean>();
+    private Anticheat plugin;
     
     public ItemManager(Anticheat plugin)
     {

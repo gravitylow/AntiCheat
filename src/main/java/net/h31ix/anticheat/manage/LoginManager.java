@@ -3,8 +3,8 @@ package net.h31ix.anticheat.manage;
 import net.h31ix.anticheat.Anticheat;
 
 public class LoginManager {
-    Anticheat plugin;
-    public boolean join;
+    private Anticheat plugin;
+    private boolean join;
     
     public LoginManager(Anticheat plugin)
     {

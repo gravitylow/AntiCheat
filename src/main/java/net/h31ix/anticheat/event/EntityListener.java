@@ -2,7 +2,6 @@ package net.h31ix.anticheat.event;
 
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.PlayerTracker;
-import net.h31ix.anticheat.checks.EyeCheck;
 import net.h31ix.anticheat.checks.LengthCheck;
 import net.h31ix.anticheat.manage.*;
 import org.bukkit.enchantments.Enchantment;
@@ -17,23 +16,23 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 
 public class EntityListener implements Listener {
-    Anticheat plugin;
-    BowManager bm;
-    ExemptManager ex;
-    PlayerTracker tracker;
-    HealthManager hm;
-    FoodManager fom;
-    AnimationManager am;
+    private Anticheat plugin;
+    private BowManager bm;
+    private ExemptManager ex;
+    private PlayerTracker tracker;
+    private HealthManager hm;
+    private FoodManager fom;
+    private static final double ENTITY_MAX_DISTANCE_XZ = 5.0;
+    private static final double ENTITY_MAX_DISTANCE_Y = 4.3;
     
     public EntityListener(Anticheat plugin)
     {
         this.plugin = plugin;
         this.bm = plugin.bm;
-        this.tracker = plugin.tracker;
+        this.tracker = plugin.getPlayerTracker();
         this.ex = plugin.ex;
         this.hm = plugin.hm;
         this.fom = plugin.fom;
-        this.am = plugin.am;
     }
     
     @EventHandler
@@ -125,11 +124,7 @@ public class EntityListener implements Listener {
     {
         if (event instanceof EntityDamageByEntityEvent)
         {
-            EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
-            if (e.getDamager() instanceof Player)
-            {           
-                Player p = (Player) e.getDamager();
-            }       
+            EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;      
             if(event.getEntity() instanceof Player)
             {      
                 Player player = (Player)event.getEntity();
@@ -151,7 +146,7 @@ public class EntityListener implements Listener {
                         {                      
                             //Make sure they are close enough to the entity to hit them
                             LengthCheck lc = new LengthCheck(event.getEntity().getLocation(),p.getLocation());
-                            if(lc.getXDifference() > 5.0D || lc.getZDifference() > 5.0D || lc.getYDifference() > 4.3D)
+                            if(lc.getXDifference() > ENTITY_MAX_DISTANCE_XZ || lc.getZDifference() > ENTITY_MAX_DISTANCE_XZ || lc.getYDifference() > ENTITY_MAX_DISTANCE_Y)
                             {
                                 tracker.increaseLevel(player,2);
                                 plugin.log(player.getName()+" tried to hit an entity too far away!");                                

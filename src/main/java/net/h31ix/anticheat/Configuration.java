@@ -14,13 +14,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class Configuration {
     private File configFile = new File("plugins/AntiCheat/config.yml");
     private FileConfiguration config;
-    private Anticheat plugin;
-    public boolean logConsole;
+    private boolean logConsole;
+    private boolean logXRay;
     private List<String> worlds = new ArrayList<String>();
     
-    public Configuration(Anticheat plugin)
+    public Configuration()
     {
-        this.plugin = plugin;
         load();
     }
     
@@ -33,7 +32,17 @@ public class Configuration {
         }
     }
     
-    public void load()
+    public boolean logConsole()
+    {
+        return logConsole;
+    }
+    
+    public boolean logXRay()
+    {
+        return logXRay;
+    }
+    
+    public final void load()
     {
         config = YamlConfiguration.loadConfiguration(configFile);
         logConsole = config.getBoolean("Logging.Log to console");
@@ -47,7 +56,13 @@ public class Configuration {
             config.set("Enable in", w);
             save();
         }
-        worlds = (List<String>)(config.getList("Enable in"));        
+        worlds = (List<String>)(config.getList("Enable in")); 
+        if(config.getString("XRay.Log xray stats") == null)
+        {
+            config.set("XRay.Log xray stats", true);
+            save();
+        }   
+        logXRay = config.getBoolean("XRay.Log xray stats");    
     }
     
     public String getResult(String event)
@@ -59,7 +74,6 @@ public class Configuration {
     {
         config.set("Logging.Log to console", b);
         this.logConsole = b;
-        plugin.logConsole = b;
         try {
             config.save(configFile);
         } catch (IOException ex) {

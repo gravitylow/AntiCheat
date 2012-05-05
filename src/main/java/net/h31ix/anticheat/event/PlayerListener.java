@@ -28,16 +28,16 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
 
 public class PlayerListener implements Listener {
-    Anticheat plugin;
-    AnimationManager am;
-    ExemptManager ex;
-    PlayerTracker tracker;
-    ItemManager im;
-    HealthManager hm;
-    LoginManager lm;
-    FlyManager fm;
-    BowManager bm;
-    FoodManager fom;
+    private Anticheat plugin;
+    private AnimationManager am;
+    private ExemptManager ex;
+    private PlayerTracker tracker;
+    private ItemManager im;
+    private HealthManager hm;
+    private LoginManager lm;
+    private FlyManager fm;
+    private BowManager bm;
+    private FoodManager fom;
     
     public PlayerListener(Anticheat plugin)
     {
@@ -45,7 +45,7 @@ public class PlayerListener implements Listener {
         this.am = plugin.am;
         this.ex = plugin.ex;
         this.im = plugin.im;
-        this.tracker = plugin.tracker;
+        this.tracker = plugin.getPlayerTracker();
         this.hm = plugin.hm;
         this.lm = plugin.lm;
         this.fm = plugin.fm;
@@ -87,19 +87,16 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         if(plugin.check(player))
         {        
-            if(!player.hasPermission("anticheat.spamdrop"))
+            if(!player.hasPermission("anticheat.spamdrop") && !im.hasDropped(player))
             {
-                if(!im.hasDropped(player))
-                {
-                    //Make sure the player isn't spamming drops
-                    //For a normal user this is no big deal, but to hackers it gets rid of most of the items in their inventory
-                    im.logDrop(player);
-                }
-                else
-                {
-                    plugin.log(player.getName()+" tried to drop blocks too fast!");
-                    event.setCancelled(true);
-                }
+                //Make sure the player isn't spamming drops
+                //For a normal user this is no big deal, but to hackers it gets rid of most of the items in their inventory
+                im.logDrop(player);
+            }
+            else
+            {
+                plugin.log(player.getName()+" tried to drop blocks too fast!");
+                event.setCancelled(true);
             }
         }
     }
@@ -129,12 +126,9 @@ public class PlayerListener implements Listener {
     {
         Player player = event.getPlayer();
         if(!player.hasPermission("anticheat.spam"))
-        {
-            if(!plugin.lagged)
-            {        
-                //Block command spamming (consider them chats)
-                plugin.cm.addChat(event.getPlayer());
-            }
+        {     
+            //Block command spamming (consider them chats)
+            plugin.cm.addChat(event.getPlayer());
         }
     }
     
@@ -149,9 +143,9 @@ public class PlayerListener implements Listener {
                 //Make sure the player is not a potential spambot
                 event.setCancelled(true);
                 player.sendMessage("Please move from spawn before speaking.");
-            }        
-            if(!plugin.lagged)
-            {        
+            }  
+            else
+            {
                 //Block chat spamming
                 plugin.cm.addChat(player);
             }
@@ -188,178 +182,145 @@ public class PlayerListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event)
     {
         Player player = event.getPlayer();
-        if(plugin.check(player))
+        if(plugin.check(player) && !ex.isHit(player))
         {        
-            if(!plugin.lagged && !ex.isHit(player))
+            //Log the player's health level
+            hm.log(player);
+            //Get distances for hack checks.
+            LengthCheck c = new LengthCheck(event.getFrom(), event.getTo());
+            double xd = c.getXDifference();
+            double zd = c.getZDifference();
+            double yd = c.getYDifference();
+            String speed = "XSpeed="+xd+" ZSpeed="+zd;
+            Block p1 = player.getLocation().getWorld().getBlockAt(player.getLocation());
+            //Is the player in water?
+            if(p1.isLiquid())
             {
-                //Log the player's health level
-                hm.log(player);
-                //Get distances for hack checks.
-                LengthCheck c = new LengthCheck(event.getFrom(), event.getTo());
-                double xd = c.getXDifference();
-                double zd = c.getZDifference();
-                double yd = c.getYDifference();
-                Block p1 = player.getLocation().getWorld().getBlockAt(player.getLocation());
-                //Is the player in water?
-                if(p1.isLiquid())
+                //Are they using a boat? If so give them a bit more leniency
+                if (player.getVehicle() != null)
                 {
-                    //Are they using a boat? If so give them a bit more leniency
-                    if (player.getVehicle() != null)
+                    if(xd > 2.0D || zd > 2.0D)
                     {
-                        if(xd > 2.0D || zd > 2.0D)
+                        tracker.increaseLevel(player,2);
+                        plugin.log(player.getName()+" is using a boat too fast! "+speed);
+                    }
+                }                
+                else if(xd > 0.19D || zd > 0.19D)
+                {
+                    if(!player.hasPermission("anticheat.waterwalk") && !player.isSprinting() && !player.isFlying() && player.getNearbyEntities(1, 1, 1).isEmpty())
+                    {                    
+                        tracker.increaseLevel(player,2);
+                        plugin.log(player.getName()+" is walking too fast in water! "+speed);
+                        event.setTo(event.getFrom().clone());
+                    }
+                }
+                else
+                {
+                    if(!player.hasPermission("anticheat.waterwalk") && xd > 0.3D || zd > 0.3D)
+                    {                      
+                        tracker.increaseLevel(player,2);
+                        plugin.log(player.getName()+" is flying/sprinting too fast in water! "+speed);
+                        event.setTo(event.getFrom().clone());
+                    }
+                }                
+            }
+            else
+            {
+                //Are they in a vehicle?
+                if (player.getVehicle() != null)
+                {
+                    //Nothing to do
+                }        
+                //Otherwise, are they sneaking?
+                else if(player.isSneaking() && !player.hasPermission("anticheat.sneakhack") && !player.isFlying() && xd > 0.2D || zd > 0.2D)
+                {
+                    tracker.increaseLevel(player,2);
+                    plugin.log(player.getName()+" is sneaking too fast! "+speed);
+                    event.setTo(event.getFrom().clone());
+                    //If they are, force them out of it.
+                    player.setSneaking(false);
+                }
+                //Otherwise set a hardcoded limit to any other traveling
+                else if(xd > 0.4D || zd > 0.4D)
+                {
+                    if(!player.hasPermission("anticheat.speedhack") && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED))
+                    {                      
+                        if(!player.isSprinting())
                         {
                             tracker.increaseLevel(player,2);
-                            plugin.log(player.getName()+" is using a boat too fast! XSpeed="+xd+" ZSpeed="+zd);
-                        }
-                    }                
-                    else if(xd > 0.19D || zd > 0.19D)
-                    {
-                        if(!player.hasPermission("anticheat.waterwalk"))
-                        {                    
-                            //Otherwise check for normal walking speeds, making sure they aren't using 'jesus' hacks
-                            if(!player.isSprinting() && !player.isFlying() && player.getNearbyEntities(1, 1, 1).isEmpty())
-                            {
-                                tracker.increaseLevel(player,2);
-                                plugin.log(player.getName()+" is walking too fast in water! XSpeed="+xd+" ZSpeed="+zd);
-                                event.setTo(event.getFrom().clone());
-                            } 
-                        }
-                    }
-                    else
-                    {
-                        if(!player.hasPermission("anticheat.waterwalk"))
-                        {                      
-                            //If they are flying/sprinting give them a bit of slack
-                            if(xd > 0.3D || zd > 0.3D)
-                            {
-                                tracker.increaseLevel(player,2);
-                                plugin.log(player.getName()+" is flying/sprinting too fast in water! XSpeed="+xd+" ZSpeed="+zd);
-                                event.setTo(event.getFrom().clone());
-                            }
-                        }
-                    }                
-                }
-                else
-                {
-                    //Are they in a vehicle?
-                    if (player.getVehicle() != null)
-                    {
-                        //Nothing to do
-                    }        
-                    //Otherwise, are they sneaking?
-                    else if(player.isSneaking())
-                    {
-                        if(!player.hasPermission("anticheat.sneakhack") && !player.isFlying())
-                        {                      
-                            //Make sure they are at normal sneak speeds. (not using sneak hacks)
-                            if(xd > 0.2D || zd > 0.2D)
-                            {
-                                tracker.increaseLevel(player,2);
-                                plugin.log(player.getName()+" is sneaking too fast! XSpeed="+xd+" ZSpeed="+zd);
-                                event.setTo(event.getFrom().clone());
-                                //If they are, force them out of it.
-                                player.setSneaking(false);
-                            }
-                        }
-                    }
-                    //Otherwise set a hardcoded limit to any other traveling
-                    else if(xd > 0.4D || zd > 0.4D)
-                    {
-                        if(!player.hasPermission("anticheat.speedhack"))
-                        {                      
-                            if(!player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED))
-                            {
-                                if(!player.isSprinting())
-                                {
-                                    tracker.increaseLevel(player,2);
-                                    plugin.log(player.getName()+" is walking too fast! XSpeed="+xd+" ZSpeed="+zd);
-                                    event.setTo(event.getFrom().clone());
-                                }              
-                                else
-                                {
-                                    //If they are sprinting or flying give slack
-                                    if(xd > 0.7D || zd > 0.7D)
-                                    {
-                                        tracker.increaseLevel(player,2);
-                                        plugin.log(player.getName()+" is sprinting too fast! XSpeed="+xd+" ZSpeed="+zd);
-                                        event.setTo(event.getFrom().clone());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                //If the player is ascending
-                if(event.getFrom().getY() < event.getTo().getY())
-                {
-                    //TODO: This is a little hacky. Any better way to figure this out?
-                    //Are they climbing something?
-                    if(yd <= 0.11761 && yd >= 0.11759)
-                    {
-                        if(!player.hasPermission("anticheat.spider"))
-                        {                              
-                            if(player.getLocation().getBlock().getType() != Material.VINE && player.getLocation().getBlock().getType() != Material.LADDER)
-                            {
-                                //If it's not climbable, block it.
-                                plugin.log(player.getName()+" tried to climb a wall!");
-                                tracker.increaseLevel(player,3);
-                                event.setTo(event.getFrom().clone());
-                            }
-                        }
-                    }
-                    else if(!player.isFlying() && player.getVehicle() == null)
-                    {
-                        if(!player.hasPermission("anticheat.flyhack"))
-                        {     
-                            //Otherwise check for fast ascension
-                            if(yd > 0.5D)
-                            {
-                                tracker.increaseLevel(player,2);
-                                plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);
-                                event.setTo(event.getFrom().clone());
-                            }
-                        }
-                    }
-                } 
-                //If they are falling
-                else if(event.getFrom().getY() > event.getTo().getY())
-                {         
-                    //Ignore players in creative or in vehicles, they give a fall distance of 0 naturally.
-                    if(player.getGameMode() != GameMode.CREATIVE && player.getVehicle() == null)
-                    {
-                        if(!player.hasPermission("anticheat.nofall"))
-                        {                             
-                            hm.log(player);
-                            //Log health (for nofall detection)
-                            if(hm.checkFall(player))
-                            {
-                                //If the player is falling but has a 0 fall distance
-                                plugin.log(player.getName()+" tried to avoid fall damage!");
-                                tracker.increaseLevel(player,2);
-                            }
-                        }
-                    }
-                } 
-                //No change in Y
-                else
-                {
-                    if(!player.hasPermission("anticheat.flyhack") && !player.isFlying() && player.getVehicle() == null)
-                    {                  
-                        Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
-                        if(!canStand(block) && !canStand(block.getRelative(BlockFace.NORTH)) && !canStand(block.getRelative(BlockFace.EAST)) && !canStand(block.getRelative(BlockFace.SOUTH)) && !canStand(block.getRelative(BlockFace.WEST)) && !canStand(block.getRelative(BlockFace.NORTH_WEST)) && !canStand(block.getRelative(BlockFace.NORTH_EAST)) && !canStand(block.getRelative(BlockFace.SOUTH_WEST)) && !canStand(block.getRelative(BlockFace.SOUTH_EAST)))
+                            plugin.log(player.getName()+" is walking too fast! "+speed);
+                            event.setTo(event.getFrom().clone());
+                        }              
+                        else
                         {
-                            if (fm.checkFly(player))
+                            //If they are sprinting or flying give slack
+                            if(xd > 0.7D || zd > 0.7D)
                             {
-                                event.setTo(event.getFrom().clone());
-                                plugin.log(player.getName()+" tried to fly!");
                                 tracker.increaseLevel(player,2);
+                                plugin.log(player.getName()+" is sprinting too fast! "+speed);
+                                event.setTo(event.getFrom().clone());
                             }
-                            else
-                            {
-                                tracker.decreaseLevel(player);
-                            }  
-                        }               
+                        }
                     }
+                }
+            }
+            //If the player is ascending
+            if(event.getFrom().getY() < event.getTo().getY())
+            {
+                //TODO: This is a little hacky. Any better way to figure this out?
+                //Are they climbing something?
+                if(yd <= 0.11761 && yd >= 0.11759)
+                {
+                    if(!player.hasPermission("anticheat.spider") && player.getLocation().getBlock().getType() != Material.VINE && player.getLocation().getBlock().getType() != Material.LADDER)
+                    {                              
+                        //If it's not climbable, block it.
+                        plugin.log(player.getName()+" tried to climb a wall!");
+                        tracker.increaseLevel(player,3);
+                        event.setTo(event.getFrom().clone());
+                    }
+                }
+                else if(!player.isFlying() && player.getVehicle() == null && !player.hasPermission("anticheat.flyhack") && yd > 0.5D)
+                {
+                    tracker.increaseLevel(player,2);
+                    plugin.log(player.getName()+" is ascending too fast! YSpeed="+yd);
+                    event.setTo(event.getFrom().clone());
+                }
+            } 
+            //If they are falling
+            else if(event.getFrom().getY() > event.getTo().getY())
+            {         
+                //Ignore players in creative or in vehicles, they give a fall distance of 0 naturally.
+                if(!player.hasPermission("anticheat.nofall") && player.getGameMode() != GameMode.CREATIVE && player.getVehicle() == null)
+                {                           
+                    hm.log(player);
+                    //Log health (for nofall detection)
+                    if(hm.checkFall(player))
+                    {
+                        //If the player is falling but has a 0 fall distance
+                        plugin.log(player.getName()+" tried to avoid fall damage!");
+                        tracker.increaseLevel(player,2);
+                    }
+                }
+            } 
+            //No change in Y
+            else
+            {
+                if(!player.hasPermission("anticheat.flyhack") && !player.isFlying() && player.getVehicle() == null)
+                {                  
+                    Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
+                    if(!canStand(block) && !canStand(block.getRelative(BlockFace.NORTH)) && !canStand(block.getRelative(BlockFace.EAST)) && !canStand(block.getRelative(BlockFace.SOUTH)) && !canStand(block.getRelative(BlockFace.WEST)) && !canStand(block.getRelative(BlockFace.NORTH_WEST)) && !canStand(block.getRelative(BlockFace.NORTH_EAST)) && !canStand(block.getRelative(BlockFace.SOUTH_WEST)) && !canStand(block.getRelative(BlockFace.SOUTH_EAST)))
+                    {
+                        if (fm.checkFly(player))
+                        {
+                            event.setTo(event.getFrom().clone());
+                            plugin.log(player.getName()+" tried to fly!");
+                            tracker.increaseLevel(player,2);
+                        }
+                        else
+                        {
+                            tracker.decreaseLevel(player);
+                        }  
+                    }               
                 }
             }            
         }
@@ -371,14 +332,6 @@ public class PlayerListener implements Listener {
         {
             return true;
         }        
-        if(block.isLiquid())
-        {
-            return false;
-        }
-        else if (block.getType() == Material.AIR)
-        {
-            return false;
-        }
         else
         {
             return true;

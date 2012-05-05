@@ -6,9 +6,9 @@ import net.h31ix.anticheat.Anticheat;
 import org.bukkit.entity.Player;
 
 public class BowManager {
-    public Map<Player,Boolean> shot = new HashMap<Player,Boolean>();
-    public Map<Player,Boolean> wind = new HashMap<Player,Boolean>();
-    Anticheat plugin;
+    private Map<Player,Boolean> shot = new HashMap<Player,Boolean>();
+    private Map<Player,Boolean> wind = new HashMap<Player,Boolean>();
+    private Anticheat plugin;
     
     public BowManager(Anticheat plugin)
     {
@@ -44,13 +44,13 @@ public class BowManager {
     public boolean hasShot(Player player)
     {
         //If the player has shot in the last .5 seconds
-        if(shot.get(player) == null || shot.get(player) == false)
+        if(shot.get(player) == null)
         {
             return false;
         }
         else
         {
-            return true;
+            return shot.get(player);
         }
     }
     

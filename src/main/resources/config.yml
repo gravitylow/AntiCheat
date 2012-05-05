@@ -3,6 +3,9 @@
 
 Logging:
   Log to console: false
+  
+XRay:
+  Log xray stats: true
 
 Events: 
   #Valid events = NONE,WARN,KICK,BAN

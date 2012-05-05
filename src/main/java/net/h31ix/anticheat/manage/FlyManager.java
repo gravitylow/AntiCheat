@@ -5,11 +5,12 @@ import java.util.Map;
 import org.bukkit.entity.Player;
 
 public class FlyManager {
-    public Map<Player,Integer> y = new HashMap<Player,Integer>();
-    public Map<Player,Integer> yvl = new HashMap<Player,Integer>();
+    private Map<Player,Integer> yvl = new HashMap<Player,Integer>();
+    private static final int FLY_LIMIT = 4;
     
     public FlyManager()
     {
+        
     }   
     
     public boolean checkFly(Player player)
@@ -24,7 +25,7 @@ public class FlyManager {
         {
             yvl.put(player,yvl.get(player)+1);
         }
-        if(yvl.get(player) >= 4)
+        if(yvl.get(player) >= FLY_LIMIT)
         {
             yvl.put(player,1);
             return true;

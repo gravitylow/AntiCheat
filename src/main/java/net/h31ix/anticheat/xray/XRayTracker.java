@@ -7,19 +7,21 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class XRayTracker {
-    public Map<Player,Integer> diamond = new HashMap<Player,Integer>();
-    public Map<Player,Integer> gold = new HashMap<Player,Integer>();
-    public Map<Player,Integer> iron = new HashMap<Player,Integer>();
-    public Map<Player,Integer> coal = new HashMap<Player,Integer>();
-    public Map<Player,Integer> lapis = new HashMap<Player,Integer>();
-    public Map<Player,Integer> redstone = new HashMap<Player,Integer>();
-    public Map<Player,Integer> block = new HashMap<Player,Integer>();
-    public Map<Player,Integer> totalblock = new HashMap<Player,Integer>();
-    ChatColor green = ChatColor.GREEN;
-    ChatColor white = ChatColor.WHITE;
-    ChatColor red = ChatColor.RED;
-    ChatColor yellow = ChatColor.YELLOW;
-    ChatColor gray = ChatColor.GRAY;
+    private Map<Player,Integer> diamond = new HashMap<Player,Integer>();
+    private Map<Player,Integer> gold = new HashMap<Player,Integer>();
+    private Map<Player,Integer> iron = new HashMap<Player,Integer>();
+    private Map<Player,Integer> coal = new HashMap<Player,Integer>();
+    private Map<Player,Integer> lapis = new HashMap<Player,Integer>();
+    private Map<Player,Integer> redstone = new HashMap<Player,Integer>();
+    private Map<Player,Integer> block = new HashMap<Player,Integer>();
+    private Map<Player,Integer> totalblock = new HashMap<Player,Integer>();
+    private static final ChatColor green = ChatColor.GREEN;
+    private static final ChatColor white = ChatColor.WHITE;
+    private static final ChatColor red = ChatColor.RED;
+    private static final ChatColor gray = ChatColor.GRAY;
+    private static final int DIVISOR = 100;
+    private static final int RATIO_DIVISOR = 3;
+    private static final int MIN_BLOCK_COUNT = 150;
     
     public XRayTracker()
     {
@@ -28,7 +30,7 @@ public class XRayTracker {
     
     public void sendStats(CommandSender cs, Player player)
     {
-        double t = 1;
+        int t = 1;
         double d = 0;
         double g = 0;
         double i = 0;
@@ -42,71 +44,72 @@ public class XRayTracker {
         }        
         if(diamond.get(player) != null)
         {
-            d = (diamond.get(player)/t)*100;
+            d = (diamond.get(player)/t)*DIVISOR;
         }  
         if(gold.get(player) != null)
         {
-            g = (gold.get(player)/t)*100;
+            g = (gold.get(player)/t)*DIVISOR;
         } 
         if(iron.get(player) != null)
         {
-            i = (iron.get(player)/t)*100;
+            i = (iron.get(player)/t)*DIVISOR;
         } 
         if(coal.get(player) != null)
         {
-            c = (coal.get(player)/t)*100;
+            c = (coal.get(player)/t)*DIVISOR;
         } 
         if(lapis.get(player) != null)
         {
-            la = (lapis.get(player)/t)*100;
+            la = (lapis.get(player)/t)*DIVISOR;
         } 
         if(redstone.get(player) != null)
         {
-            r = (redstone.get(player)/t)*100;
+            r = (redstone.get(player)/t)*DIVISOR;
         } 
         if(block.get(player) != null)
         {
-            b = (block.get(player)/t)*100;
+            b = (block.get(player)/t)*DIVISOR;
         }  
         cs.sendMessage("--------------------["+green+"X-Ray Stats"+white+"]---------------------");
-        ChatColor color = ChatColor.WHITE;
-        if(d >= b/3 && t > 50)
+        ChatColor color = white;
+        if(d >= b/RATIO_DIVISOR && t > MIN_BLOCK_COUNT)
         {
-            color = ChatColor.RED;
+            color = red;
         }
+        cs.sendMessage(gray+"Player: "+white+player.getName());
         cs.sendMessage(gray+"Total blocks broken: "+white+t);
-        cs.sendMessage(gray+"Percent diamond ore: "+color+round(d,1)+"%");
-        color = ChatColor.WHITE;
-        if(g >= b/3 && t > 50)
+        cs.sendMessage(gray+"Percent diamond ore: "+color+round(d)+"%");
+        color = white;
+        if(g >= b/RATIO_DIVISOR && t > MIN_BLOCK_COUNT)
         {
-            color = ChatColor.RED;
+            color = red;
         }        
-        cs.sendMessage(gray+"Percent gold ore: "+color+round(g,1)+"%");
-        color = ChatColor.WHITE;
-        if(i >= b/3 && t > 50)
+        cs.sendMessage(gray+"Percent gold ore: "+color+round(g)+"%");
+        color = white;
+        if(i >= b/RATIO_DIVISOR && t > MIN_BLOCK_COUNT)
         {
-            color = ChatColor.RED;
+            color = red;
         }        
-        cs.sendMessage(gray+"Percent iron ore: "+color+round(i,1)+"%");
-        color = ChatColor.WHITE;
-        if(c >= b/3 && t > 50)
+        cs.sendMessage(gray+"Percent iron ore: "+color+round(i)+"%");
+        color = white;
+        if(c >= b/RATIO_DIVISOR && t > MIN_BLOCK_COUNT)
         {
-            color = ChatColor.RED;
+            color = red;
         }            
-        cs.sendMessage(gray+"Percent coal ore: "+color+round(c,1)+"%");
-        color = ChatColor.WHITE;
-        if(la >= b/3 && t > 50)
+        cs.sendMessage(gray+"Percent coal ore: "+color+round(c)+"%");
+        color = white;
+        if(la >= b/RATIO_DIVISOR && t > MIN_BLOCK_COUNT)
         {
-            color = ChatColor.RED;
+            color = red;
         }            
-        cs.sendMessage(gray+"Percent lapis ore: "+color+round(la,1)+"%");
-        color = ChatColor.WHITE;
-        if(r >= b/3 && t > 50)
+        cs.sendMessage(gray+"Percent lapis ore: "+color+round(la)+"%");
+        color = white;
+        if(r >= b/RATIO_DIVISOR && t > MIN_BLOCK_COUNT)
         {
-            color = ChatColor.RED;
+            color = red;
         }            
-        cs.sendMessage(gray+"Percent redstone ore: "+color+round(r,1)+"%");
-        cs.sendMessage(gray+"Percent all other blocks: "+white+round(b,1)+"%");
+        cs.sendMessage(gray+"Percent redstone ore: "+color+round(r)+"%");
+        cs.sendMessage(gray+"Percent all other blocks: "+white+round(b)+"%");
         cs.sendMessage("-----------------------------------------------------");
     }
     
@@ -163,11 +166,23 @@ public class XRayTracker {
         }          
     } 
     
-  private float round(double Rval, int Rpl) 
-  {
-      float p = (float)Math.pow(10,Rpl);
-      Rval = Rval * p;
-      float tmp = Math.round(Rval);
-      return (float)tmp/p;
-  }    
+    private float round(double num) 
+    {
+        float p = (float)Math.pow(10,1);
+        num*=p;
+        float tmp = Math.round(num);
+        return (float)tmp/p;
+    } 
+  
+    public void reset(Player player)
+    {
+        totalblock.put(player,1);
+        diamond.put(player,0);
+        iron.put(player,0);
+        gold.put(player,0);
+        coal.put(player,0);
+        redstone.put(player,0);
+        lapis.put(player,0);
+        totalblock.put(player,0);
+    }
 }

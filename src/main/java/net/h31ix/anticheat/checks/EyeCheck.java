@@ -6,15 +6,17 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public class EyeCheck {
+    private static final int EYE_DISTANCE = 20;
     
     public EyeCheck()
     {
+        
     }
     
     public boolean canSee(Player player, Block block)
     {
         //TODO: The logic here is NOT concrete, especially when looking down at an angle.
-        List<Block> blocks = player.getLineOfSight(null, 20);
+        List<Block> blocks = player.getLineOfSight(null, EYE_DISTANCE);
         Location bloc = block.getLocation();
         boolean see = false;
         for(Block b : blocks)
@@ -26,13 +28,6 @@ public class EyeCheck {
                 see = true;
             }
         }
-        if(see)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return see;
     }    
 }

@@ -6,9 +6,9 @@ import net.h31ix.anticheat.Anticheat;
 import org.bukkit.entity.Player;
 
 public class ExemptManager {
-    public Map<Player,Boolean> enter = new HashMap<Player,Boolean>();
-    public Map<Player,Boolean> hit = new HashMap<Player,Boolean>();
-    Anticheat plugin;
+    private Map<Player,Boolean> enter = new HashMap<Player,Boolean>();
+    private Map<Player,Boolean> hit = new HashMap<Player,Boolean>();
+    private Anticheat plugin;
     
     public ExemptManager(Anticheat plugin)
     {
@@ -31,13 +31,13 @@ public class ExemptManager {
     
     public boolean isEntering(Player player)
     {
-        if(enter.get(player) == null || enter.get(player) == false)
+        if(enter.get(player) == null)
         {
             return false;
         }
         else
         {
-            return true;
+            return enter.get(player);
         }
     }
     
@@ -56,13 +56,13 @@ public class ExemptManager {
     
     public boolean isHit(Player player)
     {
-        if(hit.get(player) == null || hit.get(player) == false)
+        if(hit.get(player) == null)
         {
             return false;
         }
         else
         {
-            return true;
+            return hit.get(player);
         }
     }    
 }
