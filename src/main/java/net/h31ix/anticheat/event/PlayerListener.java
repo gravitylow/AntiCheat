@@ -261,6 +261,13 @@ public class PlayerListener implements Listener {
                         }              
                         else
                         {
+                            if(player.getFoodLevel() <= 6)
+                            {
+                                player.setSprinting(false);
+                                tracker.increaseLevel(player,2);
+                                plugin.log(player.getName()+" tried to sprint while hungry! ");
+                                event.setTo(event.getFrom().clone());                                
+                            }
                             //If they are sprinting or flying give slack
                             if(xd > 0.7D || zd > 0.7D)
                             {
