@@ -23,6 +23,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
@@ -38,7 +39,7 @@ public class PlayerListener implements Listener {
     private FlyManager fm;
     private BowManager bm;
     private FoodManager fom;
-    private BlockManager blm;
+    private SprintManager sp;
     
     public PlayerListener(Anticheat plugin)
     {
@@ -52,7 +53,7 @@ public class PlayerListener implements Listener {
         this.fm = plugin.fm;
         this.bm = plugin.bm;
         this.fom = plugin.fom;
-        this.blm = plugin.blm;
+        this.sp = plugin.sp;
     }
     
     @EventHandler
@@ -181,6 +182,15 @@ public class PlayerListener implements Listener {
     }
     
     @EventHandler
+    public void onPlayerToggleSprint(PlayerToggleSprintEvent event)
+    {
+        if(event.isSprinting())
+        {
+            sp.logSprint(event.getPlayer());
+        }
+    }
+    
+    @EventHandler
     public void onPlayerMove(PlayerMoveEvent event)
     {
         Player player = event.getPlayer();
@@ -261,7 +271,7 @@ public class PlayerListener implements Listener {
                         }              
                         else
                         {
-                            if(player.getFoodLevel() <= 6)
+                            if(player.getFoodLevel() <= 6 && player.getGameMode() != GameMode.CREATIVE)
                             {
                                 player.setSprinting(false);
                                 tracker.increaseLevel(player,2);

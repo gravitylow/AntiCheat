@@ -22,6 +22,7 @@ public class EntityListener implements Listener {
     private PlayerTracker tracker;
     private HealthManager hm;
     private FoodManager fom;
+    private SprintManager sp;
     private static final double ENTITY_MAX_DISTANCE_XZ = 5.0;
     private static final double ENTITY_MAX_DISTANCE_Y = 4.3;
     
@@ -33,6 +34,7 @@ public class EntityListener implements Listener {
         this.ex = plugin.ex;
         this.hm = plugin.hm;
         this.fom = plugin.fom;
+        this.sp = plugin.sp;
     }
     
     @EventHandler
@@ -124,7 +126,17 @@ public class EntityListener implements Listener {
     {
         if (event instanceof EntityDamageByEntityEvent)
         {
-            EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;      
+            EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;    
+            if(e.getDamager() instanceof Player)
+            {
+                Player player = (Player) e.getDamager();
+                if(sp.justSprinted(player))
+                {
+                    event.setCancelled(true);
+                    tracker.increaseLevel(player,2);
+                    plugin.log(player.getName()+" tried to sprint and damage too fast!");                      
+                }
+            }
             if(event.getEntity() instanceof Player)
             {      
                 Player player = (Player)event.getEntity();

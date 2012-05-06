@@ -23,6 +23,7 @@ public class Anticheat extends JavaPlugin {
     public FoodManager fom = new FoodManager(this);
     public FlyManager fm = new FlyManager();
     public BlockManager blm = new BlockManager(this);
+    public SprintManager sp = new SprintManager(this);
     //End Managers
     
     private Configuration config; 
