@@ -311,7 +311,7 @@ public class PlayerListener implements Listener {
             //No change in Y
             else
             {
-                if(!player.hasPermission("anticheat.flyhack") && !player.isFlying() && player.getVehicle() == null)
+                if(!player.hasPermission("anticheat.flyhack") && !player.hasPermission("anticheat.zombe.fly") && !player.isFlying() && player.getVehicle() == null)
                 {                  
                     Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
                     if(!canStand(block) && !canStand(block.getRelative(BlockFace.NORTH)) && !canStand(block.getRelative(BlockFace.EAST)) && !canStand(block.getRelative(BlockFace.SOUTH)) && !canStand(block.getRelative(BlockFace.WEST)) && !canStand(block.getRelative(BlockFace.NORTH_WEST)) && !canStand(block.getRelative(BlockFace.NORTH_EAST)) && !canStand(block.getRelative(BlockFace.SOUTH_WEST)) && !canStand(block.getRelative(BlockFace.SOUTH_EAST)))
