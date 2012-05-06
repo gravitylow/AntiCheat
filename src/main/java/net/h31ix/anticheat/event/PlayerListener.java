@@ -184,9 +184,20 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerToggleSprint(PlayerToggleSprintEvent event)
     {
+        Player player = event.getPlayer();
         if(event.isSprinting())
         {
-            sp.logSprint(event.getPlayer());
+            if(player.getFoodLevel() <= 6 && player.getGameMode() != GameMode.CREATIVE)
+            {
+                event.setCancelled(true);
+                player.setSprinting(false);
+                tracker.increaseLevel(player,2);
+                plugin.log(player.getName()+" tried to sprint while hungry! ");                           
+            }  
+            else
+            {
+                sp.logSprint(event.getPlayer());
+            }
         }
     }
     
@@ -262,7 +273,7 @@ public class PlayerListener implements Listener {
                 else if(xd > 0.4D || zd > 0.4D)
                 {
                     if(!player.hasPermission("anticheat.speedhack") && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED))
-                    {                      
+                    {                               
                         if(!player.isSprinting())
                         {
                             tracker.increaseLevel(player,2);
@@ -277,7 +288,7 @@ public class PlayerListener implements Listener {
                                 tracker.increaseLevel(player,2);
                                 plugin.log(player.getName()+" tried to sprint while hungry! ");
                                 event.setTo(event.getFrom().clone());                                
-                            }
+                            }                            
                             //If they are sprinting or flying give slack
                             if(xd > 0.7D || zd > 0.7D)
                             {
