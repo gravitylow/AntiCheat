@@ -38,6 +38,7 @@ public class PlayerListener implements Listener {
     private FlyManager fm;
     private BowManager bm;
     private FoodManager fom;
+    private BlockManager blm;
     
     public PlayerListener(Anticheat plugin)
     {
@@ -51,6 +52,7 @@ public class PlayerListener implements Listener {
         this.fm = plugin.fm;
         this.bm = plugin.bm;
         this.fom = plugin.fom;
+        this.blm = plugin.blm;
     }
     
     @EventHandler

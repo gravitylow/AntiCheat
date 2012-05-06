@@ -4,7 +4,6 @@ import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.PlayerTracker;
 import net.h31ix.anticheat.checks.*;
 import net.h31ix.anticheat.manage.*;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -20,7 +19,7 @@ public class BlockListener implements Listener {
     private PlayerTracker tracker;
     private static final EyeCheck e = new EyeCheck();
     private BlockManager blm;
-    private static final double BLOCK_MAX_DISTANCE = 6.0;
+    private static final double BLOCK_MAX_DISTANCE = 5.0;
     
     public BlockListener(Anticheat plugin)
     {
@@ -52,7 +51,7 @@ public class BlockListener implements Listener {
                 else
                 {
                     if(!player.hasPermission("anticheat.longreach"))
-                    {                
+                    {          
                         //If so, check the distance from the block. Is it too far away?
                         LengthCheck c = new LengthCheck(block.getLocation(),event.getPlayer().getLocation());
                         if(c.getXDifference() > BLOCK_MAX_DISTANCE || c.getZDifference() > BLOCK_MAX_DISTANCE || c.getYDifference() > BLOCK_MAX_DISTANCE)
@@ -66,7 +65,7 @@ public class BlockListener implements Listener {
                             tracker.decreaseLevel(player);
                         }
                     }
-                    if (!player.hasPermission("anticheat.fastbreak") && player.getGameMode() != GameMode.CREATIVE)
+                    if (!player.hasPermission("anticheat.fastbreak"))
                     {
                         if(!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED))
                         {
@@ -89,7 +88,6 @@ public class BlockListener implements Listener {
                                     && block.getType() != Material.DIODE_BLOCK_ON
                                     && block.getType() != Material.SAPLING
                                     && block.getType() != Material.TORCH
-                                    && block.getType() != Material.TNT
                                     && block.getType() != Material.SNOW)
                             {
                                 if (!blm.justBroke(player))
@@ -98,16 +96,20 @@ public class BlockListener implements Listener {
                                 }
                                 else
                                 {
-                                    plugin.log(player.getName() + " tried to break a block too fast! Block: "+block.getType().name());
+                                    plugin.log(player.getName() + " tried to break a block too fast!");
                                     tracker.increaseLevel(player, 2);
                                     event.setCancelled(true);
                                 }
                             }
                         }
-                    }                    
-                }                         
+                    } 
+                }
+                am.reset(player); 
+                if(!player.hasPermission("anticheat.fastbreak"))
+                {
+                    plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new FastbreakCheck(player,event,plugin), 2L);    
+                }
             }
-            am.reset(player);
         }
     }
     
@@ -123,7 +125,7 @@ public class BlockListener implements Listener {
                 if(block.getType() != Material.LADDER && !e.canSee(player, block) && !player.getWorld().getBlockAt(player.getLocation()).isLiquid())
                 {
                     plugin.log(player.getName()+" tried to place a block that they couldn't see!");
-                    //event.setCancelled(true);                    
+                    event.setCancelled(true);                    
                 }
                 if(!player.hasPermission("anticheat.longreach"))
                 {            
@@ -148,7 +150,7 @@ public class BlockListener implements Listener {
                     }
                     else
                     {
-                        plugin.log(player.getName() + " tried to place a block too fast! Block: "+block.getType().name());
+                        plugin.log(player.getName() + " tried to place a block too fast!");
                         tracker.increaseLevel(player, 2);
                         event.setCancelled(true);
                     }
