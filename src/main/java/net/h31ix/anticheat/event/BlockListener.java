@@ -69,7 +69,6 @@ public class BlockListener implements Listener {
                     {
                         if(!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED))
                         {
-                            System.out.println(block.getType().name());
                             if(block.getType() != Material.RED_MUSHROOM 
                                     && block.getType() != Material.RED_ROSE 
                                     && block.getType() != Material.BROWN_MUSHROOM 
