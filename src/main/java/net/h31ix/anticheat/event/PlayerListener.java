@@ -364,10 +364,14 @@ public class PlayerListener implements Listener {
     
     public boolean canStand(Block block)
     {
-        if(block.getRelative(BlockFace.UP).getType() == Material.STEP || block.getRelative(BlockFace.UP).getType() == Material.SOUL_SAND || block.getRelative(BlockFace.UP).getTypeId() == 111)
+        if(block.isLiquid())
         {
-            return true;
-        }        
+            return false;
+        }
+        else if (block.getType() == Material.AIR)
+        {
+            return false;
+        }
         else
         {
             return true;

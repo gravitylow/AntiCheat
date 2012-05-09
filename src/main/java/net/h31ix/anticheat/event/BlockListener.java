@@ -69,6 +69,7 @@ public class BlockListener implements Listener {
                     {
                         if(!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED))
                         {
+                            System.out.println(block.getType().name());
                             if(block.getType() != Material.RED_MUSHROOM 
                                     && block.getType() != Material.RED_ROSE 
                                     && block.getType() != Material.BROWN_MUSHROOM 
@@ -88,6 +89,7 @@ public class BlockListener implements Listener {
                                     && block.getType() != Material.DIODE_BLOCK_ON
                                     && block.getType() != Material.SAPLING
                                     && block.getType() != Material.TORCH
+                                    && block.getType() != Material.CROPS
                                     && block.getType() != Material.SNOW)
                             {
                                 if (!blm.justBroke(player))

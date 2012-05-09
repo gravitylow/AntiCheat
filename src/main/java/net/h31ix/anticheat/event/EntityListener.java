@@ -4,6 +4,7 @@ import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.PlayerTracker;
 import net.h31ix.anticheat.checks.LengthCheck;
 import net.h31ix.anticheat.manage.*;
+import org.bukkit.Location;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,6 +15,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.util.Vector;
 
 public class EntityListener implements Listener {
     private Anticheat plugin;
@@ -144,7 +146,7 @@ public class EntityListener implements Listener {
                 {
                     if (e.getDamager() instanceof Player)
                     {         
-                        Player p = (Player) e.getDamager();            
+                        Player p = (Player) e.getDamager();   
                         //Being damaged causes the player to move really fast, usually triggering a warning and
                         //A teleport, so give them a grace period after damaging someone or being hit for recovery.
                         int time = 50;
