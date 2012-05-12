@@ -35,6 +35,7 @@ import org.bukkit.event.player.PlayerToggleSprintEvent;
 public class Backend 
 {
     public static final int ENTERED_EXTITED_TIME = 20;
+    public static final int INSTANT_BREAK_TIME = 20;
     public static final int JOIN_TIME = 40;
     public static final int DROPPED_ITEM_TIME = 2;
     public static final int DAMAGE_TIME = 50;
@@ -80,6 +81,7 @@ public class Backend
     private List<String> startEat = new ArrayList<String>();
     private List<String> healed = new ArrayList<String>();
     private List<String> sprinted = new ArrayList<String>();
+    private List<String> instantBreakExempt = new ArrayList<String>();
     private Map<String,Integer> flightViolation = new HashMap<String,Integer>();
     private Map<String,Integer> chatLevel = new HashMap<String,Integer>();
     private Map<String,Integer> chatKicks = new HashMap<String,Integer>();         
@@ -244,7 +246,7 @@ public class Backend
     
     public boolean checkFastBreak(Player player, Block block)
     {      
-        if(player.getGameMode() != GameMode.CREATIVE && !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()))
+        if(player.getGameMode() != GameMode.CREATIVE && !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player))
         {
             if (!justBroke(player))
             {
@@ -307,6 +309,16 @@ public class Backend
     {
         chatLevel.remove(player.getName());
     } 
+    
+    public void logInstantBreak(final Player player)
+    {
+        logEvent(instantBreakExempt,player,INSTANT_BREAK_TIME);             
+    }
+    
+    public boolean isInstantBreakExempt(Player player)
+    {
+        return instantBreakExempt.contains(player.getName());             
+    }    
     
     public void logSprint(final Player player)
     {

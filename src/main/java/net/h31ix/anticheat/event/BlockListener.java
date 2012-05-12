@@ -27,12 +27,22 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDamageEvent;
 
 public class BlockListener extends EventListener 
 {    
     private final Backend backend = getBackend();
     private final CheckManager checkManager = getCheckManager();
     private final Anticheat plugin = getPlugin();
+    
+    @EventHandler
+    public void onBlockDamage(BlockDamageEvent event)
+    {
+        if(event.getInstaBreak())
+        {
+            backend.logInstantBreak(event.getPlayer());
+        }
+    }
     
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event)
