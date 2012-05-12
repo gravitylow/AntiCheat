@@ -47,7 +47,7 @@ public class Backend
     public static final int NOFALL_LIMIT = 5;
     
     public static final int SPRINT_FOOD_MIN = 6;
-    public static final int EAT_MIN = 60;
+    public static final int EAT_MIN = 20;
     public static final int HEAL_MIN = 35;
     public static final int ANIMATION_MIN = 60;
     public static final int CHAT_MIN = 100;

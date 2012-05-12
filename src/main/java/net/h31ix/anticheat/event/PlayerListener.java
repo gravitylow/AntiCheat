@@ -92,7 +92,7 @@ public class PlayerListener extends EventListener
     {
         Player player = event.getPlayer();
         PlayerInventory inv = player.getInventory();
-        if(event.getAction() == Action.RIGHT_CLICK_AIR)
+        if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
         {
             Material m = inv.getItemInHand().getType();
             if(m == Material.BOW)
