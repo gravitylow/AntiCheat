@@ -33,7 +33,7 @@ public class VehicleListener extends EventListener
     {
         if(event.getEntered() instanceof Player)
         {
-            backend.logEnteredVehicle((Player)event.getEntered());
+            backend.logEnterExit((Player)event.getEntered());
         }
     }
     
@@ -42,7 +42,7 @@ public class VehicleListener extends EventListener
     {
         if(event.getExited() instanceof Player)
         {
-            backend.logEnteredVehicle((Player)event.getExited());
+            backend.logEnterExit((Player)event.getExited());
         }
     }    
 }

@@ -34,7 +34,7 @@ import org.bukkit.event.player.PlayerToggleSprintEvent;
 
 public class Backend 
 {
-    public static final int ENTERED_VEHICLE_TIME = 20;
+    public static final int ENTERED_EXTITED_TIME = 20;
     public static final int DROPPED_ITEM_TIME = 2;
     public static final int DAMAGE_TIME = 50;
     public static final int KNOCKBACK_DAMAGE_TIME = 50;
@@ -362,9 +362,9 @@ public class Backend
         logEvent(movingExempt,player,time);  
     }
     
-    public void logEnteredVehicle(final Player player)
+    public void logEnterExit(final Player player)
     {
-        logEvent(movingExempt,player,ENTERED_VEHICLE_TIME);             
+        logEvent(movingExempt,player,ENTERED_EXTITED_TIME);             
     }
     
     public boolean isMovingExempt(Player player)

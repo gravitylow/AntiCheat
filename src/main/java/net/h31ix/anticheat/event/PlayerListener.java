@@ -25,6 +25,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -112,6 +114,18 @@ public class PlayerListener extends EventListener
                 backend.logDroppedItem(player);
             }
         }
+    }  
+    
+    @EventHandler 
+    public void onPlayerEnterBed(PlayerBedEnterEvent event)
+    {
+        backend.logEnterExit(event.getPlayer());
+    }
+    
+    @EventHandler 
+    public void onPlayerExitBed(PlayerBedLeaveEvent event)
+    {
+        backend.logEnterExit(event.getPlayer());
     }    
     
     @EventHandler
