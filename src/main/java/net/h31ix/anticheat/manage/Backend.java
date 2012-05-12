@@ -35,6 +35,7 @@ import org.bukkit.event.player.PlayerToggleSprintEvent;
 public class Backend 
 {
     public static final int ENTERED_EXTITED_TIME = 20;
+    public static final int JOIN_TIME = 40;
     public static final int DROPPED_ITEM_TIME = 2;
     public static final int DAMAGE_TIME = 50;
     public static final int KNOCKBACK_DAMAGE_TIME = 50;
@@ -211,7 +212,7 @@ public class Backend
     public boolean checkFlight(Player player, double y1, double y2)
     {
         Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
-        if(y1 == y2 && !isMovingExempt(player) && player.getVehicle() == null && player.getFallDistance() == 0)
+        if(y1 == y2 && !isMovingExempt(player) && player.getVehicle() == null && player.getFallDistance() == 0 && !Utilities.isOnLilyPad(player))
         {
             String name = player.getName();
             if(Utilities.cantStandAt(block) && !Utilities.isOnLilyPad(player))
@@ -366,6 +367,11 @@ public class Backend
     {
         logEvent(movingExempt,player,ENTERED_EXTITED_TIME);             
     }
+    
+    public void logJoin(final Player player)
+    {
+        logEvent(movingExempt,player,JOIN_TIME);             
+    }    
     
     public boolean isMovingExempt(Player player)
     {

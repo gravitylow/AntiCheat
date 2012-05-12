@@ -158,6 +158,7 @@ public class PlayerListener extends EventListener
         {          
            player.sendMessage("§f §f §4 §0 §9 §6");                                
         }
+        backend.logJoin(event.getPlayer());
     } 
     
     @EventHandler
