@@ -1,0 +1,13 @@
+author: H31IX
+database: false
+description: Prevention of hacks and other malicious tinkering on a Minecraft server.
+main: net.h31ix.anticheat.Anticheat
+name: AntiCheat
+softdepend: [AntiCheat]
+startup: postworld
+url: http://H31IX.NET/
+version: '1.0'
+commands:
+  anticheat:
+    description: Control and view info about AntiCheat
+    usage: /anticheat help

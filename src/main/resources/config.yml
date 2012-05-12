@@ -1,0 +1,17 @@
+#AntiCheat configuration file
+#Please report any bugs: http://dev.bukkit.org/server-mods/anticheat/
+XRay:
+  Log xray stats: true
+
+Events: 
+  #Valid events = NONE,WARN,KICK,BAN,COMMAND[command]
+  #Use commands like so: COMMAND[ban &player 30] or COMMAND[kick &player hacking] or COMMAND[jail &player 10]
+  #&player will be replaced with player's name, and any command on your server can be used.
+  Level Medium: WARN
+  Level High: KICK
+  
+System:
+  #Turning auto-update off is a _BAD_ idea. You will no longer be protected by the latest hacks/cheats if you do so.
+  #AntiCheat will never bother you about updates if this is on, but if you turn it off you will have to manuall update.
+  Auto update: true
+  Log to console: false
