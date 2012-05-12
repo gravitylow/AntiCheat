@@ -83,7 +83,7 @@ public final class Utilities
     }
     public static boolean canStand(Block block)
     {
-        return !block.isLiquid() || block.getType() == Material.AIR;
+        return !(block.isLiquid() || block.getType() == Material.AIR);
     }
     public static boolean isInstantBreak(Material m)
     {
@@ -96,5 +96,18 @@ public final class Utilities
     public static boolean sprintFly(Player player)
     {
         return player.isSprinting() || player.isFlying();       
+    }
+    public static boolean isOnLilyPad(Player player)
+    {
+        Block block = player.getLocation().getBlock();
+        Material lily = Material.WATER_LILY;
+        if(block.getType() == lily || block.getRelative(BlockFace.NORTH).getType() == lily || block.getRelative(BlockFace.SOUTH).getType() == lily || block.getRelative(BlockFace.EAST).getType() == lily || block.getRelative(BlockFace.WEST).getType() == lily)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

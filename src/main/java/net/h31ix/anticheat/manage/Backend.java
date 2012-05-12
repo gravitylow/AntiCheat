@@ -193,7 +193,8 @@ public class Backend
     
     public boolean checkWaterWalk(Player player, double x, double z)
     {
-         if(player.getLocation().getBlock().isLiquid() && player.getVehicle() == null)
+        Block block = player.getLocation().getBlock();
+         if(block.isLiquid() && player.getVehicle() == null)
          {
             if(x > XZ_SPEED_MAX_WATER || z > XZ_SPEED_MAX_WATER && !Utilities.sprintFly(player) && player.getNearbyEntities(1, 1, 1).isEmpty())
             {
@@ -209,11 +210,11 @@ public class Backend
     
     public boolean checkFlight(Player player, double y1, double y2)
     {
+        Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
         if(y1 == y2 && !isMovingExempt(player) && player.getVehicle() == null && player.getFallDistance() == 0)
         {
             String name = player.getName();
-            Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
-            if(Utilities.cantStandAt(block))
+            if(Utilities.cantStandAt(block) && !Utilities.isOnLilyPad(player))
             {
                 int violation = 1;
                 if(!flightViolation.containsKey(name))
