@@ -32,42 +32,7 @@ public final class Utilities
     
     private Utilities()
     {
-        INSTANT_BREAK.add(Material.RED_MUSHROOM);
-        INSTANT_BREAK.add(Material.RED_ROSE);
-        INSTANT_BREAK.add(Material.BROWN_MUSHROOM); 
-        INSTANT_BREAK.add(Material.YELLOW_FLOWER); 
-        INSTANT_BREAK.add(Material.REDSTONE); 
-        INSTANT_BREAK.add(Material.REDSTONE_TORCH_OFF); 
-        INSTANT_BREAK.add(Material.REDSTONE_TORCH_ON); 
-        INSTANT_BREAK.add(Material.REDSTONE_WIRE); 
-        INSTANT_BREAK.add(Material.GRASS); 
-        INSTANT_BREAK.add(Material.LONG_GRASS);
-        INSTANT_BREAK.add(Material.PAINTING); 
-        INSTANT_BREAK.add(Material.WHEAT); 
-        INSTANT_BREAK.add(Material.SUGAR_CANE); 
-        INSTANT_BREAK.add(Material.SUGAR_CANE_BLOCK); 
-        INSTANT_BREAK.add(Material.DIODE); 
-        INSTANT_BREAK.add(Material.DIODE_BLOCK_OFF); 
-        INSTANT_BREAK.add(Material.DIODE_BLOCK_ON);
-        INSTANT_BREAK.add(Material.SAPLING);
-        INSTANT_BREAK.add(Material.TORCH);
-        INSTANT_BREAK.add(Material.CROPS);
-        INSTANT_BREAK.add(Material.SNOW);   
-        FOOD.add(Material.COOKED_BEEF);
-        FOOD.add(Material.COOKED_CHICKEN);
-        FOOD.add(Material.COOKED_FISH);
-        FOOD.add(Material.GRILLED_PORK);
-        FOOD.add(Material.PORK);
-        FOOD.add(Material.MUSHROOM_SOUP);
-        FOOD.add(Material.RAW_BEEF);
-        FOOD.add(Material.RAW_CHICKEN);
-        FOOD.add(Material.RAW_FISH);
-        FOOD.add(Material.APPLE);
-        FOOD.add(Material.GOLDEN_APPLE);
-        FOOD.add(Material.MELON);
-        FOOD.add(Material.COOKIE);
-        FOOD.add(Material.SPIDER_EYE);
-        FOOD.add(Material.ROTTEN_FLESH);   
+        
     }    
     public static boolean cantStandAt(Block block)
     {
@@ -109,5 +74,43 @@ public final class Utilities
         {
             return false;
         }
+    }
+    static 
+    {
+        INSTANT_BREAK.add(Material.RED_MUSHROOM);
+        INSTANT_BREAK.add(Material.RED_ROSE);
+        INSTANT_BREAK.add(Material.BROWN_MUSHROOM); 
+        INSTANT_BREAK.add(Material.YELLOW_FLOWER); 
+        INSTANT_BREAK.add(Material.REDSTONE); 
+        INSTANT_BREAK.add(Material.REDSTONE_TORCH_OFF); 
+        INSTANT_BREAK.add(Material.REDSTONE_TORCH_ON); 
+        INSTANT_BREAK.add(Material.REDSTONE_WIRE);  
+        INSTANT_BREAK.add(Material.LONG_GRASS);
+        INSTANT_BREAK.add(Material.PAINTING); 
+        INSTANT_BREAK.add(Material.WHEAT); 
+        INSTANT_BREAK.add(Material.SUGAR_CANE); 
+        INSTANT_BREAK.add(Material.SUGAR_CANE_BLOCK); 
+        INSTANT_BREAK.add(Material.DIODE); 
+        INSTANT_BREAK.add(Material.DIODE_BLOCK_OFF); 
+        INSTANT_BREAK.add(Material.DIODE_BLOCK_ON);
+        INSTANT_BREAK.add(Material.SAPLING);
+        INSTANT_BREAK.add(Material.TORCH);
+        INSTANT_BREAK.add(Material.CROPS);
+        INSTANT_BREAK.add(Material.SNOW);   
+        FOOD.add(Material.COOKED_BEEF);
+        FOOD.add(Material.COOKED_CHICKEN);
+        FOOD.add(Material.COOKED_FISH);
+        FOOD.add(Material.GRILLED_PORK);
+        FOOD.add(Material.PORK);
+        FOOD.add(Material.MUSHROOM_SOUP);
+        FOOD.add(Material.RAW_BEEF);
+        FOOD.add(Material.RAW_CHICKEN);
+        FOOD.add(Material.RAW_FISH);
+        FOOD.add(Material.APPLE);
+        FOOD.add(Material.GOLDEN_APPLE);
+        FOOD.add(Material.MELON);
+        FOOD.add(Material.COOKIE);
+        FOOD.add(Material.SPIDER_EYE);
+        FOOD.add(Material.ROTTEN_FLESH);           
     }
 }

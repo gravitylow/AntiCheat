@@ -242,7 +242,7 @@ public class Backend
     }
     
     public boolean checkFastBreak(Player player, Block block)
-    {
+    {      
         if(player.getGameMode() != GameMode.CREATIVE && !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()))
         {
             if (!justBroke(player))
