@@ -72,11 +72,18 @@ public class PlayerListener extends EventListener
     public void onPlayerToggleSprint(PlayerToggleSprintEvent event)
     {
         Player player = event.getPlayer();
-        if(checkManager.willCheck(player, CheckType.SPRINT) && backend.checkSprint(event))
+        if(checkManager.willCheck(player, CheckType.SPRINT))
         {
-            event.setCancelled(true);
-            player.setSprinting(false);
-            log("tried to sprint while hungry.",player);                
+            if(backend.checkSprint(event))
+            {
+                event.setCancelled(true);
+                player.setSprinting(false);
+                log("tried to sprint while hungry.",player);  
+            }
+            else
+            {
+                decrease(player);
+            }              
         }
     }    
     

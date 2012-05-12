@@ -41,10 +41,17 @@ public class BlockListener extends EventListener
         Block block = event.getBlock();
         if(player != null)
         {     
-            if(checkManager.willCheck(player, CheckType.NO_SWING) && backend.checkSwing(player))
+            if(checkManager.willCheck(player, CheckType.NO_SWING))
             {
-                event.setCancelled(true);
-                log("tried to break a block of "+block.getType().name()+" without swinging their arm.",player);                    
+                if(backend.checkSwing(player))
+                {
+                    event.setCancelled(true);
+                    log("tried to break a block of "+block.getType().name()+" without swinging their arm.",player);  
+                }
+                else
+                {
+                    decrease(player);
+                }
             }
             if(checkManager.willCheck(player, CheckType.LONG_REACH))
             {
@@ -54,6 +61,10 @@ public class BlockListener extends EventListener
                     event.setCancelled(true);
                     log("tried to break a block of "+block.getType().name()+" that was too far away.",player);                      
                 }
+                else
+                {
+                    decrease(player);
+                }                
             }            
             if(checkManager.willCheck(player, CheckType.FAST_BREAK))
             {
@@ -62,6 +73,10 @@ public class BlockListener extends EventListener
                     event.setCancelled(true);
                     log("tried to break a block of "+block.getType().name()+" too fast.",player);                     
                 }
+                else
+                {
+                    decrease(player);
+                }                
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
                 {
                     @Override

@@ -43,10 +43,17 @@ public class EntityListener extends EventListener
         if(event.getEntity() instanceof Player)
         {
             Player player = (Player)event.getEntity();
-            if(checkManager.willCheck(player, CheckType.FAST_BOW) && backend.justWoundUp(player))
-            {               
-                event.setCancelled(true);
-                log("tried to fire a bow too fast.",player);
+            if(checkManager.willCheck(player, CheckType.FAST_BOW))
+            {      
+                if(backend.justWoundUp(player))
+                {
+                    event.setCancelled(true);
+                    log("tried to fire a bow too fast.",player);
+                }
+                else
+                {
+                    decrease(player);
+                }                
             }
         }
     }
@@ -57,10 +64,17 @@ public class EntityListener extends EventListener
         if(event.getEntity() instanceof Player && event.getRegainReason() == RegainReason.SATIATED)
         {
             Player player = (Player)event.getEntity();
-            if(checkManager.willCheck(player, CheckType.FAST_HEAL) && backend.justHealed(player)) 
+            if(checkManager.willCheck(player, CheckType.FAST_HEAL)) 
             {
-                event.setCancelled(true);
-                log("tried to heal too fast.",player);                
+                if(backend.justHealed(player))
+                {
+                    event.setCancelled(true);
+                    log("tried to heal too fast.",player);  
+                }
+                else
+                {
+                    decrease(player);
+                }                  
             }
         }
     }
@@ -71,10 +85,17 @@ public class EntityListener extends EventListener
         if(event.getEntity() instanceof Player)
         {
             Player player = (Player)event.getEntity();
-            if(checkManager.willCheck(player, CheckType.FAST_EAT) && backend.justStartedEating(player)) 
+            if(checkManager.willCheck(player, CheckType.FAST_EAT)) 
             {
-                event.setCancelled(true);
-                log("tried to eat too fast.",player);                
+                if(backend.justStartedEating(player))
+                {
+                    event.setCancelled(true);
+                    log("tried to eat too fast.",player); 
+                }
+                else
+                {
+                    decrease(player);
+                }                 
             }
         }
     }
@@ -88,10 +109,17 @@ public class EntityListener extends EventListener
             if(e.getDamager() instanceof Player)
             {
                 Player player = (Player) e.getDamager();
-                if(checkManager.willCheck(player, CheckType.FORCEFIELD) && backend.justSprinted(player)) 
+                if(checkManager.willCheck(player, CheckType.FORCEFIELD)) 
                 {
-                    event.setCancelled(true);
-                    log("tried to sprint & damage too fast.",player);                
+                    if(backend.justSprinted(player))
+                    {
+                        event.setCancelled(true);
+                        log("tried to sprint & damage too fast.",player);   
+                    }
+                    else
+                    {
+                        decrease(player);
+                    }                       
                 }
             }
             if(event.getEntity() instanceof Player)
@@ -110,6 +138,10 @@ public class EntityListener extends EventListener
                             event.setCancelled(true);
                             log("tried to damage a player too far away from them.",player);                      
                         }
+                        else
+                        {
+                            decrease(player);
+                        }                          
                     }                     
                 }
                 else

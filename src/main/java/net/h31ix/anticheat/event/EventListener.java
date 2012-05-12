@@ -39,6 +39,11 @@ public class EventListener implements Listener
         }
     }
     
+    public void decrease(Player player)
+    {
+        PLAYER_MANAGER.decreaseLevel(player);
+    }
+    
     public CheckManager getCheckManager()
     {
         return CHECK_MANAGER;
