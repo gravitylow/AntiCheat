@@ -403,7 +403,7 @@ public class Backend
     private void logEvent(final List list, final Player player, long time)
     {
         list.add(player.getName());
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
+        Anticheat.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(Anticheat.getPlugin(), new Runnable() 
         {
             @Override
             public void run() 
@@ -415,7 +415,7 @@ public class Backend
     private void logEvent(final Map map, final Player player, final Object obj, long time)
     {
         map.put(player,obj);
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
+        Anticheat.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(Anticheat.getPlugin(), new Runnable() 
         {
             @Override
             public void run() 

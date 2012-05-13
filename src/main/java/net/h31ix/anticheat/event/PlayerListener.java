@@ -171,12 +171,12 @@ public class PlayerListener extends EventListener
         double x = distance.getXDifference();
         double y = distance.getYDifference();
         double z = distance.getZDifference();
-        if(checkManager.willCheck(player, CheckType.FLY) && backend.checkFlight(player, from.getY(), to.getY()))
+        if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkFlight(player, from.getY(), to.getY()))
         {
             event.setTo(from);
             log("tried to fly.",player);                
         }
-        if(checkManager.willCheck(player, CheckType.SPEED))
+        if(checkManager.willCheck(player, CheckType.SPEED) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY))
         {
             if(event.getFrom().getY() < event.getTo().getY() && backend.checkYSpeed(player, y))
             {
