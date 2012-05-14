@@ -110,6 +110,7 @@ public final class Utilities
         FOOD.add(Material.GOLDEN_APPLE);
         FOOD.add(Material.MELON);
         FOOD.add(Material.COOKIE);
+        FOOD.add(Material.BREAD);
         FOOD.add(Material.SPIDER_EYE);
         FOOD.add(Material.ROTTEN_FLESH);           
     }

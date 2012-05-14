@@ -35,6 +35,7 @@ public class Configuration {
     private boolean logConsole;
     private boolean logXRay;
     private boolean autoUpdate;
+    private boolean verboseStartup;
     private List<String> worlds = new ArrayList<String>();
     
     public Configuration()
@@ -67,6 +68,11 @@ public class Configuration {
     public boolean autoUpdate()
     {
         return autoUpdate;
+    }  
+    
+    public boolean verboseStartup()
+    {
+        return verboseStartup;
     }    
     
     public final void load()
@@ -103,6 +109,12 @@ public class Configuration {
             save();
         }        
         autoUpdate = config.getBoolean("System.Auto update");
+        if(config.getString("System.Verbose startup") == null)
+        {
+            config.set("System.Verbose startup", false);
+            save();
+        }        
+        verboseStartup = config.getBoolean("System.Verbose startup");        
     }
     
     public String getResult(String event)
@@ -132,5 +144,5 @@ public class Configuration {
     public boolean checkInWorld(World world)
     {
         return worlds.contains(world.getName());
-    }    
+    }
 }

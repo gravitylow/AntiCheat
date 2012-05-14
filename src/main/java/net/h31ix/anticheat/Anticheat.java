@@ -27,6 +27,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.h31ix.anticheat.event.*;
 import net.h31ix.anticheat.manage.AnticheatManager;
 import net.h31ix.anticheat.xray.XRayListener;
@@ -39,13 +41,23 @@ public class Anticheat extends JavaPlugin
     private final List<Listener> eventList = new ArrayList<Listener>();
     private static boolean update = false;
     private static final int BYTE_SIZE = 1024;
+    private static final Logger logger = Logger.getLogger("Minecraft");
+    private static boolean verbose;
     
     @Override
     public void onDisable() 
     {
         if(update && AnticheatManager.CONFIGURATION.autoUpdate())
         {
+            if(verbose)
+            {
+                logger.log(Level.INFO,"[AC] Installing the new update...");
+            }            
             saveFile("plugins\\AntiCheat.jar", "http://dl.dropbox.com/u/38228324/AntiCheat.jar");
+            if(verbose)
+            {
+                logger.log(Level.INFO,"[AC] New version of AntiCheat installed.");
+            }            
         }
     }
 
@@ -53,9 +65,14 @@ public class Anticheat extends JavaPlugin
     public void onEnable() 
     {
         plugin = this;
+        verbose = AnticheatManager.CONFIGURATION.verboseStartup();
         checkForUpdate();
         if(!new File("plugins/AntiCheat/config.yml").exists())
         {
+            if(verbose)
+            {
+                logger.log(Level.INFO,"[AC] Config file created");
+            }
             saveDefaultConfig();
         }
         eventList.add(new PlayerListener());
@@ -69,8 +86,17 @@ public class Anticheat extends JavaPlugin
         for(Listener listener : eventList)
         {
             getServer().getPluginManager().registerEvents(listener, this);
+            if(verbose)
+            {
+                logger.log(Level.INFO,"[AC] Registered events for ".concat(listener.toString()));
+            }            
         }
         getCommand("anticheat").setExecutor(new CommandHandler());
+        if(verbose)
+        {
+            logger.log(Level.INFO,"[AC] Registered commands");
+            logger.log(Level.INFO,"[AC] Finished loading.");
+        }        
     } 
     
   private void saveFile(String file, String url) 
@@ -114,6 +140,10 @@ public class Anticheat extends JavaPlugin
     
     private void checkForUpdate()
     {
+        if(verbose)
+        {
+            logger.log(Level.INFO,"[AC] Checking for updates...");
+        }    
         URL url = null;
         URLConnection urlConn = null;
         InputStreamReader  inStream = null;
@@ -143,9 +173,17 @@ public class Anticheat extends JavaPlugin
         if (!this.getDescription().getVersion().equalsIgnoreCase(v))
         {
             update = true;
+            if(verbose)
+            {
+                logger.log(Level.INFO,"[AC] An update was found.");
+            }            
         }
         else
         {
+            if(verbose)
+            {
+                logger.log(Level.INFO,"[AC] No update found.");
+            }            
             update = false;
         }
     } 
