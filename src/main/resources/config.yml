@@ -12,6 +12,6 @@ Events:
   
 System:
   #Turning auto-update off is a _BAD_ idea. You will no longer be protected by the latest hacks/cheats if you do so.
-  #AntiCheat will never bother you about updates if this is on, but if you turn it off you will have to manuall update.
+  #AntiCheat will never bother you about updates if this is on, but if you turn it off you will have to manually update.
   Auto update: true
   Log to console: false
