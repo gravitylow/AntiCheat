@@ -106,10 +106,15 @@ public class CommandHandler implements CommandExecutor {
                 {
                     cs.sendMessage(RED+"Multiple players found by name: "+WHITE+args[1]+RED+".");
                 }
+                else if(xtracker.sufficientData(args[1]))
+                {
+                        xtracker.sendStats(cs, args[1]);
+                }
                 else
                 {
-                    cs.sendMessage(RED+"Player: "+WHITE+args[1]+RED+" not found.");
-                } 
+                    cs.sendMessage(RED+"Insufficient data collected from "+WHITE+args[1]+RED+".");
+                    cs.sendMessage(RED+"Please wait until more info is collected before predictions are calculated.");
+                }
             }
             else
             {
