@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.h31ix.anticheat.event.*;
 import net.h31ix.anticheat.manage.AnticheatManager;
+import net.h31ix.anticheat.metrics.Metrics;
 import net.h31ix.anticheat.xray.XRayListener;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -46,6 +47,7 @@ public class Anticheat extends JavaPlugin
     private static Configuration config;
     private static boolean verbose;
     private static String updateFolder;
+    private static Metrics metrics;
     
     @Override
     public void onDisable() 
@@ -116,7 +118,15 @@ public class Anticheat extends JavaPlugin
             catch (IOException ex) 
             {
             }             
-        }                    
+        } 
+        try 
+        {
+            metrics = new Metrics(this);
+            metrics.start();
+        }
+        catch (IOException ex) 
+        {
+        }        
     } 
     
   private void saveFile(String file, String url) 
