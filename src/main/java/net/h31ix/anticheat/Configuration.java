@@ -31,11 +31,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Configuration {
     private File configFile = new File("plugins/AntiCheat/config.yml");
+    private File bukkitFile = new File("bukkit.yml");
     private FileConfiguration config;
+    private FileConfiguration bukkit;
     private boolean logConsole;
     private boolean logXRay;
     private boolean autoUpdate;
     private boolean verboseStartup;
+    private String updateFolder;
     private List<String> worlds = new ArrayList<String>();
     
     public Configuration()
@@ -73,11 +76,18 @@ public class Configuration {
     public boolean verboseStartup()
     {
         return verboseStartup;
-    }    
+    } 
+    
+    public String updateFolder()
+    {
+        return updateFolder;
+    }     
     
     public final void load()
     {
         config = YamlConfiguration.loadConfiguration(configFile);
+        bukkit = YamlConfiguration.loadConfiguration(bukkitFile);
+        updateFolder = bukkit.getString("settings.update-folder");
         if(config.getString("Logging.Log to console") != null)
         {
             boolean b = config.getBoolean("Logging.Log to console");

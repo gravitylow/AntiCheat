@@ -22,6 +22,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -42,30 +43,23 @@ public class Anticheat extends JavaPlugin
     private static boolean update = false;
     private static final int BYTE_SIZE = 1024;
     private static final Logger logger = Logger.getLogger("Minecraft");
+    private static Configuration config;
     private static boolean verbose;
+    private static String updateFolder;
     
     @Override
     public void onDisable() 
     {
-        if(update && AnticheatManager.CONFIGURATION.autoUpdate())
-        {
-            if(verbose)
-            {
-                logger.log(Level.INFO,"[AC] Installing the new update...");
-            }            
-            saveFile("plugins\\AntiCheat.jar", "http://dl.dropbox.com/u/38228324/AntiCheat.jar");
-            if(verbose)
-            {
-                logger.log(Level.INFO,"[AC] New version of AntiCheat installed.");
-            }            
-        }
+        //Nothing to do.
     }
 
     @Override
     public void onEnable() 
     {
         plugin = this;
-        verbose = AnticheatManager.CONFIGURATION.verboseStartup();
+        config = AnticheatManager.CONFIGURATION;
+        verbose = config.verboseStartup();
+        updateFolder = config.updateFolder();
         checkForUpdate();
         if(!new File("plugins/AntiCheat/config.yml").exists())
         {
@@ -79,7 +73,7 @@ public class Anticheat extends JavaPlugin
         eventList.add(new BlockListener());
         eventList.add(new EntityListener());
         eventList.add(new VehicleListener());
-        if(AnticheatManager.CONFIGURATION.logXRay())
+        if(config.logXRay())
         {
             eventList.add(new XRayListener());
         }
@@ -96,7 +90,32 @@ public class Anticheat extends JavaPlugin
         {
             logger.log(Level.INFO,"[AC] Registered commands");
             logger.log(Level.INFO,"[AC] Finished loading.");
-        }        
+        } 
+        if(update && config.autoUpdate())
+        {
+            if(verbose)
+            {
+                logger.log(Level.INFO,"[AC] Downloading the new update...");
+            }  
+            File file = new File("plugins\\"+updateFolder);
+            if(!file.exists())
+            {
+                try 
+                {
+                    file.mkdir();
+                } 
+                catch (Exception ex) 
+                {
+                }
+            }  
+            try 
+            {
+                saveFile(file.getCanonicalPath()+"\\AntiCheat.jar", "http://dl.dropbox.com/u/38228324/AntiCheat.jar");
+            } 
+            catch (IOException ex) 
+            {
+            }             
+        }                    
     } 
     
   private void saveFile(String file, String url) 
@@ -135,6 +154,10 @@ public class Anticheat extends JavaPlugin
         catch(Exception ex)
         {
         }
+        if(verbose)
+        {
+            logger.log(Level.INFO,"[AC] AntiCheat update has been downloaded and will be installed on next launch.");
+        }         
     }
   }
     
