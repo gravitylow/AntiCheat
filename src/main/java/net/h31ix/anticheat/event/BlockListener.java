@@ -23,11 +23,13 @@ import net.h31ix.anticheat.manage.Backend;
 import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.Distance;
+import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BlockListener extends EventListener 
 {    
@@ -41,6 +43,29 @@ public class BlockListener extends EventListener
         if(event.getInstaBreak())
         {
             backend.logInstantBreak(event.getPlayer());
+        }
+    }
+    
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event)
+    {
+        final Player player = event.getPlayer();
+        Block block = event.getBlock();
+        if(player != null && player.getGameMode() != GameMode.CREATIVE)
+        {     
+            if(checkManager.willCheck(player, CheckType.FAST_PLACE))
+            {
+                if(backend.justPlaced(player))
+                {
+                    event.setCancelled(true);
+                    log("tried to place a block of "+block.getType().name()+" too fast.",player);                     
+                }   
+                else
+                {
+                    decrease(player);
+                    backend.logBlockPlace(player);
+                }                
+            }            
         }
     }
     
