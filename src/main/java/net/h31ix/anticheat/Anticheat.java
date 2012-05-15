@@ -32,8 +32,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.h31ix.anticheat.event.*;
 import net.h31ix.anticheat.manage.AnticheatManager;
+import net.h31ix.anticheat.manage.Utilities;
 import net.h31ix.anticheat.metrics.Metrics;
 import net.h31ix.anticheat.xray.XRayListener;
+import net.h31ix.anticheat.xray.XRayTracker;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -52,7 +56,7 @@ public class Anticheat extends JavaPlugin
     @Override
     public void onDisable() 
     {
-        //Nothing to do.
+        getServer().getScheduler().cancelAllTasks();
     }
 
     @Override
@@ -76,9 +80,32 @@ public class Anticheat extends JavaPlugin
         eventList.add(new BlockListener());
         eventList.add(new EntityListener());
         eventList.add(new VehicleListener());
+        final XRayTracker xtracker = AnticheatManager.XRAY_TRACKER;
         if(config.logXRay())
         {
             eventList.add(new XRayListener());
+            if(config.alertXRay())
+            {
+                getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() 
+                {
+                    @Override
+                    public void run()
+                    {
+                        for(Player player : getServer().getOnlinePlayers())
+                        {
+                            String name = player.getName();
+                            if(!xtracker.hasAlerted(name) && xtracker.sufficientData(name) && xtracker.hasAbnormal(name))
+                            {
+                                String [] alert = new String[2];
+                                alert[0] = ChatColor.YELLOW+"[ALERT] "+ChatColor.WHITE+name+ChatColor.YELLOW+" might be using xray.";
+                                alert[1] = ChatColor.YELLOW+"[ALERT] Please check their xray stats using "+ChatColor.WHITE+"/anticheat xray "+name+ChatColor.YELLOW+".";
+                                Utilities.alert(alert); 
+                                xtracker.logAlert(name);
+                            }
+                        }
+                    }
+                }, 1200L, 1200L);  
+            }
         }
         for(Listener listener : eventList)
         {

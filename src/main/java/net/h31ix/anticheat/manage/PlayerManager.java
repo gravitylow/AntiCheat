@@ -33,27 +33,19 @@ public class PlayerManager {
     
     public void reactMedium(Player player)
     {
-        execute("Medium",player);                           
-        for(Player p : player.getServer().getOnlinePlayers())
-        {
-            if(p.hasPermission("anticheat.alert") || p.hasPermission("anticheat.admin") || p.isOp())
-            {
-                p.sendMessage(ChatColor.YELLOW+"[ALERT] "+ChatColor.WHITE+player.getName()+ChatColor.YELLOW+" has entered the MEDIUM hack level.");
-                p.sendMessage(ChatColor.YELLOW+"[ALERT] This means they may be using a hacked client or may have a bad connection!");
-            }
-        }        
+            execute("Medium",player);                           
+            String [] alert = new String[2];
+            alert[0] = ChatColor.YELLOW+"[ALERT] "+ChatColor.WHITE+player.getName()+ChatColor.YELLOW+" has entered the MEDIUM hack level.";
+            alert[1] = ChatColor.YELLOW+"[ALERT] This means they may be using a hacked client or may have a bad connection!";      
+            Utilities.alert(alert);
     }
     public void reactHigh(Player player)
     {
         execute("High",player);
-        for(Player p : player.getServer().getOnlinePlayers())
-        {
-            if(p.hasPermission("anticheat.alert") || p.hasPermission("anticheat.admin") || p.isOp())
-            {
-                p.sendMessage(ChatColor.RED+"[ALERT] "+ChatColor.WHITE+player.getName()+ChatColor.RED+" has entered the HIGH hack level.");
-                p.sendMessage(ChatColor.RED+"[ALERT] This means they probably are hacking or are lagging out!");
-            }
-        }       
+        String [] alert = new String[2];
+        alert[0] = ChatColor.RED+"[ALERT] "+ChatColor.WHITE+player.getName()+ChatColor.RED+" has entered the HIGH hack level.";
+        alert[1] = ChatColor.RED+"[ALERT] This means they probably are hacking or are lagging out!";
+        Utilities.alert(alert);              
     }
     
     public void increaseLevel(Player player)

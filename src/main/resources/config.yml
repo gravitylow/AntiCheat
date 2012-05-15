@@ -2,6 +2,7 @@
 #Please report any bugs: http://dev.bukkit.org/server-mods/anticheat/
 XRay:
   Log xray stats: true
+  Alert when xray is found: false
 
 Events: 
   #Valid events = NONE,WARN,KICK,BAN,COMMAND[command]

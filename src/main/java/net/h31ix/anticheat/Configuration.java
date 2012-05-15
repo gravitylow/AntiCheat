@@ -36,6 +36,7 @@ public class Configuration {
     private FileConfiguration bukkit;
     private boolean logConsole;
     private boolean logXRay;
+    private boolean alertXRay;
     private boolean autoUpdate;
     private boolean verboseStartup;
     private String updateFolder;
@@ -67,6 +68,11 @@ public class Configuration {
     {
         return logXRay;
     }
+    
+    public boolean alertXRay()
+    {
+        return logXRay;
+    }    
     
     public boolean autoUpdate()
     {
@@ -124,7 +130,13 @@ public class Configuration {
             config.set("System.Verbose startup", false);
             save();
         }        
-        verboseStartup = config.getBoolean("System.Verbose startup");        
+        verboseStartup = config.getBoolean("System.Verbose startup");     
+        if(config.getString("XRay.Alert when xray is found") == null)
+        {
+            config.set("XRay.Alert when xray is found", false);
+            save();
+        }        
+        alertXRay = config.getBoolean("XRay.Alert when xray is found");         
     }
     
     public String getResult(String event)

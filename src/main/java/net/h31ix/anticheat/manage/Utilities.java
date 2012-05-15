@@ -20,6 +20,10 @@ package net.h31ix.anticheat.manage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -34,6 +38,27 @@ public final class Utilities
     {
         
     }    
+    public static void alert(String [] message)
+    {
+        for(Player p : Bukkit.getServer().getOnlinePlayers())
+        {
+            if(p.hasPermission("anticheat.alert") || p.hasPermission("anticheat.admin") || p.isOp())
+            {
+               for(String msg : message)
+               {
+                   p.sendMessage(msg);
+               }
+            }
+        } 
+        if(AnticheatManager.CONFIGURATION.logConsole())
+        {
+           Logger logger = Logger.getLogger("Minecraft");
+           for(String msg : message)
+           {
+               logger.log(Level.INFO,ChatColor.stripColor(msg));
+           }            
+        }
+    }
     public static boolean cantStandAt(Block block)
     {
         return !canStand(block) && cantStandClose(block) && cantStandFar(block);
