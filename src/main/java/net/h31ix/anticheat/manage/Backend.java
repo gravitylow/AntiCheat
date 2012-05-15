@@ -246,7 +246,7 @@ public class Backend
     
     public boolean checkFastBreak(Player player, Block block)
     {      
-        if(player.getGameMode() != GameMode.CREATIVE && !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player))
+        if(player.getGameMode() != GameMode.CREATIVE && !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES))
         {
             if (!justBroke(player))
             {

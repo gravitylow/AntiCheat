@@ -286,7 +286,7 @@ public class CommandHandler implements CommandExecutor {
         }
         else
         {
-            cs.sendMessage(RED+"Unrecognized command.");
+            cs.sendMessage(RED+"Unrecognized command. Try "+ChatColor.WHITE+"/anticheat help");
         }          
         return true;
     }
