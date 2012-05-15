@@ -36,7 +36,7 @@ public class PlayerManager {
         execute("Medium",player);                           
         for(Player p : player.getServer().getOnlinePlayers())
         {
-            if(p.hasPermission("anticheat.admin") || p.isOp())
+            if(p.hasPermission("anticheat.alert") || p.hasPermission("anticheat.admin") || p.isOp())
             {
                 p.sendMessage(ChatColor.YELLOW+"[ALERT] "+ChatColor.WHITE+player.getName()+ChatColor.YELLOW+" has entered the MEDIUM hack level.");
                 p.sendMessage(ChatColor.YELLOW+"[ALERT] This means they may be using a hacked client or may have a bad connection!");
@@ -48,7 +48,7 @@ public class PlayerManager {
         execute("High",player);
         for(Player p : player.getServer().getOnlinePlayers())
         {
-            if(p.hasPermission("anticheat.admin") || p.isOp())
+            if(p.hasPermission("anticheat.alert") || p.hasPermission("anticheat.admin") || p.isOp())
             {
                 p.sendMessage(ChatColor.RED+"[ALERT] "+ChatColor.WHITE+player.getName()+ChatColor.RED+" has entered the HIGH hack level.");
                 p.sendMessage(ChatColor.RED+"[ALERT] This means they probably are hacking or are lagging out!");

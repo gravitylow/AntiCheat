@@ -68,7 +68,7 @@ public class Metrics {
     /**
      * The current revision number
      */
-    private final static int REVISION = 5;
+    private static final int REVISION = 5;
 
     /**
      * The base url of the metrics domain
@@ -94,7 +94,7 @@ public class Metrics {
     /**
      * Interval of time to ping (in minutes)
      */
-    private final static int PING_INTERVAL = 10;
+    private static final int PING_INTERVAL = 10;
 
     /**
      * The plugin this metrics submits for
