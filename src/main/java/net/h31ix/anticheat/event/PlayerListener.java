@@ -23,6 +23,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
@@ -66,7 +67,7 @@ public class PlayerListener extends EventListener
     public void onPlayerKick(PlayerKickEvent event)
     {
         backend.clearChatLevel(event.getPlayer());
-    }
+    }   
     
     @EventHandler
     public void onPlayerToggleSprint(PlayerToggleSprintEvent event)
@@ -161,7 +162,7 @@ public class PlayerListener extends EventListener
         backend.logJoin(event.getPlayer());
     } 
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void checkExploit(PlayerMoveEvent event)
     {
         Player player = event.getPlayer();
