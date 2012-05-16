@@ -45,12 +45,12 @@ public class EventListener implements Listener
     
     private void logCheat(CheckType type)
     {
-        int x = 0;
-        if(usageList.get(type) != null)
-        {
-            x = usageList.get(type);
-        }
-        usageList.put(type, x+1);
+        usageList.put(type, getCheats(type)+1);
+    }
+    
+    public void resetCheck(CheckType type)
+    {
+        usageList.put(type, 0);
     }
     
     public int getCheats(CheckType type)

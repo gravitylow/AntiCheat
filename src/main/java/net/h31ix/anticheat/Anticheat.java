@@ -165,6 +165,7 @@ public class Anticheat extends JavaPlugin
                         return listener.getCheats(type);
                     }
                 }); 
+                listener.resetCheck(type);
             }
             metrics.start();
         }
