@@ -65,14 +65,14 @@ public class Anticheat extends JavaPlugin
     public void onEnable() 
     {
         plugin = this;
-        if(!new File(this.getDataFolder()+"\\config.yml").exists())
+        if(!new File(this.getDataFolder()+"/config.yml").exists())
         {
             saveDefaultConfig();
             if(verbose)
             {
                 logger.log(Level.INFO,"[AC] Config file created");
             }            
-        }        
+        }    
         config = AnticheatManager.CONFIGURATION;
         verbose = config.verboseStartup();
         updateFolder = config.updateFolder();
@@ -129,7 +129,7 @@ public class Anticheat extends JavaPlugin
             {
                 logger.log(Level.INFO,"[AC] Downloading the new update...");
             }  
-            File file = new File("plugins\\"+updateFolder);
+            File file = new File("plugins/"+updateFolder);
             if(!file.exists())
             {
                 try 
@@ -142,7 +142,7 @@ public class Anticheat extends JavaPlugin
             }  
             try 
             {
-                saveFile(file.getCanonicalPath()+"\\AntiCheat.jar", "http://dl.dropbox.com/u/38228324/AntiCheat.jar");
+                saveFile(file.getCanonicalPath()+"/AntiCheat.jar", "http://dl.dropbox.com/u/38228324/AntiCheat.jar");
             } 
             catch (IOException ex) 
             {
@@ -251,11 +251,34 @@ public class Anticheat extends JavaPlugin
         }
         if (!this.getDescription().getVersion().equalsIgnoreCase(v))
         {
-            update = true;
-            if(verbose)
+            String version = this.getDescription().getVersion();
+            if(version.endsWith("-PRE") || version.endsWith("-DEV"))
+            {   
+                if(version.replaceAll("-PRE", "").replaceAll("-DEV", "").equalsIgnoreCase(v))
+                {
+                    update = true;
+                    if(verbose)
+                    {
+                        logger.log(Level.INFO,"[AC] Your dev build has been promoted to release. Downloading the update.");
+                    }                         
+                }
+                else
+                {
+                    update = false;
+                    if(verbose)
+                    {
+                        logger.log(Level.INFO,"[AC] Dev build detected, so skipping update checking until this version is released.");
+                    }            
+                }
+            }
+            else
             {
-                logger.log(Level.INFO,"[AC] An update was found.");
-            }            
+                update = true;
+                if(verbose)
+                {
+                    logger.log(Level.INFO,"[AC] An update was found.");
+                }  
+            }
         }
         else
         {
