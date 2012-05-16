@@ -71,7 +71,7 @@ public class Configuration {
     
     public boolean alertXRay()
     {
-        return logXRay;
+        return alertXRay;
     }    
     
     public boolean autoUpdate()
@@ -91,6 +91,7 @@ public class Configuration {
     
     public final void load()
     {
+        Anticheat.checkConfig();
         config = YamlConfiguration.loadConfiguration(configFile);
         bukkit = YamlConfiguration.loadConfiguration(bukkitFile);
         updateFolder = bukkit.getString("settings.update-folder");
@@ -161,6 +162,11 @@ public class Configuration {
     public List<String> getWorlds()
     {
         return worlds;
+    }
+    
+    public File getConfigFile()
+    {
+        return configFile;
     }
     
     public boolean checkInWorld(World world)

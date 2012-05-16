@@ -65,19 +65,11 @@ public class Anticheat extends JavaPlugin
     public void onEnable() 
     {
         plugin = this;
-        if(!new File(this.getDataFolder()+"/config.yml").exists())
-        {
-            saveDefaultConfig();
-            if(verbose)
-            {
-                logger.log(Level.INFO,"[AC] Config file created");
-            }            
-        }    
+        checkConfig();
         config = AnticheatManager.CONFIGURATION;
         verbose = config.verboseStartup();
         updateFolder = config.updateFolder();
         checkForUpdate();
-        
         eventList.add(new PlayerListener());
         eventList.add(new BlockListener());
         eventList.add(new EntityListener());
@@ -216,6 +208,18 @@ public class Anticheat extends JavaPlugin
         }         
     }
   }
+  
+    public static void checkConfig()
+    {
+        if(!config.getConfigFile().exists())
+        {
+            plugin.saveDefaultConfig();
+            if(verbose)
+            {
+                logger.log(Level.INFO,"[AC] Config file created");
+            }            
+        }         
+    }
     
     private void checkForUpdate()
     {
