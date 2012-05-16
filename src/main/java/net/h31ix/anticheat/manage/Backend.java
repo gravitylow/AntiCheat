@@ -19,7 +19,6 @@
 package net.h31ix.anticheat.manage;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -329,7 +328,7 @@ public class Backend
     public boolean justSprinted(Player player)
     {
         return sprinted.contains(player.getName());             
-    }     
+    }  
 
     public void logBlockBreak(final Player player)
     {
@@ -399,7 +398,7 @@ public class Backend
     public boolean justDroppedItem(Player player)
     {
         return droppedItem.contains(player.getName());     
-    }
+    }   
     
     private void logEvent(final List list, final Player player, long time)
     {

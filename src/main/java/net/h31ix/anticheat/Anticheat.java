@@ -65,8 +65,8 @@ public class Anticheat extends JavaPlugin
     public void onEnable() 
     {
         plugin = this;
-        checkConfig();
         config = AnticheatManager.CONFIGURATION;
+        checkConfig();
         verbose = config.verboseStartup();
         updateFolder = config.updateFolder();
         checkForUpdate();
@@ -211,7 +211,7 @@ public class Anticheat extends JavaPlugin
   
     public static void checkConfig()
     {
-        if(!config.getConfigFile().exists())
+        if(!new File("plugins/AntiCheat/config.yml").exists())
         {
             plugin.saveDefaultConfig();
             if(verbose)
