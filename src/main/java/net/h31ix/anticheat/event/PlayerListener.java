@@ -79,7 +79,7 @@ public class PlayerListener extends EventListener
             {
                 event.setCancelled(true);
                 player.setSprinting(false);
-                log("tried to sprint while hungry.",player);  
+                log("tried to sprint while hungry.",player,CheckType.SPRINT);  
             }
             else
             {
@@ -175,25 +175,25 @@ public class PlayerListener extends EventListener
         if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkFlight(player, from.getY(), to.getY()))
         {
             event.setTo(from);
-            log("tried to fly.",player);                
+            log("tried to fly.",player,CheckType.FLY);                
         }
         if(checkManager.willCheck(player, CheckType.SPEED) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY))
         {
             if(event.getFrom().getY() < event.getTo().getY() && backend.checkYSpeed(player, y))
             {
                 event.setTo(from);
-                log("tried to ascend to fast.",player);                       
+                log("tried to ascend to fast.",player,CheckType.SPEED);                       
             }            
             if(backend.checkXZSpeed(player,x,z))
             {
                 event.setTo(from);
-                log("tried to move too fast.",player);                
+                log("tried to move too fast.",player,CheckType.SPEED);                
             }
         }   
         if(checkManager.willCheck(player, CheckType.NOFALL) && event.getFrom().getY() > event.getTo().getY() && backend.checkNoFall(player, y))
         {           
             event.setTo(from);
-            log("tried avoid fall damage.",player);                   
+            log("tried avoid fall damage.",player,CheckType.NOFALL);                   
         }    
     }
     @EventHandler
@@ -209,23 +209,18 @@ public class PlayerListener extends EventListener
         if(checkManager.willCheck(player, CheckType.WATER_WALK) && backend.checkWaterWalk(player,x,z))
         {
             event.setTo(from);
-            log("tried to walk on water.",player);                
+            log("tried to walk on water.",player,CheckType.WATER_WALK);                
         }    
         if(checkManager.willCheck(player, CheckType.SNEAK) && backend.checkSneak(player,x,z))
         {
             event.setTo(from);
             player.setSneaking(false);
-            log("tried to sneak too fast.",player);                
+            log("tried to sneak too fast.",player,CheckType.SNEAK);                
         }   
         if(checkManager.willCheck(player, CheckType.SPIDER) && backend.checkSpider(player, y))
         {
             event.setTo(from);
-            log("tried to climb a wall.",player);                   
-        }
-        if(checkManager.willCheck(player, CheckType.NOFALL) && event.getFrom().getY() > event.getTo().getY() && backend.checkNoFall(player, y))
-        {           
-            event.setTo(from);
-            log("tried avoid fall damage.",player);                   
-        }        
+            log("tried to climb a wall.",player,CheckType.SPIDER);                   
+        }      
     }
 }

@@ -32,8 +32,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.h31ix.anticheat.event.*;
 import net.h31ix.anticheat.manage.AnticheatManager;
+import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.Utilities;
 import net.h31ix.anticheat.metrics.Metrics;
+import net.h31ix.anticheat.metrics.Metrics.Graph;
 import net.h31ix.anticheat.xray.XRayListener;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.ChatColor;
@@ -149,6 +151,21 @@ public class Anticheat extends JavaPlugin
         try 
         {
             metrics = new Metrics(this);
+            final EventListener listener = new EventListener();
+            Graph graph = metrics.createGraph("Hacks blocked");
+            for(final CheckType type : CheckType.values())
+            {
+                char [] chars = type.toString().replaceAll("_", " ").toLowerCase().toCharArray();
+                chars[0]= Character.toUpperCase(chars[0]);
+                graph.addPlotter(new Metrics.Plotter(new String(chars)) 
+                {
+                    @Override
+                    public int getValue() 
+                    {
+                        return listener.getCheats(type);
+                    }
+                }); 
+            }
             metrics.start();
         }
         catch (IOException ex) 

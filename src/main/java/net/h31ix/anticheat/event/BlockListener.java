@@ -58,7 +58,7 @@ public class BlockListener extends EventListener
                 if(backend.justPlaced(player))
                 {
                     event.setCancelled(true);
-                    log("tried to place a block of "+block.getType().name()+" too fast.",player);                     
+                    log("tried to place a block of "+block.getType().name()+" too fast.",player,CheckType.FAST_PLACE);                     
                 }   
                 else
                 {
@@ -81,7 +81,7 @@ public class BlockListener extends EventListener
                 if(backend.checkSwing(player))
                 {
                     event.setCancelled(true);
-                    log("tried to break a block of "+block.getType().name()+" without swinging their arm.",player);  
+                    log("tried to break a block of "+block.getType().name()+" without swinging their arm.",player,CheckType.NO_SWING);  
                 }
                 else
                 {
@@ -94,7 +94,7 @@ public class BlockListener extends EventListener
                 if(backend.checkLongReachBlock(distance.getXDifference(),distance.getYDifference(),distance.getZDifference()))
                 {
                     event.setCancelled(true);
-                    log("tried to break a block of "+block.getType().name()+" that was too far away.",player);                      
+                    log("tried to break a block of "+block.getType().name()+" that was too far away.",player,CheckType.LONG_REACH);                      
                 }
                 else
                 {
@@ -106,7 +106,7 @@ public class BlockListener extends EventListener
                 if(backend.checkFastBreak(player,block))
                 {
                     event.setCancelled(true);
-                    log("tried to break a block of "+block.getType().name()+" too fast.",player);                     
+                    log("tried to break a block of "+block.getType().name()+" too fast.",player,CheckType.FAST_BREAK);                     
                 }
                 else
                 {

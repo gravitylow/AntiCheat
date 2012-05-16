@@ -42,13 +42,13 @@ public class EntityListener extends EventListener
     {
         if(event.getEntity() instanceof Player)
         {
-            Player player = (Player)event.getEntity();
+            Player player = (Player)event.getEntity();   
             if(checkManager.willCheck(player, CheckType.FAST_BOW))
             {      
                 if(backend.justWoundUp(player))
                 {
                     event.setCancelled(true);
-                    log("tried to fire a bow too fast.",player);
+                    log("tried to fire a bow too fast.",player,CheckType.FAST_BOW);
                 }
                 else
                 {
@@ -69,7 +69,7 @@ public class EntityListener extends EventListener
                 if(backend.justHealed(player))
                 {
                     event.setCancelled(true);
-                    log("tried to heal too fast.",player);  
+                    log("tried to heal too fast.",player,CheckType.FAST_HEAL);  
                 }
                 else
                 {
@@ -90,7 +90,7 @@ public class EntityListener extends EventListener
                 if(backend.justStartedEating(player))
                 {
                     event.setCancelled(true);
-                    log("tried to eat too fast.",player); 
+                    log("tried to eat too fast.",player,CheckType.FAST_EAT); 
                 }
                 else
                 {
@@ -114,7 +114,7 @@ public class EntityListener extends EventListener
                     if(backend.justSprinted(player))
                     {
                         event.setCancelled(true);
-                        log("tried to sprint & damage too fast.",player);   
+                        log("tried to sprint & damage too fast.",player,CheckType.FORCEFIELD);   
                     }
                     else
                     {
@@ -136,7 +136,7 @@ public class EntityListener extends EventListener
                         if(backend.checkLongReachDamage(distance.getXDifference(),distance.getYDifference(),distance.getZDifference()))
                         {
                             event.setCancelled(true);
-                            log("tried to damage a player too far away from them.",player);                      
+                            log("tried to damage a player too far away from them.",player,CheckType.LONG_REACH);                      
                         }
                         else
                         {

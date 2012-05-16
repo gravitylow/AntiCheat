@@ -18,8 +18,6 @@
 
 package net.h31ix.anticheat.manage;
 
-import com.google.common.collect.Maps;
-import java.util.Map;
 
 /**
  * <p>
@@ -52,7 +50,6 @@ public enum CheckType
     ITEM_SPAM("anticheat.itemspam");
     
     private final String permission;
-    private static final Map<String,CheckType> NAMES = Maps.newHashMap();
     
     private CheckType(String permission) 
     {
@@ -63,18 +60,4 @@ public enum CheckType
     {
         return this.permission;
     }
-    
-    public CheckType byName(String name)
-    {
-        return NAMES.get(name);
-    }
-    
-    static
-    {
-        for (CheckType type : values()) 
-        {
-            NAMES.put(type.toString(), type);
-        } 
-    }
-    
 }

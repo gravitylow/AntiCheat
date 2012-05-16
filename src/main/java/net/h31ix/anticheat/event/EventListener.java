@@ -18,6 +18,8 @@
 
 package net.h31ix.anticheat.event;
 
+import java.util.EnumMap;
+import java.util.Map;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.manage.*;
 import org.bukkit.entity.Player;
@@ -25,18 +27,40 @@ import org.bukkit.event.Listener;
 
 public class EventListener implements Listener 
 {
+    private static final Map<CheckType,Integer> usageList = new EnumMap<CheckType,Integer>(CheckType.class);
     private static final CheckManager CHECK_MANAGER = AnticheatManager.CHECK_MANAGER;   
     private static final Backend BACKEND = AnticheatManager.BACKEND;  
     private static final Anticheat PLUGIN = Anticheat.getPlugin();
     private static final PlayerManager PLAYER_MANAGER = AnticheatManager.PLAYER_MANAGER;
     
-    public void log(String message,Player player)
+    public void log(String message,Player player, CheckType type)
     {
         if(AnticheatManager.CONFIGURATION.logConsole())
         {
             AnticheatManager.log(player.getName()+" "+message);
             PLAYER_MANAGER.increaseLevel(player);
         }
+        logCheat(type);
+    }
+    
+    private void logCheat(CheckType type)
+    {
+        int x = 0;
+        if(usageList.get(type) != null)
+        {
+            x = usageList.get(type);
+        }
+        usageList.put(type, x+1);
+    }
+    
+    public int getCheats(CheckType type)
+    {
+        int x = 0;
+        if(usageList.get(type) != null)
+        {
+            x = usageList.get(type);
+        }
+        return x;
     }
     
     public void decrease(Player player)
