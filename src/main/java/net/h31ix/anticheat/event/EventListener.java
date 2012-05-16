@@ -19,6 +19,7 @@
 package net.h31ix.anticheat.event;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.manage.*;
@@ -28,32 +29,34 @@ import org.bukkit.event.Listener;
 public class EventListener implements Listener 
 {
     private static final Map<CheckType,Integer> usageList = new EnumMap<CheckType,Integer>(CheckType.class);
+    private static final Map<String,Integer> decreaseList = new HashMap<String,Integer>();
     private static final CheckManager CHECK_MANAGER = AnticheatManager.CHECK_MANAGER;   
     private static final Backend BACKEND = AnticheatManager.BACKEND;  
     private static final Anticheat PLUGIN = Anticheat.getPlugin();
     private static final PlayerManager PLAYER_MANAGER = AnticheatManager.PLAYER_MANAGER;
     
-    public void log(String message,Player player, CheckType type)
+    public static void log(String message,Player player, CheckType type)
     {
         if(AnticheatManager.CONFIGURATION.logConsole())
         {
             AnticheatManager.log(player.getName()+" "+message);
-            PLAYER_MANAGER.increaseLevel(player);
         }
+        PLAYER_MANAGER.increaseLevel(player);
+        removeDecrease(player);
         logCheat(type);
     }
     
-    private void logCheat(CheckType type)
+    private static void logCheat(CheckType type)
     {
         usageList.put(type, getCheats(type)+1);
     }
     
-    public void resetCheck(CheckType type)
+    public static void resetCheck(CheckType type)
     {
         usageList.put(type, 0);
     }
     
-    public int getCheats(CheckType type)
+    public static int getCheats(CheckType type)
     {
         int x = 0;
         if(usageList.get(type) != null)
@@ -63,22 +66,48 @@ public class EventListener implements Listener
         return x;
     }
     
-    public void decrease(Player player)
+    private static void removeDecrease(Player player)
     {
-        PLAYER_MANAGER.decreaseLevel(player);
+        int x = 0;
+        if(decreaseList.get(player.getName()) != null)
+        {
+            x = decreaseList.get(player.getName());
+            x-=2;
+            if(x < 0)
+            {
+                x = 0;
+            }
+        }
+        decreaseList.put(player.getName(), x);       
     }
     
-    public CheckManager getCheckManager()
+    public static void decrease(Player player)
+    {
+        int x = 0;
+        if(decreaseList.get(player.getName()) != null)
+        {
+            x = decreaseList.get(player.getName());
+        }
+        x+=1;
+        decreaseList.put(player.getName(), x);
+        if(x >= 10)
+        {
+            PLAYER_MANAGER.decreaseLevel(player);
+            decreaseList.put(player.getName(),0);
+        }
+    }
+    
+    public static CheckManager getCheckManager()
     {
         return CHECK_MANAGER;
     }
     
-    public Backend getBackend()
+    public static Backend getBackend()
     {
         return BACKEND;
     }  
     
-    public Anticheat getPlugin()
+    public static Anticheat getPlugin()
     {
         return PLUGIN;
     }    

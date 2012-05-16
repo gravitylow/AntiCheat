@@ -30,7 +30,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Configuration {
-    private File configFile = new File("plugins/AntiCheat/config.yml");
+    private File configFile = new File(Anticheat.getPlugin().getDataFolder()+"/config.yml");
     private File bukkitFile = new File("bukkit.yml");
     private FileConfiguration config;
     private FileConfiguration bukkit;

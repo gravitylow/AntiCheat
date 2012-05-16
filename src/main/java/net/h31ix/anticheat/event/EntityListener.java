@@ -103,9 +103,34 @@ public class EntityListener extends EventListener
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event)
     {
+        boolean noHack = true;
         if (event instanceof EntityDamageByEntityEvent)
         {
             EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;    
+            if(event.getEntity() instanceof Player)
+            {      
+                Player player = (Player)event.getEntity();
+                if (e.getDamager() instanceof Player)
+                {         
+                    Player p = (Player)e.getDamager();   
+                    backend.logDamage(p);
+                    backend.logDamage(player);
+                    if(checkManager.willCheck(p, CheckType.LONG_REACH))
+                    {
+                        Distance distance = new Distance(player.getLocation(),p.getLocation());
+                        if(backend.checkLongReachDamage(distance.getXDifference(),distance.getYDifference(),distance.getZDifference()))
+                        {
+                            event.setCancelled(true);
+                            log("tried to damage a player too far away from them.",p,CheckType.LONG_REACH); 
+                            noHack = false;
+                        }                         
+                    }                     
+                }
+                else
+                {
+                    backend.logDamage(player);
+                }
+            }
             if(e.getDamager() instanceof Player)
             {
                 Player player = (Player) e.getDamager();
@@ -114,41 +139,15 @@ public class EntityListener extends EventListener
                     if(backend.justSprinted(player))
                     {
                         event.setCancelled(true);
-                        log("tried to sprint & damage too fast.",player,CheckType.FORCEFIELD);   
-                    }
-                    else
-                    {
-                        decrease(player);
-                    }                       
-                }
-            }
-            if(event.getEntity() instanceof Player)
-            {      
-                Player player = (Player)event.getEntity();
-                if (e.getDamager() instanceof Player)
-                {         
-                    Player p = (Player) e.getDamager();   
-                    backend.logDamage(p);
-                    backend.logDamage(player);
-                    if(checkManager.willCheck(player, CheckType.LONG_REACH))
-                    {
-                        Distance distance = new Distance(player.getLocation(),p.getLocation());
-                        if(backend.checkLongReachDamage(distance.getXDifference(),distance.getYDifference(),distance.getZDifference()))
-                        {
-                            event.setCancelled(true);
-                            log("tried to damage a player too far away from them.",player,CheckType.LONG_REACH);                      
-                        }
-                        else
-                        {
-                            decrease(player);
-                        }                          
+                        log("tried to sprint & damage too fast.",player,CheckType.FORCEFIELD);  
+                        noHack = false;                        
                     }                     
                 }
-                else
+                if(noHack)
                 {
-                    backend.logDamage(player);
-                }
-            }
+                    decrease(player);
+                }                
+            }   
         }     
     }
 }

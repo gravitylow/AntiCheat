@@ -211,7 +211,7 @@ public class Anticheat extends JavaPlugin
   
     public static void checkConfig()
     {
-        if(!new File("plugins/AntiCheat/config.yml").exists())
+        if(!new File(plugin.getDataFolder()+"/config.yml").exists())
         {
             plugin.saveDefaultConfig();
             if(verbose)

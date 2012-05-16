@@ -74,6 +74,7 @@ public class BlockListener extends EventListener
     {
         final Player player = event.getPlayer();
         Block block = event.getBlock();
+        boolean noHack = true;
         if(player != null)
         {     
             if(checkManager.willCheck(player, CheckType.NO_SWING))
@@ -82,10 +83,7 @@ public class BlockListener extends EventListener
                 {
                     event.setCancelled(true);
                     log("tried to break a block of "+block.getType().name()+" without swinging their arm.",player,CheckType.NO_SWING);  
-                }
-                else
-                {
-                    decrease(player);
+                    noHack = false;
                 }
             }
             if(checkManager.willCheck(player, CheckType.LONG_REACH))
@@ -94,24 +92,18 @@ public class BlockListener extends EventListener
                 if(backend.checkLongReachBlock(distance.getXDifference(),distance.getYDifference(),distance.getZDifference()))
                 {
                     event.setCancelled(true);
-                    log("tried to break a block of "+block.getType().name()+" that was too far away.",player,CheckType.LONG_REACH);                      
-                }
-                else
-                {
-                    decrease(player);
-                }                
+                    log("tried to break a block of "+block.getType().name()+" that was too far away.",player,CheckType.LONG_REACH);    
+                    noHack = false;
+                }              
             }            
             if(checkManager.willCheck(player, CheckType.FAST_BREAK))
             {
                 if(backend.checkFastBreak(player,block))
                 {
                     event.setCancelled(true);
-                    log("tried to break a block of "+block.getType().name()+" too fast.",player,CheckType.FAST_BREAK);                     
-                }
-                else
-                {
-                    decrease(player);
-                }                
+                    log("tried to break a block of "+block.getType().name()+" too fast.",player,CheckType.FAST_BREAK);  
+                    noHack = false;
+                }              
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
                 {
                     @Override
@@ -121,6 +113,10 @@ public class BlockListener extends EventListener
                     }
                 },      2L);                    
             }
+        }
+        if(noHack)
+        {
+            decrease(player);
         }
     }
 }

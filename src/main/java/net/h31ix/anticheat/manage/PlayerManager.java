@@ -26,12 +26,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class PlayerManager {
-    private Map<Player,Integer> level = new HashMap<Player,Integer>();
-    private Configuration config = AnticheatManager.CONFIGURATION;
+    private static Map<Player,Integer> level = new HashMap<Player,Integer>();
+    private static Configuration config = AnticheatManager.CONFIGURATION;
     private static final int MED_THRESHOLD = 20;
     private static final int HIGH_THRESHOLD = 50;
     
-    public void reactMedium(Player player)
+    private static void reactMedium(Player player)
     {
             execute("Medium",player);                           
             String [] alert = new String[2];
@@ -39,7 +39,7 @@ public class PlayerManager {
             alert[1] = ChatColor.YELLOW+"[ALERT] This means they may be using a hacked client or may have a bad connection!";      
             Utilities.alert(alert);
     }
-    public void reactHigh(Player player)
+    private static void reactHigh(Player player)
     {
         execute("High",player);
         String [] alert = new String[2];
@@ -56,7 +56,7 @@ public class PlayerManager {
         }
         else
         {
-            int playerLevel = level.get(player);
+            final int playerLevel = level.get(player);
             level.put(player, playerLevel+1);
             if(playerLevel <= MED_THRESHOLD && playerLevel+1 > MED_THRESHOLD && playerLevel+1 <= HIGH_THRESHOLD)
             {
@@ -78,7 +78,7 @@ public class PlayerManager {
         }          
     }
     
-    public int getLevel(Player player)
+    public static int getLevel(Player player)
     {
         if(level.get(player) != null)
         {
@@ -95,7 +95,7 @@ public class PlayerManager {
         level.put(player,0);
     }    
     
-    public void execute(String level, Player player)
+    private static void execute(String level, Player player)
     {
         String result = config.getResult(level);
         if(result.startsWith("COMMAND["))
