@@ -190,7 +190,7 @@ public class PlayerListener extends EventListener
                 log("tried to move too fast.",player,CheckType.SPEED);                
             }
         }   
-        if(checkManager.willCheck(player, CheckType.NOFALL) && event.getFrom().getY() > event.getTo().getY() && backend.checkNoFall(player, y))
+        if(checkManager.willCheck(player, CheckType.NOFALL) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY) && event.getFrom().getY() > event.getTo().getY() && backend.checkNoFall(player, y))
         {           
             event.setTo(from);
             log("tried avoid fall damage.",player,CheckType.NOFALL);                   
