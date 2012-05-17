@@ -55,8 +55,8 @@ public class Backend
     public static final int CHAT_MIN = 100;
     public static final int BOW_MIN = 2;
     public static final int SPRINT_MIN = 2;
-    public static final int BLOCK_BREAK_MIN = 2;
-    public static final long BLOCK_PLACE_MIN = 1/2;
+    public static final int BLOCK_BREAK_MIN = 1;
+    public static final long BLOCK_PLACE_MIN = 1/3;
     
     public static final double BLOCK_MAX_DISTANCE = 6.0;
     public static final double ENTITY_MAX_DISTANCE = 5.5;
