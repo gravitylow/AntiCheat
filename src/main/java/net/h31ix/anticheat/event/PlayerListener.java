@@ -78,7 +78,6 @@ public class PlayerListener extends EventListener
             if(backend.checkSprint(event))
             {
                 event.setCancelled(true);
-                player.setSprinting(false);
                 log("tried to sprint while hungry.",player,CheckType.SPRINT);  
             }
             else

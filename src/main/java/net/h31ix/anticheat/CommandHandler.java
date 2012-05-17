@@ -49,7 +49,7 @@ public class CommandHandler implements CommandExecutor {
     
     public void handleLog(CommandSender cs, String [] args)
     {
-        if(hasPermission(cs))
+        if(hasPermission(cs,"system.log") || hasPermission(cs,"admin"))
         {
             if(args[1].equalsIgnoreCase("enable"))
             {
@@ -84,7 +84,7 @@ public class CommandHandler implements CommandExecutor {
     
     public void handleXRay(CommandSender cs, String [] args)
     {
-        if(hasPermission(cs))
+        if(hasPermission(cs,"system.xray") || hasPermission(cs,"admin") || hasPermission(cs,"mod"))
         {
             if(config.logXRay())
             {
@@ -125,7 +125,7 @@ public class CommandHandler implements CommandExecutor {
     
     public void handleReset(CommandSender cs, String [] args)
     {
-        if(hasPermission(cs))
+        if(hasPermission(cs,"system.reset") || hasPermission(cs,"admin"))
         {
             List<Player> list = SERVER.matchPlayer(args[1]);
             if(list.size() == 1)
@@ -157,7 +157,7 @@ public class CommandHandler implements CommandExecutor {
     
     public void handleHelp(CommandSender cs)
     {
-        if(hasPermission(cs))
+        if(hasPermission(cs,"system.help") || hasPermission(cs,"admin") || hasPermission(cs,"mod"))
         {
             String base = "/AntiCheat ";
             cs.sendMessage("----------------------["+GREEN+"AntiCheat"+WHITE+"]----------------------");
@@ -174,7 +174,7 @@ public class CommandHandler implements CommandExecutor {
     
     public void handleUpdate(CommandSender cs)
     {
-        if(hasPermission(cs))
+        if(hasPermission(cs,"system.update") || hasPermission(cs,"admin"))
         {
             cs.sendMessage("Running "+GREEN+"AntiCheat "+WHITE+"v"+GREEN+Anticheat.getVersion());
             cs.sendMessage("-----------------------------------------------------");
@@ -200,7 +200,7 @@ public class CommandHandler implements CommandExecutor {
     
     public void handleReport(CommandSender cs)
     {
-        if(hasPermission(cs))
+        if(hasPermission(cs,"system.report") || hasPermission(cs,"admin") || hasPermission(cs,"mod"))
         {
             getPlayers();
             if(!low.isEmpty())
@@ -232,7 +232,7 @@ public class CommandHandler implements CommandExecutor {
     
     public void handleReload(CommandSender cs)
     {
-        if(hasPermission(cs))
+        if(hasPermission(cs,"system.reload") || hasPermission(cs,"admin"))
         {
             config.load();
             cs.sendMessage(GREEN+"AntiCheat configuration reloaded.");
@@ -291,11 +291,11 @@ public class CommandHandler implements CommandExecutor {
         return true;
     }
     
-    public boolean hasPermission(CommandSender cs)
+    public boolean hasPermission(CommandSender cs, String permission)
     {
         if(cs instanceof Player)
         {
-            if(((Player)cs).hasPermission("anticheat.admin"))
+            if(((Player)cs).hasPermission("anticheat."+permission))
             {
                 return true;
             }

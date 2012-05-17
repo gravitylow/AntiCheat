@@ -78,7 +78,7 @@ public class PlayerManager {
         }          
     }
     
-    public static int getLevel(Player player)
+    public int getLevel(Player player)
     {
         if(level.get(player) != null)
         {
