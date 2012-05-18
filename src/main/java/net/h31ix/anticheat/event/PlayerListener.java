@@ -19,6 +19,7 @@
 package net.h31ix.anticheat.event;
 
 import net.h31ix.anticheat.manage.*;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -60,6 +61,11 @@ public class PlayerListener extends EventListener
         if(checkManager.willCheck(player, CheckType.SPAM))
         {     
             backend.logChat(player);
+            if(backend.checkSpam(player, event.getMessage()))
+            {
+                event.setCancelled(true);
+                player.sendMessage(ChatColor.RED+"Please do not spam.");
+            }
         }
     }
     
@@ -159,6 +165,10 @@ public class PlayerListener extends EventListener
            player.sendMessage("§f §f §4 §0 §9 §6");                                
         }
         backend.logJoin(event.getPlayer());
+        if(!AnticheatManager.PLAYER_MANAGER.hasLevel(player))
+        {
+            AnticheatManager.PLAYER_MANAGER.setLevel(player, AnticheatManager.CONFIGURATION.getLevel(player.getName()));
+        }
     } 
     
     @EventHandler(priority = EventPriority.LOW)

@@ -82,6 +82,8 @@ public class Backend
     private List<String> healed = new ArrayList<String>();
     private List<String> sprinted = new ArrayList<String>();
     private List<String> instantBreakExempt = new ArrayList<String>();
+    private Map<String,String> oldMessage = new HashMap<String,String>();
+    private Map<String,String> lastMessage = new HashMap<String,String>();
     private Map<String,Integer> flightViolation = new HashMap<String,Integer>();
     private Map<String,Integer> chatLevel = new HashMap<String,Integer>();
     private Map<String,Integer> chatKicks = new HashMap<String,Integer>();         
@@ -156,12 +158,10 @@ public class Backend
         {
             if(!player.isSprinting())
             {       
-                System.out.println(x+" "+z);
                 return x > XZ_SPEED_MAX || z > XZ_SPEED_MAX;            
             }
             else 
             {
-                System.out.println(x+" "+z);
                 return x > XZ_SPEED_MAX_SPRINT || z > XZ_SPEED_MAX_SPRINT;
             }
         }
@@ -305,6 +305,29 @@ public class Backend
             chatLevel.put(name, amount);
             checkChatLevel(player, amount);  
         }
+    }
+    
+    public boolean checkSpam(Player player, String msg)
+    {
+        String name = player.getName();
+        if(lastMessage.get(name) == null)
+        {
+            lastMessage.put(name, msg);
+        }  
+        else
+        {
+            if(oldMessage.get(name) != null && lastMessage.get(name).equals(msg) && oldMessage.get(name).equals(msg))
+            {
+                return true;
+            }
+            else
+            {
+                oldMessage.put(name, lastMessage.get(name));
+                lastMessage.put(name, msg);
+                return false;
+            }
+        }
+        return false;
     }
     
     public void clearChatLevel(Player player)

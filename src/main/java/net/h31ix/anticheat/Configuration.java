@@ -31,8 +31,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Configuration {
     private File configFile = new File(Anticheat.getPlugin().getDataFolder()+"/config.yml");
+    private File levelFile = new File(Anticheat.getPlugin().getDataFolder()+"/data/level.yml");
     private File bukkitFile = new File("bukkit.yml");
     private FileConfiguration config;
+    private FileConfiguration level;
     private FileConfiguration bukkit;
     private boolean logConsole;
     private boolean logXRay;
@@ -93,6 +95,7 @@ public class Configuration {
     {
         Anticheat.checkConfig();
         config = YamlConfiguration.loadConfiguration(configFile);
+        level = YamlConfiguration.loadConfiguration(levelFile);
         bukkit = YamlConfiguration.loadConfiguration(bukkitFile);
         updateFolder = bukkit.getString("settings.update-folder");
         if(config.getString("Logging.Log to console") != null)
@@ -169,8 +172,40 @@ public class Configuration {
         return configFile;
     }
     
+    public File getLevelFile()
+    {
+        return levelFile;
+    }
+    
     public boolean checkInWorld(World world)
     {
         return worlds.contains(world.getName());
+    }
+    
+    public int getLevel(String player)
+    {
+        int x = 0;
+        if(level.getString(player) != null)
+        {
+            x = level.getInt(player);
+        }
+        return x;
+    }
+    
+    public void saveLevel(String player, int x)
+    {
+        level.set(player,x);
+    }
+    
+    public void saveLevels()
+    {
+        try 
+        {
+            level.save(levelFile);
+        } 
+        catch (IOException ex) 
+        {
+            Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
+        }        
     }
 }

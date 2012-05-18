@@ -27,7 +27,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.h31ix.anticheat.event.*;
@@ -58,6 +60,14 @@ public class Anticheat extends JavaPlugin
     @Override
     public void onDisable() 
     {
+        Map<String,Integer> map = AnticheatManager.PLAYER_MANAGER.getLevels();
+        Iterator<String> set = map.keySet().iterator();
+        while(set.hasNext())
+        {
+            String player = set.next();
+            config.saveLevel(player, map.get(player));
+        }
+        config.saveLevels();
         getServer().getScheduler().cancelAllTasks();
     }
 
@@ -163,7 +173,12 @@ public class Anticheat extends JavaPlugin
         }
         catch (IOException ex) 
         {
-        }        
+        }
+        for(Player player : getServer().getOnlinePlayers())
+        {
+            String name = player.getName();    
+            AnticheatManager.PLAYER_MANAGER.setLevel(player, config.getLevel(name));
+        }
     } 
     
   private void saveFile(String file, String url) 

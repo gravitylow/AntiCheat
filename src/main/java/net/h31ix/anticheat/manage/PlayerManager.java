@@ -26,7 +26,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class PlayerManager {
-    private static Map<Player,Integer> level = new HashMap<Player,Integer>();
+    private static Map<String,Integer> level = new HashMap<String,Integer>();
     private static Configuration config = AnticheatManager.CONFIGURATION;
     private static final int MED_THRESHOLD = 20;
     private static final int HIGH_THRESHOLD = 50;
@@ -50,14 +50,15 @@ public class PlayerManager {
     
     public void increaseLevel(Player player)
     {
-        if(level.get(player) == null || level.get(player) == 0)
+        final String name = player.getName();
+        if(level.get(name) == null || level.get(name) == 0)
         {
-            level.put(player,1);
+            level.put(name,1);
         }
         else
         {
-            final int playerLevel = level.get(player);
-            level.put(player, playerLevel+1);
+            final int playerLevel = level.get(name);
+            level.put(name, playerLevel+1);
             if(playerLevel <= MED_THRESHOLD && playerLevel+1 > MED_THRESHOLD && playerLevel+1 <= HIGH_THRESHOLD)
             {
                 reactMedium(player);
@@ -71,18 +72,20 @@ public class PlayerManager {
     
     public void decreaseLevel(Player player)
     {
-        if(level.get(player) != null && level.get(player) != 0)
+        final String name = player.getName();
+        if(level.get(name) != null && level.get(name) != 0)
         {
-            int playerLevel = level.get(player)-1;
-            level.put(player, playerLevel);
+            int playerLevel = level.get(name)-1;
+            level.put(name, playerLevel);
         }          
     }
     
     public int getLevel(Player player)
     {
-        if(level.get(player) != null)
+        final String name = player.getName();
+        if(level.get(name) != null)
         {
-            return level.get(player);
+            return level.get(name);
         } 
         else
         {
@@ -90,10 +93,25 @@ public class PlayerManager {
         }
     }
     
+    public void setLevel(Player player, int x)
+    {
+        level.put(player.getName(), x);
+    }
+    
+    public boolean hasLevel(Player player)
+    {
+        return level.containsKey(player.getName());
+    }
+    
     public void reset(Player player)
     {
-        level.put(player,0);
-    }    
+        level.put(player.getName(),0);
+    }   
+    
+    public Map<String,Integer> getLevels()
+    {
+        return level;
+    }
     
     private static void execute(String level, Player player)
     {

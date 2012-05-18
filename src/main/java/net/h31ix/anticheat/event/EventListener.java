@@ -35,7 +35,7 @@ public class EventListener implements Listener
     private static final Anticheat PLUGIN = Anticheat.getPlugin();
     private static final PlayerManager PLAYER_MANAGER = AnticheatManager.PLAYER_MANAGER;
     
-    public static void log(String message,Player player, CheckType type)
+    public void log(String message,Player player, CheckType type)
     {
         if(AnticheatManager.CONFIGURATION.logConsole())
         {
@@ -46,17 +46,17 @@ public class EventListener implements Listener
         logCheat(type);
     }
     
-    private static void logCheat(CheckType type)
+    private void logCheat(CheckType type)
     {
         usageList.put(type, getCheats(type)+1);
     }
     
-    public static void resetCheck(CheckType type)
+    public void resetCheck(CheckType type)
     {
         usageList.put(type, 0);
     }
     
-    public static int getCheats(CheckType type)
+    public int getCheats(CheckType type)
     {
         int x = 0;
         if(usageList.get(type) != null)
