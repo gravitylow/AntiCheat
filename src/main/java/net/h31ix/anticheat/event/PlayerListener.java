@@ -220,7 +220,7 @@ public class PlayerListener extends EventListener
             event.setTo(from);
             log("tried to walk on water.",player,CheckType.WATER_WALK);  
         }    
-        if(checkManager.willCheck(player, CheckType.SNEAK) && backend.checkSneak(player,x,z))
+        if(checkManager.willCheck(player, CheckType.SNEAK) && checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkSneak(player,x,z))
         {
             event.setTo(from);
             player.setSneaking(false);
