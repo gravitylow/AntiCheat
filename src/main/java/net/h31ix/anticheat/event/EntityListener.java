@@ -143,6 +143,15 @@ public class EntityListener extends EventListener
                         noHack = false;                        
                     }                     
                 }
+                if(checkManager.willCheck(player, CheckType.NO_SWING)) 
+                {
+                    if(!backend.justAnimated(player))
+                    {
+                        event.setCancelled(true);
+                        log("tried to damage an entity without swinging their arm.",player,CheckType.NO_SWING);  
+                        noHack = false;                        
+                    }                     
+                }                
                 if(noHack)
                 {
                     decrease(player);

@@ -152,6 +152,10 @@ public class Anticheat extends JavaPlugin
         } 
         try 
         {
+            if(verbose)
+            {
+                logger.log(Level.INFO,"[AC] Enabling metrics...");
+            }            
             metrics = new Metrics(this);
             final EventListener listener = new EventListener();
             Graph graph = metrics.createGraph("Hacks blocked");
@@ -170,6 +174,10 @@ public class Anticheat extends JavaPlugin
                 listener.resetCheck(type);
             }
             metrics.start();
+            if(verbose)
+            {
+                logger.log(Level.INFO,"[AC] Metrics started.");
+            }            
         }
         catch (IOException ex) 
         {
@@ -179,6 +187,10 @@ public class Anticheat extends JavaPlugin
             String name = player.getName();    
             AnticheatManager.PLAYER_MANAGER.setLevel(player, config.getLevel(name));
         }
+        if(verbose)
+        {
+            logger.log(Level.INFO,"[AC] Player's levels collected from storage and applied.");
+        }        
     } 
     
   private void saveFile(String file, String url) 
