@@ -45,9 +45,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Anticheat extends JavaPlugin
+public class Anticheat extends JavaPlugin 
 {
-    private static Anticheat plugin;
+    private static AnticheatManager manager;
     private final List<Listener> eventList = new ArrayList<Listener>();
     private static boolean update = false;
     private static final int BYTE_SIZE = 1024;
@@ -56,13 +56,13 @@ public class Anticheat extends JavaPlugin
     private static boolean verbose;
     private static String updateFolder;
     private static Metrics metrics;
-    
+
     @Override
     public void onDisable() 
     {
-        Map<String,Integer> map = AnticheatManager.PLAYER_MANAGER.getLevels();
+        Map<String, Integer> map = manager.getPlayerManager().getLevels();
         Iterator<String> set = map.keySet().iterator();
-        while(set.hasNext())
+        while (set.hasNext()) 
         {
             String player = set.next();
             config.saveLevel(player, map.get(player));
@@ -74,8 +74,8 @@ public class Anticheat extends JavaPlugin
     @Override
     public void onEnable() 
     {
-        plugin = this;
-        config = AnticheatManager.CONFIGURATION;
+        manager = new AnticheatManager(this);
+        config = manager.getConfiguration();
         checkConfig();
         verbose = config.verboseStartup();
         updateFolder = config.updateFolder();
@@ -84,55 +84,62 @@ public class Anticheat extends JavaPlugin
         eventList.add(new BlockListener());
         eventList.add(new EntityListener());
         eventList.add(new VehicleListener());
-        final XRayTracker xtracker = AnticheatManager.XRAY_TRACKER;
-        if(config.logXRay())
+        final XRayTracker xtracker = manager.getXRayTracker();
+        if (config.logXRay()) 
         {
             eventList.add(new XRayListener());
-            if(config.alertXRay())
+            if (config.alertXRay()) 
             {
-                getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() 
-                {
-                    @Override
-                    public void run()
+                    getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() 
                     {
-                        for(Player player : getServer().getOnlinePlayers())
-                        {
-                            String name = player.getName();
-                            if(!xtracker.hasAlerted(name) && xtracker.sufficientData(name) && xtracker.hasAbnormal(name))
+                            @Override
+                            public void run() 
                             {
-                                String [] alert = new String[2];
-                                alert[0] = ChatColor.YELLOW+"[ALERT] "+ChatColor.WHITE+name+ChatColor.YELLOW+" might be using xray.";
-                                alert[1] = ChatColor.YELLOW+"[ALERT] Please check their xray stats using "+ChatColor.WHITE+"/anticheat xray "+name+ChatColor.YELLOW+".";
-                                Utilities.alert(alert); 
-                                xtracker.logAlert(name);
+                                    for (Player player : getServer().getOnlinePlayers()) 
+                                    {
+                                            String name = player.getName();
+                                            if (!xtracker.hasAlerted(name) && xtracker.sufficientData(name) && xtracker.hasAbnormal(name)) 
+                                            {
+                                                    String[] alert = new String[2];
+                                                    alert[0] = ChatColor.YELLOW
+                                                    + "[ALERT] " + ChatColor.WHITE
+                                                    + name + ChatColor.YELLOW
+                                                    + " might be using xray.";
+                                                    alert[1] = ChatColor.YELLOW
+                                                    + "[ALERT] Please check their xray stats using "
+                                                    + ChatColor.WHITE
+                                                    + "/anticheat xray " + name
+                                                    + ChatColor.YELLOW + ".";
+                                                    Utilities.alert(alert);
+                                                    xtracker.logAlert(name);
+                                            }
+                                    }
                             }
-                        }
-                    }
-                }, 1200L, 1200L);  
+                    }, 1200L, 1200L);
             }
         }
-        for(Listener listener : eventList)
+        for (Listener listener : eventList) 
         {
             getServer().getPluginManager().registerEvents(listener, this);
-            if(verbose)
+            if (verbose) 
             {
-                logger.log(Level.INFO,"[AC] Registered events for ".concat(listener.toString()));
-            }            
+                logger.log(Level.INFO, "[AC] Registered events for ".concat(listener.toString()));
+            }
         }
         getCommand("anticheat").setExecutor(new CommandHandler());
-        if(verbose)
+        if (verbose) 
         {
-            logger.log(Level.INFO,"[AC] Registered commands");
-            logger.log(Level.INFO,"[AC] Finished loading.");
-        } 
-        if(update && config.autoUpdate())
+            logger.log(Level.INFO, "[AC] Registered commands");
+            logger.log(Level.INFO, "[AC] Finished loading.");
+        }
+        if (update && config.autoUpdate())
         {
-            if(verbose)
+            if (verbose) 
             {
-                logger.log(Level.INFO,"[AC] Downloading the new update...");
-            }  
-            File file = new File("plugins/"+updateFolder);
-            if(!file.exists())
+                logger.log(Level.INFO, "[AC] Downloading the new update...");
+            }
+            File file = new File("plugins/" + updateFolder);
+            if (!file.exists()) 
             {
                 try 
                 {
@@ -141,28 +148,24 @@ public class Anticheat extends JavaPlugin
                 catch (Exception ex) 
                 {
                 }
-            }  
+            }
             try 
             {
-                saveFile(file.getCanonicalPath()+"/AntiCheat.jar", "http://dl.dropbox.com/u/38228324/AntiCheat.jar");
+                saveFile(file.getCanonicalPath() + "/AntiCheat.jar","http://dl.dropbox.com/u/38228324/AntiCheat.jar");
             } 
             catch (IOException ex) 
             {
-            }             
-        } 
+            }
+        }
         try 
         {
-            if(verbose)
-            {
-                logger.log(Level.INFO,"[AC] Enabling metrics...");
-            }            
             metrics = new Metrics(this);
             final EventListener listener = new EventListener();
             Graph graph = metrics.createGraph("Hacks blocked");
-            for(final CheckType type : CheckType.values())
+            for (final CheckType type : CheckType.values()) 
             {
-                char [] chars = type.toString().replaceAll("_", " ").toLowerCase().toCharArray();
-                chars[0]= Character.toUpperCase(chars[0]);
+                char[] chars = type.toString().replaceAll("_", " ").toLowerCase().toCharArray();
+                chars[0] = Character.toUpperCase(chars[0]);
                 graph.addPlotter(new Metrics.Plotter(new String(chars)) 
                 {
                     @Override
@@ -170,170 +173,165 @@ public class Anticheat extends JavaPlugin
                     {
                         return listener.getCheats(type);
                     }
-                }); 
+                });
                 listener.resetCheck(type);
             }
             metrics.start();
-            if(verbose)
-            {
-                logger.log(Level.INFO,"[AC] Metrics started.");
-            }            
-        }
+        } 
         catch (IOException ex) 
         {
         }
-        for(Player player : getServer().getOnlinePlayers())
+        for (Player player : getServer().getOnlinePlayers()) 
         {
-            String name = player.getName();    
-            AnticheatManager.PLAYER_MANAGER.setLevel(player, config.getLevel(name));
+            String name = player.getName();
+            manager.getPlayerManager().setLevel(player,config.getLevel(name));
         }
-        if(verbose)
-        {
-            logger.log(Level.INFO,"[AC] Player's levels collected from storage and applied.");
-        }        
-    } 
-    
-  private void saveFile(String file, String url) 
-  {
-    BufferedInputStream in = null;
-    FileOutputStream fout = null;
-    try
-    {
-      in = new BufferedInputStream(new URL(url).openStream());
-      fout = new FileOutputStream(file);
+    }
 
-      byte[] data = new byte[BYTE_SIZE];
-      int count;
-      while ((count = in.read(data, 0, BYTE_SIZE)) != -1)
-      {
-        fout.write(data, 0, count);
-      }
-    }
-    catch(Exception ex)
+    private void saveFile(String file, String url) 
     {
-        
-    }
-    finally
-    {
-        try
+        BufferedInputStream in = null;
+        FileOutputStream fout = null;
+        try 
         {
-          if (in != null)
-          {
-            in.close();
-          }
-          if (fout != null)
-          {
-            fout.close();
-          }
-        }
-        catch(Exception ex)
-        {
-        }
-        if(verbose)
-        {
-            logger.log(Level.INFO,"[AC] AntiCheat update has been downloaded and will be installed on next launch.");
-        }         
-    }
-  }
-  
-    public static void checkConfig()
-    {
-        if(!new File(plugin.getDataFolder()+"/config.yml").exists())
-        {
-            plugin.saveDefaultConfig();
-            if(verbose)
+            in = new BufferedInputStream(new URL(url).openStream());
+            fout = new FileOutputStream(file);
+
+            byte[] data = new byte[BYTE_SIZE];
+            int count;
+            while ((count = in.read(data, 0, BYTE_SIZE)) != -1)
             {
-                logger.log(Level.INFO,"[AC] Config file created");
-            }            
-        }         
-    }
-    
-    private void checkForUpdate()
-    {
-        if(verbose)
+                fout.write(data, 0, count);
+            }
+        } 
+        catch (Exception ex) 
         {
-            logger.log(Level.INFO,"[AC] Checking for updates...");
-        }    
+        } 
+        finally 
+        {
+            try 
+            {
+                if (in != null) 
+                {
+                    in.close();
+                }
+                if (fout != null) 
+                {
+                    fout.close();
+                }
+            } 
+            catch (Exception ex) 
+            {
+            }
+            if (verbose) 
+            {
+                logger.log(Level.INFO,"[AC] AntiCheat update has been downloaded and will be installed on next launch.");
+            }
+        }
+    }
+
+    public void checkConfig() 
+    {
+        if (!new File(getDataFolder() + "/config.yml").exists()) 
+        {
+            saveDefaultConfig();
+            if (verbose) 
+            {
+                    logger.log(Level.INFO, "[AC] Config file created");
+            }
+        }
+    }
+
+    private void checkForUpdate() 
+    {
+        if (verbose) 
+        {
+            logger.log(Level.INFO, "[AC] Checking for updates...");
+        }
         URL url = null;
         URLConnection urlConn = null;
-        InputStreamReader  inStream = null;
-        BufferedReader buff = null;  
+        InputStreamReader inStream = null;
+        BufferedReader buff = null;
         String v = "";
         try 
         {
-            url  = new URL("http://dl.dropbox.com/u/38228324/anticheatVersion.txt");
+            url = new URL("http://dl.dropbox.com/u/38228324/anticheatVersion.txt");
             urlConn = url.openConnection();
-            inStream = new InputStreamReader(urlConn.getInputStream());            
-        } 
-        catch(Exception ex)
-        {
-        }
-        buff= new BufferedReader(inStream);
-        try 
-        {
-          v =buff.readLine(); 
-          urlConn = null;
-          inStream = null;            
-          buff.close(); 
-          buff = null;
+            inStream = new InputStreamReader(urlConn.getInputStream());
         } 
         catch (Exception ex) 
         {
         }
-        if (!this.getDescription().getVersion().equalsIgnoreCase(v))
+        buff = new BufferedReader(inStream);
+        try 
+        {
+            v = buff.readLine();
+            urlConn = null;
+            inStream = null;
+            buff.close();
+            buff = null;
+        } 
+        catch (Exception ex) 
+        {
+        }
+        if (!this.getDescription().getVersion().equalsIgnoreCase(v)) 
         {
             String version = this.getDescription().getVersion();
-            if(version.endsWith("-PRE") || version.endsWith("-DEV"))
-            {   
-                if(version.replaceAll("-PRE", "").replaceAll("-DEV", "").equalsIgnoreCase(v))
+            if (version.endsWith("-PRE") || version.endsWith("-DEV")) 
+            {
+                if (version.replaceAll("-PRE", "").replaceAll("-DEV", "").equalsIgnoreCase(v)) 
                 {
                     update = true;
-                    if(verbose)
+                    if (verbose) 
                     {
                         logger.log(Level.INFO,"[AC] Your dev build has been promoted to release. Downloading the update.");
-                    }                         
-                }
-                else
+                    }
+                } 
+                else 
                 {
                     update = false;
-                    if(verbose)
+                    if (verbose) 
                     {
                         logger.log(Level.INFO,"[AC] Dev build detected, so skipping update checking until this version is released.");
-                    }            
+                    }
                 }
-            }
-            else
+            } 
+            else 
             {
                 update = true;
-                if(verbose)
+                if (verbose) 
                 {
-                    logger.log(Level.INFO,"[AC] An update was found.");
-                }  
+                    logger.log(Level.INFO, "[AC] An update was found.");
+                }
             }
-        }
-        else
+        } 
+        else 
         {
-            if(verbose)
+            if (verbose) 
             {
-                logger.log(Level.INFO,"[AC] No update found.");
-            }            
+                logger.log(Level.INFO, "[AC] No update found.");
+            }
             update = false;
         }
-    } 
-    
+    }
+
     public static Anticheat getPlugin()
     {
-        return plugin;
+        return manager.getPlugin();
     }
-    
-    public static boolean isUpdated()
+
+    public static AnticheatManager getManager() 
+    {
+        return manager;
+    }
+
+    public static boolean isUpdated() 
     {
         return !update;
     }
-    
-    public static String getVersion()
+
+    public static String getVersion() 
     {
-        return plugin.getDescription().getVersion();
+        return manager.getPlugin().getDescription().getVersion();
     }
 }
-

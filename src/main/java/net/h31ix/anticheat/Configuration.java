@@ -24,15 +24,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.h31ix.anticheat.manage.AnticheatManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class Configuration {
-    private File configFile = new File(Anticheat.getPlugin().getDataFolder()+"/config.yml");
-    private File levelFile = new File(Anticheat.getPlugin().getDataFolder()+"/data/level.yml");
-    private File bukkitFile = new File("bukkit.yml");
+public class Configuration 
+{
+    private AnticheatManager micromanage = null; //like a boss!
+    private File configFile = null;
+    private File levelFile = null;
+    private File bukkitFile = null;
     private FileConfiguration config;
     private FileConfiguration level;
     private FileConfiguration bukkit;
@@ -44,8 +49,12 @@ public class Configuration {
     private String updateFolder;
     private List<String> worlds = new ArrayList<String>();
     
-    public Configuration()
+    public Configuration(AnticheatManager instance)
     {
+    	micromanage = instance;
+    	configFile = new File(micromanage.getPlugin().getDataFolder()+"/config.yml");
+    	levelFile = new File(micromanage.getPlugin().getDataFolder()+"/data/level.yml");
+    	bukkitFile = new File("bukkit.yml");
         load();
     }
     
@@ -93,7 +102,7 @@ public class Configuration {
     
     public final void load()
     {
-        Anticheat.checkConfig();
+        micromanage.getPlugin().checkConfig();
         config = YamlConfiguration.loadConfiguration(configFile);
         level = YamlConfiguration.loadConfiguration(levelFile);
         bukkit = YamlConfiguration.loadConfiguration(bukkitFile);

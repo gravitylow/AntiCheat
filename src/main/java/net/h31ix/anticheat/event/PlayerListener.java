@@ -22,6 +22,7 @@ import net.h31ix.anticheat.manage.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -154,20 +155,20 @@ public class PlayerListener extends EventListener
         Player player = event.getPlayer();
         if(checkManager.willCheck(player, CheckType.ZOMBE_FLY))
         {      
-           player.sendMessage("ยงf ยงf ยง1 ยง0 ยง2 ยง4");
+           player.sendMessage("งf งf ง1 ง0 ง2 ง4");
         }
         if(checkManager.willCheck(player, CheckType.ZOMBE_CHEAT))
         {             
-           player.sendMessage("ยงf ยงf ยง2 ยง0 ยง4 ยง8");
+           player.sendMessage("งf งf ง2 ง0 ง4 ง8");
         }
         if(checkManager.willCheck(player, CheckType.ZOMBE_NOCLIP))
         {          
-           player.sendMessage("ยงf ยงf ยง4 ยง0 ยง9 ยง6");                                
+           player.sendMessage("งf งf ง4 ง0 ง9 ง6");                                
         }
         backend.logJoin(event.getPlayer());
-        if(!AnticheatManager.PLAYER_MANAGER.hasLevel(player))
+        if(!getPlayerManager().hasLevel(player))
         {
-            AnticheatManager.PLAYER_MANAGER.setLevel(player, AnticheatManager.CONFIGURATION.getLevel(player.getName()));
+            getPlayerManager().setLevel(player, getManager().getConfiguration().getLevel(player.getName()));
         }
     } 
     
@@ -184,6 +185,17 @@ public class PlayerListener extends EventListener
         if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkFlight(player, from.getY(), to.getY()))
         {
             event.setTo(from);
+            //Lets really give this flyer a real pushdown.
+ 			   Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY()-2, player.getLocation().getZ());
+     		   Block whatever = newLocation.getBlock();
+     		   if(whatever.getTypeId() != 0) 
+     		   {
+         		   event.setTo(newLocation);
+     		   } 
+     		  /* else 
+     		   {
+     			   downlow--;
+     		   }*/
             log("tried to fly.",player,CheckType.FLY);        
         }
         if(checkManager.willCheck(player, CheckType.SPEED) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY))
@@ -220,7 +232,7 @@ public class PlayerListener extends EventListener
             event.setTo(from);
             log("tried to walk on water.",player,CheckType.WATER_WALK);  
         }    
-        if(checkManager.willCheck(player, CheckType.SNEAK) && checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkSneak(player,x,z))
+        if(checkManager.willCheck(player, CheckType.SNEAK) && backend.checkSneak(player,x,z))
         {
             event.setTo(from);
             player.setSneaking(false);

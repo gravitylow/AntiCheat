@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.h31ix.anticheat.Anticheat;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -40,6 +40,15 @@ public class Backend
     public static final int DROPPED_ITEM_TIME = 2;
     public static final int DAMAGE_TIME = 50;
     public static final int KNOCKBACK_DAMAGE_TIME = 50;
+    
+    public static final int FASTBREAK_LIMIT = 3;
+    public static final int FASTBREAK_TIMEMAX = 500;
+    public static final int FASTBREAK_MAXVIOLATIONS = 2;
+    public static final int FASTBREAK_MAXVIOLATIONTIME = 10000;
+    public static final int FASTPLACE_LIMIT = 2;
+    public static final int FASTPLACE_TIMEMAX = 20;
+    public static final int FASTPLACE_MAXVIOLATIONS = 1;
+    public static final int FASTPLACE_MAXVIOLATIONTIME = 10000;    
     
     private static final int CHAT_WARN_LEVEL = 7;
     private static final int CHAT_KICK_LEVEL = 10;
@@ -71,7 +80,7 @@ public class Backend
     public static final double XZ_SPEED_MAX_WATER = 0.19;
     public static final double XZ_SPEED_MAX_WATER_SPRINT = 0.3;
     
-    private Anticheat plugin = Anticheat.getPlugin();
+    private AnticheatManager micromanage = null;
     private List<String> droppedItem = new ArrayList<String>();
     private List<String> animated = new ArrayList<String>();
     private List<String> movingExempt = new ArrayList<String>();
@@ -88,6 +97,17 @@ public class Backend
     private Map<String,Integer> chatLevel = new HashMap<String,Integer>();
     private Map<String,Integer> chatKicks = new HashMap<String,Integer>();         
     private Map<String,Integer> nofallViolation = new HashMap<String,Integer>(); 
+    private Map<String,Integer> fastBreakViolation = new HashMap<String,Integer>();
+    private Map<String,Integer> blocksBroken = new HashMap<String,Integer>();
+    private Map<String,Long> lastBlockBroken = new HashMap<String,Long>();
+    private Map<String,Integer> fastPlaceViolation = new HashMap<String,Integer>();
+    private Map<String,Integer> blocksPlaced = new HashMap<String,Integer>();
+    private Map<String,Long> lastBlockPlaced = new HashMap<String,Long>();    
+    
+    public Backend(AnticheatManager instance) 
+    {
+    	micromanage = instance;
+    }
     
     public boolean checkLongReachBlock(double x,double y,double z)
     {
@@ -233,9 +253,26 @@ public class Backend
                 }
                 if(violation >= FLIGHT_LIMIT)
                 {
+                    System.out.println("yep");
                     flightViolation.put(name, 1);
                     return true;
+                }                
+                //Start Fly bypass patch.
+                if(flightViolation.containsKey(name) && flightViolation.get(name) > 0) 
+                {
+                    for(int i= 5;i>0;i--) 
+                    {
+                        System.out.println(i);
+                        Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY()-i, player.getLocation().getZ());
+                        Block lower = newLocation.getBlock();
+                        if(lower.getTypeId() == 0) 
+                        {
+                            player.teleport(newLocation);
+                            break;
+                        } 
+                    }
                 }
+                //End Fly bypass patch.
             }
         }
         return false;
@@ -248,19 +285,60 @@ public class Backend
     
     public boolean checkFastBreak(Player player, Block block)
     {      
-        if(player.getGameMode() != GameMode.CREATIVE && !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES))
+        String name = player.getName();
+        if(!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES && player.getGameMode() != GameMode.CREATIVE))
         {
-            if (!justBroke(player))
+            if (!fastBreakViolation.containsKey(name))
             {
-                logBlockBreak(player);
+                fastBreakViolation.put(name, 0);
+            } 
+            else 
+            {
+                Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
+                player.sendMessage(""+math);
+                if(fastBreakViolation.get(name) > FASTBREAK_MAXVIOLATIONS && math < FASTBREAK_MAXVIOLATIONTIME)
+                {
+                    lastBlockBroken.put(name, System.currentTimeMillis());
+                    return true;
+                } 
+                else if(fastBreakViolation.get(name) > 0 && math > FASTBREAK_MAXVIOLATIONTIME)
+                {
+                    fastBreakViolation.put(name, 0);
+                } 
+            }
+            if (!blocksBroken.containsKey(name) || !lastBlockBroken.containsKey(name))
+            {
+                if(!lastBlockBroken.containsKey(name))
+                {
+                    lastBlockBroken.put(name, System.currentTimeMillis());
+                }
+                blocksBroken.put(name, 0);
             }
             else
             {
-                return true;
+                blocksBroken.put(name, blocksBroken.get(name)+1);
+                Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
+                if(blocksBroken.get(name) > FASTBREAK_LIMIT && math < FASTBREAK_TIMEMAX)
+                {
+                    blocksBroken.put(name, 0);
+                    lastBlockBroken.put(name, System.currentTimeMillis());
+                    fastBreakViolation.put(name, fastBreakViolation.get(name)+1);
+                    return true;
+                }
+                else if(blocksBroken.get(name) > FASTBREAK_LIMIT)
+                {
+                    lastBlockBroken.put(name, System.currentTimeMillis());
+                    blocksBroken.put(name, 0);
+                }
             }
         }
         return false;
-    }     
+    }
+    
+    public boolean checkFastPlace(Player player)
+    {    
+        return false;
+    }    
     
     public void logBowWindUp(Player player)
     {
@@ -425,10 +503,11 @@ public class Backend
         return droppedItem.contains(player.getName());     
     }   
     
-    private void logEvent(final List list, final Player player, long time)
+    @SuppressWarnings("unchecked")
+	private void logEvent(@SuppressWarnings("rawtypes") final List list, final Player player, long time)
     {
         list.add(player.getName());
-        Anticheat.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(Anticheat.getPlugin(), new Runnable() 
+        micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable() 
         {
             @Override
             public void run() 
@@ -437,10 +516,11 @@ public class Backend
             }
         },      time);            
     }
-    private void logEvent(final Map map, final Player player, final Object obj, long time)
+    @SuppressWarnings("unchecked")
+	private void logEvent(@SuppressWarnings("rawtypes") final Map map, final Player player, final Object obj, long time)
     {
         map.put(player,obj);
-        Anticheat.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(Anticheat.getPlugin(), new Runnable() 
+        micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable() 
         {
             @Override
             public void run() 
@@ -473,13 +553,13 @@ public class Backend
             if(chatKicks.get(name) <= CHAT_BAN_LEVEL)
             {
                 player.kickPlayer(ChatColor.RED+"Spamming, kick "+kick+"/3");
-                plugin.getServer().broadcastMessage(ChatColor.RED+player.getName()+" was kicked for spamming.");
+                micromanage.getPlugin().getServer().broadcastMessage(ChatColor.RED+player.getName()+" was kicked for spamming.");
             }
             else
             {
                 player.kickPlayer(ChatColor.RED+"Banned for spamming.");
                 player.setBanned(true);
-                plugin.getServer().broadcastMessage(ChatColor.RED+player.getName()+" was banned for spamming.");
+                micromanage.getPlugin().getServer().broadcastMessage(ChatColor.RED+player.getName()+" was banned for spamming.");
             }
         }
     }    

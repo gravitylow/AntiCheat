@@ -20,25 +20,65 @@ package net.h31ix.anticheat.manage;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.Configuration;
 import net.h31ix.anticheat.xray.XRayTracker;
 
-public final class AnticheatManager 
+public class AnticheatManager 
 {
-    private AnticheatManager()
+    private Anticheat plugin = null;
+    private Configuration CONFIGURATION = null;
+    private XRayTracker XRAY_TRACKER = null;
+    private PlayerManager PLAYER_MANAGER = null;
+    private CheckManager CHECK_MANAGER = null;
+    private Backend BACKEND = null;
+    private Logger LOGGER = null;
+	
+    public AnticheatManager(Anticheat instance)
     {
-        
+        plugin = instance;
+        // now load all the others!!!!!
+        CONFIGURATION = new Configuration(this);
+        XRAY_TRACKER = new XRayTracker();
+        PLAYER_MANAGER = new PlayerManager(this);
+        CHECK_MANAGER = new CheckManager(this);
+        BACKEND = new Backend(this);
+        LOGGER = Logger.getLogger("Minecraft");
     }
     
-    public static final Configuration CONFIGURATION = new Configuration();
-    public static final XRayTracker XRAY_TRACKER = new XRayTracker();
-    public static final PlayerManager PLAYER_MANAGER = new PlayerManager();
-    public static final CheckManager CHECK_MANAGER = new CheckManager();
-    public static final Backend BACKEND = new Backend();
-    private static final Logger ANTICHEAT_LOGGER = Logger.getLogger("Minecraft");
-    
-    public static void log(String message)
+    public void log(String message)
     {
-        ANTICHEAT_LOGGER.log(Level.WARNING,"[AC] ".concat(message));
+       LOGGER.log(Level.WARNING,"[AC] ".concat(message));
+    }
+    
+    public Anticheat getPlugin() 
+    {
+    	return plugin;
+    }
+    
+    public Configuration getConfiguration() 
+    {
+    	return CONFIGURATION;
+    }
+    
+    public XRayTracker getXRayTracker() 
+    {
+    	return XRAY_TRACKER;
+    }
+    
+    public PlayerManager getPlayerManager() 
+    {
+    	return PLAYER_MANAGER;
+    }
+    
+    public CheckManager getCheckManager()
+    {
+    	return CHECK_MANAGER;
+    }
+    
+    public Backend getBackend() 
+    {
+    	return BACKEND;
     }
 }

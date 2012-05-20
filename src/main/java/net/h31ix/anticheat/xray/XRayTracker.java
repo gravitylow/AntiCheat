@@ -45,7 +45,6 @@ public class XRayTracker {
     
     public XRayTracker()
     {
-        
     }
     
     public boolean sufficientData(String player)

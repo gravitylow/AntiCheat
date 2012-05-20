@@ -20,6 +20,7 @@ package net.h31ix.anticheat.manage;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import net.h31ix.anticheat.Configuration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,9 +28,13 @@ import org.bukkit.entity.Player;
 
 public class PlayerManager {
     private static Map<String,Integer> level = new HashMap<String,Integer>();
-    private static Configuration config = AnticheatManager.CONFIGURATION;
+    private static Configuration config = null;
     private static final int MED_THRESHOLD = 20;
     private static final int HIGH_THRESHOLD = 50;
+    
+    public PlayerManager(AnticheatManager instance) {
+    	config = instance.getConfiguration();
+    }
     
     private static void reactMedium(Player player)
     {
@@ -66,6 +71,11 @@ public class PlayerManager {
             else if(playerLevel <= HIGH_THRESHOLD && playerLevel+1 > HIGH_THRESHOLD)
             {
                 reactHigh(player);
+                level.put(player.getName(), MED_THRESHOLD+5);
+            }
+            else if (playerLevel > HIGH_THRESHOLD)
+            {
+                level.put(player.getName(), MED_THRESHOLD+5);
             }
         }        
     }

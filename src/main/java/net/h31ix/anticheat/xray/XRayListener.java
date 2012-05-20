@@ -18,8 +18,8 @@
 
 package net.h31ix.anticheat.xray;
 
+import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.Configuration;
-import net.h31ix.anticheat.manage.AnticheatManager;
 import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
 import org.bukkit.Material;
@@ -29,9 +29,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 public class XRayListener implements Listener {
-    private XRayTracker tracker = AnticheatManager.XRAY_TRACKER;
-    private Configuration config = AnticheatManager.CONFIGURATION;
-    private CheckManager checkManager = AnticheatManager.CHECK_MANAGER;
+    private XRayTracker tracker = Anticheat.getManager().getXRayTracker();
+    private Configuration config = Anticheat.getManager().getConfiguration();
+    private CheckManager checkManager = Anticheat.getManager().getCheckManager();
     
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event)

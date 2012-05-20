@@ -30,16 +30,16 @@ public class EventListener implements Listener
 {
     private static final Map<CheckType,Integer> usageList = new EnumMap<CheckType,Integer>(CheckType.class);
     private static final Map<String,Integer> decreaseList = new HashMap<String,Integer>();
-    private static final CheckManager CHECK_MANAGER = AnticheatManager.CHECK_MANAGER;   
-    private static final Backend BACKEND = AnticheatManager.BACKEND;  
-    private static final Anticheat PLUGIN = Anticheat.getPlugin();
-    private static final PlayerManager PLAYER_MANAGER = AnticheatManager.PLAYER_MANAGER;
+    private static final CheckManager CHECK_MANAGER = Anticheat.getManager().getCheckManager();   
+    private static final Backend BACKEND = Anticheat.getManager().getBackend();  
+    private static final Anticheat PLUGIN = Anticheat.getManager().getPlugin();
+    private static final PlayerManager PLAYER_MANAGER = Anticheat.getManager().getPlayerManager();
     
     public void log(String message,Player player, CheckType type)
     {
-        if(AnticheatManager.CONFIGURATION.logConsole())
+        if(Anticheat.getManager().getConfiguration().logConsole())
         {
-            AnticheatManager.log(player.getName()+" "+message);
+            Anticheat.getManager().log(player.getName()+" "+message);
         }
         PLAYER_MANAGER.increaseLevel(player);
         removeDecrease(player);
@@ -102,10 +102,18 @@ public class EventListener implements Listener
         return CHECK_MANAGER;
     }
     
+    public static AnticheatManager getManager() {
+    	return Anticheat.getManager();
+    }
+    
     public static Backend getBackend()
     {
         return BACKEND;
     }  
+    
+    public static PlayerManager getPlayerManager() {
+    	return PLAYER_MANAGER;
+    }
     
     public static Anticheat getPlugin()
     {

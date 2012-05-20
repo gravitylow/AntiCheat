@@ -31,8 +31,19 @@ import org.bukkit.entity.Player;
 
 public class CheckManager 
 {
+    public AnticheatManager manager = null;
     private static List<CheckType> checkIgnoreList = new ArrayList<CheckType>();
     private static Multimap<Player,CheckType> exemptList = ArrayListMultimap.create();
+    
+    /**
+     * Initialize the class.
+     * 
+     * @param  instance  The AntiCheat Manager
+     */
+    public CheckManager(AnticheatManager instance) 
+    {
+    	manager = instance;
+    }
     
     /**
      * Start running a certain check
@@ -41,7 +52,7 @@ public class CheckManager
      */         
     public void activateCheck(CheckType type)
     {
-        AnticheatManager.log("The "+type.toString()+" check was activated.");
+        manager.log("The "+type.toString()+" check was activated.");
         checkIgnoreList.remove(type);
     }
     
@@ -52,7 +63,7 @@ public class CheckManager
      */      
     public void deactivateCheck(CheckType type)
     {
-        AnticheatManager.log("The "+type.toString()+" check was deactivated.");
+        manager.log("The "+type.toString()+" check was deactivated.");
         checkIgnoreList.add(type);
     }
     
@@ -75,7 +86,7 @@ public class CheckManager
      */      
     public void exemptPlayer(Player player, CheckType type)
     {
-        AnticheatManager.log(player.getName()+" was exempted from the "+type.toString()+" check.");
+        manager.log(player.getName()+" was exempted from the "+type.toString()+" check.");
         exemptList.put(player,type);
     }
   
@@ -87,7 +98,7 @@ public class CheckManager
      */         
     public void unexemptPlayer(Player player, CheckType type)
     {
-        AnticheatManager.log(player.getName()+" was re-added to the "+type.toString()+" check.");
+        manager.log(player.getName()+" was re-added to the "+type.toString()+" check.");
         exemptList.remove(type, type);
     }
     
@@ -118,7 +129,7 @@ public class CheckManager
     public boolean willCheck(Player player, CheckType type)
     {        
         return  isActive(type) 
-                && AnticheatManager.CONFIGURATION.checkInWorld(player.getWorld())
+                && manager.getConfiguration().checkInWorld(player.getWorld())
                 && !isExempt(player, type) 
                 && !hasPermission(player, type.getPermission());
     }

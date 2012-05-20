@@ -23,7 +23,6 @@ import net.h31ix.anticheat.manage.Backend;
 import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.Distance;
-import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -51,11 +50,11 @@ public class BlockListener extends EventListener
     {
         final Player player = event.getPlayer();
         Block block = event.getBlock();
-        if(player != null && player.getGameMode() != GameMode.CREATIVE)
+        if(player != null)
         {     
             if(checkManager.willCheck(player, CheckType.FAST_PLACE))
             {
-                if(backend.justPlaced(player))
+                if(backend.checkFastPlace(player))
                 {
                     event.setCancelled(true);
                     log("tried to place a block of "+block.getType().name()+" too fast.",player,CheckType.FAST_PLACE);                     

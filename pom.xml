@@ -12,6 +12,7 @@
         </repository>
     </repositories>
     <build>
+        <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -24,7 +25,18 @@
             </plugin>
         </plugins>
         <finalName>AntiCheat</finalName>
-    </build>
+        <resources>
+            <resource>
+                <targetPath>.</targetPath>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources</directory>
+                <includes>
+                    <include>plugin.yml</include>
+                    <include>config.yml</include>
+                </includes>
+            </resource>
+        </resources>
+	</build>
     <dependencies>     
         <dependency>
             <groupId>org.bukkit</groupId>
@@ -41,11 +53,17 @@
             <scope>compile</scope>
         </dependency>   
         <dependency>
-            <groupId>com.google</groupId>
+            <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>12.0</version>
             <type>jar</type>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jsr305</artifactId>
+                    <groupId>com.google.code.findbugs</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>           
     </dependencies>
 </project>

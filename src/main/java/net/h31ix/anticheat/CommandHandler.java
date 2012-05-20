@@ -31,11 +31,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CommandHandler implements CommandExecutor {
-    
-    private Configuration config = AnticheatManager.CONFIGURATION;
-    private PlayerManager playerManager = AnticheatManager.PLAYER_MANAGER;
-    private XRayTracker xtracker = AnticheatManager.XRAY_TRACKER;
+public class CommandHandler implements CommandExecutor 
+{
+    private Configuration config = Anticheat.getManager().getConfiguration();
+    private PlayerManager playerManager = Anticheat.getManager().getPlayerManager();
+    private XRayTracker xtracker = Anticheat.getManager().getXRayTracker();
     private static final ChatColor RED = ChatColor.RED;
     private static final ChatColor YELLOW = ChatColor.YELLOW;
     private static final ChatColor GREEN = ChatColor.GREEN;

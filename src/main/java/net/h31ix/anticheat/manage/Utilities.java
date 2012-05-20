@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.h31ix.anticheat.Anticheat;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -50,7 +53,7 @@ public final class Utilities
                }
             }
         } 
-        if(AnticheatManager.CONFIGURATION.logConsole())
+        if(Anticheat.getManager().getConfiguration().logConsole())
         {
            Logger logger = Logger.getLogger("Minecraft");
            for(String msg : message)
