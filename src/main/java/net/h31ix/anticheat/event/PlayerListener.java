@@ -155,15 +155,15 @@ public class PlayerListener extends EventListener
         Player player = event.getPlayer();
         if(checkManager.willCheck(player, CheckType.ZOMBE_FLY))
         {      
-           player.sendMessage("งf งf ง1 ง0 ง2 ง4");
+           player.sendMessage("ยงf ยงf ยง1 ยง0 ยง2 ยง4");
         }
         if(checkManager.willCheck(player, CheckType.ZOMBE_CHEAT))
         {             
-           player.sendMessage("งf งf ง2 ง0 ง4 ง8");
+           player.sendMessage("ยงf ยงf ยง2 ยง0 ยง4 ยง8");
         }
         if(checkManager.willCheck(player, CheckType.ZOMBE_NOCLIP))
         {          
-           player.sendMessage("งf งf ง4 ง0 ง9 ง6");                                
+           player.sendMessage("ยงf ยงf ยง4 ยง0 ยง9 ยง6");                                
         }
         backend.logJoin(event.getPlayer());
         if(!getPlayerManager().hasLevel(player))
