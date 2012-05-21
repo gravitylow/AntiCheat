@@ -251,7 +251,6 @@ public class Backend
                 }
                 if(violation >= FLIGHT_LIMIT)
                 {
-                    System.out.println("yep");
                     flightViolation.put(name, 1);
                     return true;
                 }                
@@ -260,7 +259,6 @@ public class Backend
                 {
                     for(int i= 5;i>0;i--) 
                     {
-                        System.out.println(i);
                         Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY()-i, player.getLocation().getZ());
                         Block lower = newLocation.getBlock();
                         if(lower.getTypeId() == 0) 
