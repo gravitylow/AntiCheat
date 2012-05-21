@@ -25,6 +25,11 @@ import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.Configuration;
 import net.h31ix.anticheat.xray.XRayTracker;
 
+/**
+ * <p>
+ * The internal hub for all managers.
+ */
+
 public class AnticheatManager 
 {
     private Anticheat plugin = null;

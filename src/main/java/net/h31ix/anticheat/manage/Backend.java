@@ -98,7 +98,6 @@ public class Backend
     private Map<String,Integer> fastBreakViolation = new HashMap<String,Integer>();
     private Map<String,Integer> blocksBroken = new HashMap<String,Integer>();
     private Map<String,Long> lastBlockBroken = new HashMap<String,Long>();
-    private Map<String,Integer> fastPlaceViolation = new HashMap<String,Integer>();
     private Map<String,Long> lastBlockPlaced = new HashMap<String,Long>();    
     private Map<String,Long> lastBlockPlaceTime = new HashMap<String,Long>(); 
     
@@ -336,20 +335,26 @@ public class Backend
         String name = player.getName();
         if(!lastBlockPlaceTime.containsKey(name))
         {
+            //Make sure we have the last record for this player
             lastBlockPlaceTime.put(name, Long.parseLong("0"));
         }
         else if(lastBlockPlaced.containsKey(name))
         {
+            //If we do, continue on to math
             long last = lastBlockPlaced.get(name);
             long lastTime = lastBlockPlaceTime.get(name);
+            //Check if the time between the last block they placed and this block is high enough
+            //If it is, also check if their last place was in violation of this limit as well
             if(last != 0 && (time-last) < FASTPLACE_TIMEMAX && lastTime != 0 && lastTime < FASTPLACE_TIMEMAX)
             {
+                //It was a fastplace
                 lastBlockPlaceTime.put(name, (time-last));
                 lastBlockPlaced.put(name, time);
                 return true;
             }
             lastBlockPlaceTime.put(name, (time-last));
         }
+        //It was not fastplacing (at least not yet), store the data and wait for the next check.
         lastBlockPlaced.put(name, time);
         return false;
     }    

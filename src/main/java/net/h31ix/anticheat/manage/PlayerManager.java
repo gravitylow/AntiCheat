@@ -26,7 +26,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class PlayerManager {
+/**
+ * <p>
+ * The manager that AntiCheat will use to monitor player's hack levels and to execute events that the admin has set
+ */
+
+public class PlayerManager 
+{
+    
     private static Map<String,Integer> level = new HashMap<String,Integer>();
     private static Configuration config = null;
     private static final int MED_THRESHOLD = 20;
@@ -73,7 +80,7 @@ public class PlayerManager {
                 reactHigh(player);
                 level.put(player.getName(), MED_THRESHOLD+5);
             }
-            else if (playerLevel > HIGH_THRESHOLD)
+            else if (playerLevel > 60)
             {
                 level.put(player.getName(), MED_THRESHOLD+5);
             }
@@ -105,7 +112,10 @@ public class PlayerManager {
     
     public void setLevel(Player player, int x)
     {
-        level.put(player.getName(), x);
+        if(!(x > 60 && x < 0))
+        {
+            level.put(player.getName(), x);
+        }
     }
     
     public boolean hasLevel(Player player)
