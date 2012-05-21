@@ -46,9 +46,7 @@ public class Backend
     public static final int FASTBREAK_MAXVIOLATIONS = 2;
     public static final int FASTBREAK_MAXVIOLATIONTIME = 10000;
     public static final int FASTPLACE_LIMIT = 2;
-    public static final int FASTPLACE_TIMEMAX = 20;
-    public static final int FASTPLACE_MAXVIOLATIONS = 1;
-    public static final int FASTPLACE_MAXVIOLATIONTIME = 10000;    
+    public static final int FASTPLACE_TIMEMAX = 40; 
     
     private static final int CHAT_WARN_LEVEL = 7;
     private static final int CHAT_KICK_LEVEL = 10;
@@ -101,8 +99,8 @@ public class Backend
     private Map<String,Integer> blocksBroken = new HashMap<String,Integer>();
     private Map<String,Long> lastBlockBroken = new HashMap<String,Long>();
     private Map<String,Integer> fastPlaceViolation = new HashMap<String,Integer>();
-    private Map<String,Integer> blocksPlaced = new HashMap<String,Integer>();
     private Map<String,Long> lastBlockPlaced = new HashMap<String,Long>();    
+    private Map<String,Long> lastBlockPlaceTime = new HashMap<String,Long>(); 
     
     public Backend(AnticheatManager instance) 
     {
@@ -295,7 +293,6 @@ public class Backend
             else 
             {
                 Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
-                player.sendMessage(""+math);
                 if(fastBreakViolation.get(name) > FASTBREAK_MAXVIOLATIONS && math < FASTBREAK_MAXVIOLATIONTIME)
                 {
                     lastBlockBroken.put(name, System.currentTimeMillis());
@@ -337,6 +334,25 @@ public class Backend
     
     public boolean checkFastPlace(Player player)
     {    
+        long time = System.currentTimeMillis();
+        String name = player.getName();
+        if(!lastBlockPlaceTime.containsKey(name))
+        {
+            lastBlockPlaceTime.put(name, Long.parseLong("0"));
+        }
+        else if(lastBlockPlaced.containsKey(name))
+        {
+            long last = lastBlockPlaced.get(name);
+            long lastTime = lastBlockPlaceTime.get(name);
+            if(last != 0 && (time-last) < FASTPLACE_TIMEMAX && lastTime != 0 && lastTime < FASTPLACE_TIMEMAX)
+            {
+                lastBlockPlaceTime.put(name, (time-last));
+                lastBlockPlaced.put(name, time);
+                return true;
+            }
+            lastBlockPlaceTime.put(name, (time-last));
+        }
+        lastBlockPlaced.put(name, time);
         return false;
     }    
     
