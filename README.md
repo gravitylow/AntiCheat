@@ -1,7 +1,7 @@
 AntiCheat
 =============
 
-Stop hackers and cheaters in their tracks!
+Stop heckers and cheaters in their tracks!
 
 Usage
 -------
