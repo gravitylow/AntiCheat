@@ -26,6 +26,7 @@ import net.h31ix.anticheat.manage.Distance;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -36,7 +37,7 @@ public class BlockListener extends EventListener
     private final CheckManager checkManager = getCheckManager();
     private final Anticheat plugin = getPlugin();
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onBlockDamage(BlockDamageEvent event)
     {
         if(event.getInstaBreak())
@@ -95,7 +96,7 @@ public class BlockListener extends EventListener
                     noHack = false;
                 }              
             }            
-            if(checkManager.willCheck(player, CheckType.FAST_BREAK))
+            if(checkManager.willCheck(player, CheckType.FAST_BREAK) && !backend.isInstantBreakExempt(player))
             {
                 if(backend.checkFastBreak(player,block))
                 {

@@ -39,7 +39,7 @@ public class Backend
 {
     public static final int ENTERED_EXTITED_TIME = 20;
     public static final int EXIT_FLY_TIME = 40;
-    public static final int INSTANT_BREAK_TIME = 20;
+    public static final int INSTANT_BREAK_TIME = 100;
     public static final int JOIN_TIME = 40;
     public static final int DROPPED_ITEM_TIME = 2;
     public static final int DAMAGE_TIME = 50;
