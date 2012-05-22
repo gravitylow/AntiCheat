@@ -1,7 +1,5 @@
-AntiCheat-Development
+AntiCheat
 =============
-
-**WARNING:** This is a developmental branch and should not be used except people who like to break Bukkit and Minecraft!
 
 Stop heckers and cheaters in their tracks!
 
