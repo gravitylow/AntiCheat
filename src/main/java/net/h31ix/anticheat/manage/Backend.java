@@ -46,7 +46,10 @@ public class Backend
     public static final int FASTBREAK_MAXVIOLATIONS = 2;
     public static final int FASTBREAK_MAXVIOLATIONTIME = 10000;
     public static final int FASTPLACE_LIMIT = 2;
-    public static final int FASTPLACE_TIMEMAX = 40; 
+    public static final int FASTPLACE_ZEROLIMIT = 3;
+    public static final int FASTPLACE_TIMEMAX = 100;
+    public static final int FASTPLACE_MAXVIOLATIONS = 2;
+    public static final int FASTPLACE_MAXVIOLATIONTIME = 10000;
     
     private static final int CHAT_WARN_LEVEL = 7;
     private static final int CHAT_KICK_LEVEL = 10;
@@ -98,6 +101,8 @@ public class Backend
     private Map<String,Integer> fastBreakViolation = new HashMap<String,Integer>();
     private Map<String,Integer> blocksBroken = new HashMap<String,Integer>();
     private Map<String,Long> lastBlockBroken = new HashMap<String,Long>();
+    private Map<String,Integer> fastPlaceViolation = new HashMap<String,Integer>();
+    private Map<String,Integer> lastZeroHitPlace = new HashMap<String,Integer>();
     private Map<String,Long> lastBlockPlaced = new HashMap<String,Long>();    
     private Map<String,Long> lastBlockPlaceTime = new HashMap<String,Long>(); 
     
@@ -250,6 +255,7 @@ public class Backend
                 }
                 if(violation >= FLIGHT_LIMIT)
                 {
+                    System.out.println("yep");
                     flightViolation.put(name, 1);
                     return true;
                 }                
@@ -258,6 +264,7 @@ public class Backend
                 {
                     for(int i= 5;i>0;i--) 
                     {
+                        System.out.println(i);
                         Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY()-i, player.getLocation().getZ());
                         Block lower = newLocation.getBlock();
                         if(lower.getTypeId() == 0) 
@@ -293,6 +300,7 @@ public class Backend
                 if(fastBreakViolation.get(name) > FASTBREAK_MAXVIOLATIONS && math < FASTBREAK_MAXVIOLATIONTIME)
                 {
                     lastBlockBroken.put(name, System.currentTimeMillis());
+                    player.sendMessage(ChatColor.RED + "[AntiCheat] Fastbreaking detected. Please wait 10 seconds before breaking blocks.");
                     return true;
                 } 
                 else if(fastBreakViolation.get(name) > 0 && math > FASTBREAK_MAXVIOLATIONTIME)
@@ -333,29 +341,60 @@ public class Backend
     {    
         long time = System.currentTimeMillis();
         String name = player.getName();
-        if(!lastBlockPlaceTime.containsKey(name))
+        if(!lastBlockPlaceTime.containsKey(name) || !fastPlaceViolation.containsKey(name))
         {
-            //Make sure we have the last record for this player
             lastBlockPlaceTime.put(name, Long.parseLong("0"));
+            if(!fastPlaceViolation.containsKey(name))
+            {
+            	fastPlaceViolation.put(name, 0);
+            }
+        }
+        else if(fastPlaceViolation.containsKey(name) && fastPlaceViolation.get(name) > FASTPLACE_MAXVIOLATIONS)
+        {
+            Long math = System.currentTimeMillis() - lastBlockPlaced.get(name);
+            if(lastBlockPlaced.get(name) > 0 && math < FASTPLACE_MAXVIOLATIONTIME)
+            {
+                lastBlockPlaced.put(name, time);
+                player.sendMessage(ChatColor.RED + "[AntiCheat] Fastplacing detected. Please wait 10 seconds before placing blocks.");
+                return true;
+            } 
+            else if (lastBlockPlaced.get(name) > 0 && math > FASTPLACE_MAXVIOLATIONTIME)
+            {
+                fastPlaceViolation.put(name, 0);
+            }
         }
         else if(lastBlockPlaced.containsKey(name))
         {
-            //If we do, continue on to math
             long last = lastBlockPlaced.get(name);
             long lastTime = lastBlockPlaceTime.get(name);
-            //Check if the time between the last block they placed and this block is high enough
-            //If it is, also check if their last place was in violation of this limit as well
-            if(last != 0 && (time-last) < FASTPLACE_TIMEMAX && lastTime != 0 && lastTime < FASTPLACE_TIMEMAX)
+            long thisTime = time-last;
+            boolean nocheck = thisTime < 1 || lastTime < 1;
+            if(!lastZeroHitPlace.containsKey(name))
             {
-                //It was a fastplace
+                lastZeroHitPlace.put(name, 0);
+            }
+            if(nocheck)
+            {
+                if(!lastZeroHitPlace.containsKey(name))
+                {
+                    lastZeroHitPlace.put(name, 1);
+                }
+                else
+                {
+                	lastZeroHitPlace.put(name, lastZeroHitPlace.get(name)+1);
+                }
+            }
+            if(!nocheck && thisTime < FASTPLACE_TIMEMAX && lastTime < FASTPLACE_TIMEMAX
+            && lastZeroHitPlace.get(name) > FASTPLACE_ZEROLIMIT)
+            {
                 lastBlockPlaceTime.put(name, (time-last));
                 lastBlockPlaced.put(name, time);
+                fastPlaceViolation.put(name, fastPlaceViolation.get(name)+1);
                 return true;
             }
             lastBlockPlaceTime.put(name, (time-last));
         }
-        //It was not fastplacing (at least not yet), store the data and wait for the next check.
-        lastBlockPlaced.put(name, time);
+        lastBlockPlaced.put(name, time); 
         return false;
     }    
     
@@ -523,7 +562,7 @@ public class Backend
     }   
     
     @SuppressWarnings("unchecked")
-	private void logEvent(@SuppressWarnings("rawtypes") final List list, final Player player, long time)
+    private void logEvent(@SuppressWarnings("rawtypes") final List list, final Player player, long time)
     {
         list.add(player.getName());
         micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable() 
@@ -535,8 +574,9 @@ public class Backend
             }
         },      time);            
     }
+    
     @SuppressWarnings("unchecked")
-	private void logEvent(@SuppressWarnings("rawtypes") final Map map, final Player player, final Object obj, long time)
+    private void logEvent(@SuppressWarnings("rawtypes") final Map map, final Player player, final Object obj, long time)
     {
         map.put(player,obj);
         micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable() 

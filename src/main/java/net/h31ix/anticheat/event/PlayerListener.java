@@ -184,18 +184,17 @@ public class PlayerListener extends EventListener
         double z = distance.getZDifference();
         if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkFlight(player, from.getY(), to.getY()))
         {
+            from.setX(from.getX()-1);
+            from.setY(from.getY()-1);
+            from.setZ(from.getZ()-1);        
             event.setTo(from);
             //Lets really give this flyer a real pushdown.
- 			   Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY()-2, player.getLocation().getZ());
-     		   Block whatever = newLocation.getBlock();
-     		   if(whatever.getTypeId() != 0) 
-     		   {
-         		   event.setTo(newLocation);
-     		   } 
-     		  /* else 
-     		   {
-     			   downlow--;
-     		   }*/
+            Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY()-2, player.getLocation().getZ());
+            Block newBlock = newLocation.getBlock();
+            if(newBlock.getTypeId() != 0) 
+            {
+                event.setTo(newLocation);
+            } 
             log("tried to fly.",player,CheckType.FLY);        
         }
         if(checkManager.willCheck(player, CheckType.SPEED) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY))
