@@ -199,7 +199,7 @@ public class Backend
 
     public boolean checkSneak(Player player,double x,double z)
     {
-        if(player.isSneaking())
+        if(player.isSneaking() && !player.isFlying())
         {
             return x > XZ_SPEED_MAX_SNEAK || z > XZ_SPEED_MAX_SNEAK;
         }
