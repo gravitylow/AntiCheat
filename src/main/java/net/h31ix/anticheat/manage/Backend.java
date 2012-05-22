@@ -22,12 +22,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.server.EntityPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
@@ -35,6 +38,7 @@ import org.bukkit.event.player.PlayerToggleSprintEvent;
 public class Backend 
 {
     public static final int ENTERED_EXTITED_TIME = 20;
+    public static final int EXIT_FLY_TIME = 40;
     public static final int INSTANT_BREAK_TIME = 20;
     public static final int JOIN_TIME = 40;
     public static final int DROPPED_ITEM_TIME = 2;
@@ -539,6 +543,11 @@ public class Backend
         logEvent(movingExempt,player,ENTERED_EXTITED_TIME);             
     }
     
+    public void logExitFly(final Player player)
+    {
+        logEvent(movingExempt,player,EXIT_FLY_TIME);             
+    }    
+    
     public void logJoin(final Player player)
     {
         logEvent(movingExempt,player,JOIN_TIME);             
@@ -619,5 +628,14 @@ public class Backend
                 micromanage.getPlugin().getServer().broadcastMessage(ChatColor.RED+player.getName()+" was banned for spamming.");
             }
         }
-    }    
+    } 
+    
+    public void addNSH(Player player)
+    {
+        EntityPlayer ePlayer = ((CraftPlayer)player).getHandle();
+        NSH nsh = new NSH(((CraftServer)player.getServer()).getHandle().server, ePlayer.netServerHandler.networkManager, ePlayer);
+        ((CraftPlayer)player).getHandle().netServerHandler = nsh;
+        ((CraftPlayer)player).getHandle().netServerHandler.networkManager.a(nsh);
+        ((CraftServer)player.getServer()).getServer().networkListenThread.a(nsh);            
+    }
 }

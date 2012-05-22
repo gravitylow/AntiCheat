@@ -185,6 +185,7 @@ public class Anticheat extends JavaPlugin
         {
             String name = player.getName();
             manager.getPlayerManager().setLevel(player,config.getLevel(name));
+            manager.getBackend().addNSH(player);
         }
     }
 

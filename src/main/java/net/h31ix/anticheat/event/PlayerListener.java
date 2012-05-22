@@ -153,17 +153,19 @@ public class PlayerListener extends EventListener
     public void onPlayerJoin(PlayerJoinEvent event)
     {
         Player player = event.getPlayer();
+        backend.addNSH(player);
+        String section = "\u00a7";
         if(checkManager.willCheck(player, CheckType.ZOMBE_FLY))
         {      
-           player.sendMessage("§f §f §1 §0 §2 §4");
+           player.sendMessage(section+"f "+section+"f "+section+"1 "+section+"0 "+section+"2 "+section+"4");
         }
         if(checkManager.willCheck(player, CheckType.ZOMBE_CHEAT))
         {             
-           player.sendMessage("§f §f §2 §0 §4 §8");
+           player.sendMessage(section+"f "+section+"f "+section+"2 "+section+"0 "+section+"4 "+section+"8");
         }
         if(checkManager.willCheck(player, CheckType.ZOMBE_NOCLIP))
         {          
-           player.sendMessage("§f §f §4 §0 §9 §6");                                
+           player.sendMessage(section+"f "+section+"f "+section+"4 "+section+"0 "+section+"9 "+section+"6");                                
         }
         backend.logJoin(event.getPlayer());
         if(!getPlayerManager().hasLevel(player))
