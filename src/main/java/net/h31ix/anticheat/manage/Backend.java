@@ -56,6 +56,10 @@ public class Backend
     private static final int CHAT_BAN_LEVEL = 3;   
     
     public static final int FLIGHT_LIMIT = 4;
+    public static final int FLIGHT_MINIMUM = 1;
+    public static final int FLIGHT_TIMELIMIT = 5000;
+    public static final int Y_MAXVIOLATIONS = 1;
+    public static final int Y_MAXVIOTIME = 5000;
     public static final int NOFALL_LIMIT = 5;
     
     public static final int SPRINT_FOOD_MIN = 6;
@@ -75,6 +79,8 @@ public class Backend
     public static final double LADDER_Y_MIN = 0.11759;
     
     public static final double Y_SPEED_MAX = 0.5;
+    public static final double Y_MAXDIFF = 5;
+    public static final double Y_TIME = 1000;
     public static final double XZ_SPEED_MAX = 0.4;
     public static final double XZ_SPEED_MAX_SPRINT = 0.65;
     public static final double XZ_SPEED_MAX_SNEAK = 0.2;
@@ -99,6 +105,10 @@ public class Backend
     private Map<String,Integer> chatKicks = new HashMap<String,Integer>();         
     private Map<String,Integer> nofallViolation = new HashMap<String,Integer>(); 
     private Map<String,Integer> fastBreakViolation = new HashMap<String,Integer>();
+    private Map<String,Integer> YaxisViolations = new HashMap<String,Integer>();
+    private Map<String,Long> YaxisLastVio = new HashMap<String,Long>();
+    private Map<String,Double> lastYcoord = new HashMap<String,Double>();
+    private Map<String,Long> lastYtime = new HashMap<String,Long>();
     private Map<String,Integer> blocksBroken = new HashMap<String,Integer>();
     private Map<String,Long> lastBlockBroken = new HashMap<String,Long>();
     private Map<String,Integer> fastPlaceViolation = new HashMap<String,Integer>();
@@ -233,6 +243,63 @@ public class Backend
             }                
          }
          return false;
+    }
+    
+    public boolean checkDoomsOfTheYHeckers(Player player) {
+    	double y1 = player.getLocation().getY();
+        String name = player.getName();
+    	//Fix Y axis spam.
+    	if(!lastYcoord.containsKey(name) || !lastYtime.containsKey(name) 
+    			|| !YaxisViolations.containsKey(name) || !YaxisLastVio.containsKey(name))
+    	{
+    		lastYcoord.put(name, y1);
+    		YaxisViolations.put(name, 0);
+    		YaxisLastVio.put(name, 0L);
+    		lastYtime.put(name, System.currentTimeMillis());
+    	} 
+    	else 
+    	{
+    		if(y1 > lastYcoord.get(name) && YaxisViolations.get(name) > Y_MAXVIOLATIONS 
+    				&& (System.currentTimeMillis() - YaxisLastVio.get(name)) < Y_MAXVIOTIME) 
+    		{
+    			Location g = player.getLocation();
+    			g.setY(lastYcoord.get(name));
+    			player.sendMessage(ChatColor.RED + "[AntiCheat] Fly hacking on the y-axis detected.  Please wait 5 seconds to prevent getting damage.");
+    			YaxisViolations.put(name, YaxisViolations.get(name)+1);
+    			YaxisLastVio.put(name, System.currentTimeMillis());
+    			if(g.getBlock().getTypeId() == 0) 
+    				player.teleport(g);
+    			return true;
+    		} 
+    		else 
+    		{
+    			if(YaxisViolations.get(name) > Y_MAXVIOLATIONS 
+    				&& (System.currentTimeMillis() - YaxisLastVio.get(name)) > Y_MAXVIOTIME) {
+            		YaxisViolations.put(name, 0);
+            		YaxisLastVio.put(name, 0L);
+    			}
+    		}
+    		if((y1 - lastYcoord.get(name)) > Y_MAXDIFF && (System.currentTimeMillis() - lastYtime.get(name)) < Y_TIME) 
+    		{
+    			Location g = player.getLocation();
+    			g.setY(lastYcoord.get(name));
+    			YaxisViolations.put(name, YaxisViolations.get(name)+1);
+    			YaxisLastVio.put(name, System.currentTimeMillis());
+    			if(g.getBlock().getTypeId() == 0) 
+    				player.teleport(g);
+    			return true;
+    		}
+    		else
+    		{
+    			if((y1 - lastYcoord.get(name)) > Y_MAXDIFF + 1 || (System.currentTimeMillis() - lastYtime.get(name)) > Y_TIME) 
+    			{
+        			lastYtime.put(name, System.currentTimeMillis());
+        			lastYcoord.put(name, y1);
+    			}
+    		}
+    	}
+    	//Fix Y axis spam
+    	return false;
     }
     
     public boolean checkFlight(Player player, double y1, double y2)
