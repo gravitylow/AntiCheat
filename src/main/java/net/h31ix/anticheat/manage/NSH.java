@@ -26,5 +26,5 @@ public class NSH extends NetServerHandler
             }
         }
         this.player.abilities.isFlying = packet202abilities.b && this.player.abilities.canFly;
-    }    
+    }  
 }

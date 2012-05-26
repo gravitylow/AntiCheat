@@ -200,11 +200,13 @@ public class PlayerListener extends EventListener
             log("tried to fly.",player,CheckType.FLY);        
         }
         if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkDoomsOfTheYHeckers(player)) {
-        	 from.setX(from.getX()-1);
+             from.setX(from.getX()-1);
              from.setY(from.getY()-1);
              from.setZ(from.getZ()-1);
              if(from.getBlock().getTypeId() == 0)
+             {
             	 event.setTo(from);
+             }
              for(int i= 5;i>0;i--) 
              {
                  Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY()-i, player.getLocation().getZ());
@@ -222,7 +224,7 @@ public class PlayerListener extends EventListener
              {
                  event.setTo(newLocation);
              } 
-        	log("tried to fly on y-axis", player, CheckType.FLY); //cause he's poor.
+             log("tried to fly on y-axis", player, CheckType.FLY);
         }
         if(checkManager.willCheck(player, CheckType.SPEED) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY))
         {

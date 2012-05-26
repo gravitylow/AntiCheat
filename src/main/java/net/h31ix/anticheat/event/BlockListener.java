@@ -65,7 +65,7 @@ public class BlockListener extends EventListener
                     decrease(player);
                     backend.logBlockPlace(player);
                 }                
-            }            
+            } 
         }
     }
     
