@@ -18,9 +18,14 @@
 
 package net.h31ix.anticheat.manage;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import java.util.logging.SimpleFormatter;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.Configuration;
 import net.h31ix.anticheat.xray.XRayTracker;
@@ -38,8 +43,10 @@ public class AnticheatManager
     private PlayerManager PLAYER_MANAGER = null;
     private CheckManager CHECK_MANAGER = null;
     private Backend BACKEND = null;
-    private Logger LOGGER = null;
-	
+    private static Logger LOGGER = null;
+    private static Logger FILE_LOGGER = null;
+    private static Handler HANDLER;
+    
     public AnticheatManager(Anticheat instance)
     {
         plugin = instance;
@@ -50,11 +57,32 @@ public class AnticheatManager
         CHECK_MANAGER = new CheckManager(this);
         BACKEND = new Backend(this);
         LOGGER = Logger.getLogger("Minecraft");
+        FILE_LOGGER = Logger.getLogger(AnticheatManager.class.getName());
+        try 
+        {
+            File file = new File(plugin.getDataFolder()+"/log");
+            if(!file.exists())
+            {
+                file.mkdir();
+            }
+            HANDLER = new FileHandler(plugin.getDataFolder()+"/log/anticheat.log.%u.txt",true);
+        } catch (IOException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+        HANDLER.setFormatter(new SimpleFormatter());
+        FILE_LOGGER.setUseParentHandlers(false);
+        FILE_LOGGER.addHandler(HANDLER);
     }
     
     public void log(String message)
     {
-       LOGGER.log(Level.WARNING,"[AC] ".concat(message));
+        if(getConfiguration().logConsole())
+        {
+            LOGGER.log(Level.WARNING,"[AC] ".concat(message));
+        }
+        FILE_LOGGER.log(Level.WARNING, message);
     }
     
     public Anticheat getPlugin() 
