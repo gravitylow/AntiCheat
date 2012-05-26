@@ -199,7 +199,8 @@ public class PlayerListener extends EventListener
             } 
             log("tried to fly.",player,CheckType.FLY);        
         }
-        if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkDoomsOfTheYHeckers(player)) {
+        if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkYAxis(player)) 
+        {
              from.setX(from.getX()-1);
              from.setY(from.getY()-1);
              from.setZ(from.getZ()-1);

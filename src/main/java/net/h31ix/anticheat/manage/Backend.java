@@ -101,6 +101,8 @@ public class Backend
     private List<String> startEat = new ArrayList<String>();
     private List<String> healed = new ArrayList<String>();
     private List<String> sprinted = new ArrayList<String>();
+    private List<String> isInWater = new ArrayList<String>();
+    private List<String> isInWaterCache = new ArrayList<String>();
     private List<String> instantBreakExempt = new ArrayList<String>();
     private Map<String,String> oldMessage = new HashMap<String,String>();
     private Map<String,String> lastMessage = new HashMap<String,String>();
@@ -235,73 +237,98 @@ public class Backend
     public boolean checkWaterWalk(Player player, double x, double z)
     {
         Block block = player.getLocation().getBlock();
-         if(block.isLiquid() && player.getVehicle() == null)
-         {
-            if(x > XZ_SPEED_MAX_WATER || z > XZ_SPEED_MAX_WATER && !Utilities.sprintFly(player) && player.getNearbyEntities(1, 1, 1).isEmpty())
+        if(block.isLiquid() && player.getVehicle() == null)
+        {
+            if(isInWater.contains(player.getName()))
             {
-                return true;
+                if(isInWaterCache.contains(player.getName()))
+                {                    
+                   if(x > XZ_SPEED_MAX_WATER || z > XZ_SPEED_MAX_WATER && !Utilities.sprintFly(player) && player.getNearbyEntities(1, 1, 1).isEmpty())
+                   {
+                       return true;
+                   }
+                   else if(x > XZ_SPEED_MAX_WATER_SPRINT || z > XZ_SPEED_MAX_WATER_SPRINT)
+                   {
+                       return true;
+                   }   
+                }
+                else
+                {
+                    isInWaterCache.add(player.getName());
+                    return false;
+                }
             }
-            else if(x > XZ_SPEED_MAX_WATER_SPRINT || z > XZ_SPEED_MAX_WATER_SPRINT)
+            else
             {
-                return true;
-            }                
-         }
-         return false;
+                isInWater.add(player.getName());
+                return false;
+            }
+
+        }
+        isInWater.remove(player.getName());  
+        isInWaterCache.remove(player.getName());  
+        return false;
     }
     
-    public boolean checkDoomsOfTheYHeckers(Player player) {
-    	double y1 = player.getLocation().getY();
-        String name = player.getName();
-    	//Fix Y axis spam.
-    	if(!lastYcoord.containsKey(name) || !lastYtime.containsKey(name) 
-    			|| !YaxisViolations.containsKey(name) || !YaxisLastVio.containsKey(name))
-    	{
-    		lastYcoord.put(name, y1);
-    		YaxisViolations.put(name, 0);
-    		YaxisLastVio.put(name, 0L);
-    		lastYtime.put(name, System.currentTimeMillis());
-    	} 
-    	else 
-    	{
-    		if(y1 > lastYcoord.get(name) && YaxisViolations.get(name) > Y_MAXVIOLATIONS 
-    				&& (System.currentTimeMillis() - YaxisLastVio.get(name)) < Y_MAXVIOTIME) 
-    		{
-    			Location g = player.getLocation();
-    			g.setY(lastYcoord.get(name));
-    			player.sendMessage(ChatColor.RED + "[AntiCheat] Fly hacking on the y-axis detected.  Please wait 5 seconds to prevent getting damage.");
-    			YaxisViolations.put(name, YaxisViolations.get(name)+1);
-    			YaxisLastVio.put(name, System.currentTimeMillis());
-    			if(g.getBlock().getTypeId() == 0) 
-    				player.teleport(g);
-    			return true;
-    		} 
-    		else 
-    		{
-    			if(YaxisViolations.get(name) > Y_MAXVIOLATIONS 
-    				&& (System.currentTimeMillis() - YaxisLastVio.get(name)) > Y_MAXVIOTIME) {
-            		YaxisViolations.put(name, 0);
-            		YaxisLastVio.put(name, 0L);
-    			}
-    		}
-    		if((y1 - lastYcoord.get(name)) > Y_MAXDIFF && (System.currentTimeMillis() - lastYtime.get(name)) < Y_TIME) 
-    		{
-    			Location g = player.getLocation();
-    			g.setY(lastYcoord.get(name));
-    			YaxisViolations.put(name, YaxisViolations.get(name)+1);
-    			YaxisLastVio.put(name, System.currentTimeMillis());
-    			if(g.getBlock().getTypeId() == 0) 
-    				player.teleport(g);
-    			return true;
-    		}
-    		else
-    		{
-    			if((y1 - lastYcoord.get(name)) > Y_MAXDIFF + 1 || (System.currentTimeMillis() - lastYtime.get(name)) > Y_TIME) 
-    			{
-        			lastYtime.put(name, System.currentTimeMillis());
-        			lastYcoord.put(name, y1);
-    			}
-    		}
-    	}
+    public boolean checkYAxis(Player player) 
+    {
+        if(!player.isFlying())
+        {
+            double y1 = player.getLocation().getY();
+            String name = player.getName();
+            //Fix Y axis spam.
+            if(!lastYcoord.containsKey(name) || !lastYtime.containsKey(name) || !YaxisViolations.containsKey(name) || !YaxisLastVio.containsKey(name))
+            {
+                lastYcoord.put(name, y1);
+                YaxisViolations.put(name, 0);
+                YaxisLastVio.put(name, 0L);
+                lastYtime.put(name, System.currentTimeMillis());
+            } 
+            else 
+            {
+                if(y1 > lastYcoord.get(name) && YaxisViolations.get(name) > Y_MAXVIOLATIONS && (System.currentTimeMillis() - YaxisLastVio.get(name)) < Y_MAXVIOTIME) 
+                {
+                    Location g = player.getLocation();
+                    g.setY(lastYcoord.get(name));
+                    player.sendMessage(ChatColor.RED + "[AntiCheat] Fly hacking on the y-axis detected.  Please wait 5 seconds to prevent getting damage.");
+                    YaxisViolations.put(name, YaxisViolations.get(name)+1);
+                    YaxisLastVio.put(name, System.currentTimeMillis());
+                    if(g.getBlock().getTypeId() == 0) 
+                    {
+                            player.teleport(g);
+                    }
+                    return true;
+                } 
+                else 
+                {
+                    if(YaxisViolations.get(name) > Y_MAXVIOLATIONS && (System.currentTimeMillis() - YaxisLastVio.get(name)) > Y_MAXVIOTIME) 
+                    {
+                        YaxisViolations.put(name, 0);
+                        YaxisLastVio.put(name, 0L);
+                    }
+                }
+                if((y1 - lastYcoord.get(name)) > Y_MAXDIFF && (System.currentTimeMillis() - lastYtime.get(name)) < Y_TIME) 
+                {
+                    Location g = player.getLocation();
+                    g.setY(lastYcoord.get(name));
+                    YaxisViolations.put(name, YaxisViolations.get(name)+1);
+                    YaxisLastVio.put(name, System.currentTimeMillis());
+                    if(g.getBlock().getTypeId() == 0) 
+                    {
+                            player.teleport(g);
+                    }
+                    return true;
+                }
+                else
+                {
+                    if((y1 - lastYcoord.get(name)) > Y_MAXDIFF + 1 || (System.currentTimeMillis() - lastYtime.get(name)) > Y_TIME) 
+                    {
+                        lastYtime.put(name, System.currentTimeMillis());
+                        lastYcoord.put(name, y1);
+                    }
+                }
+            }
+        }
     	//Fix Y axis spam
     	return false;
     }
