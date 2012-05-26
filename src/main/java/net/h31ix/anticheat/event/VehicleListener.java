@@ -28,7 +28,7 @@ public class VehicleListener extends EventListener
 {    
     private final Backend backend = getBackend();
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onVehicleEnter(VehicleEnterEvent event)
     {
         if(event.getEntered() instanceof Player)
@@ -37,7 +37,7 @@ public class VehicleListener extends EventListener
         }
     }
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onVehicleExit(VehicleExitEvent event)
     {
         if(event.getExited() instanceof Player)

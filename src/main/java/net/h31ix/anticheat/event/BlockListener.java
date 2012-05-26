@@ -46,7 +46,7 @@ public class BlockListener extends EventListener
         }
     }
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event)
     {
         final Player player = event.getPlayer();
@@ -69,7 +69,7 @@ public class BlockListener extends EventListener
         }
     }
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event)
     {
         final Player player = event.getPlayer();

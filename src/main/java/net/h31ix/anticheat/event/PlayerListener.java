@@ -55,7 +55,7 @@ public class PlayerListener extends EventListener
         }
     }
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerChat(PlayerChatEvent event)
     {
         Player player = event.getPlayer();
@@ -113,7 +113,7 @@ public class PlayerListener extends EventListener
         }
     }    
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerDropItem(PlayerDropItemEvent event)
     {
         Player player = event.getPlayer();
@@ -130,13 +130,13 @@ public class PlayerListener extends EventListener
         }
     }  
     
-    @EventHandler 
+    @EventHandler(ignoreCancelled = true) 
     public void onPlayerEnterBed(PlayerBedEnterEvent event)
     {
         backend.logEnterExit(event.getPlayer());
     }
     
-    @EventHandler 
+    @EventHandler(ignoreCancelled = true) 
     public void onPlayerExitBed(PlayerBedLeaveEvent event)
     {
         backend.logEnterExit(event.getPlayer());
@@ -153,7 +153,6 @@ public class PlayerListener extends EventListener
     public void onPlayerJoin(PlayerJoinEvent event)
     {
         Player player = event.getPlayer();
-        backend.addNSH(player);
         String section = "\u00a7";
         if(checkManager.willCheck(player, CheckType.ZOMBE_FLY))
         {      
@@ -174,7 +173,7 @@ public class PlayerListener extends EventListener
         }
     } 
     
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void checkExploit(PlayerMoveEvent event)
     {
         Player player = event.getPlayer();
@@ -246,7 +245,7 @@ public class PlayerListener extends EventListener
             log("tried avoid fall damage.",player,CheckType.NOFALL);   
         }
     }
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void checkDirSpeed(PlayerMoveEvent event)
     {    
         Player player = event.getPlayer();
