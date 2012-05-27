@@ -103,6 +103,18 @@ public final class Utilities
         Material lily = Material.WATER_LILY;
         return block.getType() == lily || block.getRelative(BlockFace.NORTH).getType() == lily || block.getRelative(BlockFace.SOUTH).getType() == lily || block.getRelative(BlockFace.EAST).getType() == lily || block.getRelative(BlockFace.WEST).getType() == lily;
     }
+    public static boolean isInt(String string)
+    {
+        boolean x = false;
+        try {
+            Integer.parseInt(string);
+            x = true;
+        }
+        catch(Exception ex)
+        {
+        }
+        return x;
+    }
     static 
     {
         INSTANT_BREAK.add(Material.RED_MUSHROOM);

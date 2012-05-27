@@ -166,9 +166,7 @@ public class Anticheat extends JavaPlugin
             Graph graph = metrics.createGraph("Hacks blocked");
             for (final CheckType type : CheckType.values()) 
             {
-                char[] chars = type.toString().replaceAll("_", " ").toLowerCase().toCharArray();
-                chars[0] = Character.toUpperCase(chars[0]);
-                graph.addPlotter(new Metrics.Plotter(new String(chars)) 
+                graph.addPlotter(new Metrics.Plotter(CheckType.getName(type)) 
                 {
                     @Override
                     public int getValue() 

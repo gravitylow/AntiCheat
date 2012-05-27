@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.PlayerManager;
+import net.h31ix.anticheat.manage.Utilities;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -42,6 +44,7 @@ public class CommandHandler implements CommandExecutor
     private static final ChatColor YELLOW = ChatColor.YELLOW;
     private static final ChatColor GREEN = ChatColor.GREEN;
     private static final ChatColor WHITE = ChatColor.WHITE;
+    private static final ChatColor GRAY = ChatColor.GRAY;
     private List<String> high = new ArrayList<String>();
     private List<String> med = new ArrayList<String>();
     private List<String> low = new ArrayList<String>();  
@@ -82,7 +85,11 @@ public class CommandHandler implements CommandExecutor
             {
                 cs.sendMessage(RED+"Usage: /anticheat log [enable/disable]");
             }
-        }        
+        }
+        else
+        {
+            cs.sendMessage(RED+"Insufficient permissions.");
+        }
     }
     
     public void handleXRay(CommandSender cs, String [] args)
@@ -124,6 +131,10 @@ public class CommandHandler implements CommandExecutor
                 cs.sendMessage(RED+"XRay logging is off in the config.");
             } 
         }
+        else
+        {
+            cs.sendMessage(RED+"Insufficient permissions.");
+        }        
     }
     
     public void handleReset(CommandSender cs, String [] args)
@@ -134,12 +145,11 @@ public class CommandHandler implements CommandExecutor
             if(list.size() == 1)
             {
                 Player player = list.get(0);
-                getPlayers();
-                if(low.contains(player.getName()))
+                if(playerManager.getLevel(player) == 0)
                 {
                     cs.sendMessage(player.getName()+RED+" is already in Low Level!");
                 }
-                else if (med.contains(player.getName()) || high.contains(player.getName()))
+                else
                 {
                     playerManager.reset(player);
                     cs.sendMessage(player.getName()+GREEN+" has been reset to Low Level.");
@@ -155,6 +165,10 @@ public class CommandHandler implements CommandExecutor
             {
                 cs.sendMessage(RED+"Player: "+WHITE+args[1]+RED+" not found.");
             }
+        }  
+        else
+        {
+            cs.sendMessage(RED+"Insufficient permissions.");
         }        
     }
     
@@ -205,7 +219,11 @@ public class CommandHandler implements CommandExecutor
                         p.showPlayer(sender);
                     }                    
                 }
-            }  
+            } 
+            else
+            {
+                cs.sendMessage(RED+"Insufficient permissions.");
+            }            
         }
         else
         {
@@ -221,12 +239,18 @@ public class CommandHandler implements CommandExecutor
             cs.sendMessage("----------------------["+GREEN+"AntiCheat"+WHITE+"]----------------------");
             cs.sendMessage(base+GREEN+"log [Enable/Disable]"+WHITE+" - toggle logging");
             cs.sendMessage(base+GREEN+"report"+WHITE+" - get a detailed cheat report");
+            cs.sendMessage(base+GREEN+"report [user]"+WHITE+" - get a player's cheat report");
             cs.sendMessage(base+GREEN+"reload"+WHITE+" - reload AntiCheat configuration");
             cs.sendMessage(base+GREEN+"reset [user]"+WHITE+" - reset user's hack level");
             cs.sendMessage(base+GREEN+"xray [user]"+WHITE+" - check user's xray levels");
+            cs.sendMessage(base+GREEN+"spy [user]"+WHITE+" - spy on a user in secret"); 
             cs.sendMessage(base+GREEN+"help"+WHITE+" - access this page");     
             cs.sendMessage(base+GREEN+"update"+WHITE+" - check update status");   
             cs.sendMessage("-----------------------------------------------------");
+        } 
+        else
+        {
+            cs.sendMessage(RED+"Insufficient permissions.");
         }        
     }   
     
@@ -253,6 +277,10 @@ public class CommandHandler implements CommandExecutor
             {
                 cs.sendMessage("AntiCheat is "+GREEN+"UP TO DATE!");
             }
+        }
+        else
+        {
+            cs.sendMessage(RED+"Insufficient permissions.");
         }        
     }    
     
@@ -285,7 +313,125 @@ public class CommandHandler implements CommandExecutor
                     cs.sendMessage(RED+string);
                 }  
             }
+        }  
+        else
+        {
+            cs.sendMessage(RED+"Insufficient permissions.");
         }        
+    }
+    
+    public void handlePlayerReport(CommandSender cs,String [] args)
+    {
+        if(hasPermission(cs,"system.report") || hasPermission(cs,"admin") || hasPermission(cs,"mod"))
+        {
+            List<Player> list = SERVER.matchPlayer(args[1]);
+            if(list.size() == 1)
+            {
+                Player player = list.get(0);
+                if(args.length == 2)
+                {
+                    sendPlayerReport(cs,CheckType.values(),player,1);
+                }
+                else if(Utilities.isInt(args[2])) 
+                {
+                    int num = Integer.parseInt(args[2]);
+                    if(num <= 3 && num > 1)
+                    {
+                        sendPlayerReport(cs,CheckType.values(),player,num);
+                    }
+                    else
+                    {
+                        cs.sendMessage(RED+"Page: "+num+RED+" does not exist.");
+                    }
+                }
+                else
+                {
+                    cs.sendMessage(RED+"Not a valid page number: "+WHITE+args[2]);
+                }
+            }
+            else if(list.size() > 1)
+            {
+                cs.sendMessage(RED+"Multiple players found by name: "+WHITE+args[1]+RED+".");
+            }
+            else
+            {
+                cs.sendMessage(RED+"Player: "+WHITE+args[1]+RED+" not found.");
+            }            
+        } 
+        else
+        {
+            cs.sendMessage(RED+"Insufficient permissions.");
+        }        
+    }  
+    
+    public void sendPlayerReport(CommandSender cs, CheckType[] types, Player player, int page)
+    {
+        cs.sendMessage("--------------------["+GREEN+"REPORT["+page+"/3]"+WHITE+"]---------------------");
+        if(page == 1)
+        {
+            int level = playerManager.getLevel(player);
+            String levelString = GREEN+"Low";
+            if(level >= 20)
+            {
+                levelString = YELLOW+"Medium";
+            }
+            else if (level >= 50)
+            {
+                levelString = RED+"High";
+            }
+            cs.sendMessage(GRAY+"Player: "+WHITE+player.getName());
+            cs.sendMessage(GRAY+"Level: "+levelString);
+            for(int i=0;i<6;i++)
+            {
+                int use = types[i].getUses(player);
+                ChatColor color = WHITE;
+                if(use >= 20)
+                {
+                    color = YELLOW;
+                }
+                else if (use > 50)
+                {
+                    color = RED;
+                }
+                cs.sendMessage(GRAY+CheckType.getName(types[i])+": "+color+use);
+            } 
+        }
+        else if(page == 2)
+        {
+            for(int i=6;i<14;i++)
+            {
+                int use = types[i].getUses(player);
+                ChatColor color = WHITE;
+                if(use >= 20)
+                {
+                    color = YELLOW;
+                }
+                else if (use > 50)
+                {
+                    color = RED;
+                }
+                cs.sendMessage(GRAY+CheckType.getName(types[i])+": "+color+use);
+            }             
+        }
+        else if(page == 3)
+        {
+            for(int i=14;i<21;i++)
+            {
+                int use = types[i].getUses(player);
+                ChatColor color = WHITE;
+                if(use >= 20)
+                {
+                    color = YELLOW;
+                }
+                else if (use > 50)
+                {
+                    color = RED;
+                }
+                cs.sendMessage(GRAY+CheckType.getName(types[i])+": "+color+use);
+            }             
+        }        
+        cs.sendMessage("-----------------------------------------------------");    
+        
     }
     
     public void handleReload(CommandSender cs)
@@ -294,13 +440,24 @@ public class CommandHandler implements CommandExecutor
         {
             config.load();
             cs.sendMessage(GREEN+"AntiCheat configuration reloaded.");
-        }        
+        }     
+        else
+        {
+            cs.sendMessage(RED+"Insufficient permissions.");
+        }       
     }
     
     @Override
     public boolean onCommand(CommandSender cs, Command cmd, String alias, String[] args) 
     {
-        if(args.length == 2)
+        if(args.length == 3)
+        {
+            if(args[0].equalsIgnoreCase("report"))
+            {   
+                handlePlayerReport(cs,args);
+            }             
+        }
+        else if(args.length == 2)
         {
             if(args[0].equalsIgnoreCase("log"))
             {
@@ -317,7 +474,11 @@ public class CommandHandler implements CommandExecutor
             else if(args[0].equalsIgnoreCase("spy"))
             {   
                 handleSpy(cs,args);
-            }             
+            } 
+            else if(args[0].equalsIgnoreCase("report"))
+            {   
+                handlePlayerReport(cs,args);
+            }              
             else
             {
                 cs.sendMessage(RED+"Unrecognized command.");
@@ -363,7 +524,6 @@ public class CommandHandler implements CommandExecutor
             }
             else
             {
-                cs.sendMessage("Insufficient permissions.");
                 return false;
             }
         }

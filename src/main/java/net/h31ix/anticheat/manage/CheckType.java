@@ -54,7 +54,7 @@ public enum CheckType
     ITEM_SPAM("anticheat.itemspam");
     
     private final String permission;
-    private static final Map<String,Integer> level = new HashMap<String,Integer>();
+    private final Map<String,Integer> level = new HashMap<String,Integer>();
     
     private CheckType(String permission) 
     {
@@ -80,6 +80,11 @@ public enum CheckType
         }        
     }
     
+    public void clearUse(Player player)
+    {
+        level.put(player.getName(), 0);
+    }
+    
     public int getUses(Player player)
     {
         int use = 0;
@@ -88,5 +93,12 @@ public enum CheckType
             use = level.get(player.getName());
         }
         return use;
+    }
+    
+    public static String getName(CheckType type)
+    {
+        char[] chars = type.toString().replaceAll("_", " ").toLowerCase().toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);     
+        return new String(chars);
     }
 }

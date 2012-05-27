@@ -126,6 +126,10 @@ public class PlayerManager
     public void reset(Player player)
     {
         level.put(player.getName(),0);
+        for(CheckType type : CheckType.values())
+        {
+            type.clearUse(player);
+        }
     }   
     
     public Map<String,Integer> getLevels()
