@@ -19,11 +19,14 @@
 package net.h31ix.anticheat;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.h31ix.anticheat.manage.PlayerManager;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -39,9 +42,10 @@ public class CommandHandler implements CommandExecutor
     private static final ChatColor YELLOW = ChatColor.YELLOW;
     private static final ChatColor GREEN = ChatColor.GREEN;
     private static final ChatColor WHITE = ChatColor.WHITE;
-    private List<Player> high = new ArrayList<Player>();
-    private List<Player> med = new ArrayList<Player>();
-    private List<Player> low = new ArrayList<Player>();  
+    private List<String> high = new ArrayList<String>();
+    private List<String> med = new ArrayList<String>();
+    private List<String> low = new ArrayList<String>();  
+    private Map<String,Location> spyLocation = new HashMap<String,Location>();
     private static final Server SERVER = Bukkit.getServer();
     private static final int MED_THRESHOLD = 20;
     private static final int HIGH_THRESHOLD = 50; 
@@ -131,11 +135,11 @@ public class CommandHandler implements CommandExecutor
             {
                 Player player = list.get(0);
                 getPlayers();
-                if(low.contains(player))
+                if(low.contains(player.getName()))
                 {
                     cs.sendMessage(player.getName()+RED+" is already in Low Level!");
                 }
-                else if (med.contains(player) || high.contains(player))
+                else if (med.contains(player.getName()) || high.contains(player.getName()))
                 {
                     playerManager.reset(player);
                     cs.sendMessage(player.getName()+GREEN+" has been reset to Low Level.");
@@ -153,6 +157,61 @@ public class CommandHandler implements CommandExecutor
             }
         }        
     }
+    
+    public void handleSpy(CommandSender cs, String [] args)
+    {
+        if(cs instanceof Player)
+        {
+            Player sender = (Player)cs;
+            if(hasPermission(cs,"system.spy") || hasPermission(cs,"mod"))
+            {
+                if(!args[1].equalsIgnoreCase("off"))
+                {
+                    List<Player> list = SERVER.matchPlayer(args[1]);
+                    if(list.size() == 1)
+                    {
+                        Player player = list.get(0);
+                        for(Player p : cs.getServer().getOnlinePlayers())
+                        {
+                            p.hidePlayer(sender);
+                        }
+                        sender.setAllowFlight(true);
+                        sender.setFlying(true);
+                        spyLocation.put(sender.getName(), sender.getLocation());
+                        sender.teleport(player);
+                        sender.sendMessage(GREEN+"You have been teleported to "+player.getName()+" and made invisible.");
+                        sender.sendMessage(GREEN+"To stop spying, type "+WHITE+" /AntiCheat spy off");
+                    }
+                    else if(list.size() > 1)
+                    {
+                        cs.sendMessage(RED+"Multiple players found by name: "+WHITE+args[1]+RED+".");
+                    }
+                    else
+                    {
+                        cs.sendMessage(RED+"Player: "+WHITE+args[1]+RED+" not found.");
+                    }
+                }
+                else
+                {
+                    sender.setFlying(false);
+                    sender.setAllowFlight(false);                     
+                    if(spyLocation.containsKey(sender.getName()))
+                    {                     
+                        sender.teleport(spyLocation.get(sender.getName()));
+                        spyLocation.remove(sender.getName());
+                    }
+                    for(Player p : cs.getServer().getOnlinePlayers())
+                    {
+                        p.showPlayer(sender);
+                    }                    
+                }
+            }  
+        }
+        else
+        {
+            cs.sendMessage(RED+"Sorry, but you can't spy on a player from the console.");
+        }        
+    }    
     
     public void handleHelp(CommandSender cs)
     {
@@ -205,25 +264,25 @@ public class CommandHandler implements CommandExecutor
             if(!low.isEmpty())
             {
                 cs.sendMessage(GREEN+"----Level: Low (Not likely hacking)----");
-                for(Player player : low)
+                for(String string : low)
                 {     
-                    cs.sendMessage(GREEN+player.getName());
+                    cs.sendMessage(GREEN+string);
                 } 
             }
             if(!med.isEmpty())
             {                    
                 cs.sendMessage(YELLOW+"----Level: Medium (Possibly hacking/lagging)----");
-                for(Player player : med)
+                for(String string : med)
                 {     
-                    cs.sendMessage(YELLOW+player.getName());
+                    cs.sendMessage(YELLOW+string);
                 }  
             }
             if(!high.isEmpty())
             {                    
                 cs.sendMessage(RED+"----Level: High (Probably hacking or bad connection)----");
-                for(Player player : high)
+                for(String string : high)
                 {     
-                    cs.sendMessage(RED+player.getName());
+                    cs.sendMessage(RED+string);
                 }  
             }
         }        
@@ -254,7 +313,11 @@ public class CommandHandler implements CommandExecutor
             else if(args[0].equalsIgnoreCase("reset"))
             {   
                 handleReset(cs,args);
-            }                 
+            }  
+            else if(args[0].equalsIgnoreCase("spy"))
+            {   
+                handleSpy(cs,args);
+            }             
             else
             {
                 cs.sendMessage(RED+"Unrecognized command.");
@@ -319,15 +382,15 @@ public class CommandHandler implements CommandExecutor
             int level = playerManager.getLevel(player);
             if(level <= MED_THRESHOLD)
             {
-                low.add(player);
+                low.add(player.getName());
             }
             else if(level <= HIGH_THRESHOLD)
             {
-                med.add(player);
+                med.add(player.getName());
             }
             else
             {
-                high.add(player);
+                high.add(player.getName());
             }
         }        
     }    

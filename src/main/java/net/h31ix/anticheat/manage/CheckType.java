@@ -18,6 +18,10 @@
 
 package net.h31ix.anticheat.manage;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.bukkit.entity.Player;
+
 
 /**
  * <p>
@@ -50,6 +54,7 @@ public enum CheckType
     ITEM_SPAM("anticheat.itemspam");
     
     private final String permission;
+    private static final Map<String,Integer> level = new HashMap<String,Integer>();
     
     private CheckType(String permission) 
     {
@@ -59,5 +64,29 @@ public enum CheckType
     public String getPermission()
     {
         return this.permission;
+    }
+    
+    public void logUse(Player player)
+    {
+        String name = player.getName();
+        if(level.get(name) == null)
+        {
+            level.put(name, 1);
+        }
+        else
+        {
+            int amount = level.get(name)+1;
+            level.put(name, amount);
+        }        
+    }
+    
+    public int getUses(Player player)
+    {
+        int use = 0;
+        if(level.get(player.getName()) != null)
+        {
+            use = level.get(player.getName());
+        }
+        return use;
     }
 }

@@ -16,4 +16,7 @@ System:
   #AntiCheat will never bother you about updates if this is on, but if you turn it off you will have to manually update.
   Auto update: true
   Log to console: false
+  #Should AntiCheat log to files?
+  #0 = off, 1 = log when an event takes place, 2 = more detailed logs, 3 = most detailed logs
+  File log level: 1
   Verbose startup: false

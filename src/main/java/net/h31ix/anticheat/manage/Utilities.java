@@ -45,7 +45,7 @@ public final class Utilities
     {
         for(Player p : Bukkit.getServer().getOnlinePlayers())
         {
-            if(p.hasPermission("anticheat.alert") || p.hasPermission("anticheat.admin") || p.isOp())
+            if(p.hasPermission("anticheat.alert") || p.hasPermission("anticheat.admin") || p.hasPermission("anticheat.mod") || p.isOp())
             {
                for(String msg : message)
                {
@@ -60,6 +60,13 @@ public final class Utilities
            {
                logger.log(Level.INFO,ChatColor.stripColor(msg));
            }            
+        }
+        if(Anticheat.getManager().getConfiguration().getFileLogLevel() > 0)
+        {
+           for(String msg : message)
+           {
+               Anticheat.getManager().fileLog(ChatColor.stripColor(msg));
+           }             
         }
     }
     public static boolean cantStandAt(Block block)

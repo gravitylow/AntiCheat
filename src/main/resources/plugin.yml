@@ -11,3 +11,4 @@ commands:
   anticheat:
     description: Control and view info about AntiCheat
     usage: /anticheat help
+    aliases: anti

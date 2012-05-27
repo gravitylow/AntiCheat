@@ -40,12 +40,17 @@ public class EventListener implements Listener
         Anticheat.getManager().log(player.getName()+" "+message);
         PLAYER_MANAGER.increaseLevel(player);
         removeDecrease(player);
-        logCheat(type);
+        logCheat(type,player);
     }
     
-    private void logCheat(CheckType type)
+    private void logCheat(CheckType type,Player player)
     {
         usageList.put(type, getCheats(type)+1);
+        type.logUse(player);
+        if(PLUGIN.getManager().getConfiguration().getFileLogLevel() == 2 && type.getUses(player) % 10 == 0)
+        {
+            PLUGIN.getManager().fileLog(player.getName()+" has triggered multiple "+type+" checks.");
+        }
     }
     
     public void resetCheck(CheckType type)

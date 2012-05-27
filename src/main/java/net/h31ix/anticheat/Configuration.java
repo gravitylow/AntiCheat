@@ -46,6 +46,7 @@ public class Configuration
     private boolean alertXRay;
     private boolean autoUpdate;
     private boolean verboseStartup;
+    private int fileLogLevel = 0;
     private String updateFolder;
     private List<String> worlds = new ArrayList<String>();
     
@@ -98,7 +99,12 @@ public class Configuration
     public String updateFolder()
     {
         return updateFolder;
-    }     
+    }  
+    
+    public int getFileLogLevel()
+    {
+        return fileLogLevel;
+    }
     
     public final void load()
     {
@@ -150,6 +156,12 @@ public class Configuration
             save();
         }        
         alertXRay = config.getBoolean("XRay.Alert when xray is found");         
+        if(config.getString("System.File log level") == null)
+        {
+            config.set("System.File log level", 1);
+            save();
+        }        
+        fileLogLevel = config.getInt("System.File log level");                
     }
     
     public String getResult(String event)

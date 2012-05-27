@@ -45,11 +45,11 @@ public class PlayerManager
     
     private static void reactMedium(Player player)
     {
-            execute("Medium",player);                           
-            String [] alert = new String[2];
-            alert[0] = ChatColor.YELLOW+"[ALERT] "+ChatColor.WHITE+player.getName()+ChatColor.YELLOW+" has entered the MEDIUM hack level.";
-            alert[1] = ChatColor.YELLOW+"[ALERT] This means they may be using a hacked client or may have a bad connection!";      
-            Utilities.alert(alert);
+        execute("Medium",player);                           
+        String [] alert = new String[2];
+        alert[0] = ChatColor.YELLOW+"[ALERT] "+ChatColor.WHITE+player.getName()+ChatColor.YELLOW+" has entered the MEDIUM hack level.";
+        alert[1] = ChatColor.YELLOW+"[ALERT] This means they may be using a hacked client or may have a bad connection!";      
+        Utilities.alert(alert);
     }
     private static void reactHigh(Player player)
     {

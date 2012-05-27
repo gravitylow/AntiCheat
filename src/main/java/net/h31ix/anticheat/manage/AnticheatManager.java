@@ -81,7 +81,15 @@ public class AnticheatManager
         if(getConfiguration().logConsole())
         {
             LOGGER.log(Level.WARNING,"[AC] ".concat(message));
+        }       
+        if(getConfiguration().getFileLogLevel() == 3)
+        {
+            fileLog(message);
         }
+    }
+    
+    public void fileLog(String message)
+    {
         FILE_LOGGER.log(Level.WARNING, message);
     }
     
