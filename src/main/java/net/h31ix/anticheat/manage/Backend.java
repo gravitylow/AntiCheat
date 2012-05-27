@@ -118,6 +118,7 @@ public class Backend
     private Map<String,Integer> lastZeroHitPlace = new HashMap<String,Integer>();
     private Map<String,Long> lastBlockPlaced = new HashMap<String,Long>();    
     private Map<String,Long> lastBlockPlaceTime = new HashMap<String,Long>(); 
+    private Map<String,Integer> blockPunches = new HashMap<String,Integer>();
     
     public Backend(AnticheatManager instance) 
     {
@@ -383,6 +384,14 @@ public class Backend
         String name = player.getName();
         if(!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES && player.getGameMode() != GameMode.CREATIVE))
         {
+            if(blockPunches.get(name) != null)
+            {
+                int i = blockPunches.get(name);
+                if(i < 5)
+                {
+                    return true;
+                }
+            }
             if (!fastBreakViolation.containsKey(name))
             {
                 fastBreakViolation.put(name, 0);
@@ -586,7 +595,8 @@ public class Backend
 
     public void logBlockBreak(final Player player)
     {
-        logEvent(brokenBlock,player,BLOCK_BREAK_MIN);             
+        logEvent(brokenBlock,player,BLOCK_BREAK_MIN); 
+        resetAnimation(player);
     }
     
     public boolean justBroke(Player player)
@@ -606,12 +616,14 @@ public class Backend
     
     public void logAnimation(final Player player)
     {
-        logEvent(animated,player,ANIMATION_MIN);             
+        logEvent(animated,player,ANIMATION_MIN);  
+        increment(player,blockPunches);
     }
     
     public void resetAnimation(final Player player)
     {
-        animated.remove(player.getName());           
+        animated.remove(player.getName());  
+        blockPunches.put(player.getName(), 0);
     }    
     
     public boolean justAnimated(Player player)
@@ -720,4 +732,24 @@ public class Backend
             }
         }
     } 
+    public void increment(Player player, Map<String,Integer> map)
+    { 
+        String name = player.getName();
+        if(map.get(name) == null)
+        {
+            map.put(name, 1);
+        }
+        else
+        {
+            int amount = map.get(name)+1;
+            if(amount < 6)
+            {
+                map.put(name, amount);
+            }
+            else
+            {
+                map.put(name, 5);
+            }
+        }        
+    }
 }

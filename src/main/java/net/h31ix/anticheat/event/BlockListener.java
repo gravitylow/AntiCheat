@@ -118,5 +118,6 @@ public class BlockListener extends EventListener
         {
             decrease(player);
         }
+        backend.logBlockBreak(player);
     }
 }

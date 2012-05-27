@@ -20,7 +20,6 @@ package net.h31ix.anticheat;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.h31ix.anticheat.manage.AnticheatManager;
 import net.h31ix.anticheat.manage.PlayerManager;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.Bukkit;
