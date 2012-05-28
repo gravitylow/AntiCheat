@@ -48,7 +48,7 @@ public class Backend
     public static final int FASTBREAK_MAXVIOLATIONTIME = 10000;
     public static final int FASTPLACE_LIMIT = 2;
     public static final int FASTPLACE_ZEROLIMIT = 3;
-    public static final int FASTPLACE_TIMEMAX = 80;
+    public static final int FASTPLACE_TIMEMAX = 100;
     public static final int FASTPLACE_MAXVIOLATIONS = 2;
     public static final int FASTPLACE_MAXVIOLATIONTIME = 10000;
     
