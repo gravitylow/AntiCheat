@@ -82,7 +82,7 @@ public class CheckManager
     
     private boolean hasPermission(Player player, String permission)
     {
-        return player.hasPermission(permission);
+        return player.hasPermission(permission) || player.hasPermission("anticheat.exempt");
     }
      
     public boolean willCheck(Player player, CheckType type)
