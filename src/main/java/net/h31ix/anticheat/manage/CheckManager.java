@@ -33,7 +33,7 @@ public class CheckManager
 {
     public AnticheatManager manager = null;
     private static List<CheckType> checkIgnoreList = new ArrayList<CheckType>();
-    private static Multimap<Player,CheckType> exemptList = ArrayListMultimap.create();
+    private static Multimap<String,CheckType> exemptList = ArrayListMultimap.create();
     
     public CheckManager(AnticheatManager instance) 
     {
@@ -63,21 +63,21 @@ public class CheckManager
     public void exemptPlayer(Player player, CheckType type)
     {
         manager.log(player.getName()+" was exempted from the "+type.toString()+" check.");
-        exemptList.put(player, type);
+        exemptList.put(player.getName(), type);
     }
          
     public void unexemptPlayer(Player player, CheckType type)
     {
-        if(exemptList.containsEntry(player, type))
+        if(exemptList.containsEntry(player.getName(), type))
         {
             manager.log(player.getName()+" was re-added to the "+type.toString()+" check.");
-            exemptList.remove(player, type);
+            exemptList.remove(player.getName(), type);
         }
     }
        
     public boolean isExempt(Player player, CheckType type)
     {
-        return exemptList.containsEntry(player, type);
+        return exemptList.containsEntry(player.getName(), type);
     }
     
     private boolean hasPermission(Player player, String permission)
