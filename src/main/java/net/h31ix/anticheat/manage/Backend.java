@@ -84,6 +84,7 @@ public class Backend
     public static final double Y_TIME = 1000;
     public static final double XZ_SPEED_MAX = 0.4;
     public static final double XZ_SPEED_MAX_SPRINT = 0.65;
+    public static final double XZ_SPEED_MAX_FLY = 0.56;
     public static final double XZ_SPEED_MAX_SNEAK = 0.2;
     public static final double XZ_SPEED_MAX_WATER = 0.19;
     public static final double XZ_SPEED_MAX_WATER_SPRINT = 0.3;
@@ -192,6 +193,10 @@ public class Backend
     {
         if(!isSpeedExempt(player) && player.getVehicle() == null)
         {
+            if(player.isFlying())
+            {
+                return x > XZ_SPEED_MAX_FLY || z > XZ_SPEED_MAX_FLY; 
+            }
             if(!player.isSprinting())
             {       
                 return x > XZ_SPEED_MAX || z > XZ_SPEED_MAX;            
