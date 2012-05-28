@@ -492,7 +492,7 @@ public class Backend
                 }
             }
             if(thisTime < FASTPLACE_TIMEMAX && lastTime < FASTPLACE_TIMEMAX
-            || nocheck && lastZeroHitPlace.get(name) > FASTPLACE_ZEROLIMIT)
+            && nocheck && lastZeroHitPlace.get(name) > FASTPLACE_ZEROLIMIT)
             {
                 lastBlockPlaceTime.put(name, (time-last));
                 lastBlockPlaced.put(name, time);
