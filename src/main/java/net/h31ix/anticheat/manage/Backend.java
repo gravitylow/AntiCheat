@@ -22,15 +22,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.server.EntityPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
@@ -51,7 +48,7 @@ public class Backend
     public static final int FASTBREAK_MAXVIOLATIONTIME = 10000;
     public static final int FASTPLACE_LIMIT = 2;
     public static final int FASTPLACE_ZEROLIMIT = 3;
-    public static final int FASTPLACE_TIMEMAX = 100;
+    public static final int FASTPLACE_TIMEMAX = 80;
     public static final int FASTPLACE_MAXVIOLATIONS = 2;
     public static final int FASTPLACE_MAXVIOLATIONTIME = 10000;
     
@@ -60,6 +57,10 @@ public class Backend
     private static final int CHAT_BAN_LEVEL = 3;   
     
     public static final int FLIGHT_LIMIT = 4;
+    public static final int FLIGHT_MINIMUM = 1;
+    public static final int FLIGHT_TIMELIMIT = 5000;
+    public static final int Y_MAXVIOLATIONS = 1;
+    public static final int Y_MAXVIOTIME = 5000;
     public static final int NOFALL_LIMIT = 5;
     
     public static final int SPRINT_FOOD_MIN = 6;
@@ -79,6 +80,8 @@ public class Backend
     public static final double LADDER_Y_MIN = 0.11759;
     
     public static final double Y_SPEED_MAX = 0.5;
+    public static final double Y_MAXDIFF = 5;
+    public static final double Y_TIME = 1000;
     public static final double XZ_SPEED_MAX = 0.4;
     public static final double XZ_SPEED_MAX_SPRINT = 0.65;
     public static final double XZ_SPEED_MAX_SNEAK = 0.2;
@@ -95,6 +98,8 @@ public class Backend
     private List<String> startEat = new ArrayList<String>();
     private List<String> healed = new ArrayList<String>();
     private List<String> sprinted = new ArrayList<String>();
+    private List<String> isInWater = new ArrayList<String>();
+    private List<String> isInWaterCache = new ArrayList<String>();
     private List<String> instantBreakExempt = new ArrayList<String>();
     private Map<String,String> oldMessage = new HashMap<String,String>();
     private Map<String,String> lastMessage = new HashMap<String,String>();
@@ -103,12 +108,17 @@ public class Backend
     private Map<String,Integer> chatKicks = new HashMap<String,Integer>();         
     private Map<String,Integer> nofallViolation = new HashMap<String,Integer>(); 
     private Map<String,Integer> fastBreakViolation = new HashMap<String,Integer>();
+    private Map<String,Integer> YaxisViolations = new HashMap<String,Integer>();
+    private Map<String,Long> YaxisLastVio = new HashMap<String,Long>();
+    private Map<String,Double> lastYcoord = new HashMap<String,Double>();
+    private Map<String,Long> lastYtime = new HashMap<String,Long>();
     private Map<String,Integer> blocksBroken = new HashMap<String,Integer>();
     private Map<String,Long> lastBlockBroken = new HashMap<String,Long>();
     private Map<String,Integer> fastPlaceViolation = new HashMap<String,Integer>();
     private Map<String,Integer> lastZeroHitPlace = new HashMap<String,Integer>();
     private Map<String,Long> lastBlockPlaced = new HashMap<String,Long>();    
     private Map<String,Long> lastBlockPlaceTime = new HashMap<String,Long>(); 
+    private Map<String,Integer> blockPunches = new HashMap<String,Integer>();
     
     public Backend(AnticheatManager instance) 
     {
@@ -225,18 +235,100 @@ public class Backend
     public boolean checkWaterWalk(Player player, double x, double z)
     {
         Block block = player.getLocation().getBlock();
-         if(block.isLiquid() && player.getVehicle() == null)
-         {
-            if(x > XZ_SPEED_MAX_WATER || z > XZ_SPEED_MAX_WATER && !Utilities.sprintFly(player) && player.getNearbyEntities(1, 1, 1).isEmpty())
+        if(block.isLiquid() && player.getVehicle() == null)
+        {
+            if(isInWater.contains(player.getName()))
             {
-                return true;
+                if(isInWaterCache.contains(player.getName()))
+                {                    
+                   if(x > XZ_SPEED_MAX_WATER || z > XZ_SPEED_MAX_WATER && !Utilities.sprintFly(player) && player.getNearbyEntities(1, 1, 1).isEmpty())
+                   {
+                       return true;
+                   }
+                   else if(x > XZ_SPEED_MAX_WATER_SPRINT || z > XZ_SPEED_MAX_WATER_SPRINT)
+                   {
+                       return true;
+                   }   
+                }
+                else
+                {
+                    isInWaterCache.add(player.getName());
+                    return false;
+                }
             }
-            else if(x > XZ_SPEED_MAX_WATER_SPRINT || z > XZ_SPEED_MAX_WATER_SPRINT)
+            else
             {
-                return true;
-            }                
-         }
-         return false;
+                isInWater.add(player.getName());
+                return false;
+            }
+
+        }
+        isInWater.remove(player.getName());  
+        isInWaterCache.remove(player.getName());  
+        return false;
+    }
+    
+    public boolean checkYAxis(Player player) 
+    {
+        if(!player.isFlying())
+        {
+            double y1 = player.getLocation().getY();
+            String name = player.getName();
+            //Fix Y axis spam.
+            if(!lastYcoord.containsKey(name) || !lastYtime.containsKey(name) || !YaxisViolations.containsKey(name) || !YaxisLastVio.containsKey(name))
+            {
+                lastYcoord.put(name, y1);
+                YaxisViolations.put(name, 0);
+                YaxisLastVio.put(name, 0L);
+                lastYtime.put(name, System.currentTimeMillis());
+            } 
+            else 
+            {
+                if(y1 > lastYcoord.get(name) && YaxisViolations.get(name) > Y_MAXVIOLATIONS && (System.currentTimeMillis() - YaxisLastVio.get(name)) < Y_MAXVIOTIME) 
+                {
+                    Location g = player.getLocation();
+                    g.setY(lastYcoord.get(name));
+                    player.sendMessage(ChatColor.RED + "[AntiCheat] Fly hacking on the y-axis detected.  Please wait 5 seconds to prevent getting damage.");
+                    YaxisViolations.put(name, YaxisViolations.get(name)+1);
+                    YaxisLastVio.put(name, System.currentTimeMillis());
+                    if(g.getBlock().getTypeId() == 0) 
+                    {
+                            player.teleport(g);
+                    }
+                    return true;
+                } 
+                else 
+                {
+                    if(YaxisViolations.get(name) > Y_MAXVIOLATIONS && (System.currentTimeMillis() - YaxisLastVio.get(name)) > Y_MAXVIOTIME) 
+                    {
+                        YaxisViolations.put(name, 0);
+                        YaxisLastVio.put(name, 0L);
+                    }
+                }
+                if((y1 - lastYcoord.get(name)) > Y_MAXDIFF && (System.currentTimeMillis() - lastYtime.get(name)) < Y_TIME) 
+                {
+                    Location g = player.getLocation();
+                    g.setY(lastYcoord.get(name));
+                    YaxisViolations.put(name, YaxisViolations.get(name)+1);
+                    YaxisLastVio.put(name, System.currentTimeMillis());
+                    if(g.getBlock().getTypeId() == 0) 
+                    {
+                            player.teleport(g);
+                    }
+                    return true;
+                }
+                else
+                {
+                    if((y1 - lastYcoord.get(name)) > Y_MAXDIFF + 1 || (System.currentTimeMillis() - lastYtime.get(name)) > Y_TIME) 
+                    {
+                        lastYtime.put(name, System.currentTimeMillis());
+                        lastYcoord.put(name, y1);
+                    }
+                }
+            }
+        }
+    	//Fix Y axis spam
+    	return false;
     }
     
     public boolean checkFlight(Player player, double y1, double y2)
@@ -292,6 +384,14 @@ public class Backend
         String name = player.getName();
         if(!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES && player.getGameMode() != GameMode.CREATIVE))
         {
+            if(blockPunches.get(name) != null)
+            {
+                int i = blockPunches.get(name);
+                if(i < 5)
+                {
+                    return true;
+                }
+            }
             if (!fastBreakViolation.containsKey(name))
             {
                 fastBreakViolation.put(name, 0);
@@ -383,11 +483,11 @@ public class Backend
                 }
                 else
                 {
-                	lastZeroHitPlace.put(name, lastZeroHitPlace.get(name)+1);
+                    lastZeroHitPlace.put(name, lastZeroHitPlace.get(name)+1);
                 }
             }
-            if(!nocheck && thisTime < FASTPLACE_TIMEMAX && lastTime < FASTPLACE_TIMEMAX
-            && lastZeroHitPlace.get(name) > FASTPLACE_ZEROLIMIT)
+            if(thisTime < FASTPLACE_TIMEMAX && lastTime < FASTPLACE_TIMEMAX
+            || nocheck && lastZeroHitPlace.get(name) > FASTPLACE_ZEROLIMIT)
             {
                 lastBlockPlaceTime.put(name, (time-last));
                 lastBlockPlaced.put(name, time);
@@ -495,7 +595,8 @@ public class Backend
 
     public void logBlockBreak(final Player player)
     {
-        logEvent(brokenBlock,player,BLOCK_BREAK_MIN);             
+        logEvent(brokenBlock,player,BLOCK_BREAK_MIN); 
+        resetAnimation(player);
     }
     
     public boolean justBroke(Player player)
@@ -515,12 +616,14 @@ public class Backend
     
     public void logAnimation(final Player player)
     {
-        logEvent(animated,player,ANIMATION_MIN);             
+        logEvent(animated,player,ANIMATION_MIN);  
+        increment(player,blockPunches);
     }
     
     public void resetAnimation(final Player player)
     {
-        animated.remove(player.getName());           
+        animated.remove(player.getName());  
+        blockPunches.put(player.getName(), 0);
     }    
     
     public boolean justAnimated(Player player)
@@ -633,13 +736,24 @@ public class Backend
             }
         }
     } 
-    
-    public void addNSH(Player player)
-    {
-        EntityPlayer ePlayer = ((CraftPlayer)player).getHandle();
-        NSH nsh = new NSH(((CraftServer)player.getServer()).getHandle().server, ePlayer.netServerHandler.networkManager, ePlayer);
-        ((CraftPlayer)player).getHandle().netServerHandler = nsh;
-        ((CraftPlayer)player).getHandle().netServerHandler.networkManager.a(nsh);
-        ((CraftServer)player.getServer()).getServer().networkListenThread.a(nsh);            
+    public void increment(Player player, Map<String,Integer> map)
+    { 
+        String name = player.getName();
+        if(map.get(name) == null)
+        {
+            map.put(name, 1);
+        }
+        else
+        {
+            int amount = map.get(name)+1;
+            if(amount < 6)
+            {
+                map.put(name, amount);
+            }
+            else
+            {
+                map.put(name, 5);
+            }
+        }        
     }
 }

@@ -100,7 +100,7 @@ public class EntityListener extends EventListener
         }
     }
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event)
     {
         boolean noHack = true;

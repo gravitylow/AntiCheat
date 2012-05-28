@@ -55,7 +55,7 @@ public class PlayerListener extends EventListener
         }
     }
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerChat(PlayerChatEvent event)
     {
         Player player = event.getPlayer();
@@ -113,7 +113,7 @@ public class PlayerListener extends EventListener
         }
     }    
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerDropItem(PlayerDropItemEvent event)
     {
         Player player = event.getPlayer();
@@ -130,13 +130,13 @@ public class PlayerListener extends EventListener
         }
     }  
     
-    @EventHandler 
+    @EventHandler(ignoreCancelled = true) 
     public void onPlayerEnterBed(PlayerBedEnterEvent event)
     {
         backend.logEnterExit(event.getPlayer());
     }
     
-    @EventHandler 
+    @EventHandler(ignoreCancelled = true) 
     public void onPlayerExitBed(PlayerBedLeaveEvent event)
     {
         backend.logEnterExit(event.getPlayer());
@@ -153,7 +153,6 @@ public class PlayerListener extends EventListener
     public void onPlayerJoin(PlayerJoinEvent event)
     {
         Player player = event.getPlayer();
-        backend.addNSH(player);
         String section = "\u00a7";
         if(checkManager.willCheck(player, CheckType.ZOMBE_FLY))
         {      
@@ -174,7 +173,7 @@ public class PlayerListener extends EventListener
         }
     } 
     
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void checkExploit(PlayerMoveEvent event)
     {
         Player player = event.getPlayer();
@@ -199,6 +198,34 @@ public class PlayerListener extends EventListener
             } 
             log("tried to fly.",player,CheckType.FLY);        
         }
+        if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkYAxis(player)) 
+        {
+             from.setX(from.getX()-1);
+             from.setY(from.getY()-1);
+             from.setZ(from.getZ()-1);
+             if(from.getBlock().getTypeId() == 0)
+             {
+            	 event.setTo(from);
+             }
+             for(int i= 5;i>0;i--) 
+             {
+                 Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY()-i, player.getLocation().getZ());
+                 Block lower = newLocation.getBlock();
+                 if(lower.getTypeId() == 0) 
+                 {
+                     player.teleport(newLocation);
+                     break;
+                 } 
+             }
+             //Lets really give this flyer a real pushdown.
+             Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY()-2, player.getLocation().getZ());
+             Block newBlock = newLocation.getBlock();
+             if(newBlock.getTypeId() != 0) 
+             {
+                 event.setTo(newLocation);
+             } 
+             log("tried to fly on y-axis", player, CheckType.FLY);
+        }
         if(checkManager.willCheck(player, CheckType.SPEED) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY))
         {
             if(event.getFrom().getY() < event.getTo().getY() && backend.checkYSpeed(player, y))
@@ -218,7 +245,7 @@ public class PlayerListener extends EventListener
             log("tried avoid fall damage.",player,CheckType.NOFALL);   
         }
     }
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void checkDirSpeed(PlayerMoveEvent event)
     {    
         Player player = event.getPlayer();

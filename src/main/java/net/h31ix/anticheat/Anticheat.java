@@ -51,7 +51,7 @@ public class Anticheat extends JavaPlugin
     private final List<Listener> eventList = new ArrayList<Listener>();
     private static boolean update = false;
     private static final int BYTE_SIZE = 1024;
-    private static final Logger logger = Logger.getLogger("Minecraft");
+    private static Logger logger;
     private static Configuration config;
     private static boolean verbose;
     private static String updateFolder;
@@ -74,11 +74,16 @@ public class Anticheat extends JavaPlugin
     @Override
     public void onEnable() 
     {
+        logger = getLogger();
         manager = new AnticheatManager(this);
         config = manager.getConfiguration();
         checkConfig();
         verbose = config.verboseStartup();
         updateFolder = config.updateFolder();
+        if (verbose) 
+        {
+            logger.log(Level.INFO, "[AC] Setup the config.");
+        }         
         checkForUpdate();
         eventList.add(new PlayerListener());
         eventList.add(new BlockListener());
@@ -89,26 +94,30 @@ public class Anticheat extends JavaPlugin
         {
             eventList.add(new XRayListener());
             if (config.alertXRay()) 
-            {
-                    getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() 
+            {               
+                getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() 
+                {
+                    @Override
+                    public void run() 
                     {
-                            @Override
-                            public void run() 
+                        for (Player player : getServer().getOnlinePlayers()) 
+                        {
+                            String name = player.getName();
+                            if (!xtracker.hasAlerted(name) && xtracker.sufficientData(name) && xtracker.hasAbnormal(name)) 
                             {
-                                    for (Player player : getServer().getOnlinePlayers()) 
-                                    {
-                                            String name = player.getName();
-                                            if (!xtracker.hasAlerted(name) && xtracker.sufficientData(name) && xtracker.hasAbnormal(name)) 
-                                            {
-                                                    String [] alert = new String[2];
-                                                    alert[0] = ChatColor.YELLOW+"[ALERT] "+ChatColor.WHITE+name+ChatColor.YELLOW+" might be using xray.";
-                                                    alert[1] = ChatColor.YELLOW+"[ALERT] Please check their xray stats using "+ChatColor.WHITE+"/anticheat xray "+name+ChatColor.YELLOW+".";
-                                                    Utilities.alert(alert); 
-                                                    xtracker.logAlert(name);
-                                            }
-                                    }
+                                String [] alert = new String[2];
+                                alert[0] = ChatColor.YELLOW+"[ALERT] "+ChatColor.WHITE+name+ChatColor.YELLOW+" might be using xray.";
+                                alert[1] = ChatColor.YELLOW+"[ALERT] Please check their xray stats using "+ChatColor.WHITE+"/anticheat xray "+name+ChatColor.YELLOW+".";
+                                Utilities.alert(alert); 
+                                xtracker.logAlert(name);
                             }
-                    }, 1200L, 1200L);
+                        }
+                    }
+                }, 1200L, 1200L);
+                if (verbose) 
+                {
+                    logger.log(Level.INFO, "[AC] Scheduled the XRay checker.");
+                }                 
             }
         }
         for (Listener listener : eventList) 
@@ -122,7 +131,7 @@ public class Anticheat extends JavaPlugin
         getCommand("anticheat").setExecutor(new CommandHandler());
         if (verbose) 
         {
-            logger.log(Level.INFO, "[AC] Registered commands");
+            logger.log(Level.INFO, "[AC] Registered commands.");
             logger.log(Level.INFO, "[AC] Finished loading.");
         }
         if (update && config.autoUpdate())
@@ -170,6 +179,10 @@ public class Anticheat extends JavaPlugin
                 listener.resetCheck(type);
             }
             metrics.start();
+            if (verbose) 
+            {
+                logger.log(Level.INFO, "[AC] Metrics started.");
+            }             
         } 
         catch (IOException ex) 
         {
@@ -178,7 +191,6 @@ public class Anticheat extends JavaPlugin
         {
             String name = player.getName();
             manager.getPlayerManager().setLevel(player,config.getLevel(name));
-            manager.getBackend().addNSH(player);
         }
     }
 
@@ -231,7 +243,7 @@ public class Anticheat extends JavaPlugin
             saveDefaultConfig();
             if (verbose) 
             {
-                    logger.log(Level.INFO, "[AC] Config file created");
+                    logger.log(Level.INFO, "[AC] Config file created.");
             }
         }
     }
