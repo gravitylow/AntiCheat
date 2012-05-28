@@ -146,7 +146,7 @@ public class Backend
     
     public boolean checkYSpeed(Player player,double y)
     {
-        if(!player.isFlying() && player.getVehicle() == null && y > Y_SPEED_MAX)
+        if(/*!player.isFlying() &&*/ player.getVehicle() == null && y > Y_SPEED_MAX)
         {
             return true;
         }
@@ -190,7 +190,7 @@ public class Backend
     
     public boolean checkXZSpeed(Player player,double x,double z)    
     {
-        if(!isMovingExempt(player) && player.getVehicle() == null)
+        if(!isSpeedExempt(player) && player.getVehicle() == null)
         {
             if(!player.isSprinting())
             {       
@@ -659,7 +659,11 @@ public class Backend
     public boolean isMovingExempt(Player player)
     {
         return movingExempt.contains(player.getName()) || player.isFlying();       
-    }     
+    }
+    
+    public boolean isSpeedExempt(Player player) {
+    	return movingExempt.contains(player.getName());
+    }
     
     public void logDroppedItem(final Player player)
     {
