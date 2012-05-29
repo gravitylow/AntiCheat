@@ -35,6 +35,7 @@ import org.bukkit.event.player.PlayerToggleSprintEvent;
 public class Backend 
 {
     public static final int ENTERED_EXTITED_TIME = 20;
+    public static final int SNEAK_TIME = 5;
     public static final int EXIT_FLY_TIME = 40;
     public static final int INSTANT_BREAK_TIME = 100;
     public static final int JOIN_TIME = 40;
@@ -45,11 +46,13 @@ public class Backend
     public static final int FASTBREAK_LIMIT = 3;
     public static final int FASTBREAK_TIMEMAX = 500;
     public static final int FASTBREAK_MAXVIOLATIONS = 2;
+    public static final int FASTBREAK_MAXVIOLATIONS_CREATIVE = 3;
     public static final int FASTBREAK_MAXVIOLATIONTIME = 10000;
     public static final int FASTPLACE_LIMIT = 2;
     public static final int FASTPLACE_ZEROLIMIT = 3;
     public static final int FASTPLACE_TIMEMAX = 80;
     public static final int FASTPLACE_MAXVIOLATIONS = 2;
+    public static final int FASTPLACE_MAXVIOLATIONS_CREATIVE = 3;
     public static final int FASTPLACE_MAXVIOLATIONTIME = 10000;
     
     private static final int CHAT_WARN_LEVEL = 7;
@@ -214,7 +217,7 @@ public class Backend
 
     public boolean checkSneak(Player player,double x,double z)
     {
-        if(player.isSneaking() && !player.isFlying())
+        if(player.isSneaking() && !player.isFlying() && !isMovingExempt(player))
         {
             return x > XZ_SPEED_MAX_SNEAK || z > XZ_SPEED_MAX_SNEAK;
         }
@@ -386,6 +389,11 @@ public class Backend
     
     public boolean checkFastBreak(Player player, Block block)
     {      
+        int violations = FASTBREAK_MAXVIOLATIONS;
+        if(player.getGameMode() == GameMode.CREATIVE)
+        {
+            violations = FASTBREAK_MAXVIOLATIONS_CREATIVE;
+        }
         String name = player.getName();
         if(!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES && player.getGameMode() != GameMode.CREATIVE))
         {
@@ -404,7 +412,7 @@ public class Backend
             else 
             {
                 Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
-                if(fastBreakViolation.get(name) > FASTBREAK_MAXVIOLATIONS && math < FASTBREAK_MAXVIOLATIONTIME)
+                if(fastBreakViolation.get(name) > violations && math < FASTBREAK_MAXVIOLATIONTIME)
                 {
                     lastBlockBroken.put(name, System.currentTimeMillis());
                     player.sendMessage(ChatColor.RED + "[AntiCheat] Fastbreaking detected. Please wait 10 seconds before breaking blocks.");
@@ -446,6 +454,11 @@ public class Backend
     
     public boolean checkFastPlace(Player player)
     {    
+        int violations = FASTBREAK_MAXVIOLATIONS;
+        if(player.getGameMode() == GameMode.CREATIVE)
+        {
+            violations = FASTBREAK_MAXVIOLATIONS_CREATIVE;
+        }        
         long time = System.currentTimeMillis();
         String name = player.getName();
         if(!lastBlockPlaceTime.containsKey(name) || !fastPlaceViolation.containsKey(name))
@@ -456,7 +469,7 @@ public class Backend
             	fastPlaceViolation.put(name, 0);
             }
         }
-        else if(fastPlaceViolation.containsKey(name) && fastPlaceViolation.get(name) > FASTPLACE_MAXVIOLATIONS)
+        else if(fastPlaceViolation.containsKey(name) && fastPlaceViolation.get(name) > violations)
         {
             Long math = System.currentTimeMillis() - lastBlockPlaced.get(name);
             if(lastBlockPlaced.get(name) > 0 && math < FASTPLACE_MAXVIOLATIONTIME)
@@ -650,6 +663,11 @@ public class Backend
     {
         logEvent(movingExempt,player,ENTERED_EXTITED_TIME);             
     }
+    
+    public void logToggleSneak(final Player player)
+    {
+        logEvent(movingExempt,player,SNEAK_TIME);             
+    }    
     
     public void logExitFly(final Player player)
     {
