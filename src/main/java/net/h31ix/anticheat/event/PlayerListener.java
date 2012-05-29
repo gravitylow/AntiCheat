@@ -37,6 +37,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.PlayerInventory;
@@ -53,6 +55,15 @@ public class PlayerListener extends EventListener
         if(checkManager.willCheck(player, CheckType.SPAM))
         {     
             backend.logChat(player);
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent event)
+    {
+        if(event.getCause() == TeleportCause.ENDER_PEARL)
+        {
+            backend.logTeleport(event.getPlayer());
         }
     }
     
@@ -121,8 +132,11 @@ public class PlayerListener extends EventListener
                 backend.logEatingStart(player);
             }
         }
-        Distance distance = new Distance(event.getPlayer().getLocation(), event.getClickedBlock().getLocation());
-        backend.checkLongReachBlock(distance.getXDifference(), distance.getYDifference(), distance.getZDifference());
+        if(event.getClickedBlock() != null)
+        {
+            Distance distance = new Distance(event.getPlayer().getLocation(), event.getClickedBlock().getLocation());
+            backend.checkLongReachBlock(distance.getXDifference(), distance.getYDifference(), distance.getZDifference());
+        }
     }    
     
     @EventHandler(ignoreCancelled = true)

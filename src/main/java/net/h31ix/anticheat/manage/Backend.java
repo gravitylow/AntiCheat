@@ -36,6 +36,7 @@ public class Backend
 {
     public static final int ENTERED_EXTITED_TIME = 20;
     public static final int SNEAK_TIME = 5;
+    public static final int TELEPORT_TIME = 50;
     public static final int EXIT_FLY_TIME = 40;
     public static final int INSTANT_BREAK_TIME = 100;
     public static final int JOIN_TIME = 40;
@@ -667,6 +668,11 @@ public class Backend
     public void logToggleSneak(final Player player)
     {
         logEvent(movingExempt,player,SNEAK_TIME);             
+    }  
+    
+    public void logTeleport(final Player player)
+    {
+        logEvent(movingExempt,player,TELEPORT_TIME);             
     }    
     
     public void logExitFly(final Player player)
