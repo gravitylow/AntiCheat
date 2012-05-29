@@ -61,7 +61,7 @@ public class PlayerListener extends EventListener
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event)
     {
-        if(event.getCause() == TeleportCause.ENDER_PEARL)
+        if(event.getCause() == TeleportCause.ENDER_PEARL || event.getCause() == TeleportCause.PLUGIN)
         {
             backend.logTeleport(event.getPlayer());
         }
