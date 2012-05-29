@@ -70,7 +70,7 @@ public class BlockListener extends EventListener
     public void onBlockBreak(BlockBreakEvent event)
     {
         final Player player = event.getPlayer();
-        Block block = event.getBlock();
+        final Block block = event.getBlock();
         boolean noHack = true;
         if(player != null)
         {     
