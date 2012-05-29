@@ -34,6 +34,8 @@ public class CheckManager
     public AnticheatManager manager = null;
     private static List<CheckType> checkIgnoreList = new ArrayList<CheckType>();
     private static Multimap<String,CheckType> exemptList = ArrayListMultimap.create();
+    private static int disabled = 0;
+    private static int exempt = 0;
     
     public CheckManager(AnticheatManager instance) 
     {
@@ -53,6 +55,7 @@ public class CheckManager
     {
         manager.log("The "+type.toString()+" check was deactivated.");
         checkIgnoreList.add(type);
+        disabled++;
     }
         
     public boolean isActive(CheckType type)
@@ -64,6 +67,7 @@ public class CheckManager
     {
         manager.log(player.getName()+" was exempted from the "+type.toString()+" check.");
         exemptList.put(player.getName(), type);
+        exempt++;
     }
          
     public void unexemptPlayer(Player player, CheckType type)
@@ -91,5 +95,19 @@ public class CheckManager
                 && manager.getConfiguration().checkInWorld(player.getWorld())
                 && !isExempt(player, type) 
                 && !hasPermission(player, type.getPermission());
+    }
+    
+    public int getExempt()
+    {
+        int x = exempt;
+        exempt = 0;
+        return x;
+    }
+    
+    public int getDisabled()
+    {
+        int x = disabled;
+        disabled = 0;
+        return x;
     }
 }

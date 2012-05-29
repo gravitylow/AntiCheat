@@ -163,10 +163,10 @@ public class Anticheat extends JavaPlugin
         {
             metrics = new Metrics(this);
             final EventListener listener = new EventListener();
-            Graph graph = metrics.createGraph("Hacks blocked");
+            Graph hacksGraph = metrics.createGraph("Hacks blocked");
             for (final CheckType type : CheckType.values()) 
             {
-                graph.addPlotter(new Metrics.Plotter(CheckType.getName(type)) 
+                hacksGraph.addPlotter(new Metrics.Plotter(CheckType.getName(type)) 
                 {
                     @Override
                     public int getValue() 
@@ -176,6 +176,23 @@ public class Anticheat extends JavaPlugin
                 });
                 listener.resetCheck(type);
             }
+            Graph apiGraph = metrics.createGraph("API Usage");
+            apiGraph.addPlotter(new Metrics.Plotter("Checks disabled") 
+            {
+                @Override
+                public int getValue() 
+                {
+                    return manager.getCheckManager().getDisabled();
+                }
+            });  
+            apiGraph.addPlotter(new Metrics.Plotter("Players exempted") 
+            {
+                @Override
+                public int getValue() 
+                {
+                    return manager.getCheckManager().getExempt();
+                }
+            });              
             metrics.start();
             if (verbose) 
             {
