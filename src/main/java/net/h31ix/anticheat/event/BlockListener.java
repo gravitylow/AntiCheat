@@ -76,7 +76,7 @@ public class BlockListener extends EventListener
         {     
             if(checkManager.willCheck(player, CheckType.NO_SWING))
             {
-                if(backend.checkSwing(player))
+                if(backend.checkSwing(player,block))
                 {
                     event.setCancelled(true);
                     log("tried to break a block of "+block.getType().name()+" without swinging their arm.",player,CheckType.NO_SWING);  
@@ -106,7 +106,7 @@ public class BlockListener extends EventListener
                     @Override
                     public void run() 
                     {
-                        backend.checkSwing(player);
+                        backend.checkSwing(player,block);
                     }
                 },      2L);                    
             }

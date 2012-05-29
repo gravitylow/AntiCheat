@@ -384,9 +384,9 @@ public class Backend
         return false;
     }
     
-    public boolean checkSwing(Player player)
+    public boolean checkSwing(Player player, Block block)
     {
-        return !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !justAnimated(player);
+        return !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !justAnimated(player);
     }
     
     public boolean checkFastBreak(Player player, Block block)
