@@ -51,21 +51,18 @@ public class BlockListener extends EventListener
     {
         final Player player = event.getPlayer();
         Block block = event.getBlock();
-        if(player != null)
+        if(player != null && checkManager.willCheck(player, CheckType.FAST_PLACE))
         {     
-            if(checkManager.willCheck(player, CheckType.FAST_PLACE))
+            if(backend.checkFastPlace(player))
             {
-                if(backend.checkFastPlace(player))
-                {
-                    event.setCancelled(true);
-                    log("tried to place a block of "+block.getType().name()+" too fast.",player,CheckType.FAST_PLACE);                     
-                }   
-                else
-                {
-                    decrease(player);
-                    backend.logBlockPlace(player);
-                }                
-            } 
+                event.setCancelled(true);
+                log("tried to place a block of "+block.getType().name()+" too fast.",player,CheckType.FAST_PLACE);                     
+            }   
+            else
+            {
+                decrease(player);
+                backend.logBlockPlace(player);
+            }                
         }
     }
     

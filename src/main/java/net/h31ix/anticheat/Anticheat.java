@@ -56,6 +56,7 @@ public class Anticheat extends JavaPlugin
     private static boolean verbose;
     private static String updateFolder;
     private static Metrics metrics;
+    private static final long XRAY_TIME = 1200;
 
     @Override
     public void onDisable() 
@@ -113,7 +114,7 @@ public class Anticheat extends JavaPlugin
                             }
                         }
                     }
-                }, 1200L, 1200L);
+                }, XRAY_TIME, XRAY_TIME);
                 if (verbose) 
                 {
                     logger.log(Level.INFO, "[AC] Scheduled the XRay checker.");

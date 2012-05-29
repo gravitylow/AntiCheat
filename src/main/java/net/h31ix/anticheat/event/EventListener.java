@@ -28,8 +28,8 @@ import org.bukkit.event.Listener;
 
 public class EventListener implements Listener 
 {
-    private static final Map<CheckType,Integer> usageList = new EnumMap<CheckType,Integer>(CheckType.class);
-    private static final Map<String,Integer> decreaseList = new HashMap<String,Integer>();
+    private static final Map<CheckType,Integer> USAGE_LIST = new EnumMap<CheckType,Integer>(CheckType.class);
+    private static final Map<String,Integer> DECREASE_LIST = new HashMap<String,Integer>();
     private static final CheckManager CHECK_MANAGER = Anticheat.getManager().getCheckManager();   
     private static final Backend BACKEND = Anticheat.getManager().getBackend();  
     private static final Anticheat PLUGIN = Anticheat.getManager().getPlugin();
@@ -45,7 +45,7 @@ public class EventListener implements Listener
     
     private void logCheat(CheckType type,Player player)
     {
-        usageList.put(type, getCheats(type)+1);
+        USAGE_LIST.put(type, getCheats(type)+1);
         type.logUse(player);
         if(PLUGIN.getManager().getConfiguration().getFileLogLevel() == 2 && type.getUses(player) % 10 == 0)
         {
@@ -55,15 +55,15 @@ public class EventListener implements Listener
     
     public void resetCheck(CheckType type)
     {
-        usageList.put(type, 0);
+        USAGE_LIST.put(type, 0);
     }
     
     public int getCheats(CheckType type)
     {
         int x = 0;
-        if(usageList.get(type) != null)
+        if(USAGE_LIST.get(type) != null)
         {
-            x = usageList.get(type);
+            x = USAGE_LIST.get(type);
         }
         return x;
     }
@@ -71,31 +71,31 @@ public class EventListener implements Listener
     private static void removeDecrease(Player player)
     {
         int x = 0;
-        if(decreaseList.get(player.getName()) != null)
+        if(DECREASE_LIST.get(player.getName()) != null)
         {
-            x = decreaseList.get(player.getName());
+            x = DECREASE_LIST.get(player.getName());
             x-=2;
             if(x < 0)
             {
                 x = 0;
             }
         }
-        decreaseList.put(player.getName(), x);       
+        DECREASE_LIST.put(player.getName(), x);       
     }
     
     public static void decrease(Player player)
     {
         int x = 0;
-        if(decreaseList.get(player.getName()) != null)
+        if(DECREASE_LIST.get(player.getName()) != null)
         {
-            x = decreaseList.get(player.getName());
+            x = DECREASE_LIST.get(player.getName());
         }
         x+=1;
-        decreaseList.put(player.getName(), x);
+        DECREASE_LIST.put(player.getName(), x);
         if(x >= 10)
         {
             PLAYER_MANAGER.decreaseLevel(player);
-            decreaseList.put(player.getName(),0);
+            DECREASE_LIST.put(player.getName(),0);
         }
     }
     

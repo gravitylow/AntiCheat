@@ -38,26 +38,25 @@ import net.h31ix.anticheat.xray.XRayTracker;
 public class AnticheatManager 
 {
     private Anticheat plugin = null;
-    private Configuration CONFIGURATION = null;
-    private XRayTracker XRAY_TRACKER = null;
-    private PlayerManager PLAYER_MANAGER = null;
-    private CheckManager CHECK_MANAGER = null;
-    private Backend BACKEND = null;
-    private static Logger LOGGER = null;
-    private static Logger FILE_LOGGER = null;
-    private static Handler HANDLER;
+    private Configuration configuration;
+    private XRayTracker xrayTracker = null;
+    private PlayerManager playerManager = null;
+    private CheckManager checkManager = null;
+    private Backend backend = null;
+    private static final Logger LOGGER = Logger.getLogger("Minecraft");
+    private static final Logger FILE_LOGGER = Logger.getLogger(AnticheatManager.class.getName());
+    private static Handler handler;
+    private static final int LOG_LEVEL_HIGH = 3;
     
     public AnticheatManager(Anticheat instance)
     {
         plugin = instance;
         // now load all the others!!!!!
-        CONFIGURATION = new Configuration(this);
-        XRAY_TRACKER = new XRayTracker();
-        PLAYER_MANAGER = new PlayerManager(this);
-        CHECK_MANAGER = new CheckManager(this);
-        BACKEND = new Backend(this);
-        LOGGER = Logger.getLogger("Minecraft");
-        FILE_LOGGER = Logger.getLogger(AnticheatManager.class.getName());
+        configuration = new Configuration(this);
+        xrayTracker = new XRayTracker();
+        playerManager = new PlayerManager(this);
+        checkManager = new CheckManager(this);
+        backend = new Backend(this);
         try 
         {
             File file = new File(plugin.getDataFolder()+"/log");
@@ -65,15 +64,15 @@ public class AnticheatManager
             {
                 file.mkdir();
             }
-            HANDLER = new FileHandler(plugin.getDataFolder()+"/log/anticheat.log.%u.txt",true);
+            handler = new FileHandler(plugin.getDataFolder()+"/log/anticheat.log.%u.txt",true);
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
-        HANDLER.setFormatter(new SimpleFormatter());
+        handler.setFormatter(new SimpleFormatter());
         FILE_LOGGER.setUseParentHandlers(false);
-        FILE_LOGGER.addHandler(HANDLER);
+        FILE_LOGGER.addHandler(handler);
     }
     
     public void log(String message)
@@ -82,7 +81,7 @@ public class AnticheatManager
         {
             LOGGER.log(Level.WARNING,"[AC] ".concat(message));
         }       
-        if(getConfiguration().getFileLogLevel() == 3)
+        if(getConfiguration().getFileLogLevel() == LOG_LEVEL_HIGH)
         {
             fileLog(message);
         }
@@ -100,26 +99,26 @@ public class AnticheatManager
     
     public Configuration getConfiguration() 
     {
-    	return CONFIGURATION;
+    	return configuration;
     }
     
     public XRayTracker getXRayTracker() 
     {
-    	return XRAY_TRACKER;
+    	return xrayTracker;
     }
     
     public PlayerManager getPlayerManager() 
     {
-    	return PLAYER_MANAGER;
+    	return playerManager;
     }
     
     public CheckManager getCheckManager()
     {
-    	return CHECK_MANAGER;
+    	return checkManager;
     }
     
     public Backend getBackend() 
     {
-    	return BACKEND;
+    	return backend;
     }
 }

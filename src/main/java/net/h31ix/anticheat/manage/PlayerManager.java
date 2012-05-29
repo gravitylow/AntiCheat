@@ -38,6 +38,8 @@ public class PlayerManager
     private static Configuration config = null;
     private static final int MED_THRESHOLD = 20;
     private static final int HIGH_THRESHOLD = 50;
+    private static final int LEVEL_MAX = 60;
+    private static final int LEVEL_BOOST = 5;
     
     public PlayerManager(AnticheatManager instance) {
     	config = instance.getConfiguration();
@@ -78,11 +80,11 @@ public class PlayerManager
             else if(playerLevel <= HIGH_THRESHOLD && playerLevel+1 > HIGH_THRESHOLD)
             {
                 reactHigh(player);
-                level.put(player.getName(), MED_THRESHOLD+5);
+                level.put(player.getName(), MED_THRESHOLD+LEVEL_BOOST);
             }
-            else if (playerLevel > 60)
+            else if (playerLevel > LEVEL_MAX)
             {
-                level.put(player.getName(), MED_THRESHOLD+5);
+                level.put(player.getName(), MED_THRESHOLD+LEVEL_BOOST);
             }
         }        
     }
@@ -112,7 +114,7 @@ public class PlayerManager
     
     public void setLevel(Player player, int x)
     {
-        if(!(x > 60 && x < 0))
+        if(!(x > LEVEL_MAX && x < 0))
         {
             level.put(player.getName(), x);
         }

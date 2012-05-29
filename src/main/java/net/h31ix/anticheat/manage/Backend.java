@@ -34,64 +34,65 @@ import org.bukkit.event.player.PlayerToggleSprintEvent;
 
 public class Backend 
 {
-    public static final int ENTERED_EXTITED_TIME = 20;
-    public static final int SNEAK_TIME = 5;
-    public static final int TELEPORT_TIME = 50;
-    public static final int EXIT_FLY_TIME = 40;
-    public static final int INSTANT_BREAK_TIME = 100;
-    public static final int JOIN_TIME = 40;
-    public static final int DROPPED_ITEM_TIME = 2;
-    public static final int DAMAGE_TIME = 50;
-    public static final int KNOCKBACK_DAMAGE_TIME = 50;
+    private static final int ENTERED_EXTITED_TIME = 20;
+    private static final int SNEAK_TIME = 5;
+    private static final int TELEPORT_TIME = 50;
+    private static final int EXIT_FLY_TIME = 40;
+    private static final int INSTANT_BREAK_TIME = 100;
+    private static final int JOIN_TIME = 40;
+    private static final int DROPPED_ITEM_TIME = 2;
+    private static final int DAMAGE_TIME = 50;
+    private static final int KNOCKBACK_DAMAGE_TIME = 50;
     
-    public static final int FASTBREAK_LIMIT = 3;
-    public static final int FASTBREAK_TIMEMAX = 500;
-    public static final int FASTBREAK_MAXVIOLATIONS = 2;
-    public static final int FASTBREAK_MAXVIOLATIONS_CREATIVE = 3;
-    public static final int FASTBREAK_MAXVIOLATIONTIME = 10000;
-    public static final int FASTPLACE_LIMIT = 2;
-    public static final int FASTPLACE_ZEROLIMIT = 3;
-    public static final int FASTPLACE_TIMEMAX = 100;
-    public static final int FASTPLACE_MAXVIOLATIONS = 2;
-    public static final int FASTPLACE_MAXVIOLATIONS_CREATIVE = 3;
-    public static final int FASTPLACE_MAXVIOLATIONTIME = 10000;
+    private static final int FASTBREAK_LIMIT = 3;
+    private static final int FASTBREAK_TIMEMAX = 500;
+    private static final int FASTBREAK_MAXVIOLATIONS = 2;
+    private static final int FASTBREAK_MAXVIOLATIONS_CREATIVE = 3;
+    private static final int FASTBREAK_MAXVIOLATIONTIME = 10000;
+    private static final int FASTPLACE_ZEROLIMIT = 3;
+    private static final int FASTPLACE_TIMEMAX = 100;
+    private static final int FASTPLACE_MAXVIOLATIONS = 2;
+    private static final int FASTPLACE_MAXVIOLATIONS_CREATIVE = 3;
+    private static final int FASTPLACE_MAXVIOLATIONTIME = 10000;
+    
+    private static final int BLOCK_PUNCH_MIN  = 5;
     
     private static final int CHAT_WARN_LEVEL = 7;
     private static final int CHAT_KICK_LEVEL = 10;
     private static final int CHAT_BAN_LEVEL = 3;   
     
-    public static final int FLIGHT_LIMIT = 4;
-    public static final int FLIGHT_MINIMUM = 1;
-    public static final int FLIGHT_TIMELIMIT = 5000;
-    public static final int Y_MAXVIOLATIONS = 1;
-    public static final int Y_MAXVIOTIME = 5000;
-    public static final int NOFALL_LIMIT = 5;
+    private static final int FLIGHT_LIMIT = 4;
+    private static final int Y_MAXVIOLATIONS = 1;
+    private static final int Y_MAXVIOTIME = 5000;
+    private static final int NOFALL_LIMIT = 5;
     
-    public static final int SPRINT_FOOD_MIN = 6;
-    public static final int EAT_MIN = 20;
-    public static final int HEAL_MIN = 35;
-    public static final int ANIMATION_MIN = 60;
-    public static final int CHAT_MIN = 100;
-    public static final int BOW_MIN = 2;
-    public static final int SPRINT_MIN = 2;
-    public static final int BLOCK_BREAK_MIN = 1;
-    public static final long BLOCK_PLACE_MIN = 1/3;
+    private static final int SPRINT_FOOD_MIN = 6;
+    private static final int EAT_MIN = 20;
+    private static final int HEAL_MIN = 35;
+    private static final int ANIMATION_MIN = 60;
+    private static final int CHAT_MIN = 100;
+    private static final int BOW_MIN = 2;
+    private static final int SPRINT_MIN = 2;
+    private static final int BLOCK_BREAK_MIN = 1;
+    private static final long BLOCK_PLACE_MIN = 1/3;
     
-    public static final double BLOCK_MAX_DISTANCE = 6.0;
-    public static final double ENTITY_MAX_DISTANCE = 5.5;
+    private static final double BLOCK_MAX_DISTANCE = 6.0;
+    private static final double ENTITY_MAX_DISTANCE = 5.5;
     
-    public static final double LADDER_Y_MAX = 0.11761;
-    public static final double LADDER_Y_MIN = 0.11759;
+    private static final double LADDER_Y_MAX = 0.11761;
+    private static final double LADDER_Y_MIN = 0.11759;
     
-    public static final double Y_SPEED_MAX = 0.5;
-    public static final double Y_MAXDIFF = 5;
-    public static final double Y_TIME = 1000;
-    public static final double XZ_SPEED_MAX = 0.4;
-    public static final double XZ_SPEED_MAX_SPRINT = 0.65;
-    public static final double XZ_SPEED_MAX_FLY = 0.56;
-    public static final double XZ_SPEED_MAX_SNEAK = 0.2;
-    public static final double XZ_SPEED_MAX_WATER = 0.19;
-    public static final double XZ_SPEED_MAX_WATER_SPRINT = 0.3;
+    private static final double Y_SPEED_MAX = 0.5;
+    private static final double Y_MAXDIFF = 5;
+    private static final double Y_TIME = 1000;
+    private static final double XZ_SPEED_MAX = 0.4;
+    private static final double XZ_SPEED_MAX_SPRINT = 0.65;
+    private static final double XZ_SPEED_MAX_FLY = 0.56;
+    private static final double XZ_SPEED_MAX_SNEAK = 0.2;
+    private static final double XZ_SPEED_MAX_WATER = 0.19;
+    private static final double XZ_SPEED_MAX_WATER_SPRINT = 0.3;
+    
+    private static final int FLY_LOOP = 5;
     
     private AnticheatManager micromanage = null;
     private List<String> droppedItem = new ArrayList<String>();
@@ -113,8 +114,8 @@ public class Backend
     private Map<String,Integer> chatKicks = new HashMap<String,Integer>();         
     private Map<String,Integer> nofallViolation = new HashMap<String,Integer>(); 
     private Map<String,Integer> fastBreakViolation = new HashMap<String,Integer>();
-    private Map<String,Integer> YaxisViolations = new HashMap<String,Integer>();
-    private Map<String,Long> YaxisLastVio = new HashMap<String,Long>();
+    private Map<String,Integer> yAxisViolations = new HashMap<String,Integer>();
+    private Map<String,Long> yAxisLastViolation = new HashMap<String,Long>();
     private Map<String,Double> lastYcoord = new HashMap<String,Double>();
     private Map<String,Long> lastYtime = new HashMap<String,Long>();
     private Map<String,Integer> blocksBroken = new HashMap<String,Integer>();
@@ -284,22 +285,22 @@ public class Backend
             double y1 = player.getLocation().getY();
             String name = player.getName();
             //Fix Y axis spam.
-            if(!lastYcoord.containsKey(name) || !lastYtime.containsKey(name) || !YaxisViolations.containsKey(name) || !YaxisLastVio.containsKey(name))
+            if(!lastYcoord.containsKey(name) || !lastYtime.containsKey(name) || !yAxisLastViolation.containsKey(name) || !yAxisLastViolation.containsKey(name))
             {
                 lastYcoord.put(name, y1);
-                YaxisViolations.put(name, 0);
-                YaxisLastVio.put(name, 0L);
+                yAxisViolations.put(name, 0);
+                yAxisLastViolation.put(name, 0L);
                 lastYtime.put(name, System.currentTimeMillis());
             } 
             else 
             {
-                if(y1 > lastYcoord.get(name) && YaxisViolations.get(name) > Y_MAXVIOLATIONS && (System.currentTimeMillis() - YaxisLastVio.get(name)) < Y_MAXVIOTIME) 
+                if(y1 > lastYcoord.get(name) && yAxisViolations.get(name) > Y_MAXVIOLATIONS && (System.currentTimeMillis() - yAxisLastViolation.get(name)) < Y_MAXVIOTIME) 
                 {
                     Location g = player.getLocation();
                     g.setY(lastYcoord.get(name));
                     player.sendMessage(ChatColor.RED + "[AntiCheat] Fly hacking on the y-axis detected.  Please wait 5 seconds to prevent getting damage.");
-                    YaxisViolations.put(name, YaxisViolations.get(name)+1);
-                    YaxisLastVio.put(name, System.currentTimeMillis());
+                    yAxisViolations.put(name, yAxisViolations.get(name)+1);
+                    yAxisLastViolation.put(name, System.currentTimeMillis());
                     if(g.getBlock().getTypeId() == 0) 
                     {
                             player.teleport(g);
@@ -308,18 +309,18 @@ public class Backend
                 } 
                 else 
                 {
-                    if(YaxisViolations.get(name) > Y_MAXVIOLATIONS && (System.currentTimeMillis() - YaxisLastVio.get(name)) > Y_MAXVIOTIME) 
+                    if(yAxisViolations.get(name) > Y_MAXVIOLATIONS && (System.currentTimeMillis() - yAxisLastViolation.get(name)) > Y_MAXVIOTIME) 
                     {
-                        YaxisViolations.put(name, 0);
-                        YaxisLastVio.put(name, 0L);
+                        yAxisViolations.put(name, 0);
+                        yAxisLastViolation.put(name, 0L);
                     }
                 }
                 if((y1 - lastYcoord.get(name)) > Y_MAXDIFF && (System.currentTimeMillis() - lastYtime.get(name)) < Y_TIME) 
                 {
                     Location g = player.getLocation();
                     g.setY(lastYcoord.get(name));
-                    YaxisViolations.put(name, YaxisViolations.get(name)+1);
-                    YaxisLastVio.put(name, System.currentTimeMillis());
+                    yAxisViolations.put(name, yAxisViolations.get(name)+1);
+                    yAxisLastViolation.put(name, System.currentTimeMillis());
                     if(g.getBlock().getTypeId() == 0) 
                     {
                             player.teleport(g);
@@ -366,7 +367,7 @@ public class Backend
                 //Start Fly bypass patch.
                 if(flightViolation.containsKey(name) && flightViolation.get(name) > 0) 
                 {
-                    for(int i= 5;i>0;i--) 
+                    for(int i=FLY_LOOP;i>0;i--) 
                     {
                         Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY()-i, player.getLocation().getZ());
                         Block lower = newLocation.getBlock();
@@ -401,7 +402,7 @@ public class Backend
             if(blockPunches.get(name) != null)
             {
                 int i = blockPunches.get(name);
-                if(i < 5)
+                if(i < BLOCK_PUNCH_MIN)
                 {
                     return true;
                 }
@@ -455,10 +456,10 @@ public class Backend
     
     public boolean checkFastPlace(Player player)
     {    
-        int violations = FASTBREAK_MAXVIOLATIONS;
+        int violations = FASTPLACE_MAXVIOLATIONS;
         if(player.getGameMode() == GameMode.CREATIVE)
         {
-            violations = FASTBREAK_MAXVIOLATIONS_CREATIVE;
+            violations = FASTPLACE_MAXVIOLATIONS_CREATIVE;
         }        
         long time = System.currentTimeMillis();
         String name = player.getName();
@@ -775,13 +776,13 @@ public class Backend
         else
         {
             int amount = map.get(name)+1;
-            if(amount < 6)
+            if(amount < BLOCK_PUNCH_MIN+1)
             {
                 map.put(name, amount);
             }
             else
             {
-                map.put(name, 5);
+                map.put(name, BLOCK_PUNCH_MIN);
             }
         }        
     }

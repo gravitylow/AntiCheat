@@ -40,7 +40,6 @@ public class Configuration
     private File bukkitFile = null;
     private FileConfiguration config;
     private FileConfiguration level;
-    private FileConfiguration bukkit;
     private boolean logConsole;
     private boolean logXRay;
     private boolean alertXRay;
@@ -108,6 +107,7 @@ public class Configuration
     
     public final void load()
     {
+        FileConfiguration bukkit;
         micromanage.getPlugin().checkConfig();
         config = YamlConfiguration.loadConfiguration(configFile);
         level = YamlConfiguration.loadConfiguration(levelFile);

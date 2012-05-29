@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 
 public class CheckManager 
 {
-    public AnticheatManager manager = null;
+    private AnticheatManager manager = null;
     private static List<CheckType> checkIgnoreList = new ArrayList<CheckType>();
     private static Multimap<String,CheckType> exemptList = ArrayListMultimap.create();
     private static int disabled = 0;
