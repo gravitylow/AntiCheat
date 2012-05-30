@@ -278,8 +278,15 @@ public class Backend
         return false;
     }
     
-    public boolean checkYAxis(Player player) 
+    public boolean checkYAxis(Player player, Distance distance) 
     {
+    	//Arrow to the knee check
+    	if(distance.getYDifference() > 400) {
+    		//teleport.  so just cancel.
+    		return false;
+    	}
+    	
+    	//Arrow to the knee check
         if(!player.isFlying())
         {
             double y1 = player.getLocation().getY();
@@ -341,8 +348,17 @@ public class Backend
     	return false;
     }
     
-    public boolean checkFlight(Player player, double y1, double y2)
+    public boolean checkFlight(Player player, Distance distance)
     {
+    	//Arrow to the knee check
+    	if(distance.getYDifference() > 400) {
+    		//teleport.  so just cancel.
+    		return false;
+    	}
+    	
+    	//Arrow to the knee check
+    	double y1 = distance.fromY();
+    	double y2 = distance.toY();
         Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
         if(y1 == y2 && !isMovingExempt(player) && player.getVehicle() == null && player.getFallDistance() == 0 && !Utilities.isOnLilyPad(player))
         {

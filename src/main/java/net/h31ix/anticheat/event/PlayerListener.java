@@ -209,7 +209,7 @@ public class PlayerListener extends EventListener
         double x = distance.getXDifference();
         double y = distance.getYDifference();
         double z = distance.getZDifference();
-        if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkFlight(player, from.getY(), to.getY()))
+        if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkFlight(player, distance))
         {
             from.setX(from.getX()-1);
             from.setY(from.getY()-1);
@@ -224,7 +224,7 @@ public class PlayerListener extends EventListener
             } 
             log("tried to fly.",player,CheckType.FLY);        
         }
-        if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkYAxis(player)) 
+        if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkYAxis(player, distance)) 
         {
              from.setX(from.getX()-1);
              from.setY(from.getY()-1);

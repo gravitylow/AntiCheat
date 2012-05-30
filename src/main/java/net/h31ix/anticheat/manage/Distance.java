@@ -29,6 +29,14 @@ public class Distance
         l1 = to;
         l2 = from;
     }
+    
+    public double fromY() {
+    	return l2.getY();
+    }
+    
+    public double toY() {
+    	return l1.getY();
+    }
 
     public double getXDifference()
     {
