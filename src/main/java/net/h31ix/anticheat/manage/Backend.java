@@ -286,8 +286,7 @@ public class Backend
     		return false;
     	}
     	
-    	//Arrow to the knee check
-        if(!player.isFlying())
+        if(!isMovingExempt(player))
         {
             double y1 = player.getLocation().getY();
             String name = player.getName();
