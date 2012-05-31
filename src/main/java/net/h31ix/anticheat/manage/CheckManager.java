@@ -22,6 +22,9 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.h31ix.anticheat.Anticheat;
+
 import org.bukkit.entity.Player;
 
 /**
@@ -86,7 +89,21 @@ public class CheckManager
     
     private boolean hasPermission(Player player, String permission)
     {
-        return player.hasPermission(permission) || player.hasPermission("anticheat.exempt");
+    	//debug for permissions
+    	if(player.hasPermission(permission)) 
+    	{
+    		manager.log(player.getName() + " has permission: " + permission + "");
+    		return player.hasPermission(permission);
+    	}
+    	if(player.hasPermission("anticheat.exempt")) 
+    	{
+    		manager.log(player.getName() + " has exempted permissions.");
+    		return player.hasPermission(permission);
+    	}
+		manager.log(player.getName() + " has no permission: " + permission + "");
+		return false;
+		
+        //return player.hasPermission(permission) || player.hasPermission("anticheat.exempt");
     }
      
     public boolean willCheck(Player player, CheckType type)
