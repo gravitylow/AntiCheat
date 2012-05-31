@@ -31,6 +31,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
+import org.bukkit.potion.PotionEffectType;
 
 public class Backend 
 {
@@ -88,6 +89,7 @@ public class Backend
     private static final double XZ_SPEED_MAX = 0.4;
     private static final double XZ_SPEED_MAX_SPRINT = 0.65;
     private static final double XZ_SPEED_MAX_FLY = 0.56;
+    private static final double XZ_SPEED_MAX_POTION = 0.85;
     private static final double XZ_SPEED_MAX_SNEAK = 0.2;
     private static final double XZ_SPEED_MAX_WATER = 0.19;
     private static final double XZ_SPEED_MAX_WATER_SPRINT = 0.3;
@@ -205,6 +207,10 @@ public class Backend
             if(!player.isSprinting())
             {       
                 return x > XZ_SPEED_MAX || z > XZ_SPEED_MAX;            
+            }
+            else if (player.hasPotionEffect(PotionEffectType.SPEED)) 
+            {
+            	return x > XZ_SPEED_MAX_POTION || z > XZ_SPEED_MAX_POTION;
             }
             else 
             {
