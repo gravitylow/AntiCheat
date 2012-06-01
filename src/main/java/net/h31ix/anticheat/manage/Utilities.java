@@ -73,11 +73,11 @@ public final class Utilities
     {
         return !canStand(block) && cantStandClose(block) && cantStandFar(block);
     }
-    private static boolean cantStandClose(Block block)
+    public static boolean cantStandClose(Block block)
     {
         return !canStand(block.getRelative(BlockFace.NORTH)) && !canStand(block.getRelative(BlockFace.EAST)) && !canStand(block.getRelative(BlockFace.SOUTH)) && !canStand(block.getRelative(BlockFace.WEST));
     }
-    private static boolean cantStandFar(Block block)
+    public static boolean cantStandFar(Block block)
     {
         return !canStand(block.getRelative(BlockFace.NORTH_WEST)) && !canStand(block.getRelative(BlockFace.NORTH_EAST)) && !canStand(block.getRelative(BlockFace.SOUTH_WEST)) && !canStand(block.getRelative(BlockFace.SOUTH_EAST));
     }

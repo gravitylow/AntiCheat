@@ -67,6 +67,9 @@ public class Backend
     private static final int Y_MAXVIOTIME = 5000;
     private static final int NOFALL_LIMIT = 5;
     
+    private static final int WATER_ASCENSION_VIOLATION_MAX = 13;
+    private static final int WATER_SPEED_VIOLATION_MAX = 4;
+    
     private static final int SPRINT_FOOD_MIN = 6;
     private static final int EAT_MIN = 20;
     private static final int HEAL_MIN = 35;
@@ -109,6 +112,7 @@ public class Backend
     private List<String> isInWater = new ArrayList<String>();
     private List<String> isInWaterCache = new ArrayList<String>();
     private List<String> instantBreakExempt = new ArrayList<String>();
+    private List<String> isAscending = new ArrayList<String>();
     private Map<String,String> oldMessage = new HashMap<String,String>();
     private Map<String,String> lastMessage = new HashMap<String,String>();
     private Map<String,Integer> flightViolation = new HashMap<String,Integer>();
@@ -127,6 +131,8 @@ public class Backend
     private Map<String,Long> lastBlockPlaced = new HashMap<String,Long>();    
     private Map<String,Long> lastBlockPlaceTime = new HashMap<String,Long>(); 
     private Map<String,Integer> blockPunches = new HashMap<String,Integer>();
+    private Map<String,Integer> waterAscensionViolation = new HashMap<String,Integer>();
+    private Map<String,Integer> waterSpeedViolation = new HashMap<String,Integer>();
     
     public Backend(AnticheatManager instance) 
     {
@@ -251,47 +257,94 @@ public class Backend
     public boolean checkWaterWalk(Player player, double x, double z)
     {
         Block block = player.getLocation().getBlock();
-        if(block.isLiquid() && player.getVehicle() == null)
+        if(player.getVehicle() == null && !player.isFlying())
         {
-            if(isInWater.contains(player.getName()))
+            if(block.isLiquid() && block.getRelative(BlockFace.DOWN).isLiquid())
             {
-                if(isInWaterCache.contains(player.getName()))
-                {                    
-                   if(x > XZ_SPEED_MAX_WATER || z > XZ_SPEED_MAX_WATER && !Utilities.sprintFly(player) && player.getNearbyEntities(1, 1, 1).isEmpty())
-                   {
-                       return true;
-                   }
-                   else if(x > XZ_SPEED_MAX_WATER_SPRINT || z > XZ_SPEED_MAX_WATER_SPRINT)
-                   {
-                       return true;
-                   }   
+                if(isInWater.contains(player.getName()))
+                {
+                    if(isInWaterCache.contains(player.getName()))
+                    {   
+                        if(player.getNearbyEntities(1, 1, 1).isEmpty())
+                        {
+                            boolean b = false;
+                            if(!Utilities.sprintFly(player) && x > XZ_SPEED_MAX_WATER || z > XZ_SPEED_MAX_WATER)
+                            {
+                                b = true;
+                            }
+                            else if(x > XZ_SPEED_MAX_WATER_SPRINT || z > XZ_SPEED_MAX_WATER_SPRINT)
+                            {
+                                b = true;
+                            } 
+                            if(b)
+                            {
+                                if(waterSpeedViolation.containsKey(player.getName()))
+                                {
+                                    int v = waterSpeedViolation.get(player.getName());
+                                    if(v >= WATER_SPEED_VIOLATION_MAX)
+                                    {
+                                        waterSpeedViolation.put(player.getName(), 0);
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        waterSpeedViolation.put(player.getName(), v+1);
+                                    }
+                                }
+                                else
+                                {
+                                    waterSpeedViolation.put(player.getName(), 1);
+                                }                                
+                            }
+                        }
+                    }
+                    else
+                    {
+                        isInWaterCache.add(player.getName());
+                        return false;
+                    }
                 }
                 else
                 {
-                    isInWaterCache.add(player.getName());
+                    isInWater.add(player.getName());                
                     return false;
+                }
+            }
+            else if (block.getRelative(BlockFace.DOWN).isLiquid() && isAscending(player) && Utilities.cantStandAt(block) && Utilities.cantStandAt(block.getRelative(BlockFace.DOWN)))
+            {
+                if(waterAscensionViolation.containsKey(player.getName()))
+                {
+                    int v = waterAscensionViolation.get(player.getName());
+                    if(v >= WATER_ASCENSION_VIOLATION_MAX)
+                    {
+                        waterAscensionViolation.put(player.getName(), 0);
+                        return true;
+                    }
+                    else
+                    {
+                        waterAscensionViolation.put(player.getName(), v+1);
+                    }
+                }
+                else
+                {
+                    waterAscensionViolation.put(player.getName(), 1);
                 }
             }
             else
             {
-                isInWater.add(player.getName());
-                return false;
+                isInWater.remove(player.getName());  
+                isInWaterCache.remove(player.getName()); 
             }
-
         }
-        isInWater.remove(player.getName());  
-        isInWaterCache.remove(player.getName());  
         return false;
     }
     
     public boolean checkYAxis(Player player, Distance distance) 
     {
-    	//Arrow to the knee check
-    	if(distance.getYDifference() > 400) {
-    		//teleport.  so just cancel.
+    	if(distance.getYDifference() > 400) 
+        {
     		return false;
     	}
-    	
         if(!isMovingExempt(player))
         {
             double y1 = player.getLocation().getY();
@@ -403,6 +456,18 @@ public class Backend
             }
         }
         return false;
+    }
+    
+    public void checkAscension(Player player, double y1, double y2)
+    {
+        if(y1 < y2)
+        {
+            isAscending.add(player.getName());
+        }
+        else
+        {
+            isAscending.remove(player.getName());
+        }
     }
     
     public boolean checkSwing(Player player, Block block)
@@ -710,6 +775,11 @@ public class Backend
     public boolean isMovingExempt(Player player)
     {
         return movingExempt.contains(player.getName()) || player.isFlying();       
+    }
+    
+    public boolean isAscending(Player player)
+    {
+        return isAscending.contains(player.getName());
     }
     
     public boolean isSpeedExempt(Player player) {

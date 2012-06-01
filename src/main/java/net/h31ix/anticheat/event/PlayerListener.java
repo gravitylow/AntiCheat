@@ -27,20 +27,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerAnimationEvent;
-import org.bukkit.event.player.PlayerBedEnterEvent;
-import org.bukkit.event.player.PlayerBedLeaveEvent;
-import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.event.player.PlayerToggleSprintEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.PlayerInventory;
 
 public class PlayerListener extends EventListener 
@@ -209,6 +197,7 @@ public class PlayerListener extends EventListener
         double x = distance.getXDifference();
         double y = distance.getYDifference();
         double z = distance.getZDifference();
+        backend.checkAscension(player,from.getY(),to.getY());
         if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkFlight(player, distance))
         {
             from.setX(from.getX()-1);
@@ -272,7 +261,7 @@ public class PlayerListener extends EventListener
         }
     }
     @EventHandler(ignoreCancelled = true)
-    public void checkDirSpeed(PlayerMoveEvent event)
+    public void checkSpeed(PlayerMoveEvent event)
     {    
         Player player = event.getPlayer();
         Location from = event.getFrom();

@@ -270,10 +270,10 @@ public class Anticheat extends JavaPlugin
         {
             logger.log(Level.INFO, "[AC] Checking for updates...");
         }
-        URL url = null;
-        URLConnection urlConn = null;
+        URL url;
+        URLConnection urlConn;
         InputStreamReader inStream = null;
-        BufferedReader buff = null;
+        BufferedReader buff;
         String v = "";
         try 
         {
