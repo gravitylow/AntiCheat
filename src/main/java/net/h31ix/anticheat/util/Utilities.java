@@ -105,6 +105,10 @@ public final class Utilities
         }  
         return b;
     }
+    public static boolean isSubmersed(Player player)
+    {
+        return player.getLocation().getBlock().isLiquid() && player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid();
+    }
     public static boolean isInt(String string)
     {
         boolean x = false;

@@ -40,7 +40,7 @@ public class AnticheatManager
     private PlayerManager playerManager = null;
     private CheckManager checkManager = null;
     private Backend backend = null;
-    private Logger LOGGER, FILE_LOGGER;
+    private static Logger LOGGER, FILE_LOGGER;
     private static Handler handler;
     private static final int LOG_LEVEL_HIGH = 3;
     

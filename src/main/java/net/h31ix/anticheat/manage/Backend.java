@@ -409,20 +409,18 @@ public class Backend
     
     public boolean checkFlight(Player player, Distance distance)
     {
-    	//Arrow to the knee check
-    	if(distance.getYDifference() > 400) {
-    		//teleport.  so just cancel.
-    		return false;
+    	if(distance.getYDifference() > 400) 
+        {
+            //This was a teleport, so we don't care about it.
+            return false;
     	}
-    	
-    	//Arrow to the knee check
     	double y1 = distance.fromY();
     	double y2 = distance.toY();
         Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
         if(y1 == y2 && !isMovingExempt(player) && player.getVehicle() == null && player.getFallDistance() == 0 && !Utilities.isOnLilyPad(player))
         {
             String name = player.getName();
-            if(Utilities.cantStandAt(block) && !Utilities.isOnLilyPad(player) && !Utilities.canStand(player.getLocation().getBlock()))
+            if(Utilities.cantStandAt(block) && !Utilities.isOnLilyPad(player) && !Utilities.canStand(player.getLocation().getBlock()) && !Utilities.isSubmersed(player))
             {
                 int violation = 1;
                 if(!flightViolation.containsKey(name))
@@ -486,9 +484,9 @@ public class Backend
                 violations = FASTBREAK_MAXVIOLATIONS_CREATIVE;
             }
             String name = player.getName();
-            if(!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES && player.getGameMode() != GameMode.CREATIVE))
+            if(!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES))
             {
-                if(blockPunches.get(name) != null)
+                if(blockPunches.get(name) != null && player.getGameMode() != GameMode.CREATIVE)
                 {
                     int i = blockPunches.get(name);
                     if(i < BLOCK_PUNCH_MIN)
