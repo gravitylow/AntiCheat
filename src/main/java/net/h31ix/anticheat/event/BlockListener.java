@@ -86,7 +86,7 @@ public class BlockListener extends EventListener
             if(checkManager.willCheck(player, CheckType.LONG_REACH))
             {
                 Distance distance = new Distance(player.getLocation(),block.getLocation());
-                if(backend.checkLongReachBlock(distance.getXDifference(),distance.getYDifference(),distance.getZDifference()))
+                if(backend.checkLongReachBlock(player,distance.getXDifference(),distance.getYDifference(),distance.getZDifference()))
                 {
                     event.setCancelled(true);
                     log("tried to break a block of "+block.getType().name()+" that was too far away.",player,CheckType.LONG_REACH);    

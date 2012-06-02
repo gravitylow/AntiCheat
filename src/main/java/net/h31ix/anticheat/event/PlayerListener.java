@@ -18,8 +18,11 @@
 
 package net.h31ix.anticheat.event;
 
+import net.h31ix.anticheat.manage.Backend;
+import net.h31ix.anticheat.manage.CheckManager;
+import net.h31ix.anticheat.manage.CheckType;
+import net.h31ix.anticheat.manage.Distance;
 import net.h31ix.anticheat.util.Utilities;
-import net.h31ix.anticheat.manage.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -123,8 +126,8 @@ public class PlayerListener extends EventListener
         }
         if(event.getClickedBlock() != null)
         {
-            Distance distance = new Distance(event.getPlayer().getLocation(), event.getClickedBlock().getLocation());
-            backend.checkLongReachBlock(distance.getXDifference(), distance.getYDifference(), distance.getZDifference());
+            Distance distance = new Distance(player.getLocation(), event.getClickedBlock().getLocation());
+            backend.checkLongReachBlock(player,distance.getXDifference(), distance.getYDifference(), distance.getZDifference());
         }
     }    
     

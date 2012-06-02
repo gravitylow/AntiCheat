@@ -140,9 +140,9 @@ public class Backend
     	micromanage = instance;
     }
     
-    public boolean checkLongReachBlock(double x,double y,double z)
+    public boolean checkLongReachBlock(Player player,double x,double y,double z)
     {
-        return x >= BLOCK_MAX_DISTANCE || y > BLOCK_MAX_DISTANCE || z > BLOCK_MAX_DISTANCE;
+        return !Utilities.isUsingMcMMOAbility(player) && (x >= BLOCK_MAX_DISTANCE || y > BLOCK_MAX_DISTANCE || z > BLOCK_MAX_DISTANCE);
     }
     
     public boolean checkLongReachDamage(double x,double y,double z)
