@@ -18,6 +18,8 @@
 
 package net.h31ix.anticheat.manage;
 
+import com.gmail.nossr50.datatypes.AbilityType;
+import com.gmail.nossr50.mcMMO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -477,63 +479,74 @@ public class Backend
     
     public boolean checkFastBreak(Player player, Block block)
     {      
-        int violations = FASTBREAK_MAXVIOLATIONS;
-        if(player.getGameMode() == GameMode.CREATIVE)
+        boolean b = true;
+        if(player.getServer().getPluginManager().getPlugin("mcMMO") != null)
         {
-            violations = FASTBREAK_MAXVIOLATIONS_CREATIVE;
+            if(mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.TREE_FELLER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.SUPER_BREAKER))
+            {     
+                b = false;
+            }       
         }
-        String name = player.getName();
-        if(!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES && player.getGameMode() != GameMode.CREATIVE))
+        if(b)
         {
-            if(blockPunches.get(name) != null)
+            int violations = FASTBREAK_MAXVIOLATIONS;
+            if(player.getGameMode() == GameMode.CREATIVE)
             {
-                int i = blockPunches.get(name);
-                if(i < BLOCK_PUNCH_MIN)
-                {
-                    return true;
-                }
+                violations = FASTBREAK_MAXVIOLATIONS_CREATIVE;
             }
-            if (!fastBreakViolation.containsKey(name))
+            String name = player.getName();
+            if(!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES && player.getGameMode() != GameMode.CREATIVE))
             {
-                fastBreakViolation.put(name, 0);
-            } 
-            else 
-            {
-                Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
-                if(fastBreakViolation.get(name) > violations && math < FASTBREAK_MAXVIOLATIONTIME)
+                if(blockPunches.get(name) != null)
                 {
-                    lastBlockBroken.put(name, System.currentTimeMillis());
-                    player.sendMessage(ChatColor.RED + "[AntiCheat] Fastbreaking detected. Please wait 10 seconds before breaking blocks.");
-                    return true;
-                } 
-                else if(fastBreakViolation.get(name) > 0 && math > FASTBREAK_MAXVIOLATIONTIME)
+                    int i = blockPunches.get(name);
+                    if(i < BLOCK_PUNCH_MIN)
+                    {
+                        return true;
+                    }
+                }
+                if (!fastBreakViolation.containsKey(name))
                 {
                     fastBreakViolation.put(name, 0);
                 } 
-            }
-            if (!blocksBroken.containsKey(name) || !lastBlockBroken.containsKey(name))
-            {
-                if(!lastBlockBroken.containsKey(name))
+                else 
                 {
-                    lastBlockBroken.put(name, System.currentTimeMillis());
+                    Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
+                    if(fastBreakViolation.get(name) > violations && math < FASTBREAK_MAXVIOLATIONTIME)
+                    {
+                        lastBlockBroken.put(name, System.currentTimeMillis());
+                        player.sendMessage(ChatColor.RED + "[AntiCheat] Fastbreaking detected. Please wait 10 seconds before breaking blocks.");
+                        return true;
+                    } 
+                    else if(fastBreakViolation.get(name) > 0 && math > FASTBREAK_MAXVIOLATIONTIME)
+                    {
+                        fastBreakViolation.put(name, 0);
+                    } 
                 }
-                blocksBroken.put(name, 0);
-            }
-            else
-            {
-                blocksBroken.put(name, blocksBroken.get(name)+1);
-                Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
-                if(blocksBroken.get(name) > FASTBREAK_LIMIT && math < FASTBREAK_TIMEMAX)
+                if (!blocksBroken.containsKey(name) || !lastBlockBroken.containsKey(name))
                 {
+                    if(!lastBlockBroken.containsKey(name))
+                    {
+                        lastBlockBroken.put(name, System.currentTimeMillis());
+                    }
                     blocksBroken.put(name, 0);
-                    lastBlockBroken.put(name, System.currentTimeMillis());
-                    fastBreakViolation.put(name, fastBreakViolation.get(name)+1);
-                    return true;
                 }
-                else if(blocksBroken.get(name) > FASTBREAK_LIMIT)
+                else
                 {
-                    lastBlockBroken.put(name, System.currentTimeMillis());
-                    blocksBroken.put(name, 0);
+                    blocksBroken.put(name, blocksBroken.get(name)+1);
+                    Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
+                    if(blocksBroken.get(name) > FASTBREAK_LIMIT && math < FASTBREAK_TIMEMAX)
+                    {
+                        blocksBroken.put(name, 0);
+                        lastBlockBroken.put(name, System.currentTimeMillis());
+                        fastBreakViolation.put(name, fastBreakViolation.get(name)+1);
+                        return true;
+                    }
+                    else if(blocksBroken.get(name) > FASTBREAK_LIMIT)
+                    {
+                        lastBlockBroken.put(name, System.currentTimeMillis());
+                        blocksBroken.put(name, 0);
+                    }
                 }
             }
         }
@@ -832,7 +845,7 @@ public class Backend
         if (amount >= CHAT_KICK_LEVEL)
         {
             String name = player.getName();
-            int kick = 0;
+            int kick;
             if(chatKicks.get(name) == null || chatKicks.get(name) == 0)
             {
                 kick = 1;

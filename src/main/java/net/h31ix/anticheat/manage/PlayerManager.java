@@ -20,7 +20,6 @@ package net.h31ix.anticheat.manage;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import net.h31ix.anticheat.Configuration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

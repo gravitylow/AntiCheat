@@ -20,12 +20,7 @@ package net.h31ix.anticheat.manage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import java.util.logging.SimpleFormatter;
+import java.util.logging.*;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.Configuration;
 import net.h31ix.anticheat.xray.XRayTracker;
