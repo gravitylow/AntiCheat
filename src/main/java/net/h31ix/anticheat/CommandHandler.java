@@ -265,20 +265,20 @@ public class CommandHandler implements CommandExecutor
             cs.sendMessage("-----------------------------------------------------");
             if(!Anticheat.isUpdated())
             {
-                cs.sendMessage("There "+GREEN+"IS"+GRAY+" a newer version avaliable.");
+                cs.sendMessage(GRAY+"There "+GREEN+"IS"+GRAY+" a newer version avaliable.");
                 if(config.autoUpdate())
                 {
-                    cs.sendMessage("It will be installed automatically for you on next launch.");
+                    cs.sendMessage(GRAY+"It will be installed automatically for you on next launch.");
                 }
                 else
                 {
-                    cs.sendMessage("Due to your config settings, we "+RED+"can not"+WHITE+" auto update.");
-                    cs.sendMessage("Please visit http://dev.bukkit.org/server-mods/anticheat/");
+                    cs.sendMessage(GRAY+"Due to your config settings, we "+RED+"can not"+GRAY+" auto update.");
+                    cs.sendMessage(GRAY+"Please visit http://dev.bukkit.org/server-mods/anticheat/");
                 }
             }
             else
             {
-                cs.sendMessage("AntiCheat is "+GREEN+"UP TO DATE!");
+                cs.sendMessage(GRAY+"AntiCheat is "+GREEN+"UP TO DATE!");
             }
         }
         else
