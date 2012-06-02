@@ -18,6 +18,8 @@
 
 package net.h31ix.anticheat.util;
 
+import com.gmail.nossr50.datatypes.AbilityType;
+import com.gmail.nossr50.mcMMO;
 import java.util.ArrayList;
 import java.util.List;
 import net.h31ix.anticheat.Anticheat;
@@ -90,6 +92,18 @@ public final class Utilities
         Block block = player.getLocation().getBlock();
         Material lily = Material.WATER_LILY;
         return block.getType() == lily || block.getRelative(BlockFace.NORTH).getType() == lily || block.getRelative(BlockFace.SOUTH).getType() == lily || block.getRelative(BlockFace.EAST).getType() == lily || block.getRelative(BlockFace.WEST).getType() == lily;
+    }
+    public static boolean isUsingMcMMOAbility(Player player)
+    {
+        boolean b = false;
+        if(player.getServer().getPluginManager().getPlugin("mcMMO") != null)
+        {
+            if(mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.TREE_FELLER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.SUPER_BREAKER))
+            {     
+                b = true;
+            }       
+        }  
+        return b;
     }
     public static boolean isInt(String string)
     {

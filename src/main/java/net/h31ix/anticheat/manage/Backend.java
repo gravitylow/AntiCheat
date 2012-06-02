@@ -18,13 +18,11 @@
 
 package net.h31ix.anticheat.manage;
 
-import net.h31ix.anticheat.util.Utilities;
-import com.gmail.nossr50.datatypes.AbilityType;
-import com.gmail.nossr50.mcMMO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -475,20 +473,12 @@ public class Backend
     
     public boolean checkSwing(Player player, Block block)
     {
-        return !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !justAnimated(player);
+        return !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !justAnimated(player) && !Utilities.isUsingMcMMOAbility(player);
     }
     
     public boolean checkFastBreak(Player player, Block block)
     {      
-        boolean b = true;
-        if(player.getServer().getPluginManager().getPlugin("mcMMO") != null)
-        {
-            if(mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.TREE_FELLER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.SUPER_BREAKER))
-            {     
-                b = false;
-            }       
-        }
-        if(b)
+        if(!Utilities.isUsingMcMMOAbility(player))
         {
             int violations = FASTBREAK_MAXVIOLATIONS;
             if(player.getGameMode() == GameMode.CREATIVE)
