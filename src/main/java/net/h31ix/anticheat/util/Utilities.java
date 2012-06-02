@@ -55,7 +55,7 @@ public final class Utilities
         {
            for(String msg : message)
            {
-               Anticheat.getManager().log(ChatColor.stripColor(msg));
+               Anticheat.getManager().log(msg);
            }            
         }
     }

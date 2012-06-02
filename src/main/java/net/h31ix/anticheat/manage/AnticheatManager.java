@@ -26,6 +26,7 @@ import net.h31ix.anticheat.Configuration;
 import net.h31ix.anticheat.util.ConsoleFormatter;
 import net.h31ix.anticheat.util.FileFormatter;
 import net.h31ix.anticheat.xray.XRayTracker;
+import org.bukkit.ChatColor;
 
 /**
  * <p>
@@ -81,11 +82,11 @@ public class AnticheatManager
     {
         if(getConfiguration().logConsole())
         {
-            LOGGER.warning(message);
+            LOGGER.warning(ChatColor.stripColor(message)); //This is temporary. Is something wrong with jline?
         }       
         if(getConfiguration().getFileLogLevel() == LOG_LEVEL_HIGH)
         {
-            fileLog(message);
+            fileLog(ChatColor.stripColor(message));
         }
     }
     

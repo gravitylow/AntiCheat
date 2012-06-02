@@ -18,10 +18,10 @@
 
 package net.h31ix.anticheat.manage;
 
-import net.h31ix.anticheat.util.Utilities;
 import java.util.HashMap;
 import java.util.Map;
 import net.h31ix.anticheat.Configuration;
+import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
