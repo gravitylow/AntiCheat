@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.util.logging.*;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.Configuration;
+import net.h31ix.anticheat.util.ConsoleFormatter;
+import net.h31ix.anticheat.util.FileFormatter;
 import net.h31ix.anticheat.xray.XRayTracker;
 
 /**
@@ -38,8 +40,7 @@ public class AnticheatManager
     private PlayerManager playerManager = null;
     private CheckManager checkManager = null;
     private Backend backend = null;
-    private static final Logger LOGGER = Logger.getLogger("Minecraft");
-    private static final Logger FILE_LOGGER = Logger.getLogger(AnticheatManager.class.getName());
+    private Logger LOGGER, FILE_LOGGER;
     private static Handler handler;
     private static final int LOG_LEVEL_HIGH = 3;
     
@@ -47,6 +48,8 @@ public class AnticheatManager
     {
         plugin = instance;
         // now load all the others!!!!!
+        LOGGER = plugin.getAnticheatLogger();
+        FILE_LOGGER = LOGGER;
         configuration = new Configuration(this);
         xrayTracker = new XRayTracker();
         playerManager = new PlayerManager(this);
@@ -60,21 +63,25 @@ public class AnticheatManager
                 file.mkdir();
             }
             handler = new FileHandler(plugin.getDataFolder()+"/log/anticheat.log.%u.txt",true);
+            handler.setFormatter(new FileFormatter());
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
-        handler.setFormatter(new SimpleFormatter());
         FILE_LOGGER.setUseParentHandlers(false);
         FILE_LOGGER.addHandler(handler);
+        LOGGER.setUseParentHandlers(false);
+        Handler chandler = new ConsoleHandler();
+        chandler.setFormatter(new ConsoleFormatter());
+        LOGGER.addHandler(chandler);
     }
     
     public void log(String message)
     {
         if(getConfiguration().logConsole())
         {
-            LOGGER.log(Level.WARNING,"[AC] ".concat(message));
+            LOGGER.warning(message);
         }       
         if(getConfiguration().getFileLogLevel() == LOG_LEVEL_HIGH)
         {
@@ -84,7 +91,7 @@ public class AnticheatManager
     
     public void fileLog(String message)
     {
-        FILE_LOGGER.log(Level.WARNING, message);
+        FILE_LOGGER.warning(message);
     }
     
     public Anticheat getPlugin() 

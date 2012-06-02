@@ -16,12 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.h31ix.anticheat.manage;
+package net.h31ix.anticheat.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.h31ix.anticheat.Anticheat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -53,18 +51,10 @@ public final class Utilities
         } 
         if(Anticheat.getManager().getConfiguration().logConsole())
         {
-           Logger logger = Logger.getLogger("Minecraft");
            for(String msg : message)
            {
-               logger.log(Level.INFO,ChatColor.stripColor(msg));
+               Anticheat.getManager().log(ChatColor.stripColor(msg));
            }            
-        }
-        if(Anticheat.getManager().getConfiguration().getFileLogLevel() > 0)
-        {
-           for(String msg : message)
-           {
-               Anticheat.getManager().fileLog(ChatColor.stripColor(msg));
-           }             
         }
     }
     public static boolean cantStandAt(Block block)

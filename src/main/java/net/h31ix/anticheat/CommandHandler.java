@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.PlayerManager;
-import net.h31ix.anticheat.manage.Utilities;
+import net.h31ix.anticheat.util.Utilities;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import net.h31ix.anticheat.event.*;
 import net.h31ix.anticheat.manage.AnticheatManager;
 import net.h31ix.anticheat.manage.CheckType;
-import net.h31ix.anticheat.manage.Utilities;
+import net.h31ix.anticheat.util.Utilities;
 import net.h31ix.anticheat.metrics.Metrics;
 import net.h31ix.anticheat.metrics.Metrics.Graph;
 import net.h31ix.anticheat.xray.XRayListener;
@@ -70,7 +70,7 @@ public class Anticheat extends JavaPlugin
     @Override
     public void onEnable() 
     {
-        logger = getLogger();
+        logger = this.getLogger();
         manager = new AnticheatManager(this);
         config = manager.getConfiguration();
         checkConfig();
@@ -350,5 +350,10 @@ public class Anticheat extends JavaPlugin
     public static String getVersion() 
     {
         return manager.getPlugin().getDescription().getVersion();
+    }
+    
+    public Logger getAnticheatLogger()
+    {
+        return this.getLogger();
     }
 }

@@ -18,6 +18,7 @@
 
 package net.h31ix.anticheat.manage;
 
+import net.h31ix.anticheat.util.Utilities;
 import java.util.HashMap;
 import java.util.Map;
 import net.h31ix.anticheat.Configuration;
