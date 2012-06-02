@@ -265,7 +265,7 @@ public class CommandHandler implements CommandExecutor
             cs.sendMessage("-----------------------------------------------------");
             if(!Anticheat.isUpdated())
             {
-                cs.sendMessage("There "+GREEN+"IS"+WHITE+" a newer version avaliable.");
+                cs.sendMessage("There "+GREEN+"IS"+GRAY+" a newer version avaliable.");
                 if(config.autoUpdate())
                 {
                     cs.sendMessage("It will be installed automatically for you on next launch.");
