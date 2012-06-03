@@ -761,7 +761,15 @@ public class Backend
     
     public void logTeleport(final Player player)
     {
-        logEvent(movingExempt,player,TELEPORT_TIME);             
+        logEvent(movingExempt,player,TELEPORT_TIME);
+        
+        /* Data for fly/speed should be reset */
+        nofallViolation.remove(player.getName());
+        flightViolation.remove(player.getName());
+        yAxisViolations.remove(player.getName());
+        yAxisLastViolation.remove(player.getName());
+        lastYcoord.remove(player.getName());
+        lastYtime.remove(player.getName());
     }    
     
     public void logExitFly(final Player player)

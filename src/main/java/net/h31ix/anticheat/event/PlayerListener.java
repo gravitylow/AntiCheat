@@ -60,6 +60,12 @@ public class PlayerListener extends EventListener
     }
     
     @EventHandler
+    public void onPlayerChangeWorlds(PlayerChangedWorldEvent event)
+    {
+            backend.logTeleport(event.getPlayer());
+    }
+    
+    @EventHandler
     public void onPlayerToggleSneak(PlayerToggleSneakEvent event)
     {
         if(event.isSneaking())
@@ -165,7 +171,7 @@ public class PlayerListener extends EventListener
     {
         Player player = event.getPlayer();
         backend.logAnimation(player);
-    }    
+    }
     
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event)
