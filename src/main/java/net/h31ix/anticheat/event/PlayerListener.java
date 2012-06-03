@@ -27,10 +27,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Egg;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.PlayerInventory;
@@ -47,6 +49,19 @@ public class PlayerListener extends EventListener
         if(checkManager.willCheck(player, CheckType.SPAM))
         {     
             backend.logChat(player);
+        }
+    }
+    
+    @EventHandler
+    public void onProjectileLaunch(ProjectileLaunchEvent event)
+    {
+        if(event.getEntity().getShooter() instanceof Player)
+        {
+            Player player = (Player)event.getEntity().getShooter();
+            if(checkManager.willCheck(player, CheckType.FAST_PROJECTILE))
+            {
+                backend.logProjectile(player,this);
+            }
         }
     }
     

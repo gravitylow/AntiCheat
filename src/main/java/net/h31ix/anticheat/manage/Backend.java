@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.h31ix.anticheat.event.EventListener;
 import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -45,6 +46,7 @@ public class Backend
     private static final int DROPPED_ITEM_TIME = 2;
     private static final int DAMAGE_TIME = 50;
     private static final int KNOCKBACK_DAMAGE_TIME = 50;
+    private static final int PROJECTILE_TIME = 20;
     
     private static final int FASTBREAK_LIMIT = 3;
     private static final int FASTBREAK_TIMEMAX = 500;
@@ -58,6 +60,8 @@ public class Backend
     private static final int FASTPLACE_MAXVIOLATIONTIME = 10000;
     
     private static final int BLOCK_PUNCH_MIN  = 5;
+    
+    private static final int PROJECTILE_MAX = 8;
     
     private static final int CHAT_WARN_LEVEL = 7;
     private static final int CHAT_KICK_LEVEL = 10;
@@ -114,6 +118,7 @@ public class Backend
     private List<String> isInWaterCache = new ArrayList<String>();
     private List<String> instantBreakExempt = new ArrayList<String>();
     private List<String> isAscending = new ArrayList<String>();
+    private List<String> trackingProjectiles = new ArrayList<String>();
     private Map<String,String> oldMessage = new HashMap<String,String>();
     private Map<String,String> lastMessage = new HashMap<String,String>();
     private Map<String,Integer> flightViolation = new HashMap<String,Integer>();
@@ -134,6 +139,7 @@ public class Backend
     private Map<String,Integer> blockPunches = new HashMap<String,Integer>();
     private Map<String,Integer> waterAscensionViolation = new HashMap<String,Integer>();
     private Map<String,Integer> waterSpeedViolation = new HashMap<String,Integer>();
+    private Map<String,Integer> projectilesShot = new HashMap<String,Integer>();
     
     public Backend(AnticheatManager instance) 
     {
@@ -725,7 +731,7 @@ public class Backend
     public void logAnimation(final Player player)
     {
         logEvent(animated,player,ANIMATION_MIN);  
-        increment(player,blockPunches);
+        increment(player,blockPunches,BLOCK_PUNCH_MIN);
     }
     
     public void resetAnimation(final Player player)
@@ -738,6 +744,28 @@ public class Backend
     {
         return animated.contains(player.getName());       
     }    
+    
+    public void logProjectile(final Player player, final EventListener e)
+    {
+        increment(player,projectilesShot,PROJECTILE_MAX);
+        if(!trackingProjectiles.contains(player.getName()))
+        {
+            trackingProjectiles.add(player.getName());
+            micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable() 
+            {
+                @Override
+                public void run() 
+                {
+                    trackingProjectiles.remove(player.getName());
+                    if(projectilesShot.get(player.getName()) >= PROJECTILE_MAX)
+                    {
+                        e.log("tried to fire projectiles too fast",player,CheckType.FAST_PROJECTILE);
+                    }
+                    projectilesShot.put(player.getName(),0);
+                }
+            },      PROJECTILE_TIME);             
+        }
+    }            
     
     public void logDamage(final Player player)
     {
@@ -867,7 +895,7 @@ public class Backend
             }
         }
     } 
-    public void increment(Player player, Map<String,Integer> map)
+    public void increment(Player player, Map<String,Integer> map, int num)
     { 
         String name = player.getName();
         if(map.get(name) == null)
@@ -877,13 +905,13 @@ public class Backend
         else
         {
             int amount = map.get(name)+1;
-            if(amount < BLOCK_PUNCH_MIN+1)
+            if(amount < num+1)
             {
                 map.put(name, amount);
             }
             else
             {
-                map.put(name, BLOCK_PUNCH_MIN);
+                map.put(name, num);
             }
         }        
     }
