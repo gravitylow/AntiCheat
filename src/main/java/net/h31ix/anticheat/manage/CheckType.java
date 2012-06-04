@@ -51,6 +51,7 @@ public enum CheckType
     FORCEFIELD("anticheat.forcefield"),
     XRAY("anticheat.xray"),
     LONG_REACH("anticheat.longreach"),
+    FAST_PROJECTILE("anticheat.projectile"),
     ITEM_SPAM("anticheat.itemspam");
     
     private final String permission;

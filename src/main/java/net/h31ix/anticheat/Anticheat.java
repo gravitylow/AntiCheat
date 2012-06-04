@@ -257,6 +257,14 @@ public class Anticheat extends JavaPlugin
                     logger.log(Level.INFO, "[AC] Config file created.");
             }
         }
+        if (!new File(getDataFolder() + "/lang.yml").exists()) 
+        {
+            saveResource("lang.yml",false);
+            if (verbose) 
+            {
+                    logger.log(Level.INFO, "[AC] Lang file created.");
+            }
+        }        
     }
 
     private void checkForUpdate() 

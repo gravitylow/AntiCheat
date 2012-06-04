@@ -65,6 +65,7 @@ public class AnticheatManager
             }
             handler = new FileHandler(plugin.getDataFolder()+"/log/anticheat.log.%u.txt",true);
             handler.setFormatter(new FileFormatter());
+            handler.setLevel(Level.INFO);
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
@@ -82,7 +83,7 @@ public class AnticheatManager
     {
         if(getConfiguration().logConsole())
         {
-            LOGGER.warning(ChatColor.stripColor(message)); //This is temporary. Is something wrong with jline?
+            LOGGER.info(ChatColor.stripColor(message)); //This is temporary. Is something wrong with jline?
         }       
         if(getConfiguration().getFileLogLevel() == LOG_LEVEL_HIGH)
         {
@@ -92,7 +93,7 @@ public class AnticheatManager
     
     public void fileLog(String message)
     {
-        FILE_LOGGER.warning(message);
+        FILE_LOGGER.info(message);
     }
     
     public Anticheat getPlugin() 
