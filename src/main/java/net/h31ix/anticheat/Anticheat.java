@@ -78,7 +78,7 @@ public class Anticheat extends JavaPlugin
         updateFolder = config.updateFolder();
         if (verbose) 
         {
-            logger.log(Level.INFO, "[AC] Setup the config.");
+            logger.log(Level.INFO, "Setup the config.");
         }         
         checkForUpdate();
         eventList.add(new PlayerListener());
@@ -112,7 +112,7 @@ public class Anticheat extends JavaPlugin
                 }, XRAY_TIME, XRAY_TIME);
                 if (verbose) 
                 {
-                    logger.log(Level.INFO, "[AC] Scheduled the XRay checker.");
+                    logger.log(Level.INFO, "Scheduled the XRay checker.");
                 }                 
             }
         }
@@ -121,20 +121,19 @@ public class Anticheat extends JavaPlugin
             getServer().getPluginManager().registerEvents(listener, this);
             if (verbose) 
             {
-                logger.log(Level.INFO, "[AC] Registered events for ".concat(listener.toString()));
+                logger.log(Level.INFO, "Registered events for ".concat(listener.toString()));
             }
         }
         getCommand("anticheat").setExecutor(new CommandHandler());
         if (verbose) 
         {
-            logger.log(Level.INFO, "[AC] Registered commands.");
-            logger.log(Level.INFO, "[AC] Finished loading.");
+            logger.log(Level.INFO, "Registered commands.");
         }
         if (update && config.autoUpdate())
         {
             if (verbose) 
             {
-                logger.log(Level.INFO, "[AC] Downloading the new update...");
+                logger.log(Level.INFO, "Downloading the new update...");
             }
             File file = new File("plugins/" + updateFolder);
             if (!file.exists()) 
@@ -192,7 +191,7 @@ public class Anticheat extends JavaPlugin
             metrics.start();
             if (verbose) 
             {
-                logger.log(Level.INFO, "[AC] Metrics started.");
+                logger.log(Level.INFO, "Metrics started.");
             }             
         } 
         catch (IOException ex) 
@@ -202,7 +201,15 @@ public class Anticheat extends JavaPlugin
         {
             String name = player.getName();
             manager.getPlayerManager().setLevel(player,config.getLevel(name));
+            if (verbose) 
+            {
+                logger.log(Level.INFO, "Data for "+player.getName()+" re-applied from flatfile");
+            }             
         }
+            if (verbose) 
+            {
+                logger.log(Level.INFO, "Finished loading.");
+            }         
     }
 
     private void saveFile(String file, String url) 
@@ -254,7 +261,7 @@ public class Anticheat extends JavaPlugin
             saveDefaultConfig();
             if (verbose) 
             {
-                    logger.log(Level.INFO, "[AC] Config file created.");
+                    logger.log(Level.INFO, "Config file created.");
             }
         }
         if (!new File(getDataFolder() + "/lang.yml").exists()) 
@@ -262,7 +269,7 @@ public class Anticheat extends JavaPlugin
             saveResource("lang.yml",false);
             if (verbose) 
             {
-                    logger.log(Level.INFO, "[AC] Lang file created.");
+                    logger.log(Level.INFO, "Lang file created.");
             }
         }        
     }
@@ -271,7 +278,7 @@ public class Anticheat extends JavaPlugin
     {
         if (verbose) 
         {
-            logger.log(Level.INFO, "[AC] Checking for updates...");
+            logger.log(Level.INFO, "Checking for updates...");
         }
         URL url;
         URLConnection urlConn;
@@ -309,7 +316,7 @@ public class Anticheat extends JavaPlugin
                     update = true;
                     if (verbose) 
                     {
-                        logger.log(Level.INFO,"[AC] Your dev build has been promoted to release. Downloading the update.");
+                        logger.log(Level.INFO,"Your dev build has been promoted to release. Downloading the update.");
                     }
                 } 
                 else 
@@ -317,7 +324,7 @@ public class Anticheat extends JavaPlugin
                     update = false;
                     if (verbose) 
                     {
-                        logger.log(Level.INFO,"[AC] Dev build detected, so skipping update checking until this version is released.");
+                        logger.log(Level.INFO,"Dev build detected, so skipping update checking until this version is released.");
                     }
                 }
             } 
@@ -326,7 +333,7 @@ public class Anticheat extends JavaPlugin
                 update = true;
                 if (verbose) 
                 {
-                    logger.log(Level.INFO, "[AC] An update was found.");
+                    logger.log(Level.INFO, "An update was found.");
                 }
             }
         } 
@@ -334,7 +341,7 @@ public class Anticheat extends JavaPlugin
         {
             if (verbose) 
             {
-                logger.log(Level.INFO, "[AC] No update found.");
+                logger.log(Level.INFO, "No update found.");
             }
             update = false;
         }
