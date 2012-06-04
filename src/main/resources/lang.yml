@@ -1,0 +1,18 @@
+alert:
+  medium_alert:
+  - '[ALERT] &player has entered the MEDIUM hack level.'
+  - '[ALERT] This means they may be using a hacked client or may have a bad connection!'
+  high_alert:
+  - '[ALERT] &player has entered the HIGH hack level.'
+  - '[ALERT] This means they probably are hacking or are lagging out!' 
+warning:
+  player_warning:
+  - '[AntiCheat] Hacks are not allowed on this server.'
+  - '[AntiCheat] If you continue to use hacks, action will be taken.'
+ban:
+  ban_reason: 'Banned by AntiCheat'
+  ban_broadcast: '[AntiCheat] &player was banned for hacking.'
+kick:
+  kick_reason: 'Kicked by AntiCheat'
+  kick_broadcast: '[AntiCheat] &player was kicked for hacking.'  
+    

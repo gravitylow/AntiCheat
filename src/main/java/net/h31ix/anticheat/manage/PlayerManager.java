@@ -21,6 +21,7 @@ package net.h31ix.anticheat.manage;
 import java.util.HashMap;
 import java.util.Map;
 import net.h31ix.anticheat.Configuration;
+import net.h31ix.anticheat.Language;
 import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,6 +37,7 @@ public class PlayerManager
     
     private static Map<String,Integer> level = new HashMap<String,Integer>();
     private static Configuration config = null;
+    private static Language lang;
     private static final int MED_THRESHOLD = 20;
     private static final int HIGH_THRESHOLD = 50;
     private static final int LEVEL_MAX = 60;
@@ -43,23 +45,18 @@ public class PlayerManager
     
     public PlayerManager(AnticheatManager instance) {
     	config = instance.getConfiguration();
+        lang = config.getLang();
     }
     
     private static void reactMedium(Player player)
     {
         execute("Medium",player);                           
-        String [] alert = new String[2];
-        alert[0] = ChatColor.YELLOW+"[ALERT] "+ChatColor.WHITE+player.getName()+ChatColor.YELLOW+" has entered the MEDIUM hack level.";
-        alert[1] = ChatColor.YELLOW+"[ALERT] This means they may be using a hacked client or may have a bad connection!";      
-        Utilities.alert(alert);
+        Utilities.alert(formatArray(lang.getMediumAlert(),player,ChatColor.YELLOW));  
     }
     private static void reactHigh(Player player)
     {
         execute("High",player);
-        String [] alert = new String[2];
-        alert[0] = ChatColor.RED+"[ALERT] "+ChatColor.WHITE+player.getName()+ChatColor.RED+" has entered the HIGH hack level.";
-        alert[1] = ChatColor.RED+"[ALERT] This means they probably are hacking or are lagging out!";
-        Utilities.alert(alert);              
+        Utilities.alert(formatArray(lang.getHighAlert(),player,ChatColor.RED));              
     }
     
     public void increaseLevel(Player player)
@@ -149,19 +146,34 @@ public class PlayerManager
         }        
         else if(result.equalsIgnoreCase("KICK"))
         {
-            player.kickPlayer(ChatColor.RED+"Kicked by AntiCheat");
-            player.getServer().broadcastMessage(ChatColor.RED+"[AntiCheat] "+player.getName()+" was kicked for hacking.");
+            player.kickPlayer(formatString(lang.getKickReason(),player,ChatColor.RED));
+            player.getServer().broadcastMessage(formatString(lang.getKickBroadcast(),player,ChatColor.RED));
         }
         else if(result.equalsIgnoreCase("WARN"))
         {
-            player.sendMessage(ChatColor.RED+"[AntiCheat] Hacks are not allowed on this server.");
-            player.sendMessage(ChatColor.RED+"[AntiCheat] If you continue to use hacks, action will be taken.");
+            String[] message = formatArray(lang.getWarning(),player,ChatColor.RED);
+            for(String string : message)
+            {
+                player.sendMessage(string);
+            }
         } 
         else if(result.equalsIgnoreCase("BAN"))
         {
             player.setBanned(true);
-            player.kickPlayer(ChatColor.RED+"Banned by AntiCheat");
-            player.getServer().broadcastMessage(ChatColor.RED+"[AntiCheat] "+player.getName()+" was banned for hacking.");
+            player.kickPlayer(formatString(lang.getBanReason(),player,ChatColor.RED));
+            player.getServer().broadcastMessage(formatString(lang.getBanBroadcast(),player,ChatColor.RED));
         }          
-    }   
+    } 
+    private static String [] formatArray(String [] array, Player player, ChatColor color)
+    {
+        for(int i=0;i<array.length;i++)
+        {
+            array[i] = formatString(array[i],player,color);
+        }  
+        return array;
+    }
+    private static String formatString(String string, Player player, ChatColor color)
+    {
+        return color+string.replaceAll("&player", ChatColor.WHITE+player.getName()+color);
+    }    
 }

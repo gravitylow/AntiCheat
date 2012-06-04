@@ -36,8 +36,10 @@ public class Configuration
     private File configFile = null;
     private File levelFile = null;
     private File bukkitFile = null;
+    private File langFile = null;
     private FileConfiguration config;
     private FileConfiguration level;
+    private FileConfiguration lang;
     private boolean logConsole;
     private boolean logXRay;
     private boolean alertXRay;
@@ -45,6 +47,7 @@ public class Configuration
     private boolean verboseStartup;
     private int fileLogLevel = 0;
     private String updateFolder;
+    private static Language language;
     private List<String> worlds = new ArrayList<String>();
     
     public Configuration(AnticheatManager instance)
@@ -53,6 +56,7 @@ public class Configuration
     	configFile = new File(micromanage.getPlugin().getDataFolder()+"/config.yml");
     	levelFile = new File(micromanage.getPlugin().getDataFolder()+"/data/level.yml");
     	bukkitFile = new File("bukkit.yml");
+        langFile = new File(micromanage.getPlugin().getDataFolder()+"/lang.yml");
         load();
     }
     
@@ -103,6 +107,11 @@ public class Configuration
         return fileLogLevel;
     }
     
+    public Language getLang()
+    {
+        return language;
+    }
+    
     public final void load()
     {
         FileConfiguration bukkit;
@@ -110,6 +119,8 @@ public class Configuration
         config = YamlConfiguration.loadConfiguration(configFile);
         level = YamlConfiguration.loadConfiguration(levelFile);
         bukkit = YamlConfiguration.loadConfiguration(bukkitFile);
+        lang = YamlConfiguration.loadConfiguration(langFile);
+        language = new Language(lang);
         updateFolder = bukkit.getString("settings.update-folder");
         if(config.getString("Logging.Log to console") != null)
         {

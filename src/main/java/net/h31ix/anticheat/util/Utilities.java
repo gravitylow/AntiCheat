@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.h31ix.anticheat.Anticheat;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -102,7 +101,7 @@ public final class Utilities
             {     
                 b = true;
             }       
-        }  
+        }
         return b;
     }
     public static boolean isSubmersed(Player player)
