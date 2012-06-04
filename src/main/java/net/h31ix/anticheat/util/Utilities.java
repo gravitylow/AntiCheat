@@ -142,7 +142,8 @@ public final class Utilities
         INSTANT_BREAK.add(Material.SAPLING);
         INSTANT_BREAK.add(Material.TORCH);
         INSTANT_BREAK.add(Material.CROPS);
-        INSTANT_BREAK.add(Material.SNOW);   
+        INSTANT_BREAK.add(Material.SNOW); 
+        INSTANT_BREAK.add(Material.TNT);
         FOOD.add(Material.COOKED_BEEF);
         FOOD.add(Material.COOKED_CHICKEN);
         FOOD.add(Material.COOKED_FISH);
