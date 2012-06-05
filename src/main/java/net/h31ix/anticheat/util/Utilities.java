@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.h31ix.anticheat.Anticheat;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -92,6 +93,7 @@ public final class Utilities
         Material lily = Material.WATER_LILY;
         return block.getType() == lily || block.getRelative(BlockFace.NORTH).getType() == lily || block.getRelative(BlockFace.SOUTH).getType() == lily || block.getRelative(BlockFace.EAST).getType() == lily || block.getRelative(BlockFace.WEST).getType() == lily;
     }
+    
     public static boolean isUsingMcMMOAbility(Player player)
     {
         boolean b = false;
@@ -104,6 +106,58 @@ public final class Utilities
         }
         return b;
     }
+    
+    /*
+     * 
+     * Credits to sk89q for the calculation of cardinal direction.
+     * 
+     * 
+     */
+    
+    /**
+     * Get the cardinal compass direction of a player.
+     * 
+     * @param player
+     * @return
+     */
+    public static String getCardinalDirection(Player player) {
+        double rot = (player.getLocation().getYaw() - 90) % 360;
+        if (rot < 0) {
+            rot += 360.0;
+        }
+        return getDirection(rot);
+    }
+
+    /**
+     * Converts a rotation to a cardinal direction name.
+     * 
+     * @param rot
+     * @return
+     */
+    private static String getDirection(double rot) {
+        if (0 <= rot && rot < 22.5) {
+            return "N";
+        } else if (22.5 <= rot && rot < 67.5) {
+            return "NE";
+        } else if (67.5 <= rot && rot < 112.5) {
+            return "E";
+        } else if (112.5 <= rot && rot < 157.5) {
+            return "SE";
+        } else if (157.5 <= rot && rot < 202.5) {
+            return "S";
+        } else if (202.5 <= rot && rot < 247.5) {
+            return "SW";
+        } else if (247.5 <= rot && rot < 292.5) {
+            return "W";
+        } else if (292.5 <= rot && rot < 337.5) {
+            return "NW";
+        } else if (337.5 <= rot && rot < 360.0) {
+            return "N";
+        } else {
+            return null;
+        }
+    }
+    
     public static boolean isSubmersed(Player player)
     {
         return player.getLocation().getBlock().isLiquid() && player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid();
@@ -141,7 +195,8 @@ public final class Utilities
         INSTANT_BREAK.add(Material.SAPLING);
         INSTANT_BREAK.add(Material.TORCH);
         INSTANT_BREAK.add(Material.CROPS);
-        INSTANT_BREAK.add(Material.SNOW);   
+        INSTANT_BREAK.add(Material.SNOW); 
+        INSTANT_BREAK.add(Material.TNT);
         FOOD.add(Material.COOKED_BEEF);
         FOOD.add(Material.COOKED_CHICKEN);
         FOOD.add(Material.COOKED_FISH);

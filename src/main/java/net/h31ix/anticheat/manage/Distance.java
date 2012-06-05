@@ -30,11 +30,23 @@ public class Distance
         l2 = from;
     }
     
-    public double fromY() {
+    public double fromX() 
+    {
+    	return l2.getX();
+    }
+    
+    public double fromY() 
+    {
     	return l2.getY();
     }
     
-    public double toY() {
+    public double fromZ()
+    {
+    	return l2.getZ();
+    }
+    
+    public double toY() 
+    {
     	return l1.getY();
     }
 
@@ -51,5 +63,6 @@ public class Distance
     public double getYDifference()
     {
         return Math.abs(l1.getY()-l2.getY());   
-    }            
+    }
+        
 }

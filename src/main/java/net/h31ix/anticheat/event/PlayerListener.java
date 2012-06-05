@@ -32,6 +32,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.PlayerInventory;
@@ -62,6 +63,7 @@ public class PlayerListener extends EventListener
                 backend.logProjectile(player,this);
             }
         }
+       
     }
     
     @EventHandler
@@ -149,6 +151,23 @@ public class PlayerListener extends EventListener
             Distance distance = new Distance(player.getLocation(), event.getClickedBlock().getLocation());
             backend.checkLongReachBlock(player,distance.getXDifference(), distance.getYDifference(), distance.getZDifference());
         }
+        
+        /* Chest Cheat Check */
+        if(event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) 
+        {
+        	Block block = event.getClickedBlock();
+        	if(((block.getType()) == Material.CHEST) && checkManager.willCheck(player, CheckType.CHEST_HACK)) 
+        	{
+        		// save load and actually call the backend check here.
+        		if(backend.checkChestCheat(player, block)) 
+        		{
+        			event.setCancelled(true);
+        			log("tried to use freecam chest hack",player,CheckType.CHEST_HACK); 
+        		}
+        	}
+        }
+        
+        
     }    
     
     @EventHandler(ignoreCancelled = true)

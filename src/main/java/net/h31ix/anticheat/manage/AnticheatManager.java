@@ -83,7 +83,7 @@ public class AnticheatManager
     {
         if(getConfiguration().logConsole())
         {
-            LOGGER.info(ChatColor.stripColor(message)); //This is temporary. Is something wrong with jline?
+            LOGGER.log(Level.WARNING, ChatColor.stripColor(message)); //This is temporary. Is something wrong with jline?
         }       
         if(getConfiguration().getFileLogLevel() == LOG_LEVEL_HIGH)
         {
@@ -93,7 +93,7 @@ public class AnticheatManager
     
     public void fileLog(String message)
     {
-        FILE_LOGGER.info(message);
+        FILE_LOGGER.log(Level.WARNING, message);
     }
     
     public Anticheat getPlugin() 

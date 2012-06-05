@@ -261,6 +261,141 @@ public class Backend
         }
     }
     
+    public boolean checkChestCheat(Player player, Block block) 
+    {
+    	// The most complicated check in the world...approaching nirvana.
+    	int strikes = 0;
+    	
+    	// now let's swing the bat.
+    	Distance distance = new Distance(player.getLocation(), block.getLocation());
+    	
+    	//player coords
+    	double px = distance.fromX();
+    	double py = distance.fromY();
+    	double pz = distance.fromZ();
+    	
+    	double x = Math.round(distance.getXDifference());
+    	double y = Math.round(distance.getYDifference());
+    	double z = Math.round(distance.getZDifference());
+    	
+    	String direction = Utilities.getCardinalDirection(player);
+    	
+    	if(direction != null)
+    	{
+    		if(direction.equals("N") || direction.equals("NE")) 
+    		{
+    			if(x > 0) 
+    			{
+    				for(int a = 0; a < x + 1; a++)
+    				{
+    					Location coords = new Location(player.getWorld(), px-a,py,pz);
+    	    			if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId())
+    	    			{
+    	    				strikes++;
+    	    			}
+    				}
+    			}
+    			
+    			if(z > 0)
+    			{
+    				for(int a = 0; a < z + 1; a++)
+    				{
+    					Location coords = new Location(player.getWorld(), px,py,pz-a);
+    	    			if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId())
+    	    			{
+    	    				strikes++;
+    	    			}
+    				}
+    			}
+    			
+    		}
+    		
+    		if(direction.equals("E") || direction.equals("SE"))
+    		{
+    			if(x > 0) 
+    			{
+    				for(int a = 0; a < x + 1; a++)
+    				{
+    					Location coords = new Location(player.getWorld(), px+a,py,pz);
+    	    			if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId())
+    	    			{
+    	    				strikes++;
+    	    			}
+    				}
+    			}
+    			
+    			if(z > 0)
+    			{
+    				for(int a = 0; a < z + 1; a++)
+    				{
+    					Location coords = new Location(player.getWorld(), px,py,pz-a);
+    	    			if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId())
+    	    			{
+    	    				strikes++;
+    	    			}
+    				}
+    			}
+    		}
+    		
+    		if(direction.equals("S") || direction.equals("SW") || direction.equals("W"))
+    		{
+    			if(x > 0) 
+    			{
+    				for(int a = 0; a < x + 1; a++)
+    				{
+    					Location coords = new Location(player.getWorld(), px+a,py,pz);
+    	    			if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId())
+    	    			{
+    	    				strikes++;
+    	    			}
+    				}
+    			}
+    			
+    			if(z > 0)
+    			{
+    				for(int a = 0; a < z + 1; a++)
+    				{
+    					Location coords = new Location(player.getWorld(), px,py,pz+a);
+    	    			if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId())
+    	    			{
+    	    				strikes++;
+    	    			}
+    				}
+    			}
+    		}
+    		
+    		if(direction.equals("NW"))
+    		{
+    			if(x > 0) 
+    			{
+    				for(int a = 0; a < x + 1; a++)
+    				{
+    					Location coords = new Location(player.getWorld(), px-a,py,pz);
+    	    			if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId())
+    	    			{
+    	    				strikes++;
+    	    			}
+    				}
+    			}
+    			
+    			if(z > 0)
+    			{
+    				for(int a = 0; a < z + 1; a++)
+    				{
+    					Location coords = new Location(player.getWorld(), px,py,pz+a);
+    	    			if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId())
+    	    			{
+    	    				strikes++;
+    	    			}
+    				}
+    			}
+    		}
+    		
+    	}
+    	
+    	return strikes > 0;
+    }
+    
     public boolean checkWaterWalk(Player player, double x, double z)
     {
         Block block = player.getLocation().getBlock();
