@@ -38,7 +38,7 @@ public enum CheckType
     WATER_WALK("anticheat.waterwalk"),
     NO_SWING("anticheat.noswing"),
     FAST_BREAK("anticheat.fastbreak"),
-    CHEST_HACK("anticheat.chest"),
+    VISUALS("anticheat.visuals"),
     FAST_PLACE("anticheat.fastplace"),
     SPAM("anticheat.spam"),
     SPRINT("anticheat.sprint"),

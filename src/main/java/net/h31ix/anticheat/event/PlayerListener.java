@@ -152,17 +152,17 @@ public class PlayerListener extends EventListener
             backend.checkLongReachBlock(player,distance.getXDifference(), distance.getYDifference(), distance.getZDifference());
         }
         
-        /* Chest Cheat Check */
+        /* Visuals Check */
         if(event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) 
         {
         	Block block = event.getClickedBlock();
-        	if(((block.getType()) == Material.CHEST) && checkManager.willCheck(player, CheckType.CHEST_HACK)) 
+        	if(checkManager.willCheck(player, CheckType.VISUALS)) 
         	{
         		// save load and actually call the backend check here.
-        		if(backend.checkChestCheat(player, block)) 
+        		if(backend.checkVisuals(player, block)) 
         		{
         			event.setCancelled(true);
-        			log("tried to use freecam chest hack",player,CheckType.CHEST_HACK); 
+        			log("failed visuals check",player,CheckType.VISUALS); 
         		}
         	}
         }

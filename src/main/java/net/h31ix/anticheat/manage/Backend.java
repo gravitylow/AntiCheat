@@ -261,7 +261,7 @@ public class Backend
         }
     }
     
-    public boolean checkChestCheat(Player player, Block block) 
+    public boolean checkVisuals(Player player, Block block) 
     {
     	// The most complicated check in the world...approaching nirvana.
     	int strikes = 0;
@@ -327,8 +327,6 @@ public class Backend
 	    	    				player.sendMessage("Block detected at -X: " + a + " Block: " + coords.getBlock().getType().toString());
 	    	    				player.sendBlockChange(coords, 46, (byte) 0);
 	    	    				strikes++;
-	    	    			} else {
-	    	    				player.sendBlockChange(coords, 56, (byte) 0);
 	    	    			}
 	    				}
 	    			}
@@ -360,8 +358,6 @@ public class Backend
 	    	    				player.sendMessage("Block detected at -Z: " + a + " Block: " + coords.getBlock().getType().toString());
 	    	    				player.sendBlockChange(coords, 46, (byte) 0);
 	    	    				strikes++;
-	    	    			} else {
-	    	    				player.sendBlockChange(coords, 57, (byte) 0);
 	    	    			}
 	    				}
 	    			}
@@ -397,8 +393,6 @@ public class Backend
 	    	    				player.sendMessage("Block detected at +X: " + a + " Block: " + coords.getBlock().getType().toString());
 	    	    				player.sendBlockChange(coords, 46, (byte) 0);
 	    	    				strikes++;
-	    	    			} else {
-	    	    				player.sendBlockChange(coords, 35, (byte) 0);
 	    	    			}
 	    				}
 	    			}
@@ -430,8 +424,6 @@ public class Backend
 	    	    				player.sendMessage("Block detected at -Z: " + a + " Block: " + coords.getBlock().getType().toString());
 	    	    				player.sendBlockChange(coords, 46, (byte) 0);
 	    	    				strikes++;
-	    	    			} else {
-	    	    				player.sendBlockChange(coords, 57, (byte) 0);
 	    	    			}
 	    				}
 	    			}
@@ -449,8 +441,6 @@ public class Backend
 	    	    				player.sendMessage("Block detected at +X: " + a + " Block: " + coords.getBlock().getType().toString());
 	    	    				player.sendBlockChange(coords, 46, (byte) 0);
 	    	    				strikes++;
-	    	    			} else {
-	    	    				player.sendBlockChange(coords, 35, (byte) 0);
 	    	    			}
 	    				}
 	    			}
@@ -465,8 +455,6 @@ public class Backend
 	    	    				player.sendMessage("Block detected at +Z: " + a + " Block: " + coords.getBlock().getType().toString());
 	    	    				player.sendBlockChange(coords, 46, (byte) 0);
 	    	    				strikes++;
-	    	    			} else {
-	    	    				player.sendBlockChange(coords, 1, (byte) 0);
 	    	    			}
 	    				}
 	    			}
@@ -494,8 +482,6 @@ public class Backend
 	    	    				player.sendMessage("Block detected at -X: " + a + " Block: " + coords.getBlock().getType().toString());
 	    	    				player.sendBlockChange(coords, 46, (byte) 0);
 	    	    				strikes++;
-	    	    			} else {
-	    	    				player.sendBlockChange(coords, 56, (byte) 0);
 	    	    			}
 	    				}
 	    			}
@@ -520,8 +506,6 @@ public class Backend
 	    	    				player.sendMessage("Block detected at +Z: " + a + " Block: " + coords.getBlock().getType().toString());
 	    	    				player.sendBlockChange(coords, 46, (byte) 0);
 	    	    				strikes++;
-	    	    			} else {
-	    	    				player.sendBlockChange(coords, 1, (byte) 0);
 	    	    			}
 	    				}
 	    			}
@@ -532,7 +516,7 @@ public class Backend
     	player.sendMessage("Strikes: " + strikes + " Dir: " + direction);
     	player.sendMessage("X: " + x + " Y: " + y + " Z:" + z);
     	
-    	return false;
+    	return strikes > 0;
     }
     
     public boolean checkWaterWalk(Player player, double x, double z)
