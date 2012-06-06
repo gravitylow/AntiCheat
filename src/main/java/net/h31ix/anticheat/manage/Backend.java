@@ -263,10 +263,8 @@ public class Backend
     
     public boolean checkInteraction(Player player, Block block) 
     {
-    	// The most complicated check in the world...approaching nirvana.
     	int strikes = 0;
     	
-    	// now let's swing the bat.
     	Distance distance = new Distance(player.getLocation(), block.getLocation());
     	
     	//player coords
@@ -292,231 +290,214 @@ public class Backend
     	
     	if(direction != null)
     	{
+            for(int g = 0; g < 2; g++)
+            {
+                py = py+g;
+                if(direction.equals("N") || direction.equals("NE")) 
+                {
+                    if(x > 0) 
+                    {
+                        boolean ignoreothers = false;
+                        for(int a = 0; a < x + 1; a++)
+                        {
+                            Location coords = new Location(player.getWorld(), px-a,py,pz);
+                            if(coords.getBlock().getTypeId() == block.getTypeId() && coords.distance(block.getLocation()) < 3D) 
+                            {
+                                ignoreothers = true;
+                            }
+                            // Don't detect farther than we should be allowed to.
+                            if(coords.getX() < block.getLocation().getX()) 
+                            {
+                                ignoreothers = true;
+                                //player.sendBlockChange(coords, 66, (byte) 0);
+                            }
+                            if(block.getLocation().distance(coords) > 5D) 
+                            {
+                                    continue;
+                            }
+                            if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId() && !ignoreothers)
+                            {
+                                //player.sendMessage("Block detected at -X: " + a + " Block: " + coords.getBlock().getType().toString());
+                                //player.sendBlockChange(coords, 46, (byte) 0);
+                                strikes++;
+                            }
+                        }
+                    }
+                    if(z > 0)
+                    {
+                        boolean ignoreothers = false;
+                        for(int a = 0; a < z + 1; a++)
+                        {
+                            Location coords = new Location(player.getWorld(), px,py,pz-a);
+                            if(coords.getBlock().getTypeId() == block.getTypeId() && coords.distance(block.getLocation()) < 3D) 
+                            {
+                                ignoreothers = true;
+                            }
+                            if(block.getLocation().distance(coords) > 5D) 
+                            {
+                                continue;
+                            }
+                            // Don't detect farther than we should be allowed to.
+                            if(coords.getZ() < block.getLocation().getZ()) 
+                            {
+                                ignoreothers = true;
+                                //player.sendBlockChange(coords, 66, (byte) 0);
+                            }
+                            if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId() && !ignoreothers)
+                            {
+                                //player.sendMessage("Block detected at -Z: " + a + " Block: " + coords.getBlock().getType().toString());
+                                //player.sendBlockChange(coords, 46, (byte) 0);
+                                strikes++;
+                            }
+                        }
+                    }
+                }
+                if(direction.equals("E") || direction.equals("SE"))
+                {
+                    if(x > 0) 
+                    {
+                        boolean ignoreothers = false;
+                        for(int a = 0; a < x + 1; a++)
+                        {
+                            Location coords = new Location(player.getWorld(), px+a,py,pz);
+                            if(coords.getBlock().getTypeId() == block.getTypeId() && coords.distance(block.getLocation()) < 3D) 
+                            {
+                                ignoreothers = true;
+                            }
+                            if(block.getLocation().distance(coords) > 5D) 
+                            {
+                                continue;
+                            }
+                            // Don't detect farther than we should be allowed to.
+                            if(coords.getX() < block.getLocation().getX()) 
+                            {
+                                ignoreothers = true;
+                                //player.sendBlockChange(coords, 66, (byte) 0);
+                            }
+                            if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId() && !ignoreothers)
+                            {
+                                //player.sendMessage("Block detected at +X: " + a + " Block: " + coords.getBlock().getType().toString());
+                                //player.sendBlockChange(coords, 46, (byte) 0);
+                                strikes++;
+                            }
+                        }
+                    }
+                    if(z > 0)
+                    {
+                        boolean ignoreothers = false;
+                        for(int a = 0; a < z + 1; a++)
+                        {
+                            Location coords = new Location(player.getWorld(), px,py,pz-a);
+                            if(coords.getBlock().getTypeId() == block.getTypeId() && coords.distance(block.getLocation()) < 4D) 
+                            {
+                                ignoreothers = true;
+                            }
 
-	    	for(int g = 0; g < 2; g++)
-	    	{
-	    		py = py+g;
-	    		
-	    		if(direction.equals("N") || direction.equals("NE")) 
-	    		{
-	    			if(x > 0) 
-	    			{
-	    				boolean ignoreothers = false;
-	    				for(int a = 0; a < x + 1; a++)
-	    				{
-	    					Location coords = new Location(player.getWorld(), px-a,py,pz);
-	    					if(coords.getBlock().getTypeId() == block.getTypeId() && coords.distance(block.getLocation()) < 3D) 
-	    					{
-	    						ignoreothers = true;
-	    					}
-	    					
-	    					
-	    					// Don't detect farther than we should be allowed to.
-	    					if(coords.getX() < block.getLocation().getX()) 
-	    					{
-	    						ignoreothers = true;
-	    						//player.sendBlockChange(coords, 66, (byte) 0);
-	    					}
-	    					
-	    					if(block.getLocation().distance(coords) > 5D) 
-	    					{
-	    						continue;
-	    					}
-	    					
-	    	    			if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId() && !ignoreothers)
-	    	    			{
-	    	    				//player.sendMessage("Block detected at -X: " + a + " Block: " + coords.getBlock().getType().toString());
-	    	    				//player.sendBlockChange(coords, 46, (byte) 0);
-	    	    				strikes++;
-	    	    			}
-	    				}
-	    			}
-	    			
-	    			if(z > 0)
-	    			{
-	    				boolean ignoreothers = false;
-	    				for(int a = 0; a < z + 1; a++)
-	    				{
-	    					Location coords = new Location(player.getWorld(), px,py,pz-a);
-	    					if(coords.getBlock().getTypeId() == block.getTypeId() && coords.distance(block.getLocation()) < 3D) 
-	    					{
-	    						ignoreothers = true;
-	    					}
-	    					
-	    					if(block.getLocation().distance(coords) > 5D) {
-	    						continue;
-	    					}
-	    					
-	    					// Don't detect farther than we should be allowed to.
-	    					if(coords.getZ() < block.getLocation().getZ()) 
-	    					{
-	    						ignoreothers = true;
-	    						//player.sendBlockChange(coords, 66, (byte) 0);
-	    					}
-	    					
-	    	    			if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId() && !ignoreothers)
-	    	    			{
-	    	    				//player.sendMessage("Block detected at -Z: " + a + " Block: " + coords.getBlock().getType().toString());
-	    	    				//player.sendBlockChange(coords, 46, (byte) 0);
-	    	    				strikes++;
-	    	    			}
-	    				}
-	    			}
-	    			
-	    		}
-	    		
-	    		if(direction.equals("E") || direction.equals("SE"))
-	    		{
-	    			if(x > 0) 
-	    			{
-	    				boolean ignoreothers = false;
-	    				for(int a = 0; a < x + 1; a++)
-	    				{
-	    					Location coords = new Location(player.getWorld(), px+a,py,pz);
-	    					if(coords.getBlock().getTypeId() == block.getTypeId() && coords.distance(block.getLocation()) < 3D) 
-	    					{
-	    						ignoreothers = true;
-	    					}
-	    					
-	    					if(block.getLocation().distance(coords) > 5D) {
-	    						continue;
-	    					}
-	    					
-	    					// Don't detect farther than we should be allowed to.
-	    					if(coords.getX() < block.getLocation().getX()) 
-	    					{
-	    						ignoreothers = true;
-	    						//player.sendBlockChange(coords, 66, (byte) 0);
-	    					}
-	    					
-	    	    			if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId() && !ignoreothers)
-	    	    			{
-	    	    				//player.sendMessage("Block detected at +X: " + a + " Block: " + coords.getBlock().getType().toString());
-	    	    				//player.sendBlockChange(coords, 46, (byte) 0);
-	    	    				strikes++;
-	    	    			}
-	    				}
-	    			}
-	    			
-	    			if(z > 0)
-	    			{
-	    				boolean ignoreothers = false;
-	    				for(int a = 0; a < z + 1; a++)
-	    				{
-	    					Location coords = new Location(player.getWorld(), px,py,pz-a);
-	    					if(coords.getBlock().getTypeId() == block.getTypeId() && coords.distance(block.getLocation()) < 4D) 
-	    					{
-	    						ignoreothers = true;
-	    					}
-	    					
-	    					if(block.getLocation().distance(coords) > 5D) {
-	    						continue;
-	    					}
-	    					
-	    					// Don't detect farther than we should be allowed to.
-	    					if(coords.getZ() < block.getLocation().getZ()) 
-	    					{
-	    						ignoreothers = true;
-	    						//player.sendBlockChange(coords, 66, (byte) 0);
-	    					}
-	    					
-	    	    			if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId() && !ignoreothers)
-	    	    			{
-	    	    				//player.sendMessage("Block detected at -Z: " + a + " Block: " + coords.getBlock().getType().toString());
-	    	    				//player.sendBlockChange(coords, 46, (byte) 0);
-	    	    				strikes++;
-	    	    			}
-	    				}
-	    			}
-	    		}
-	    		
-	    		if(direction.equals("S") || direction.equals("SW") || direction.equals("W"))
-	    		{
-	    			if(x > 0) 
-	    			{
-	    				for(int a = 0; a < x + 1; a++)
-	    				{
-	    					Location coords = new Location(player.getWorld(), px+a,py,pz);
-	    	    			if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId())
-	    	    			{
-	    	    				//player.sendMessage("Block detected at +X: " + a + " Block: " + coords.getBlock().getType().toString());
-	    	    				//player.sendBlockChange(coords, 46, (byte) 0);
-	    	    				strikes++;
-	    	    			}
-	    				}
-	    			}
-	    			
-	    			if(z > 0)
-	    			{
-	    				for(int a = 0; a < z + 1; a++)
-	    				{
-	    					Location coords = new Location(player.getWorld(), px,py,pz+a);
-	    	    			if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId())
-	    	    			{
-	    	    				//player.sendMessage("Block detected at +Z: " + a + " Block: " + coords.getBlock().getType().toString());
-	    	    				//player.sendBlockChange(coords, 46, (byte) 0);
-	    	    				strikes++;
-	    	    			}
-	    				}
-	    			}
-	    		}
-	    		
-	    		if(direction.equals("NW"))
-	    		{
-	    			if(x > 0) 
-	    			{
-	    				boolean ignoreothers = false;
-	    				for(int a = 0; a < x + 1; a++)
-	    				{
-	    					Location coords = new Location(player.getWorld(), px-a,py,pz);
-	    					if(coords.getBlock().getTypeId() == block.getTypeId() && coords.distance(block.getLocation()) < 3D) 
-	    					{
-	    						ignoreothers = true;
-	    					}
-	    					
-	    					if(block.getLocation().distance(coords) > 5D) {
-	    						continue;
-	    					}
-	    					
-	    	    			if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId() && !ignoreothers)
-	    	    			{
-	    	    				//player.sendMessage("Block detected at -X: " + a + " Block: " + coords.getBlock().getType().toString());
-	    	    				//player.sendBlockChange(coords, 46, (byte) 0);
-	    	    				strikes++;
-	    	    			}
-	    				}
-	    			}
-	    			
-	    			if(z > 0)
-	    			{
-	    				boolean ignoreothers = false;
-	    				for(int a = 0; a < z + 1; a++)
-	    				{
-	    					Location coords = new Location(player.getWorld(), px,py,pz+a);
-	    					if(coords.getBlock().getTypeId() == block.getTypeId() && coords.distance(block.getLocation()) < 3D) 
-	    					{
-	    						ignoreothers = true;
-	    					}
-	    					
-	    					if(block.getLocation().distance(coords) > 5D) {
-	    						continue;
-	    					}
-	    					
-	    	    			if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId() && !ignoreothers)
-	    	    			{
-	    	    				//player.sendMessage("Block detected at +Z: " + a + " Block: " + coords.getBlock().getType().toString());
-	    	    				//player.sendBlockChange(coords, 46, (byte) 0);
-	    	    				strikes++;
-	    	    			}
-	    				}
-	    			}
-	    		}
-	    	}	
+                            if(block.getLocation().distance(coords) > 5D) 
+                            {
+                                continue;
+                            }
+
+                            // Don't detect farther than we should be allowed to.
+                            if(coords.getZ() < block.getLocation().getZ()) 
+                            {
+                                ignoreothers = true;
+                                //player.sendBlockChange(coords, 66, (byte) 0);
+                            }
+
+                            if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId() && !ignoreothers)
+                            {
+                                //player.sendMessage("Block detected at -Z: " + a + " Block: " + coords.getBlock().getType().toString());
+                                //player.sendBlockChange(coords, 46, (byte) 0);
+                                strikes++;
+                            }
+                        }
+                    }
+                }
+                if(direction.equals("S") || direction.equals("SW") || direction.equals("W"))
+                {
+                    if(x > 0) 
+                    {
+                        for(int a = 0; a < x + 1; a++)
+                        {
+                            Location coords = new Location(player.getWorld(), px+a,py,pz);
+                            if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId())
+                            {
+                                //player.sendMessage("Block detected at +X: " + a + " Block: " + coords.getBlock().getType().toString());
+                                //player.sendBlockChange(coords, 46, (byte) 0);
+                                strikes++;
+                            }
+                        }
+                    }
+                    if(z > 0)
+                    {
+                        for(int a = 0; a < z + 1; a++)
+                        {
+                            Location coords = new Location(player.getWorld(), px,py,pz+a);
+                            if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId())
+                            {
+                                //player.sendMessage("Block detected at +Z: " + a + " Block: " + coords.getBlock().getType().toString());
+                                //player.sendBlockChange(coords, 46, (byte) 0);
+                                strikes++;
+                            }
+                        }
+                    }
+                }
+                if(direction.equals("NW"))
+                {
+                    if(x > 0) 
+                    {
+                        boolean ignoreothers = false;
+                        for(int a = 0; a < x + 1; a++)
+                        {
+                            Location coords = new Location(player.getWorld(), px-a,py,pz);
+                            if(coords.getBlock().getTypeId() == block.getTypeId() && coords.distance(block.getLocation()) < 3D) 
+                            {
+                                ignoreothers = true;
+                            }
+
+                            if(block.getLocation().distance(coords) > 5D) 
+                            {
+                                continue;
+                            }
+
+                            if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId() && !ignoreothers)
+                            {
+                                //player.sendMessage("Block detected at -X: " + a + " Block: " + coords.getBlock().getType().toString());
+                                //player.sendBlockChange(coords, 46, (byte) 0);
+                                strikes++;
+                            }
+                        }
+                    }
+                    if(z > 0)
+                    {
+                        boolean ignoreothers = false;
+                        for(int a = 0; a < z + 1; a++)
+                        {
+                            Location coords = new Location(player.getWorld(), px,py,pz+a);
+                            if(coords.getBlock().getTypeId() == block.getTypeId() && coords.distance(block.getLocation()) < 3D) 
+                            {
+                                ignoreothers = true;
+                            }
+
+                            if(block.getLocation().distance(coords) > 5D) 
+                            {
+                                continue;
+                            }
+
+                            if(coords.getBlock().getTypeId() != 0 && coords.getBlock().getTypeId() != block.getTypeId() && !ignoreothers)
+                            {
+                                //player.sendMessage("Block detected at +Z: " + a + " Block: " + coords.getBlock().getType().toString());
+                                //player.sendBlockChange(coords, 46, (byte) 0);
+                                strikes++;
+                            }
+                        }
+                    }
+                }
+            }	
     	}
-    	
     	//player.sendMessage("Strikes: " + strikes + " Dir: " + direction);
     	//player.sendMessage("X: " + x + " Y: " + y + " Z:" + z);
-    	
     	return strikes > 0;
     }
     

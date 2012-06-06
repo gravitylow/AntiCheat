@@ -153,18 +153,17 @@ public class PlayerListener extends EventListener
         }
         
         /* Interactions Check */
-        Block block = event.getClickedBlock();
+        Block block = event.getClickedBlock(); 
         if(checkManager.willCheck(player, CheckType.INTERACTION) && Utilities.isInteractable(block.getType())) 
         {
-        	// save load and actually call the backend check here.
-        	if(backend.checkInteraction(player, block)) 
-        	{
-        		event.setCancelled(true);
-        		log("failed interaction check",player,CheckType.INTERACTION); 
-        	}
+            System.out.println("checking interaction");
+            // save load and actually call the backend check here.
+            if(backend.checkInteraction(player, block)) 
+            {
+                event.setCancelled(true);
+                log("failed interaction check",player,CheckType.INTERACTION); 
+            }
        	}
-        
-        
     }    
     
     @EventHandler(ignoreCancelled = true)
