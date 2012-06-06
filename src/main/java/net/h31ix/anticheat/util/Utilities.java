@@ -97,7 +97,7 @@ public final class Utilities
         boolean b = false;
         if(player.getServer().getPluginManager().getPlugin("mcMMO") != null)
         {
-            if(mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.TREE_FELLER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.SUPER_BREAKER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.BERSERK))
+            if(mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.TREE_FELLER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.SUPER_BREAKER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.BERSERK) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.GIGA_DRILL_BREAKER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.BLAST_MINING))
             {     
                 b = true;
             }       
