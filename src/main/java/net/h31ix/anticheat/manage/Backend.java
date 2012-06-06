@@ -736,7 +736,7 @@ public class Backend
     
     public boolean checkSwing(Player player, Block block)
     {
-        return !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !justAnimated(player) && !Utilities.isUsingMcMMOAbility(player);
+        return !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !justAnimated(player) && !Utilities.isUsingMcMMOAbility(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES);
     }
     
     public boolean checkFastBreak(Player player, Block block)
