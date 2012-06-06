@@ -152,20 +152,17 @@ public class PlayerListener extends EventListener
             backend.checkLongReachBlock(player,distance.getXDifference(), distance.getYDifference(), distance.getZDifference());
         }
         
-        /* Visuals Check */
-        if(event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) 
+        /* Interactions Check */
+        Block block = event.getClickedBlock();
+        if(checkManager.willCheck(player, CheckType.INTERACTION) && Utilities.isInteractable(block.getType())) 
         {
-        	Block block = event.getClickedBlock();
-        	if(checkManager.willCheck(player, CheckType.VISUALS)) 
+        	// save load and actually call the backend check here.
+        	if(backend.checkInteraction(player, block)) 
         	{
-        		// save load and actually call the backend check here.
-        		if(backend.checkVisuals(player, block)) 
-        		{
-        			event.setCancelled(true);
-        			log("failed visuals check",player,CheckType.VISUALS); 
-        		}
+        		event.setCancelled(true);
+        		log("failed interaction check",player,CheckType.INTERACTION); 
         	}
-        }
+       	}
         
         
     }    

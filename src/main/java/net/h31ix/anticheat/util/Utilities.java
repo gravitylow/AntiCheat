@@ -34,6 +34,7 @@ public final class Utilities
 {
     private static final List<Material> INSTANT_BREAK = new ArrayList<Material>();
     private static final List<Material> FOOD = new ArrayList<Material>();
+    private static final List<Material> INTERACTABLE = new ArrayList<Material>();
     
     private Utilities()
     {
@@ -82,7 +83,10 @@ public final class Utilities
     public static boolean isFood(Material m)
     {
         return FOOD.contains(m);
-    }   
+    }
+    public static boolean isInteractable(Material m) {
+    	return INTERACTABLE.contains(m);
+    }
     public static boolean sprintFly(Player player)
     {
         return player.isSprinting() || player.isFlying();       
@@ -197,6 +201,20 @@ public final class Utilities
         INSTANT_BREAK.add(Material.CROPS);
         INSTANT_BREAK.add(Material.SNOW); 
         INSTANT_BREAK.add(Material.TNT);
+        INTERACTABLE.add(Material.STONE_BUTTON);
+        INTERACTABLE.add(Material.LEVER);
+        INTERACTABLE.add(Material.CHEST);
+        INTERACTABLE.add(Material.DISPENSER);
+        INTERACTABLE.add(Material.CAULDRON);
+        INTERACTABLE.add(Material.ENCHANTMENT_TABLE);
+        INTERACTABLE.add(Material.WOOD_DOOR);
+        INTERACTABLE.add(Material.IRON_DOOR);
+        INTERACTABLE.add(Material.WORKBENCH);
+        INTERACTABLE.add(Material.CAKE_BLOCK);
+        INTERACTABLE.add(Material.STONE_PLATE);
+        INTERACTABLE.add(Material.FENCE_GATE);
+        INTERACTABLE.add(Material.TRAP_DOOR);
+        //INTERACTABLE.add(Material. - placeholder.
         FOOD.add(Material.COOKED_BEEF);
         FOOD.add(Material.COOKED_CHICKEN);
         FOOD.add(Material.COOKED_FISH);
