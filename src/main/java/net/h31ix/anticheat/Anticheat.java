@@ -30,9 +30,9 @@ import java.util.logging.Logger;
 import net.h31ix.anticheat.event.*;
 import net.h31ix.anticheat.manage.AnticheatManager;
 import net.h31ix.anticheat.manage.CheckType;
-import net.h31ix.anticheat.util.Utilities;
 import net.h31ix.anticheat.metrics.Metrics;
 import net.h31ix.anticheat.metrics.Metrics.Graph;
+import net.h31ix.anticheat.util.Utilities;
 import net.h31ix.anticheat.xray.XRayListener;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.ChatColor;
@@ -249,7 +249,7 @@ public class Anticheat extends JavaPlugin
             }
             if (verbose) 
             {
-                logger.log(Level.INFO,"[AC] AntiCheat update has been downloaded and will be installed on next launch.");
+                logger.log(Level.INFO,"AntiCheat update has been downloaded and will be installed on next launch.");
             }
         }
     }
@@ -306,9 +306,9 @@ public class Anticheat extends JavaPlugin
         catch (Exception ex) 
         {
         }
-        if (!this.getDescription().getVersion().equalsIgnoreCase(v)) 
+        String version = this.getDescription().getVersion().split("-b")[0];
+        if (!version.equalsIgnoreCase(v)) 
         {
-            String version = this.getDescription().getVersion();
             if (version.endsWith("-PRE") || version.endsWith("-DEV")) 
             {
                 if (version.replaceAll("-PRE", "").replaceAll("-DEV", "").equalsIgnoreCase(v)) 
