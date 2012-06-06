@@ -156,7 +156,6 @@ public class PlayerListener extends EventListener
         Block block = event.getClickedBlock(); 
         if(checkManager.willCheck(player, CheckType.INTERACTION) && Utilities.isInteractable(block.getType())) 
         {
-            System.out.println("checking interaction");
             // save load and actually call the backend check here.
             if(backend.checkInteraction(player, block)) 
             {
