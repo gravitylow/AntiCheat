@@ -56,6 +56,7 @@ public class Anticheat extends JavaPlugin
     @Override
     public void onDisable() 
     {
+        AnticheatManager.close();
         Map<String, Integer> map = manager.getPlayerManager().getLevels();
         Iterator<String> set = map.keySet().iterator();
         while (set.hasNext()) 

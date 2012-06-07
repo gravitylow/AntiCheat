@@ -125,4 +125,8 @@ public class AnticheatManager
     {
     	return backend;
     }
+    public static void close()
+    {
+        handler.close();
+    }
 }

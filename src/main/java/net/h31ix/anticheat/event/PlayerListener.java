@@ -221,48 +221,21 @@ public class PlayerListener extends EventListener
         double x = distance.getXDifference();
         double y = distance.getYDifference();
         double z = distance.getZDifference();
-        backend.checkAscension(player,from.getY(),to.getY());
+        backend.logAscension(player,from.getY(),to.getY());    
         if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkFlight(player, distance))
         {
             from.setX(from.getX()-1);
             from.setY(from.getY()-1);
             from.setZ(from.getZ()-1);        
             event.setTo(from);
-            //Lets really give this flyer a real pushdown.
-            Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY()-2, player.getLocation().getZ());
-            Block newBlock = newLocation.getBlock();
-            if(newBlock.getTypeId() != 0) 
-            {
-                event.setTo(newLocation);
-            } 
+            Block lower = player.getWorld().getHighestBlockAt(from); 
+            player.teleport(new Location(lower.getWorld(), lower.getLocation().getX(),lower.getLocation().getY()+2,lower.getLocation().getZ()));
             log("tried to fly.",player,CheckType.FLY);        
         }
-        if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkYAxis(player, distance)) 
+        if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && (backend.checkYAxis(player, distance) || backend.checkAscension(player,from.getY(),to.getY()))) 
         {
-             from.setX(from.getX()-1);
-             from.setY(from.getY()-1);
-             from.setZ(from.getZ()-1);
-             if(from.getBlock().getTypeId() == 0)
-             {
-            	 event.setTo(from);
-             }
-             for(int i= 5;i>0;i--) 
-             {
-                 Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY()-i, player.getLocation().getZ());
-                 Block lower = newLocation.getBlock();
-                 if(lower.getTypeId() == 0) 
-                 {
-                     player.teleport(newLocation);
-                     break;
-                 } 
-             }
-             //Lets really give this flyer a real pushdown.
-             Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY()-2, player.getLocation().getZ());
-             Block newBlock = newLocation.getBlock();
-             if(newBlock.getTypeId() != 0) 
-             {
-                 event.setTo(newLocation);
-             } 
+             Block lower = player.getWorld().getHighestBlockAt(player.getLocation()); 
+             player.teleport(new Location(lower.getWorld(), lower.getLocation().getX(),lower.getLocation().getY()+2,lower.getLocation().getZ()));
              log("tried to fly on y-axis", player, CheckType.FLY);
         }
         if(checkManager.willCheck(player, CheckType.SPEED) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY))

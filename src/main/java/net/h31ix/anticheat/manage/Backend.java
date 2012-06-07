@@ -72,6 +72,7 @@ public class Backend
     private static final int Y_MAXVIOTIME = 5000;
     private static final int NOFALL_LIMIT = 5;
     
+    private static final int ASCENSION_COUNT_MAX = 8;
     private static final int WATER_ASCENSION_VIOLATION_MAX = 13;
     private static final int WATER_SPEED_VIOLATION_MAX = 4;
     
@@ -119,6 +120,7 @@ public class Backend
     private List<String> instantBreakExempt = new ArrayList<String>();
     private List<String> isAscending = new ArrayList<String>();
     private List<String> trackingProjectiles = new ArrayList<String>();
+    private Map<String,Integer> ascensionCount = new HashMap<String,Integer>();
     private Map<String,String> oldMessage = new HashMap<String,String>();
     private Map<String,String> lastMessage = new HashMap<String,String>();
     private Map<String,Integer> flightViolation = new HashMap<String,Integer>();
@@ -375,7 +377,7 @@ public class Backend
                     yAxisLastViolation.put(name, System.currentTimeMillis());
                     if(g.getBlock().getTypeId() == 0) 
                     {
-                            player.teleport(g);
+                        player.teleport(g);
                     }
                     return true;
                 } 
@@ -463,16 +465,38 @@ public class Backend
         return false;
     }
     
-    public void checkAscension(Player player, double y1, double y2)
+    public void logAscension(Player player, double y1, double y2)
     {
+        String name = player.getName();
         if(y1 < y2)
         {
-            isAscending.add(player.getName());
+            isAscending.add(name);
         }
         else
         {
             isAscending.remove(player.getName());
+        }        
+    }
+    
+    public boolean checkAscension(Player player, double y1, double y2)
+    {
+        if(!isMovingExempt(player))
+        {
+            String name = player.getName();
+            if(y1 < y2)
+            {
+                increment(player, ascensionCount, ASCENSION_COUNT_MAX);
+                if(ascensionCount.get(name) >= ASCENSION_COUNT_MAX)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                ascensionCount.put(name,0);
+            }
         }
+        return false;
     }
     
     public boolean checkSwing(Player player, Block block)
