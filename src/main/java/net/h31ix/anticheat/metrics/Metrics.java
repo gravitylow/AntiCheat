@@ -216,7 +216,7 @@ public class Metrics {
         
         // Construct the post data
         String data = encode("guid") + '=' + encode(guid)
-                + encodeDataPair("version", description.getVersion())
+                + encodeDataPair("version", description.getVersion().split("-b")[0])
                 + encodeDataPair("server", Bukkit.getVersion())
                 + encodeDataPair("players", Integer.toString(Bukkit.getServer().getOnlinePlayers().length))
                 + encodeDataPair("revision", String.valueOf(REVISION));
