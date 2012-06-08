@@ -169,7 +169,7 @@ public class Backend
     
     public boolean checkYSpeed(Player player,double y)
     {
-        if(/*!player.isFlying() &&*/ player.getVehicle() == null && y > Y_SPEED_MAX)
+        if(player.getVehicle() == null && y > Y_SPEED_MAX)
         {
             return true;
         }
@@ -397,7 +397,7 @@ public class Backend
                     yAxisLastViolation.put(name, System.currentTimeMillis());
                     if(g.getBlock().getTypeId() == 0) 
                     {
-                            player.teleport(g);
+                        player.teleport(g);
                     }
                     return true;
                 }
@@ -425,10 +425,11 @@ public class Backend
     	double y1 = distance.fromY();
     	double y2 = distance.toY();
         Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
+        System.out.println("block below: "+block.getType()+" block at: "+player.getLocation().getBlock().getType());
         if(y1 == y2 && !isMovingExempt(player) && player.getVehicle() == null && player.getFallDistance() == 0 && !Utilities.isOnLilyPad(player))
         {
             String name = player.getName();
-            if(Utilities.cantStandAt(block) && !Utilities.isOnLilyPad(player) && !Utilities.canStand(player.getLocation().getBlock()) && !Utilities.isSubmersed(player))
+            if(Utilities.cantStandAt(block) && !Utilities.isOnLilyPad(player) && Utilities.cantStandAt(player.getLocation().getBlock()) && !Utilities.isSubmersed(player))
             {
                 int violation = 1;
                 if(!flightViolation.containsKey(name))
