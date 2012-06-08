@@ -425,7 +425,6 @@ public class Backend
     	double y1 = distance.fromY();
     	double y2 = distance.toY();
         Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
-        System.out.println("block below: "+block.getType()+" block at: "+player.getLocation().getBlock().getType());
         if(y1 == y2 && !isMovingExempt(player) && player.getVehicle() == null && player.getFallDistance() == 0 && !Utilities.isOnLilyPad(player))
         {
             String name = player.getName();
