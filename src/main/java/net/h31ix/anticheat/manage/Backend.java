@@ -428,7 +428,7 @@ public class Backend
         if(y1 == y2 && !isMovingExempt(player) && player.getVehicle() == null && player.getFallDistance() == 0 && !Utilities.isOnLilyPad(player))
         {
             String name = player.getName();
-            if(Utilities.cantStandAt(block) && !Utilities.isOnLilyPad(player) && Utilities.cantStandAt(player.getLocation().getBlock()) && !Utilities.isSubmersed(player))
+            if(Utilities.cantStandAt(block) && !Utilities.isOnLilyPad(player) && Utilities.cantStandAt(player.getLocation().getBlock()) && player.getLocation().getBlock().getType() != Material.WATER && player.getLocation().getBlock().getType() != Material.STATIONARY_WATER)
             {
                 int violation = 1;
                 if(!flightViolation.containsKey(name))
@@ -480,7 +480,7 @@ public class Backend
     
     public boolean checkAscension(Player player, double y1, double y2)
     {
-        if(!isMovingExempt(player) && !Utilities.isSubmersed(player) && !Utilities.isOnLadder(player))
+        if(!isMovingExempt(player) && player.getLocation().getBlock().getType() != Material.WATER && player.getLocation().getBlock().getType() != Material.STATIONARY_WATER && !Utilities.isOnLadder(player))
         {
             String name = player.getName();
             if(y1 < y2)
