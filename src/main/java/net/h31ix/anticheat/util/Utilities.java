@@ -108,6 +108,10 @@ public final class Utilities
     {
         return player.getLocation().getBlock().isLiquid() && player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid();
     }
+    public static boolean isOnLadder(Player player)
+    {
+        return player.getLocation().getBlock().getType() == Material.VINE || player.getLocation().getBlock().getType() == Material.LADDER;
+    }
     public static boolean isInt(String string)
     {
         boolean x = false;

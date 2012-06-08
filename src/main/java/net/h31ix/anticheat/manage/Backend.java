@@ -160,7 +160,7 @@ public class Backend
     
     public boolean checkSpider(Player player,double y)
     {
-        if(y <= LADDER_Y_MAX && y >= LADDER_Y_MIN && player.getLocation().getBlock().getType() != Material.VINE && player.getLocation().getBlock().getType() != Material.LADDER)
+        if(y <= LADDER_Y_MAX && y >= LADDER_Y_MIN && !Utilities.isOnLadder(player))
         {                           
             return true;
         }
@@ -354,7 +354,7 @@ public class Backend
         {
     		return false;
     	}
-        if(!isMovingExempt(player))
+        if(!isMovingExempt(player) && !Utilities.isOnLadder(player))
         {
             double y1 = player.getLocation().getY();
             String name = player.getName();
@@ -480,7 +480,7 @@ public class Backend
     
     public boolean checkAscension(Player player, double y1, double y2)
     {
-        if(!isMovingExempt(player))
+        if(!isMovingExempt(player) && !Utilities.isSubmersed(player) && !Utilities.isOnLadder(player))
         {
             String name = player.getName();
             if(y1 < y2)
