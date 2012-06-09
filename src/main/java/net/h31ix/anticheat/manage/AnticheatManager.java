@@ -42,15 +42,16 @@ public class AnticheatManager
     private CheckManager checkManager = null;
     private Backend backend = null;
     private static Logger LOGGER, FILE_LOGGER;
-    private static Handler handler;
+    private static Handler fileHandler;
+    private static Handler consoleHandler;
     private static final int LOG_LEVEL_HIGH = 3;
     
     public AnticheatManager(Anticheat instance)
     {
         plugin = instance;
         // now load all the others!!!!!
-        LOGGER = plugin.getAnticheatLogger();
-        FILE_LOGGER = LOGGER;
+        LOGGER = Logger.getLogger("Minecraft");
+        FILE_LOGGER = Logger.getLogger("Minecraft");
         configuration = new Configuration(this);
         xrayTracker = new XRayTracker();
         playerManager = new PlayerManager(this);
@@ -63,20 +64,13 @@ public class AnticheatManager
             {
                 file.mkdir();
             }
-            handler = new FileHandler(plugin.getDataFolder()+"/log/anticheat.log.%u.txt",true);
-            handler.setFormatter(new FileFormatter());
-            handler.setLevel(Level.INFO);
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
+            fileHandler = new FileHandler(plugin.getDataFolder()+"/log/anticheat.log",true);
+            fileHandler.setFormatter(new FileFormatter());
+        } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
         FILE_LOGGER.setUseParentHandlers(false);
-        FILE_LOGGER.addHandler(handler);
-        LOGGER.setUseParentHandlers(false);
-        Handler chandler = new ConsoleHandler();
-        chandler.setFormatter(new ConsoleFormatter());
-        LOGGER.addHandler(chandler);
+        FILE_LOGGER.addHandler(fileHandler);    
     }
     
     public void log(String message)
@@ -127,6 +121,7 @@ public class AnticheatManager
     }
     public static void close()
     {
-        handler.close();
+        fileHandler.close();
+        consoleHandler.close();
     }
 }

@@ -13,14 +13,20 @@ public class FileFormatter extends Formatter {
 
     @Override
     public String format(LogRecord record) {
-        StringBuilder output = new StringBuilder()
-                .append("[")
-                .append(record.getLevel()).append('|')
-                .append(format.format(new Date(record.getMillis())))
-                .append("]: ")
-                .append(record.getMessage()).append(' ')
-                .append(lineSep);
-        return output.toString();		
+        if(record.getMessage().startsWith("[AntiCheat]"))
+        {
+            StringBuilder output = new StringBuilder()
+                    .append("[")
+                    .append(record.getLevel()).append('|')
+                    .append(format.format(new Date(record.getMillis())))
+                    .append("]: ")
+                    .append(record.getMessage()).append(' ')
+                    .append(lineSep);
+            return output.toString();	
+        }
+        else
+        {
+            return "";
+        }        		
     }
- 
 }
