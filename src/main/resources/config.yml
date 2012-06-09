@@ -20,3 +20,7 @@ System:
   #0 = off, 1 = log when an event takes place, 2 = more detailed logs, 3 = most detailed logs
   File log level: 1
   Verbose startup: false
+  #Should AntiCheat block when players spam messages in chat?
+  Block chat spam: true
+  #Should AntiCheat block when players spam commands in chat?
+  Block command spam: true

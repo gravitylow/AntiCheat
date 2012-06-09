@@ -18,6 +18,8 @@
 
 package net.h31ix.anticheat.event;
 
+import net.h31ix.anticheat.Anticheat;
+import net.h31ix.anticheat.Configuration;
 import net.h31ix.anticheat.manage.Backend;
 import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
@@ -39,13 +41,14 @@ import org.bukkit.inventory.PlayerInventory;
 public class PlayerListener extends EventListener 
 {
     private final Backend backend = getBackend();
-    private final CheckManager checkManager = getCheckManager();  
+    private final CheckManager checkManager = getCheckManager(); 
+    private final Configuration config = Anticheat.getManager().getConfiguration();
     
     @EventHandler
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
     {
         Player player = event.getPlayer();
-        if(checkManager.willCheck(player, CheckType.SPAM))
+        if(checkManager.willCheck(player, CheckType.SPAM) && config.commandSpam())
         {     
             backend.logChat(player);
             if(backend.checkSpam(player, event.getMessage()))
@@ -115,7 +118,7 @@ public class PlayerListener extends EventListener
     public void onPlayerChat(PlayerChatEvent event)
     {
         Player player = event.getPlayer();
-        if(checkManager.willCheck(player, CheckType.SPAM))
+        if(checkManager.willCheck(player, CheckType.SPAM) && config.chatSpam())
         {     
             backend.logChat(player);
             if(backend.checkSpam(player, event.getMessage()))
