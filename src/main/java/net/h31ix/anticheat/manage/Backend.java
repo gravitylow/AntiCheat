@@ -176,7 +176,7 @@ public class Backend
     
     public boolean checkYSpeed(Player player,double y)
     {
-        if(player.getVehicle() == null && y > Y_SPEED_MAX)
+        if(player.getVehicle() == null && y > Y_SPEED_MAX && !isVelocity(player))
         {
             return true;
         }
