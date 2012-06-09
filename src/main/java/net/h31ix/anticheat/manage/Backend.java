@@ -112,7 +112,6 @@ public class Backend
     
     private AnticheatManager micromanage = null;
     private List<String> droppedItem = new ArrayList<String>();
-    private List<String> animated = new ArrayList<String>();
     private List<String> movingExempt = new ArrayList<String>();
     private List<String> brokenBlock = new ArrayList<String>();
     private List<String> placedBlock = new ArrayList<String>();
@@ -150,6 +149,7 @@ public class Backend
     private Map<String,Integer> projectilesShot = new HashMap<String,Integer>();
     private Map<String,Long> velocitized = new HashMap<String,Long>();
     private Map<String,Integer> velocitytrack = new HashMap<String,Integer>();
+    private Map<String,Location> animated = new HashMap<String,Location>();
     
     public Backend(AnticheatManager instance) 
     {
@@ -808,7 +808,7 @@ public class Backend
     
     public void logAnimation(final Player player)
     {
-        logEvent(animated,player,ANIMATION_MIN);  
+        logEvent(animated,player,player.getLocation(),ANIMATION_MIN);  
         increment(player,blockPunches,BLOCK_PUNCH_MIN);
     }
     
@@ -820,7 +820,7 @@ public class Backend
     
     public boolean justAnimated(Player player)
     {
-        return animated.contains(player.getName());       
+        return animated.containsKey(player.getName());       
     }    
     
     public void logProjectile(final Player player, final EventListener e)
@@ -929,13 +929,16 @@ public class Backend
     @SuppressWarnings("unchecked")
     private void logEvent(@SuppressWarnings("rawtypes") final Map map, final Player player, final Object obj, long time)
     {
-        map.put(player,obj);
+        map.put(player.getName(),obj);
         micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable() 
         {
             @Override
             public void run() 
             {
-                map.remove(player);
+                if(map.get(player.getName()) == obj)
+                {
+                    map.remove(player.getName());
+                }
             }
         },      time);            
     } 

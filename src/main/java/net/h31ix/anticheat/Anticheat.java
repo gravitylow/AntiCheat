@@ -207,10 +207,10 @@ public class Anticheat extends JavaPlugin
                 logger.log(Level.INFO, "Data for "+player.getName()+" re-applied from flatfile");
             }             
         }
-            if (verbose) 
-            {
-                logger.log(Level.INFO, "Finished loading.");
-            }         
+        if (verbose) 
+        {
+            logger.log(Level.INFO, "Finished loading.");
+        }         
     }
 
     private void saveFile(String file, String url) 

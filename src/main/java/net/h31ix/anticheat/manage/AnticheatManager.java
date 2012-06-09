@@ -83,7 +83,7 @@ public class AnticheatManager
     {
         if(getConfiguration().logConsole())
         {
-            LOGGER.info(ChatColor.stripColor(message)); //This is temporary. Is something wrong with jline?
+            LOGGER.info("[AntiCheat] "+ChatColor.stripColor(message)); //This is temporary. Is something wrong with jline?
         }       
         if(getConfiguration().getFileLogLevel() == LOG_LEVEL_HIGH)
         {
