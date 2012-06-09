@@ -283,31 +283,34 @@ public class PlayerListener extends EventListener
             log("tried avoid fall damage.",player,CheckType.NOFALL);   
         }
     }
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void checkSpeed(PlayerMoveEvent event)
     {    
         Player player = event.getPlayer();
         Location from = event.getFrom();
-        Location to = event.getTo();        
-        Distance distance = new Distance(from, to);
-        double x = distance.getXDifference();
-        double y = distance.getYDifference();
-        double z = distance.getZDifference();    
-        if(checkManager.willCheck(player, CheckType.WATER_WALK) && backend.checkWaterWalk(player,x,z))
+        Location to = event.getTo();  
+        if(event.getTo() != event.getFrom())
         {
-            event.setTo(from);
-            log("tried to walk on water.",player,CheckType.WATER_WALK);  
-        }    
-        if(checkManager.willCheck(player, CheckType.SNEAK) && backend.checkSneak(player,x,z))
-        {
-            event.setTo(from);
-            player.setSneaking(false);
-            log("tried to sneak too fast.",player,CheckType.SNEAK);    
-        }   
-        if(checkManager.willCheck(player, CheckType.SPIDER) && backend.checkSpider(player, y))
-        {
-            event.setTo(from);
-            log("tried to climb a wall.",player,CheckType.SPIDER); 
-        }  
+            Distance distance = new Distance(from, to);
+            double x = distance.getXDifference();
+            double y = distance.getYDifference();
+            double z = distance.getZDifference();    
+            if(checkManager.willCheck(player, CheckType.WATER_WALK) && backend.checkWaterWalk(player,x,z))
+            {
+                event.setTo(from);
+                log("tried to walk on water.",player,CheckType.WATER_WALK);  
+            }    
+            if(checkManager.willCheck(player, CheckType.SNEAK) && backend.checkSneak(player,x,z))
+            {
+                event.setTo(from);
+                player.setSneaking(false);
+                log("tried to sneak too fast.",player,CheckType.SNEAK);    
+            }   
+            if(checkManager.willCheck(player, CheckType.SPIDER) && backend.checkSpider(player, y))
+            {
+                event.setTo(from);
+                log("tried to climb a wall.",player,CheckType.SPIDER); 
+            }
+        }
     }
 }
