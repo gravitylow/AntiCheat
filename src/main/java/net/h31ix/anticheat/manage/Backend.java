@@ -177,7 +177,7 @@ public class Backend
     
     public boolean checkYSpeed(Player player,double y)
     {
-        if(player.getVehicle() == null && y > Y_SPEED_MAX && !isVelocity(player))
+        if(!player.isInsideVehicle() && y > Y_SPEED_MAX && !isVelocity(player))
         {
             return true;
         }
@@ -362,7 +362,7 @@ public class Backend
         {
     		return false;
     	}
-        if(!isMovingExempt(player) && !Utilities.isOnLadder(player))
+        if(!isMovingExempt(player) && !Utilities.isOnLadder(player) && !player.isInsideVehicle())
         {
             double y1 = player.getLocation().getY();
             String name = player.getName();
@@ -433,7 +433,7 @@ public class Backend
     	double y1 = distance.fromY();
     	double y2 = distance.toY();
         Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
-        if(y1 == y2 && !isMovingExempt(player) && player.getVehicle() == null && player.getFallDistance() == 0 && !Utilities.isOnLilyPad(player))
+        if(y1 == y2 && !isMovingExempt(player) && !player.isInsideVehicle() && player.getFallDistance() == 0 && !Utilities.isOnLilyPad(player))
         {
             String name = player.getName();
             if(Utilities.cantStandAt(block) && !Utilities.isOnLilyPad(player) && Utilities.cantStandAt(player.getLocation().getBlock()) && player.getLocation().getBlock().getType() != Material.WATER && player.getLocation().getBlock().getType() != Material.STATIONARY_WATER)
@@ -488,7 +488,7 @@ public class Backend
     
     public boolean checkAscension(Player player, double y1, double y2)
     {
-        if(!isMovingExempt(player) && player.getLocation().getBlock().getType() != Material.WATER && player.getLocation().getBlock().getType() != Material.STATIONARY_WATER && !Utilities.isOnLadder(player))
+        if(!isMovingExempt(player) && player.getLocation().getBlock().getType() != Material.WATER && player.getLocation().getBlock().getType() != Material.STATIONARY_WATER && !Utilities.isOnLadder(player) && !player.isInsideVehicle())
         {
             String name = player.getName();
             if(y1 < y2)
