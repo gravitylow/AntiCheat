@@ -758,7 +758,6 @@ public class Backend
     
     public boolean justVelocity(Player player) 
     {
-    	System.out.println(velocitized.containsKey(player.getName()) ? (System.currentTimeMillis() - velocitized.get(player.getName())) : false);
     	return isVelocity(player) || (velocitized.containsKey(player.getName()) ? (System.currentTimeMillis() - velocitized.get(player.getName())) < VELOCITY_CHECKTIME : false);
     }
     
