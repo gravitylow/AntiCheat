@@ -48,6 +48,11 @@ public class PlayerListener extends EventListener
         if(checkManager.willCheck(player, CheckType.SPAM))
         {     
             backend.logChat(player);
+            if(backend.checkSpam(player, event.getMessage()))
+            {
+                event.setCancelled(true);
+                player.sendMessage(ChatColor.RED+"Please do not spam.");
+            }
         }
     }
     
@@ -86,6 +91,22 @@ public class PlayerListener extends EventListener
         {
             backend.logToggleSneak(event.getPlayer());
         }
+    }
+    
+    @EventHandler
+    public void onPlayerVelocity(PlayerVelocityEvent event) 
+    {
+    	 Player player = event.getPlayer();
+         if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY)) //@h31ix: Change if necessary.  I'm not sure what perms should go here :3
+         {
+        	 if(backend.justVelocity(player)) 
+        	 {
+        		 backend.extendVelocityTime(player);
+        		 event.setCancelled(true);
+        		 return; // don't log it lol.
+        	 }
+        	 backend.logVelocity(player);
+         }
     }
     
     @EventHandler(ignoreCancelled = true)

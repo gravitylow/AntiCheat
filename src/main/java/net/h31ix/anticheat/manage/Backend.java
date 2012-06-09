@@ -70,6 +70,10 @@ public class Backend
     private static final int FLIGHT_LIMIT = 4;
     private static final int Y_MAXVIOLATIONS = 1;
     private static final int Y_MAXVIOTIME = 5000;
+    private static final int VELOCITY_TIME = 1200;
+    private static final long VELOCITY_CHECKTIME = 2100;
+    private static final long VELOCITY_PREVENT = 5000;
+    private static final int VELOCITY_MAXTIMES = 2;
     private static final int NOFALL_LIMIT = 5;
     
     private static final int ASCENSION_COUNT_MAX = 8;
@@ -120,6 +124,7 @@ public class Backend
     private List<String> instantBreakExempt = new ArrayList<String>();
     private List<String> isAscending = new ArrayList<String>();
     private List<String> trackingProjectiles = new ArrayList<String>();
+    private List<String> velocitizing = new ArrayList<String>();
     private Map<String,Integer> ascensionCount = new HashMap<String,Integer>();
     private Map<String,String> oldMessage = new HashMap<String,String>();
     private Map<String,String> lastMessage = new HashMap<String,String>();
@@ -142,6 +147,8 @@ public class Backend
     private Map<String,Integer> waterAscensionViolation = new HashMap<String,Integer>();
     private Map<String,Integer> waterSpeedViolation = new HashMap<String,Integer>();
     private Map<String,Integer> projectilesShot = new HashMap<String,Integer>();
+    private Map<String,Long> velocitized = new HashMap<String,Long>();
+    private Map<String,Integer> velocitytrack = new HashMap<String,Integer>();
     
     public Backend(AnticheatManager instance) 
     {
@@ -740,7 +747,47 @@ public class Backend
     public boolean justBroke(Player player)
     {
         return brokenBlock.contains(player.getName());             
-    } 
+    }
+    
+    public void logVelocity(final Player player) 
+    {
+    	logEvent(velocitizing,player,VELOCITY_TIME);
+    	velocitized.put(player.getName(), System.currentTimeMillis());
+    }
+    
+    public boolean justVelocity(Player player) 
+    {
+    	return isVelocity(player) || (velocitized.containsKey(player.getName()) ? (System.currentTimeMillis() - velocitized.get(player.getName())) < VELOCITY_CHECKTIME : false);
+    }
+    
+    public boolean isVelocity(Player player) 
+    {
+    	return velocitizing.contains(player.getName());
+    }
+    
+    public void extendVelocityTime(final Player player) 
+    {
+    	if(velocitytrack.containsKey(player.getName()))
+    	{
+    	    velocitytrack.put(player.getName(), velocitytrack.get(player.getName()) + 1);
+    	    if(velocitytrack.get(player.getName()) > VELOCITY_MAXTIMES) {
+    	    	velocitized.put(player.getName(), System.currentTimeMillis() + VELOCITY_PREVENT);
+    	    	micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable() 
+                {
+                    @Override
+                    public void run() 
+                    {
+                	    velocitytrack.put(player.getName(), 0);
+                    }
+                }, VELOCITY_PREVENT);
+            	return;
+    	    }
+    	}
+    	else
+    	{
+    	    velocitytrack.put(player.getName(), 0);
+    	}
+    }
     
     public void logBlockPlace(final Player player)
     {
@@ -836,7 +883,7 @@ public class Backend
     
     public boolean isMovingExempt(Player player)
     {
-        return movingExempt.contains(player.getName()) || player.isFlying();       
+        return movingExempt.contains(player.getName()) || player.isFlying() || isVelocity(player);       
     }
     
     public boolean isAscending(Player player)
@@ -845,7 +892,7 @@ public class Backend
     }
     
     public boolean isSpeedExempt(Player player) {
-    	return movingExempt.contains(player.getName());
+    	return movingExempt.contains(player.getName()) || isVelocity(player);
     }
     
     public void logDroppedItem(final Player player)
