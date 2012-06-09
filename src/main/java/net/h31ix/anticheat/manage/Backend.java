@@ -362,7 +362,7 @@ public class Backend
         {
     		return false;
     	}
-        if(!isMovingExempt(player) && !Utilities.isOnLadder(player) && !player.isInsideVehicle())
+        if(!isMovingExempt(player) && !Utilities.isOnLadder(player) && !player.isInsideVehicle() && !Utilities.isInWater(player))
         {
             double y1 = player.getLocation().getY();
             String name = player.getName();
@@ -436,7 +436,7 @@ public class Backend
         if(y1 == y2 && !isMovingExempt(player) && !player.isInsideVehicle() && player.getFallDistance() == 0 && !Utilities.isOnLilyPad(player))
         {
             String name = player.getName();
-            if(Utilities.cantStandAt(block) && !Utilities.isOnLilyPad(player) && Utilities.cantStandAt(player.getLocation().getBlock()) && player.getLocation().getBlock().getType() != Material.WATER && player.getLocation().getBlock().getType() != Material.STATIONARY_WATER)
+            if(Utilities.cantStandAt(block) && !Utilities.isOnLilyPad(player) && Utilities.cantStandAt(player.getLocation().getBlock()) && !Utilities.isInWater(player))
             {
                 int violation = 1;
                 if(!flightViolation.containsKey(name))
@@ -488,15 +488,19 @@ public class Backend
     
     public boolean checkAscension(Player player, double y1, double y2)
     {
-        if(!isMovingExempt(player) && player.getLocation().getBlock().getType() != Material.WATER && player.getLocation().getBlock().getType() != Material.STATIONARY_WATER && !Utilities.isOnLadder(player) && !player.isInsideVehicle())
+        Block block = player.getLocation().getBlock();
+        if(!isMovingExempt(player) && !Utilities.isInWater(player) && !Utilities.isOnLadder(player) && !player.isInsideVehicle())
         {
             String name = player.getName();
             if(y1 < y2)
             {
-                increment(player, ascensionCount, ASCENSION_COUNT_MAX);
-                if(ascensionCount.get(name) >= ASCENSION_COUNT_MAX)
+                if(!block.getRelative(BlockFace.NORTH).isLiquid() && !block.getRelative(BlockFace.SOUTH).isLiquid() && !block.getRelative(BlockFace.EAST).isLiquid() && !block.getRelative(BlockFace.WEST).isLiquid())
                 {
-                    return true;
+                    increment(player, ascensionCount, ASCENSION_COUNT_MAX);
+                    if(ascensionCount.get(name) >= ASCENSION_COUNT_MAX)
+                    {
+                        return true;
+                    }
                 }
             }
             else
