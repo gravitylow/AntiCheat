@@ -70,7 +70,8 @@ public class Backend
     private static final int FLIGHT_LIMIT = 4;
     private static final int Y_MAXVIOLATIONS = 1;
     private static final int Y_MAXVIOTIME = 5000;
-    private static final int VELOCITY_TIME = 1200;
+    private static final int VELOCITY_TIME = 60;
+    private static final long VELOCITY_SCHETIME = 2;
     private static final long VELOCITY_CHECKTIME = 2100;
     private static final long VELOCITY_PREVENT = 5000;
     private static final int VELOCITY_MAXTIMES = 2;
@@ -757,6 +758,7 @@ public class Backend
     
     public boolean justVelocity(Player player) 
     {
+    	System.out.println(velocitized.containsKey(player.getName()) ? (System.currentTimeMillis() - velocitized.get(player.getName())) : false);
     	return isVelocity(player) || (velocitized.containsKey(player.getName()) ? (System.currentTimeMillis() - velocitized.get(player.getName())) < VELOCITY_CHECKTIME : false);
     }
     
@@ -765,7 +767,7 @@ public class Backend
     	return velocitizing.contains(player.getName());
     }
     
-    public void extendVelocityTime(final Player player) 
+    public boolean extendVelocityTime(final Player player) 
     {
     	if(velocitytrack.containsKey(player.getName()))
     	{
@@ -779,14 +781,16 @@ public class Backend
                     {
                 	    velocitytrack.put(player.getName(), 0);
                     }
-                }, VELOCITY_PREVENT);
-            	return;
+                }, VELOCITY_SCHETIME * 20L);
+            	return true;
     	    }
     	}
     	else
     	{
     	    velocitytrack.put(player.getName(), 0);
     	}
+    	
+    	return false;
     }
     
     public void logBlockPlace(final Player player)

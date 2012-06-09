@@ -101,9 +101,11 @@ public class PlayerListener extends EventListener
          {
         	 if(backend.justVelocity(player)) 
         	 {
-        		 backend.extendVelocityTime(player);
-        		 event.setCancelled(true);
-        		 return; // don't log it lol.
+        		 if(backend.extendVelocityTime(player)) 
+        		 {
+        		     event.setCancelled(true);
+            		 return; // don't log it lol.
+        		 }
         	 }
         	 backend.logVelocity(player);
          }
