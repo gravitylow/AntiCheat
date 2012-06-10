@@ -228,17 +228,17 @@ public class Backend
             {
                 return x > XZ_SPEED_MAX_FLY || z > XZ_SPEED_MAX_FLY; 
             }
-            if(!player.isSprinting())
-            {       
-                return x > XZ_SPEED_MAX || z > XZ_SPEED_MAX;            
-            }
             else if (player.hasPotionEffect(PotionEffectType.SPEED)) 
             {
             	return x > XZ_SPEED_MAX_POTION || z > XZ_SPEED_MAX_POTION;
             }
+            else if(player.isSprinting())
+            {       
+                return x > XZ_SPEED_MAX_SPRINT || z > XZ_SPEED_MAX_SPRINT;            
+            }
             else 
             {
-                return x > XZ_SPEED_MAX_SPRINT || z > XZ_SPEED_MAX_SPRINT;
+                return x > XZ_SPEED_MAX || z > XZ_SPEED_MAX;
             }
         }
         else
@@ -907,7 +907,8 @@ public class Backend
         return isAscending.contains(player.getName());
     }
     
-    public boolean isSpeedExempt(Player player) {
+    public boolean isSpeedExempt(Player player) 
+    {
     	return movingExempt.contains(player.getName()) || isVelocity(player);
     }
     
