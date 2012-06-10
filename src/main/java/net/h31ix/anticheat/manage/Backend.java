@@ -86,6 +86,7 @@ public class Backend
     private static final int HEAL_MIN = 35;
     private static final int ANIMATION_MIN = 60;
     private static final int CHAT_MIN = 100;
+    private static final int CHAT_REPEAT_MIN = 260;
     private static final int BOW_MIN = 2;
     private static final int SPRINT_MIN = 2;
     private static final int BLOCK_BREAK_MIN = 1;
@@ -705,7 +706,8 @@ public class Backend
         String name = player.getName();
         if(lastMessage.get(name) == null)
         {
-            lastMessage.put(name, msg);
+            logEvent(lastMessage,player,msg,CHAT_REPEAT_MIN);
+            //lastMessage.put(name, msg);
         }  
         else
         {
@@ -715,8 +717,10 @@ public class Backend
             }
             else
             {
-                oldMessage.put(name, lastMessage.get(name));
-                lastMessage.put(name, msg);
+                logEvent(oldMessage,player,lastMessage.get(name),CHAT_REPEAT_MIN);
+                //oldMessage.put(name, lastMessage.get(name));
+                logEvent(oldMessage,player,msg,CHAT_REPEAT_MIN);
+                //lastMessage.put(name, msg);
                 return false;
             }
         }
