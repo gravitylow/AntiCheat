@@ -44,7 +44,7 @@ public class PlayerListener extends EventListener
     private final CheckManager checkManager = getCheckManager(); 
     private final Configuration config = Anticheat.getManager().getConfiguration();
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
     {
         Player player = event.getPlayer();
@@ -114,7 +114,7 @@ public class PlayerListener extends EventListener
          }
     }
     
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerChat(PlayerChatEvent event)
     {
         Player player = event.getPlayer();
