@@ -685,7 +685,7 @@ public class Backend
         String name = player.getName();
         if(chatLevel.get(name) == null)
         {
-            logEvent(chatLevel,player,1,CHAT_MIN);
+            logEventNoCheck(chatLevel,player,1,CHAT_MIN);
         }
         else
         {
@@ -942,6 +942,19 @@ public class Backend
             }
         },      time);            
     } 
+    @SuppressWarnings("unchecked")
+    private void logEventNoCheck(@SuppressWarnings("rawtypes") final Map map, final Player player, final Object obj, long time)
+    {
+        map.put(player.getName(),obj);
+        micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                map.remove(player.getName());
+            }
+        },      time);            
+    }    
     private void checkChatLevel(Player player, int amount)
     {
         if(amount >= CHAT_WARN_LEVEL)
