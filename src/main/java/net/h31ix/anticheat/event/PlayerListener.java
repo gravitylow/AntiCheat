@@ -120,7 +120,6 @@ public class PlayerListener extends EventListener
     public void onPlayerChat(PlayerChatEvent event)
     {
         Player player = event.getPlayer();
-        player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 100, 3));
         if(checkManager.willCheck(player, CheckType.SPAM) && config.chatSpam())
         {     
             backend.logChat(player);
