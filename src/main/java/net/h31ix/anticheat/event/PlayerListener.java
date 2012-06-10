@@ -37,6 +37,8 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class PlayerListener extends EventListener 
 {
@@ -118,6 +120,7 @@ public class PlayerListener extends EventListener
     public void onPlayerChat(PlayerChatEvent event)
     {
         Player player = event.getPlayer();
+        player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 100, 3));
         if(checkManager.willCheck(player, CheckType.SPAM) && config.chatSpam())
         {     
             backend.logChat(player);
@@ -269,7 +272,7 @@ public class PlayerListener extends EventListener
             if(event.getFrom().getY() < event.getTo().getY() && backend.checkYSpeed(player, y))
             {
                 event.setTo(from);
-                log("tried to ascend to fast.",player,CheckType.SPEED);    
+                log("tried to ascend too fast.",player,CheckType.SPEED);    
             }            
             if(backend.checkXZSpeed(player,x,z))
             {

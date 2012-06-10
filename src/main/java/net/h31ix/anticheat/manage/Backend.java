@@ -177,7 +177,7 @@ public class Backend
     
     public boolean checkYSpeed(Player player,double y)
     {
-        if(!player.isInsideVehicle() && y > Y_SPEED_MAX && !isVelocity(player))
+        if(!player.isInsideVehicle() && y > Y_SPEED_MAX && !isVelocity(player) && !player.hasPotionEffect(PotionEffectType.JUMP))
         {
             return true;
         }
@@ -488,6 +488,11 @@ public class Backend
     
     public boolean checkAscension(Player player, double y1, double y2)
     {
+        int max = ASCENSION_COUNT_MAX;
+        if(player.hasPotionEffect(PotionEffectType.JUMP))
+        {
+            max+=12;
+        }
         Block block = player.getLocation().getBlock();
         if(!isMovingExempt(player) && !Utilities.isInWater(player) && !Utilities.isOnLadder(player) && !player.isInsideVehicle())
         {
@@ -496,8 +501,8 @@ public class Backend
             {
                 if(!block.getRelative(BlockFace.NORTH).isLiquid() && !block.getRelative(BlockFace.SOUTH).isLiquid() && !block.getRelative(BlockFace.EAST).isLiquid() && !block.getRelative(BlockFace.WEST).isLiquid())
                 {
-                    increment(player, ascensionCount, ASCENSION_COUNT_MAX);
-                    if(ascensionCount.get(name) >= ASCENSION_COUNT_MAX)
+                    increment(player, ascensionCount, max);
+                    if(ascensionCount.get(name) >= max)
                     {
                         return true;
                     }
