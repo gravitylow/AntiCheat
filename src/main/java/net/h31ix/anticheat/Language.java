@@ -1,6 +1,5 @@
 package net.h31ix.anticheat;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Language 

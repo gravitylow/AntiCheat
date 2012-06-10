@@ -685,12 +685,12 @@ public class Backend
         String name = player.getName();
         if(chatLevel.get(name) == null)
         {
-            logEventNoCheck(chatLevel,player,1,CHAT_MIN);
+            logEvent(chatLevel,player,1,CHAT_MIN);
         }
         else
         {
             int amount = chatLevel.get(name)+1;
-            chatLevel.put(name, amount);
+            logEvent(chatLevel,player,amount,CHAT_MIN);
             checkChatLevel(player, amount);  
         }
     }
@@ -939,22 +939,13 @@ public class Backend
                 {
                     map.remove(player.getName());
                 }
+                else
+                {
+                    //Don't remove this, for some reason it's fixing chat bugs.
+                }
             }
         },      time);            
-    } 
-    @SuppressWarnings("unchecked")
-    private void logEventNoCheck(@SuppressWarnings("rawtypes") final Map map, final Player player, final Object obj, long time)
-    {
-        map.put(player.getName(),obj);
-        micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable() 
-        {
-            @Override
-            public void run() 
-            {
-                map.remove(player.getName());
-            }
-        },      time);            
-    }    
+    }   
     private void checkChatLevel(Player player, int amount)
     {
         if(amount >= CHAT_WARN_LEVEL)
