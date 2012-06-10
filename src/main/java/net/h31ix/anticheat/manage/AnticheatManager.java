@@ -122,6 +122,5 @@ public class AnticheatManager
     public static void close()
     {
         fileHandler.close();
-        consoleHandler.close();
     }
 }
