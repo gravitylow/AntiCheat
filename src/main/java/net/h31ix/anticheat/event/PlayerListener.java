@@ -187,7 +187,7 @@ public class PlayerListener extends EventListener
 	            if(backend.checkInteraction(player, block)) 
 	            {
 	                event.setCancelled(true);
-	                log("failed interaction check",player,CheckType.INTERACTION); 
+	                log("tried to interact with an object that couldn't see", player, CheckType.INTERACTION); //boring description though.
 	            }
 	       	}
         }
