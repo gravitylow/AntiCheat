@@ -20,6 +20,9 @@ package net.h31ix.anticheat.manage;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import net.h31ix.anticheat.Permissions;
+
 import org.bukkit.entity.Player;
 
 
@@ -31,40 +34,40 @@ import org.bukkit.entity.Player;
 
 public enum CheckType 
 {
-    ZOMBE_FLY("anticheat.zombe.fly"),
-    ZOMBE_NOCLIP("anticheat.zombe.noclip"),
-    ZOMBE_CHEAT("anticheat.zombe.cheat"),
-    FLY("anticheat.fly"),
-    WATER_WALK("anticheat.waterwalk"),
-    NO_SWING("anticheat.noswing"),
-    FAST_BREAK("anticheat.fastbreak"),
-    FAST_PLACE("anticheat.fastplace"),
-    SPAM("anticheat.spam"),
-    SPRINT("anticheat.sprint"),
-    SNEAK("anticheat.sneak"),
-    SPEED("anticheat.speed"),
-    SPIDER("anticheat.spider"),
-    NOFALL("anticheat.nofall"),
-    FAST_BOW("anticheat.fastbow"),
-    FAST_EAT("anticheat.fasteat"),
-    FAST_HEAL("anticheat.fastheal"),
-    FORCEFIELD("anticheat.forcefield"),
-    XRAY("anticheat.xray"),
-    LONG_REACH("anticheat.longreach"),
-    FAST_PROJECTILE("anticheat.projectile"),
-    ITEM_SPAM("anticheat.itemspam");
+    ZOMBE_FLY(Permissions.ZOMBE_FLY),
+    ZOMBE_NOCLIP(Permissions.ZOMBE_NOCLIP),
+    ZOMBE_CHEAT(Permissions.ZOMBE_CHEAT),
+    FLY(Permissions.FLY),
+    WATER_WALK(Permissions.WATER_WALK),
+    NO_SWING(Permissions.NO_SWING),
+    FAST_BREAK(Permissions.FAST_BREAK),
+    FAST_PLACE(Permissions.FAST_PLACE),
+    SPAM(Permissions.SPAM),
+    SPRINT(Permissions.SPRINT),
+    SNEAK(Permissions.SNEAK),
+    SPEED(Permissions.SPEED),
+    SPIDER(Permissions.SPIDER),
+    NOFALL(Permissions.NOFALL),
+    FAST_BOW(Permissions.FAST_BOW),
+    FAST_EAT(Permissions.FAST_EAT),
+    FAST_HEAL(Permissions.FAST_HEAL),
+    FORCEFIELD(Permissions.FORCEFIELD),
+    XRAY(Permissions.XRAY),
+    LONG_REACH(Permissions.LONG_REACH),
+    FAST_PROJECTILE(Permissions.FAST_PROJECTILE),
+    ITEM_SPAM(Permissions.ITEM_SPAM);
     
-    private final String permission;
+    private final Permissions permission;
     private final Map<String,Integer> level = new HashMap<String,Integer>();
     
-    private CheckType(String permission) 
+    private CheckType(Permissions perm) 
     {
-        this.permission = permission;
+        this.permission = perm;
     }
     
-    public String getPermission()
+    public boolean checkPermission(Player player)
     {
-        return this.permission;
+        return permission.get(player);
     }
     
     public void logUse(Player player)

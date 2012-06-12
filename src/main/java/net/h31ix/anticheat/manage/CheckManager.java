@@ -89,7 +89,7 @@ public class CheckManager
         return  isActive(type) 
                 && manager.getConfiguration().checkInWorld(player.getWorld())
                 && !isExempt(player, type) 
-                && !player.hasPermission(type.getPermission());
+                && !type.checkPermission(player);
     }
     
     public int getExempt()

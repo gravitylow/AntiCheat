@@ -56,7 +56,7 @@ public class CommandHandler implements CommandExecutor
     
     public void handleLog(CommandSender cs, String [] args)
     {
-        if(cs.hasPermission("system.log"))
+        if(Permissions.SYSTEM_LOG.get(cs))
         {
             if(args[1].equalsIgnoreCase("enable"))
             {
@@ -95,7 +95,7 @@ public class CommandHandler implements CommandExecutor
     
     public void handleXRay(CommandSender cs, String [] args)
     {
-        if(cs.hasPermission("system.xray"))
+        if(Permissions.SYSTEM_XRAY.get(cs))
         {
             if(config.logXRay())
             {
@@ -140,7 +140,7 @@ public class CommandHandler implements CommandExecutor
     
     public void handleReset(CommandSender cs, String [] args)
     {
-        if(cs.hasPermission("system.reset"))
+        if(Permissions.SYSTEM_RESET.get(cs))
         {
             List<Player> list = SERVER.matchPlayer(args[1]);
             if(list.size() == 1)
@@ -178,7 +178,7 @@ public class CommandHandler implements CommandExecutor
         if(cs instanceof Player)
         {
             Player sender = (Player)cs;
-            if(cs.hasPermission("system.spy"))
+            if(Permissions.SYSTEM_SPY.get(cs))
             {
                 if(!args[1].equalsIgnoreCase("off"))
                 {
@@ -234,7 +234,7 @@ public class CommandHandler implements CommandExecutor
     
     public void handleHelp(CommandSender cs)
     {
-        if(cs.hasPermission("system.help"))
+        if(Permissions.SYSTEM_HELP.get(cs))
         {
             String base = "/AntiCheat ";
             cs.sendMessage("----------------------["+GREEN+"AntiCheat"+WHITE+"]----------------------");
@@ -257,7 +257,7 @@ public class CommandHandler implements CommandExecutor
     
     public void handleUpdate(CommandSender cs)
     {
-        if(cs.hasPermission("system.update"))
+        if(Permissions.SYSTEM_UPDATE.get(cs))
         {
             cs.sendMessage("Running "+GREEN+"AntiCheat "+WHITE+"v"+GREEN+Anticheat.getVersion());
             cs.sendMessage("-----------------------------------------------------");
@@ -287,7 +287,7 @@ public class CommandHandler implements CommandExecutor
     
     public void handleReport(CommandSender cs)
     {
-        if(cs.hasPermission("system.report"))
+        if(Permissions.SYSTEM_REPORT.get(cs))
         {
             getPlayers();
             if(!low.isEmpty())
@@ -323,7 +323,7 @@ public class CommandHandler implements CommandExecutor
     
     public void handlePlayerReport(CommandSender cs,String [] args)
     {
-        if(cs.hasPermission("system.report"))
+        if(Permissions.SYSTEM_REPORT.get(cs))
         {
             List<Player> list = SERVER.matchPlayer(args[1]);
             if(list.size() == 1)
@@ -437,7 +437,7 @@ public class CommandHandler implements CommandExecutor
     
     public void handleReload(CommandSender cs)
     {
-        if(cs.hasPermission("system.reload"))
+        if(Permissions.SYSTEM_RELOAD.get(cs))
         {
             config.load();
             cs.sendMessage(GREEN+"AntiCheat configuration reloaded.");

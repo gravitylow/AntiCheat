@@ -114,7 +114,7 @@ public class AnticheatAPI
      */      
     public boolean willCheck(Player player, CheckType type)
     {        
-        return  chk.willCheck(player, type);
+        return chk.willCheck(player, type);
     }
 
     //PlayerManager API
