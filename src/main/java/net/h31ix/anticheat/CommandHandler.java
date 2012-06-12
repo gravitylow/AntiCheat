@@ -1,6 +1,6 @@
 /*
  * AntiCheat for Bukkit.
- * Copyright (C) 2012 H31IX http://h31ix.net
+ * Copyright (C) 2012 AntiCheat Team | http://h31ix.net
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
