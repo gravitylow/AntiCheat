@@ -28,49 +28,50 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-public class XRayListener implements Listener {
+public class XRayListener implements Listener
+{
     private XRayTracker tracker = Anticheat.getManager().getXRayTracker();
     private Configuration config = Anticheat.getManager().getConfiguration();
     private CheckManager checkManager = Anticheat.getManager().getCheckManager();
-    
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event)
     {
-        if(config.logXRay())
+        if (config.logXRay())
         {
             Player p = event.getPlayer();
             String player = p.getName();
-            if(checkManager.willCheck(p, CheckType.XRAY)) 
+            if (checkManager.willCheck(p, CheckType.XRAY))
             {
                 Material m = event.getBlock().getType();
-                if(m == Material.DIAMOND_ORE)
+                if (m == Material.DIAMOND_ORE)
                 {
                     tracker.addDiamond(player);
                 }
-                else if(m == Material.IRON_ORE)
+                else if (m == Material.IRON_ORE)
                 {
                     tracker.addIron(player);
                 }
-                else if(m == Material.COAL_ORE)
+                else if (m == Material.COAL_ORE)
                 {
                     tracker.addCoal(player);
-                }  
-                else if(m == Material.GOLD_ORE)
+                }
+                else if (m == Material.GOLD_ORE)
                 {
                     tracker.addGold(player);
-                }   
-                else if(m == Material.LAPIS_ORE)
+                }
+                else if (m == Material.LAPIS_ORE)
                 {
                     tracker.addLapis(player);
-                } 
-                else if(m == Material.REDSTONE_ORE)
+                }
+                else if (m == Material.REDSTONE_ORE)
                 {
                     tracker.addRedstone(player);
-                }     
-                else if(m == Material.GOLD_ORE)
+                }
+                else if (m == Material.GOLD_ORE)
                 {
                     tracker.addGold(player);
-                } 
+                }
                 else
                 {
                     tracker.addBlock(player);
@@ -78,5 +79,5 @@ public class XRayListener implements Listener {
                 tracker.addTotal(player);
             }
         }
-    } 
+    }
 }

@@ -31,41 +31,43 @@ import org.bukkit.entity.Player;
  * Developer's interface for all things AntiCheat.
  */
 
-
-public class AnticheatAPI 
+public class AnticheatAPI
 {
     private static CheckManager chk = Anticheat.getManager().getCheckManager();
     private static PlayerManager pmr = Anticheat.getManager().getPlayerManager();
     private static XRayTracker xtracker = Anticheat.getManager().getXRayTracker();
-    
+
     //CheckManager API
-    
+
     /**
      * Start running a certain check
-     *
-     * @param  type  Check to start watching for
-     */     
-    public static void activateCheck(CheckType type) 
+     * 
+     * @param type
+     *            Check to start watching for
+     */
+    public static void activateCheck(CheckType type)
     {
         chk.activateCheck(type);
     }
 
-     /**
+    /**
      * Stop running a certain check
-     *
-     * @param  type  Check to stop watching for
+     * 
+     * @param type
+     *            Check to stop watching for
      */
-    public static void deactivateCheck(CheckType type) 
+    public static void deactivateCheck(CheckType type)
     {
         chk.deactivateCheck(type);
     }
 
     /**
      * Find out if a check is currently being watched for
-     *
-     * @param  type  Type to check
+     * 
+     * @param type
+     *            Type to check
      * @return true if plugin is watching for this check
-     */       
+     */
     public static boolean isActive(CheckType type)
     {
         return chk.isActive(type);
@@ -73,10 +75,12 @@ public class AnticheatAPI
 
     /**
      * Allow a player to skip a certain check
-     *
-     * @param  player  Player to stop watching
-     * @param  type  Check to stop watching for
-     */     
+     * 
+     * @param player
+     *            Player to stop watching
+     * @param type
+     *            Check to stop watching for
+     */
     public static void exemptPlayer(Player player, CheckType type)
     {
         chk.exemptPlayer(player, type);
@@ -84,50 +88,61 @@ public class AnticheatAPI
 
     /**
      * Stop allowing a player to skip a certain check
-     *
-     * @param  player  Player to start watching
-     * @param  type  Check to start watching for
-     */    
+     * 
+     * @param player
+     *            Player to start watching
+     * @param type
+     *            Check to start watching for
+     */
     public static void unexemptPlayer(Player player, CheckType type)
     {
         chk.unexemptPlayer(player, type);
     }
-    
+
     /**
      * Find out if a player is currently exempt from a certain check
-     *
-     * @param  player  Player to check
-     * @param  type  Type to check
+     * 
+     * @param player
+     *            Player to check
+     * @param type
+     *            Type to check
      * @return true if plugin is ignoring this check on this player
-     */  
+     */
     public static boolean isExempt(Player player, CheckType type)
     {
         return chk.isExempt(player, type);
     }
-    
+
     /**
-     * Find out if a check will occur for a player. This checks if they are being tracked, the check is active, the player isn't exempt from the check, and the player doesn't have override permission. 
-     *
-     * @param  player  Player to check
-     * @param  type  Type to check
-     * @return true if plugin will check this player, and that all things allow it to happen.
-     */      
+     * Find out if a check will occur for a player. This checks if they are
+     * being tracked, the check is active, the player isn't exempt from the
+     * check, and the player doesn't have override permission.
+     * 
+     * @param player
+     *            Player to check
+     * @param type
+     *            Type to check
+     * @return true if plugin will check this player, and that all things allow
+     *         it to happen.
+     */
     public boolean willCheck(Player player, CheckType type)
-    {        
+    {
         return chk.willCheck(player, type);
     }
 
     //PlayerManager API
 
     /**
-     * Get a player's integer hack level (0-19 = Low, 20-49 = Medium, 50-60 = High)
-     *
-     * @param  player  Player to check
+     * Get a player's integer hack level (0-19 = Low, 20-49 = Medium, 50-60 =
+     * High)
+     * 
+     * @param player
+     *            Player to check
      * @return player's hack level
-     */      
+     */
     public static int getLevel(Player player)
     {
-        if(!pmr.hasLevel(player)) 
+        if (!pmr.hasLevel(player))
         {
             return 0;
         }
@@ -136,10 +151,12 @@ public class AnticheatAPI
 
     /**
      * Set a player's hack level (Min = 0, Max = 60)
-     *
-     * @param  player  Player to set
-     * @param  level  Level to set to
-     */      
+     * 
+     * @param player
+     *            Player to set
+     * @param level
+     *            Level to set to
+     */
     public static void setLevel(Player player, int level)
     {
         pmr.setLevel(player, level);
@@ -149,14 +166,15 @@ public class AnticheatAPI
 
     /**
      * Find out if a player is detected as using xray hacks (on any ore)
-     *
-     * @param  player  Player to check
+     * 
+     * @param player
+     *            Player to check
      * @return true if the player has any xray anomalies.
-     */      
+     */
     public static boolean isXrayer(Player player)
     {
         String name = player.getName();
-        if (xtracker.sufficientData(name) && xtracker.hasAbnormal(name)) 
+        if (xtracker.sufficientData(name) && xtracker.hasAbnormal(name))
         {
             return true;
         }
@@ -164,13 +182,13 @@ public class AnticheatAPI
     }
 
     //Advanced Users Only API.
-    
+
     /**
      * Get access to all the other managers, advanced users ONLY
-     *
+     * 
      * @return the AntiCheat Manager
-     */  
-    public static AnticheatManager getManager() 
+     */
+    public static AnticheatManager getManager()
     {
         return Anticheat.getManager();
     }
