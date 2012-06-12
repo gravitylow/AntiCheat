@@ -52,13 +52,11 @@ public class CommandHandler implements CommandExecutor
     private static final Server SERVER = Bukkit.getServer();
     private static final int MED_THRESHOLD = 20;
     private static final int HIGH_THRESHOLD = 50; 
-    private static final String ADMIN_PERM = "anticheat.admin";
-    private static final String MOD_PERM = "anticheat.mod";
     private static final String PERMISSIONS_ERROR = RED+"Insufficient Permissions.";
     
     public void handleLog(CommandSender cs, String [] args)
     {
-        if(hasPermission(cs,"system.log") || hasPermission(cs,ADMIN_PERM))
+        if(cs.hasPermission("system.log"))
         {
             if(args[1].equalsIgnoreCase("enable"))
             {
@@ -97,7 +95,7 @@ public class CommandHandler implements CommandExecutor
     
     public void handleXRay(CommandSender cs, String [] args)
     {
-        if(hasPermission(cs,"system.xray") || hasPermission(cs,ADMIN_PERM) || hasPermission(cs,MOD_PERM))
+        if(cs.hasPermission("system.xray"))
         {
             if(config.logXRay())
             {
@@ -142,7 +140,7 @@ public class CommandHandler implements CommandExecutor
     
     public void handleReset(CommandSender cs, String [] args)
     {
-        if(hasPermission(cs,"system.reset") || hasPermission(cs,ADMIN_PERM))
+        if(cs.hasPermission("system.reset"))
         {
             List<Player> list = SERVER.matchPlayer(args[1]);
             if(list.size() == 1)
@@ -180,7 +178,7 @@ public class CommandHandler implements CommandExecutor
         if(cs instanceof Player)
         {
             Player sender = (Player)cs;
-            if(hasPermission(cs,"system.spy") || hasPermission(cs,MOD_PERM))
+            if(cs.hasPermission("system.spy"))
             {
                 if(!args[1].equalsIgnoreCase("off"))
                 {
@@ -236,7 +234,7 @@ public class CommandHandler implements CommandExecutor
     
     public void handleHelp(CommandSender cs)
     {
-        if(hasPermission(cs,"system.help") || hasPermission(cs,ADMIN_PERM) || hasPermission(cs,MOD_PERM))
+        if(cs.hasPermission("system.help"))
         {
             String base = "/AntiCheat ";
             cs.sendMessage("----------------------["+GREEN+"AntiCheat"+WHITE+"]----------------------");
@@ -259,7 +257,7 @@ public class CommandHandler implements CommandExecutor
     
     public void handleUpdate(CommandSender cs)
     {
-        if(hasPermission(cs,"system.update") || hasPermission(cs,ADMIN_PERM))
+        if(cs.hasPermission("system.update"))
         {
             cs.sendMessage("Running "+GREEN+"AntiCheat "+WHITE+"v"+GREEN+Anticheat.getVersion());
             cs.sendMessage("-----------------------------------------------------");
@@ -289,7 +287,7 @@ public class CommandHandler implements CommandExecutor
     
     public void handleReport(CommandSender cs)
     {
-        if(hasPermission(cs,"system.report") || hasPermission(cs,ADMIN_PERM) || hasPermission(cs,MOD_PERM))
+        if(cs.hasPermission("system.report"))
         {
             getPlayers();
             if(!low.isEmpty())
@@ -325,7 +323,7 @@ public class CommandHandler implements CommandExecutor
     
     public void handlePlayerReport(CommandSender cs,String [] args)
     {
-        if(hasPermission(cs,"system.report") || hasPermission(cs,ADMIN_PERM) || hasPermission(cs,MOD_PERM))
+        if(cs.hasPermission("system.report"))
         {
             List<Player> list = SERVER.matchPlayer(args[1]);
             if(list.size() == 1)
@@ -439,7 +437,7 @@ public class CommandHandler implements CommandExecutor
     
     public void handleReload(CommandSender cs)
     {
-        if(hasPermission(cs,"system.reload") || hasPermission(cs,ADMIN_PERM))
+        if(cs.hasPermission("system.reload"))
         {
             config.load();
             cs.sendMessage(GREEN+"AntiCheat configuration reloaded.");
@@ -517,17 +515,6 @@ public class CommandHandler implements CommandExecutor
         return true;
     }
     
-    public boolean hasPermission(CommandSender cs, String permission)
-    {
-        if(cs instanceof Player)
-        {
-            return ((Player)cs).hasPermission("anticheat."+permission);
-        }
-        else
-        {
-            return true;
-        }
-    }
     public void getPlayers()
     {
         high.clear();

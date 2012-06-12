@@ -40,16 +40,10 @@ public final class Utilities
     }    
     public static void alert(String [] message)
     {
-        for(Player p : Bukkit.getServer().getOnlinePlayers())
+        for(String msg : message)
         {
-            if(p.hasPermission("anticheat.alert") || p.hasPermission("anticheat.admin") || p.hasPermission("anticheat.mod") || p.isOp())
-            {
-               for(String msg : message)
-               {
-                   p.sendMessage(msg);
-               }
-            }
-        } 
+            Bukkit.broadcast(msg, "anticheat.alert");
+        }
         if(Anticheat.getManager().getConfiguration().logConsole())
         {
            for(String msg : message)
