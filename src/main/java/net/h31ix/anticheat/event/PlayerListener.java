@@ -175,6 +175,22 @@ public class PlayerListener extends EventListener
             Distance distance = new Distance(player.getLocation(), event.getClickedBlock().getLocation());
             backend.checkLongReachBlock(player, distance.getXDifference(), distance.getYDifference(), distance.getZDifference());
         }
+        
+        /* Interactions Check */
+        //TODO: Extend this into block place/break and if working, change to visuals check.
+        
+        Block block = event.getClickedBlock(); 
+        if(block != null) {
+	        if(checkManager.willCheck(player, CheckType.INTERACTION) && Utilities.isInteractable(block.getType())) 
+	        {
+	            // save load and actually call the backend check here.
+	            if(backend.checkInteraction(player, block)) 
+	            {
+	                event.setCancelled(true);
+	                log("tried to interact with an object that couldn't see", player, CheckType.INTERACTION); //boring description though.
+	            }
+	       	}
+        }
     }
 
     @EventHandler(ignoreCancelled = true)

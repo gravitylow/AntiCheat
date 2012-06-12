@@ -45,6 +45,7 @@ public enum Permission
     CHECK_LONGREACH,
     CHECK_FASTPROJECTILE,
     CHECK_ITEMSPAM,
+    CHECK_INTERACTION,
 
     /* System Nodes */
     SYSTEM_LOG,
