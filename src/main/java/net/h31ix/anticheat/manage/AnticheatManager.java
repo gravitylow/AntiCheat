@@ -31,7 +31,7 @@ import org.bukkit.ChatColor;
  * The internal hub for all managers.
  */
 
-public class AnticheatManager 
+public class AnticheatManager
 {
     private Anticheat plugin = null;
     private Configuration configuration;
@@ -42,7 +42,7 @@ public class AnticheatManager
     private static Logger LOGGER, FILE_LOGGER;
     private static Handler fileHandler;
     private static final int LOG_LEVEL_HIGH = 3;
-    
+
     public AnticheatManager(Anticheat instance)
     {
         plugin = instance;
@@ -54,68 +54,71 @@ public class AnticheatManager
         playerManager = new PlayerManager(this);
         checkManager = new CheckManager(this);
         backend = new Backend(this);
-        try 
+        try
         {
-            File file = new File(plugin.getDataFolder()+"/log");
-            if(!file.exists())
+            File file = new File(plugin.getDataFolder() + "/log");
+            if (!file.exists())
             {
                 file.mkdir();
             }
-            fileHandler = new FileHandler(plugin.getDataFolder()+"/log/anticheat.log",true);
+            fileHandler = new FileHandler(plugin.getDataFolder() + "/log/anticheat.log", true);
             fileHandler.setFormatter(new FileFormatter());
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             LOGGER.log(Level.SEVERE, null, ex);
         }
         FILE_LOGGER.setUseParentHandlers(false);
-        FILE_LOGGER.addHandler(fileHandler);    
+        FILE_LOGGER.addHandler(fileHandler);
     }
-    
+
     public void log(String message)
     {
-        if(getConfiguration().logConsole())
+        if (getConfiguration().logConsole())
         {
-            LOGGER.info("[AntiCheat] "+ChatColor.stripColor(message)); //This is temporary. Is something wrong with jline?
-        }       
-        if(getConfiguration().getFileLogLevel() == LOG_LEVEL_HIGH)
+            LOGGER.info("[AntiCheat] " + ChatColor.stripColor(message)); //This is temporary. Is something wrong with jline?
+        }
+        if (getConfiguration().getFileLogLevel() == LOG_LEVEL_HIGH)
         {
             fileLog(ChatColor.stripColor(message));
         }
     }
-    
+
     public void fileLog(String message)
     {
         FILE_LOGGER.info(message);
     }
-    
-    public Anticheat getPlugin() 
+
+    public Anticheat getPlugin()
     {
-    	return plugin;
+        return plugin;
     }
-    
-    public Configuration getConfiguration() 
+
+    public Configuration getConfiguration()
     {
-    	return configuration;
+        return configuration;
     }
-    
-    public XRayTracker getXRayTracker() 
+
+    public XRayTracker getXRayTracker()
     {
-    	return xrayTracker;
+        return xrayTracker;
     }
-    
-    public PlayerManager getPlayerManager() 
+
+    public PlayerManager getPlayerManager()
     {
-    	return playerManager;
+        return playerManager;
     }
-    
+
     public CheckManager getCheckManager()
     {
-    	return checkManager;
+        return checkManager;
     }
-    
-    public Backend getBackend() 
+
+    public Backend getBackend()
     {
-    	return backend;
+        return backend;
     }
+
     public static void close()
     {
         fileHandler.close();

@@ -23,14 +23,12 @@ import java.util.Map;
 import net.h31ix.anticheat.Permission;
 import org.bukkit.entity.Player;
 
-
 /**
  * <p>
  * All the types of checks and their corresponding permission nodes.
  */
 
-
-public enum CheckType 
+public enum CheckType
 {
     ZOMBE_FLY(Permission.CHECK_ZOMBE_FLY),
     ZOMBE_NOCLIP(Permission.CHECK_ZOMBE_NOCLIP),
@@ -54,53 +52,53 @@ public enum CheckType
     LONG_REACH(Permission.CHECK_LONGREACH),
     FAST_PROJECTILE(Permission.CHECK_FASTPROJECTILE),
     ITEM_SPAM(Permission.CHECK_ITEMSPAM);
-    
+
     private final Permission permission;
-    private final Map<String,Integer> level = new HashMap<String,Integer>();
-    
-    private CheckType(Permission perm) 
+    private final Map<String, Integer> level = new HashMap<String, Integer>();
+
+    private CheckType(Permission perm)
     {
         this.permission = perm;
     }
-    
+
     public boolean checkPermission(Player player)
     {
         return permission.get(player);
     }
-    
+
     public void logUse(Player player)
     {
         String name = player.getName();
-        if(level.get(name) == null)
+        if (level.get(name) == null)
         {
             level.put(name, 1);
         }
         else
         {
-            int amount = level.get(name)+1;
+            int amount = level.get(name) + 1;
             level.put(name, amount);
-        }        
+        }
     }
-    
+
     public void clearUse(Player player)
     {
         level.put(player.getName(), 0);
     }
-    
+
     public int getUses(Player player)
     {
         int use = 0;
-        if(level.get(player.getName()) != null)
+        if (level.get(player.getName()) != null)
         {
             use = level.get(player.getName());
         }
         return use;
     }
-    
+
     public static String getName(CheckType type)
     {
         char[] chars = type.toString().replaceAll("_", " ").toLowerCase().toCharArray();
-        chars[0] = Character.toUpperCase(chars[0]);     
+        chars[0] = Character.toUpperCase(chars[0]);
         return new String(chars);
     }
 }
