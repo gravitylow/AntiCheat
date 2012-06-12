@@ -131,6 +131,21 @@ public final class Utilities
         }
         return getDirection(rot);
     }
+    
+    /**
+     * Get the cardinal compass direction of a location.
+     * 
+     * @param location
+     * @return
+     */
+    
+    public static String getCardinalDirectionLoc(Location player) {
+        double rot = (player.getYaw() - 90) % 360;
+        if (rot < 0) {
+            rot += 360.0;
+        }
+        return getDirection(rot);
+    }
 
     /**
      * Converts a rotation to a cardinal direction name.
