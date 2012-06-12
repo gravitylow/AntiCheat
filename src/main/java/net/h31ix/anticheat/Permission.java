@@ -1,7 +1,7 @@
 package net.h31ix.anticheat;
- 
+
 import org.bukkit.command.CommandSender;
- 
+
 public enum Permission
 {
     /* Check Nodes */
@@ -27,7 +27,7 @@ public enum Permission
     CHECK_LONGREACH,
     CHECK_FASTPROJECTILE,
     CHECK_ITEMSPAM,
- 
+
     /* System Nodes */
     SYSTEM_LOG,
     SYSTEM_XRAY,
@@ -37,20 +37,20 @@ public enum Permission
     SYSTEM_UPDATE,
     SYSTEM_REPORT,
     SYSTEM_RELOAD;
- 
+
     public boolean get(CommandSender cs)
     {
         return cs.hasPermission(parsePermissionNode());
     }
- 
+
     private String parsePermissionNode()
     {
         return "anticheat." + parse();
     }
-   
+
     private String parse()
     {
         return this.name().toLowerCase().replace("_", ".");
     }
- 
+
 }
