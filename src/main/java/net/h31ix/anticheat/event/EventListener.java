@@ -104,7 +104,8 @@ public class EventListener implements Listener
         return CHECK_MANAGER;
     }
     
-    public static AnticheatManager getManager() {
+    public static AnticheatManager getManager() 
+    {
     	return Anticheat.getManager();
     }
     
