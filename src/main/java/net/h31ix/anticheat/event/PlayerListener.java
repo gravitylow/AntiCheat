@@ -18,6 +18,8 @@
 
 package net.h31ix.anticheat.event;
 
+import net.h31ix.anticheat.Anticheat;
+import net.h31ix.anticheat.Configuration;
 import net.h31ix.anticheat.manage.Backend;
 import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
@@ -40,15 +42,21 @@ import org.bukkit.inventory.PlayerInventory;
 public class PlayerListener extends EventListener 
 {
     private final Backend backend = getBackend();
-    private final CheckManager checkManager = getCheckManager();  
+    private final CheckManager checkManager = getCheckManager(); 
+    private final Configuration config = Anticheat.getManager().getConfiguration();
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
     {
         Player player = event.getPlayer();
-        if(checkManager.willCheck(player, CheckType.SPAM))
+        if(checkManager.willCheck(player, CheckType.SPAM) && config.commandSpam())
         {     
             backend.logChat(player);
+            if(backend.checkSpam(player, event.getMessage()))
+            {
+                event.setCancelled(true);
+                player.sendMessage(ChatColor.RED+"Please do not spam.");
+            }
         }
     }
     
@@ -90,11 +98,29 @@ public class PlayerListener extends EventListener
         }
     }
     
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
+    public void onPlayerVelocity(PlayerVelocityEvent event) 
+    {
+    	 Player player = event.getPlayer();
+         if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY)) //@h31ix: Change if necessary.  I'm not sure what perms should go here :3
+         {
+        	 if(backend.justVelocity(player)) 
+        	 {
+        		 if(backend.extendVelocityTime(player)) 
+        		 {
+        		     event.setCancelled(true);
+            		 return; // don't log it lol.
+        		 }
+        	 }
+        	 backend.logVelocity(player);
+         }
+    }
+    
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerChat(PlayerChatEvent event)
     {
         Player player = event.getPlayer();
-        if(checkManager.willCheck(player, CheckType.SPAM))
+        if(checkManager.willCheck(player, CheckType.SPAM) && config.chatSpam())
         {     
             backend.logChat(player);
             if(backend.checkSpam(player, event.getMessage()))
@@ -237,48 +263,21 @@ public class PlayerListener extends EventListener
         double x = distance.getXDifference();
         double y = distance.getYDifference();
         double z = distance.getZDifference();
-        backend.checkAscension(player,from.getY(),to.getY());
+        backend.logAscension(player,from.getY(),to.getY());    
         if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkFlight(player, distance))
         {
             from.setX(from.getX()-1);
             from.setY(from.getY()-1);
             from.setZ(from.getZ()-1);        
             event.setTo(from);
-            //Lets really give this flyer a real pushdown.
-            Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY()-2, player.getLocation().getZ());
-            Block newBlock = newLocation.getBlock();
-            if(newBlock.getTypeId() != 0) 
-            {
-                event.setTo(newLocation);
-            } 
+            Block lower = player.getWorld().getHighestBlockAt(from); 
+            player.teleport(new Location(lower.getWorld(), lower.getLocation().getX(),lower.getLocation().getY()+2,lower.getLocation().getZ()));
             log("tried to fly.",player,CheckType.FLY);        
         }
-        if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkYAxis(player, distance)) 
+        if(checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && (backend.checkYAxis(player, distance) || backend.checkAscension(player,from.getY(),to.getY()))) 
         {
-             from.setX(from.getX()-1);
-             from.setY(from.getY()-1);
-             from.setZ(from.getZ()-1);
-             if(from.getBlock().getTypeId() == 0)
-             {
-            	 event.setTo(from);
-             }
-             for(int i= 5;i>0;i--) 
-             {
-                 Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY()-i, player.getLocation().getZ());
-                 Block lower = newLocation.getBlock();
-                 if(lower.getTypeId() == 0) 
-                 {
-                     player.teleport(newLocation);
-                     break;
-                 } 
-             }
-             //Lets really give this flyer a real pushdown.
-             Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY()-2, player.getLocation().getZ());
-             Block newBlock = newLocation.getBlock();
-             if(newBlock.getTypeId() != 0) 
-             {
-                 event.setTo(newLocation);
-             } 
+             Block lower = player.getWorld().getHighestBlockAt(player.getLocation()); 
+             player.teleport(new Location(lower.getWorld(), lower.getLocation().getX(),lower.getLocation().getY()+2,lower.getLocation().getZ()));
              log("tried to fly on y-axis", player, CheckType.FLY);
         }
         if(checkManager.willCheck(player, CheckType.SPEED) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY))
@@ -286,7 +285,7 @@ public class PlayerListener extends EventListener
             if(event.getFrom().getY() < event.getTo().getY() && backend.checkYSpeed(player, y))
             {
                 event.setTo(from);
-                log("tried to ascend to fast.",player,CheckType.SPEED);    
+                log("tried to ascend too fast.",player,CheckType.SPEED);    
             }            
             if(backend.checkXZSpeed(player,x,z))
             {
@@ -300,31 +299,34 @@ public class PlayerListener extends EventListener
             log("tried avoid fall damage.",player,CheckType.NOFALL);   
         }
     }
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void checkSpeed(PlayerMoveEvent event)
     {    
         Player player = event.getPlayer();
         Location from = event.getFrom();
-        Location to = event.getTo();        
-        Distance distance = new Distance(from, to);
-        double x = distance.getXDifference();
-        double y = distance.getYDifference();
-        double z = distance.getZDifference();    
-        if(checkManager.willCheck(player, CheckType.WATER_WALK) && backend.checkWaterWalk(player,x,z))
+        Location to = event.getTo();  
+        if(event.getTo() != event.getFrom())
         {
-            event.setTo(from);
-            log("tried to walk on water.",player,CheckType.WATER_WALK);  
-        }    
-        if(checkManager.willCheck(player, CheckType.SNEAK) && backend.checkSneak(player,x,z))
-        {
-            event.setTo(from);
-            player.setSneaking(false);
-            log("tried to sneak too fast.",player,CheckType.SNEAK);    
-        }   
-        if(checkManager.willCheck(player, CheckType.SPIDER) && backend.checkSpider(player, y))
-        {
-            event.setTo(from);
-            log("tried to climb a wall.",player,CheckType.SPIDER); 
-        }  
+            Distance distance = new Distance(from, to);
+            double x = distance.getXDifference();
+            double y = distance.getYDifference();
+            double z = distance.getZDifference();    
+            if(checkManager.willCheck(player, CheckType.WATER_WALK) && backend.checkWaterWalk(player,x,z))
+            {
+                event.setTo(from);
+                log("tried to walk on water.",player,CheckType.WATER_WALK);  
+            }    
+            if(checkManager.willCheck(player, CheckType.SNEAK) && backend.checkSneak(player,x,z))
+            {
+                event.setTo(from);
+                player.setSneaking(false);
+                log("tried to sneak too fast.",player,CheckType.SNEAK);    
+            }   
+            if(checkManager.willCheck(player, CheckType.SPIDER) && backend.checkSpider(player, y))
+            {
+                event.setTo(from);
+                log("tried to climb a wall.",player,CheckType.SPIDER); 
+            }
+        }
     }
 }

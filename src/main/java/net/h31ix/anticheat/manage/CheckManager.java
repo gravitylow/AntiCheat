@@ -84,17 +84,12 @@ public class CheckManager
         return exemptList.containsEntry(player.getName(), type);
     }
     
-    private boolean hasPermission(Player player, String permission)
-    {
-        return player.hasPermission(permission) || player.hasPermission("anticheat.exempt");
-    }
-     
     public boolean willCheck(Player player, CheckType type)
     {        
         return  isActive(type) 
                 && manager.getConfiguration().checkInWorld(player.getWorld())
                 && !isExempt(player, type) 
-                && !hasPermission(player, type.getPermission());
+                && !type.checkPermission(player);
     }
     
     public int getExempt()

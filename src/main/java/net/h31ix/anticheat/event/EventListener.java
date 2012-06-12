@@ -47,9 +47,9 @@ public class EventListener implements Listener
     {
         USAGE_LIST.put(type, getCheats(type)+1);
         type.logUse(player);
-        if(PLUGIN.getManager().getConfiguration().getFileLogLevel() == 2 && type.getUses(player) % 10 == 0)
+        if(Anticheat.getManager().getConfiguration().getFileLogLevel() == 2 && type.getUses(player) % 10 == 0)
         {
-            PLUGIN.getManager().fileLog(player.getName()+" has triggered multiple "+type+" checks.");
+            Anticheat.getManager().fileLog(player.getName()+" has triggered multiple "+type+" checks.");
         }
     }
     
@@ -104,7 +104,8 @@ public class EventListener implements Listener
         return CHECK_MANAGER;
     }
     
-    public static AnticheatManager getManager() {
+    public static AnticheatManager getManager() 
+    {
     	return Anticheat.getManager();
     }
     

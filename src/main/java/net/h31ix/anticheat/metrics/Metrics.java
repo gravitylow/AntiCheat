@@ -213,10 +213,10 @@ public class Metrics {
     private void postPlugin(boolean isPing) throws IOException {
         // The plugin's description file containg all of the plugin data such as name, version, author, etc
         PluginDescriptionFile description = plugin.getDescription();
-
+        
         // Construct the post data
         String data = encode("guid") + '=' + encode(guid)
-                + encodeDataPair("version", description.getVersion())
+                + encodeDataPair("version", description.getVersion().split("-b")[0])
                 + encodeDataPair("server", Bukkit.getVersion())
                 + encodeDataPair("players", Integer.toString(Bukkit.getServer().getOnlinePlayers().length))
                 + encodeDataPair("revision", String.valueOf(REVISION));

@@ -20,6 +20,7 @@ package net.h31ix.anticheat.manage;
 
 import java.util.HashMap;
 import java.util.Map;
+import net.h31ix.anticheat.Permission;
 import org.bukkit.entity.Player;
 
 
@@ -31,41 +32,40 @@ import org.bukkit.entity.Player;
 
 public enum CheckType 
 {
-    ZOMBE_FLY("anticheat.zombe.fly"),
-    ZOMBE_NOCLIP("anticheat.zombe.noclip"),
-    ZOMBE_CHEAT("anticheat.zombe.cheat"),
-    FLY("anticheat.fly"),
-    WATER_WALK("anticheat.waterwalk"),
-    NO_SWING("anticheat.noswing"),
-    FAST_BREAK("anticheat.fastbreak"),
-    INTERACTION("anticheat.interaction"),
-    FAST_PLACE("anticheat.fastplace"),
-    SPAM("anticheat.spam"),
-    SPRINT("anticheat.sprint"),
-    SNEAK("anticheat.sneak"),
-    SPEED("anticheat.speed"),
-    SPIDER("anticheat.spider"),
-    NOFALL("anticheat.nofall"),
-    FAST_BOW("anticheat.fastbow"),
-    FAST_EAT("anticheat.fasteat"),
-    FAST_HEAL("anticheat.fastheal"),
-    FORCEFIELD("anticheat.forcefield"),
-    XRAY("anticheat.xray"),
-    LONG_REACH("anticheat.longreach"),
-    FAST_PROJECTILE("anticheat.projectile"),
-    ITEM_SPAM("anticheat.itemspam");
+    ZOMBE_FLY(Permission.CHECK_ZOMBE_FLY),
+    ZOMBE_NOCLIP(Permission.CHECK_ZOMBE_NOCLIP),
+    ZOMBE_CHEAT(Permission.CHECK_ZOMBE_CHEAT),
+    FLY(Permission.CHECK_FLY),
+    WATER_WALK(Permission.CHECK_WATERWALK),
+    NO_SWING(Permission.CHECK_NOSWING),
+    FAST_BREAK(Permission.CHECK_FASTBREAK),
+    FAST_PLACE(Permission.CHECK_FASTPLACE),
+    SPAM(Permission.CHECK_SPAM),
+    SPRINT(Permission.CHECK_SPRINT),
+    SNEAK(Permission.CHECK_SNEAK),
+    SPEED(Permission.CHECK_SPEED),
+    SPIDER(Permission.CHECK_SPIDER),
+    NOFALL(Permission.CHECK_NOFALL),
+    FAST_BOW(Permission.CHECK_FASTBOW),
+    FAST_EAT(Permission.CHECK_FASTEAT),
+    FAST_HEAL(Permission.CHECK_FASTHEAL),
+    FORCEFIELD(Permission.CHECK_FORCEFIELD),
+    XRAY(Permission.CHECK_XRAY),
+    LONG_REACH(Permission.CHECK_LONGREACH),
+    FAST_PROJECTILE(Permission.CHECK_FASTPROJECTILE),
+    ITEM_SPAM(Permission.CHECK_ITEMSPAM);
     
-    private final String permission;
+    private final Permission permission;
     private final Map<String,Integer> level = new HashMap<String,Integer>();
     
-    private CheckType(String permission) 
+    private CheckType(Permission perm) 
     {
-        this.permission = permission;
+        this.permission = perm;
     }
     
-    public String getPermission()
+    public boolean checkPermission(Player player)
     {
-        return this.permission;
+        return permission.get(player);
     }
     
     public void logUse(Player player)

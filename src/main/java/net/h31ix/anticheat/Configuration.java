@@ -45,6 +45,8 @@ public class Configuration
     private boolean alertXRay;
     private boolean autoUpdate;
     private boolean verboseStartup;
+    private boolean chatSpam;
+    private boolean commandSpam;
     private int fileLogLevel = 0;
     private String updateFolder;
     private static Language language;
@@ -97,6 +99,16 @@ public class Configuration
         return verboseStartup;
     } 
     
+    public boolean chatSpam()
+    {
+        return chatSpam;
+    }     
+    
+    public boolean commandSpam()
+    {
+        return commandSpam;
+    }     
+    
     public String updateFolder()
     {
         return updateFolder;
@@ -140,7 +152,7 @@ public class Configuration
             config.set("Enable in", w);
             save();
         }
-        worlds = (List<String>)(config.getList("Enable in")); 
+        worlds = config.getStringList("Enable in"); 
         if(config.getString("XRay.Log xray stats") == null)
         {
             config.set("XRay.Log xray stats", true);
@@ -170,7 +182,19 @@ public class Configuration
             config.set("System.File log level", 1);
             save();
         }        
-        fileLogLevel = config.getInt("System.File log level");                
+        fileLogLevel = config.getInt("System.File log level");    
+        if(config.getString("System.Block chat spam") == null)
+        {
+            config.set("System.Block chat spam", true);
+            save();
+        }        
+        chatSpam = config.getBoolean("System.Block chat spam");      
+        if(config.getString("System.Block command spam") == null)
+        {
+            config.set("System.Block command spam", true);
+            save();
+        }        
+        commandSpam = config.getBoolean("System.Block command spam");     
     }
     
     public String getResult(String event)

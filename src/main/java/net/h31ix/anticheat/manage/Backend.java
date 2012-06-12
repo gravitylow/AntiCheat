@@ -70,8 +70,14 @@ public class Backend
     private static final int FLIGHT_LIMIT = 4;
     private static final int Y_MAXVIOLATIONS = 1;
     private static final int Y_MAXVIOTIME = 5000;
+    private static final int VELOCITY_TIME = 60;
+    private static final long VELOCITY_SCHETIME = 2;
+    private static final long VELOCITY_CHECKTIME = 2100;
+    private static final long VELOCITY_PREVENT = 5000;
+    private static final int VELOCITY_MAXTIMES = 2;
     private static final int NOFALL_LIMIT = 5;
     
+    private static final int ASCENSION_COUNT_MAX = 8;
     private static final int WATER_ASCENSION_VIOLATION_MAX = 13;
     private static final int WATER_SPEED_VIOLATION_MAX = 4;
     
@@ -80,6 +86,7 @@ public class Backend
     private static final int HEAL_MIN = 35;
     private static final int ANIMATION_MIN = 60;
     private static final int CHAT_MIN = 100;
+    private static final int CHAT_REPEAT_MIN = 260;
     private static final int BOW_MIN = 2;
     private static final int SPRINT_MIN = 2;
     private static final int BLOCK_BREAK_MIN = 1;
@@ -106,7 +113,6 @@ public class Backend
     
     private AnticheatManager micromanage = null;
     private List<String> droppedItem = new ArrayList<String>();
-    private List<String> animated = new ArrayList<String>();
     private List<String> movingExempt = new ArrayList<String>();
     private List<String> brokenBlock = new ArrayList<String>();
     private List<String> placedBlock = new ArrayList<String>();
@@ -119,6 +125,8 @@ public class Backend
     private List<String> instantBreakExempt = new ArrayList<String>();
     private List<String> isAscending = new ArrayList<String>();
     private List<String> trackingProjectiles = new ArrayList<String>();
+    private List<String> velocitizing = new ArrayList<String>();
+    private Map<String,Integer> ascensionCount = new HashMap<String,Integer>();
     private Map<String,String> oldMessage = new HashMap<String,String>();
     private Map<String,String> lastMessage = new HashMap<String,String>();
     private Map<String,Integer> flightViolation = new HashMap<String,Integer>();
@@ -140,6 +148,9 @@ public class Backend
     private Map<String,Integer> waterAscensionViolation = new HashMap<String,Integer>();
     private Map<String,Integer> waterSpeedViolation = new HashMap<String,Integer>();
     private Map<String,Integer> projectilesShot = new HashMap<String,Integer>();
+    private Map<String,Long> velocitized = new HashMap<String,Long>();
+    private Map<String,Integer> velocitytrack = new HashMap<String,Integer>();
+    private Map<String,Location> animated = new HashMap<String,Location>();
     
     public Backend(AnticheatManager instance) 
     {
@@ -158,7 +169,7 @@ public class Backend
     
     public boolean checkSpider(Player player,double y)
     {
-        if(y <= LADDER_Y_MAX && y >= LADDER_Y_MIN && player.getLocation().getBlock().getType() != Material.VINE && player.getLocation().getBlock().getType() != Material.LADDER)
+        if(y <= LADDER_Y_MAX && y >= LADDER_Y_MIN && !Utilities.isOnLadder(player))
         {                           
             return true;
         }
@@ -167,7 +178,7 @@ public class Backend
     
     public boolean checkYSpeed(Player player,double y)
     {
-        if(/*!player.isFlying() &&*/ player.getVehicle() == null && y > Y_SPEED_MAX)
+        if(!player.isInsideVehicle() && y > Y_SPEED_MAX && !isVelocity(player) && !player.hasPotionEffect(PotionEffectType.JUMP))
         {
             return true;
         }
@@ -217,17 +228,17 @@ public class Backend
             {
                 return x > XZ_SPEED_MAX_FLY || z > XZ_SPEED_MAX_FLY; 
             }
-            if(!player.isSprinting())
-            {       
-                return x > XZ_SPEED_MAX || z > XZ_SPEED_MAX;            
-            }
             else if (player.hasPotionEffect(PotionEffectType.SPEED)) 
             {
             	return x > XZ_SPEED_MAX_POTION || z > XZ_SPEED_MAX_POTION;
             }
+            else if(player.isSprinting())
+            {       
+                return x > XZ_SPEED_MAX_SPRINT || z > XZ_SPEED_MAX_SPRINT;            
+            }
             else 
             {
-                return x > XZ_SPEED_MAX_SPRINT || z > XZ_SPEED_MAX_SPRINT;
+                return x > XZ_SPEED_MAX || z > XZ_SPEED_MAX;
             }
         }
         else
@@ -377,7 +388,7 @@ public class Backend
         {
     		return false;
     	}
-        if(!isMovingExempt(player))
+        if(!isMovingExempt(player) && !Utilities.isOnLadder(player) && !player.isInsideVehicle() && !Utilities.isInWater(player))
         {
             double y1 = player.getLocation().getY();
             String name = player.getName();
@@ -400,7 +411,7 @@ public class Backend
                     yAxisLastViolation.put(name, System.currentTimeMillis());
                     if(g.getBlock().getTypeId() == 0) 
                     {
-                            player.teleport(g);
+                        player.teleport(g);
                     }
                     return true;
                 } 
@@ -420,7 +431,7 @@ public class Backend
                     yAxisLastViolation.put(name, System.currentTimeMillis());
                     if(g.getBlock().getTypeId() == 0) 
                     {
-                            player.teleport(g);
+                        player.teleport(g);
                     }
                     return true;
                 }
@@ -448,10 +459,10 @@ public class Backend
     	double y1 = distance.fromY();
     	double y2 = distance.toY();
         Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
-        if(y1 == y2 && !isMovingExempt(player) && player.getVehicle() == null && player.getFallDistance() == 0 && !Utilities.isOnLilyPad(player))
+        if(y1 == y2 && !isMovingExempt(player) && !player.isInsideVehicle() && player.getFallDistance() == 0 && !Utilities.isOnLilyPad(player))
         {
             String name = player.getName();
-            if(Utilities.cantStandAt(block) && !Utilities.isOnLilyPad(player) && !Utilities.canStand(player.getLocation().getBlock()) && !Utilities.isSubmersed(player))
+            if(Utilities.cantStandAt(block) && !Utilities.isOnLilyPad(player) && Utilities.cantStandAt(player.getLocation().getBlock()) && !Utilities.isInWater(player))
             {
                 int violation = 1;
                 if(!flightViolation.containsKey(name))
@@ -488,16 +499,47 @@ public class Backend
         return false;
     }
     
-    public void checkAscension(Player player, double y1, double y2)
+    public void logAscension(Player player, double y1, double y2)
     {
+        String name = player.getName();
         if(y1 < y2)
         {
-            isAscending.add(player.getName());
+            isAscending.add(name);
         }
         else
         {
             isAscending.remove(player.getName());
+        }        
+    }
+    
+    public boolean checkAscension(Player player, double y1, double y2)
+    {
+        int max = ASCENSION_COUNT_MAX;
+        if(player.hasPotionEffect(PotionEffectType.JUMP))
+        {
+            max+=12;
         }
+        Block block = player.getLocation().getBlock();
+        if(!isMovingExempt(player) && !Utilities.isInWater(player) && !Utilities.isOnLadder(player) && !player.isInsideVehicle())
+        {
+            String name = player.getName();
+            if(y1 < y2)
+            {
+                if(!block.getRelative(BlockFace.NORTH).isLiquid() && !block.getRelative(BlockFace.SOUTH).isLiquid() && !block.getRelative(BlockFace.EAST).isLiquid() && !block.getRelative(BlockFace.WEST).isLiquid())
+                {
+                    increment(player, ascensionCount, max);
+                    if(ascensionCount.get(name) >= max)
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                ascensionCount.put(name,0);
+            }
+        }
+        return false;
     }
     
     public boolean checkSwing(Player player, Block block)
@@ -679,7 +721,7 @@ public class Backend
         else
         {
             int amount = chatLevel.get(name)+1;
-            chatLevel.put(name, amount);
+            logEvent(chatLevel,player,amount,CHAT_MIN);
             checkChatLevel(player, amount);  
         }
     }
@@ -689,7 +731,8 @@ public class Backend
         String name = player.getName();
         if(lastMessage.get(name) == null)
         {
-            lastMessage.put(name, msg);
+            logEvent(lastMessage,player,msg,CHAT_REPEAT_MIN);
+            //lastMessage.put(name, msg);
         }  
         else
         {
@@ -699,8 +742,10 @@ public class Backend
             }
             else
             {
-                oldMessage.put(name, lastMessage.get(name));
-                lastMessage.put(name, msg);
+                logEvent(oldMessage,player,lastMessage.get(name),CHAT_REPEAT_MIN);
+                //oldMessage.put(name, lastMessage.get(name));
+                logEvent(oldMessage,player,msg,CHAT_REPEAT_MIN);
+                //lastMessage.put(name, msg);
                 return false;
             }
         }
@@ -741,7 +786,49 @@ public class Backend
     public boolean justBroke(Player player)
     {
         return brokenBlock.contains(player.getName());             
-    } 
+    }
+    
+    public void logVelocity(final Player player) 
+    {
+    	logEvent(velocitizing,player,VELOCITY_TIME);
+    	velocitized.put(player.getName(), System.currentTimeMillis());
+    }
+    
+    public boolean justVelocity(Player player) 
+    {
+    	return isVelocity(player) || (velocitized.containsKey(player.getName()) ? (System.currentTimeMillis() - velocitized.get(player.getName())) < VELOCITY_CHECKTIME : false);
+    }
+    
+    public boolean isVelocity(Player player) 
+    {
+    	return velocitizing.contains(player.getName());
+    }
+    
+    public boolean extendVelocityTime(final Player player) 
+    {
+    	if(velocitytrack.containsKey(player.getName()))
+    	{
+    	    velocitytrack.put(player.getName(), velocitytrack.get(player.getName()) + 1);
+    	    if(velocitytrack.get(player.getName()) > VELOCITY_MAXTIMES) {
+    	    	velocitized.put(player.getName(), System.currentTimeMillis() + VELOCITY_PREVENT);
+    	    	micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable() 
+                {
+                    @Override
+                    public void run() 
+                    {
+                	    velocitytrack.put(player.getName(), 0);
+                    }
+                }, VELOCITY_SCHETIME * 20L);
+            	return true;
+    	    }
+    	}
+    	else
+    	{
+    	    velocitytrack.put(player.getName(), 0);
+    	}
+    	
+    	return false;
+    }
     
     public void logBlockPlace(final Player player)
     {
@@ -755,7 +842,7 @@ public class Backend
     
     public void logAnimation(final Player player)
     {
-        logEvent(animated,player,ANIMATION_MIN);  
+        logEvent(animated,player,player.getLocation(),ANIMATION_MIN);  
         increment(player,blockPunches,BLOCK_PUNCH_MIN);
     }
     
@@ -767,7 +854,7 @@ public class Backend
     
     public boolean justAnimated(Player player)
     {
-        return animated.contains(player.getName());       
+        return animated.containsKey(player.getName());       
     }    
     
     public void logProjectile(final Player player, final EventListener e)
@@ -837,7 +924,7 @@ public class Backend
     
     public boolean isMovingExempt(Player player)
     {
-        return movingExempt.contains(player.getName()) || player.isFlying();       
+        return movingExempt.contains(player.getName()) || player.isFlying() || isVelocity(player);       
     }
     
     public boolean isAscending(Player player)
@@ -845,8 +932,9 @@ public class Backend
         return isAscending.contains(player.getName());
     }
     
-    public boolean isSpeedExempt(Player player) {
-    	return movingExempt.contains(player.getName());
+    public boolean isSpeedExempt(Player player) 
+    {
+    	return movingExempt.contains(player.getName()) || isVelocity(player);
     }
     
     public void logDroppedItem(final Player player)
@@ -876,16 +964,23 @@ public class Backend
     @SuppressWarnings("unchecked")
     private void logEvent(@SuppressWarnings("rawtypes") final Map map, final Player player, final Object obj, long time)
     {
-        map.put(player,obj);
+        map.put(player.getName(),obj);
         micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable() 
         {
             @Override
             public void run() 
             {
-                map.remove(player);
+                if(map.get(player.getName()) == obj)
+                {
+                    map.remove(player.getName());
+                }
+                else
+                {
+                    //Don't remove this, for some reason it's fixing chat bugs.
+                }
             }
         },      time);            
-    } 
+    }   
     private void checkChatLevel(Player player, int amount)
     {
         if(amount >= CHAT_WARN_LEVEL)

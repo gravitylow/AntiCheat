@@ -42,16 +42,10 @@ public final class Utilities
     }    
     public static void alert(String [] message)
     {
-        for(Player p : Bukkit.getServer().getOnlinePlayers())
+        for(String msg : message)
         {
-            if(p.hasPermission("anticheat.alert") || p.hasPermission("anticheat.admin") || p.hasPermission("anticheat.mod") || p.isOp())
-            {
-               for(String msg : message)
-               {
-                   p.sendMessage(msg);
-               }
-            }
-        } 
+            Bukkit.broadcast(msg, "anticheat.alert");
+        }
         if(Anticheat.getManager().getConfiguration().logConsole())
         {
            for(String msg : message)
@@ -103,7 +97,7 @@ public final class Utilities
         boolean b = false;
         if(player.getServer().getPluginManager().getPlugin("mcMMO") != null)
         {
-            if(mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.TREE_FELLER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.SUPER_BREAKER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.BERSERK))
+            if(mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.TREE_FELLER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.SUPER_BREAKER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.BERSERK) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.GIGA_DRILL_BREAKER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.BLAST_MINING))
             {     
                 b = true;
             }       
@@ -180,6 +174,14 @@ public final class Utilities
     public static boolean isSubmersed(Player player)
     {
         return player.getLocation().getBlock().isLiquid() && player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid();
+    }
+    public static boolean isInWater(Player player)
+    {
+        return player.getLocation().getBlock().isLiquid() || player.getLocation().getBlock().getRelative(BlockFace.DOWN).isLiquid() || player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid();
+    }    
+    public static boolean isOnLadder(Player player)
+    {
+        return player.getLocation().getBlock().getType() == Material.VINE || player.getLocation().getBlock().getType() == Material.LADDER;
     }
     public static boolean isInt(String string)
     {

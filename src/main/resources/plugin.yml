@@ -6,9 +6,136 @@ name: AntiCheat
 softdepend: [AntiCheat]
 startup: postworld
 url: http://H31IX.NET/
-version: '1.3-DEV'
+version: ${project.version}-b${BUILD_NUMBER}
 commands:
   anticheat:
     description: Control and view info about AntiCheat
     usage: /anticheat help
     aliases: anti
+permissions:
+  anticheat.alert:
+    description: Get alerts
+  anticheat.system.help:
+    description: Help access
+  anticheat.system.report:
+    description: Reports access
+  anticheat.system.spy:
+    description: Spy system access
+  anticheat.system.xray:
+    description: XRay info access
+  anticheat.mod:
+    description: Mod helper perm
+    children:
+      anticheat.alert: true
+      anticheat.system.help: true
+      anticheat.system.report: true
+      anticheat.system.spy: true
+      anticheat.system.xray: true
+  anticheat.system.log:
+    description: Log access
+  anticheat.system.reload:
+    description: Reload access
+  anticheat.system.reset:
+    description: Reset access
+  anticheat.system.update:
+    description: Update access
+  anticheat.admin:
+    description: Admin helper perm
+    children:
+      anticheat.mod: true
+      anticheat.system.log: true
+      anticheat.system.reload: true
+      anticheat.system.reset: true
+      anticheat.system.update: true
+  anticheat.check.zombe.fly:
+    description: Allow players to use zombe flymod
+    default: false
+  anticheat.check.zombe.noclip:
+    description: Allow players to use zombe noclip hack
+    default: false
+  anticheat.check.zombe.cheat:
+    description: Allow players to use zombe cheat hack
+    default: false
+  anticheat.check.fly:
+    description: Allow players to fly
+    default: false
+  anticheat.check.waterwalk:
+    description: Allow players to walk on water
+    default: false
+  anticheat.check.noswing:
+    description: Allow players to not ever swing their arm
+    default: false
+  anticheat.check.fastbreak:
+    description: Allow players to quickly break blocks
+    default: false
+  anticheat.check.fastplace:
+    description: Allow players to use build hacks and fastplace
+    default: false
+  anticheat.check.spam:
+    description: Allow players to spam the server
+    default: false
+  anticheat.check.sprint:
+    description: Allow players to sprint when hungry
+    default: false
+  anticheat.check.sneak:
+    description: Allow players to use auto-sneak
+    default: false
+  anticheat.check.speed:
+    description: Use this with anticheat.check.flyhack to allow more speed
+    default: false
+  anticheat.check.spider:
+    description: Allow players to climb non-climbable surfaces
+    default: false
+  anticheat.check.nofall:
+    description: Allow players to avoid fall damage
+    default: false
+  anticheat.check.fastbow:
+    description: Allow players to quickly fire bows
+    default: false
+  anticheat.check.fasteat:
+    description: Allow players to eat food instantly
+    default: false
+  anticheat.check.fastheal:
+    description: Allow players to heal up instantly
+    default: false
+  anticheat.check.forcefield:
+    description: Allow players to use a forcefield
+    default: false
+  anticheat.check.xray:
+    description: Allow players to bypass xray stats
+    default: false
+  anticheat.check.longreach:
+    description: Allow players to use longreaching hacks
+    default: false
+  anticheat.check.projectile:
+    description: Allow players to quickly launch projectiles
+    default: false
+  anticheat.check.itemspam:
+    description: Allow players to use inventory drop spam hacks
+    default: false
+  anticheat.check.exempt:
+    description: Total exemption from checks
+    default: false
+    children:
+      anticheat.check.zombe.fly: true
+      anticheat.check.zombe.noclip: true
+      anticheat.check.zombe.cheat: true
+      anticheat.check.fly: true
+      anticheat.check.waterwalk: true
+      anticheat.check.noswing: true
+      anticheat.check.fastbreak: true
+      anticheat.check.fastplace: true
+      anticheat.check.spam: true
+      anticheat.check.sprint: true
+      anticheat.check.sneak: true
+      anticheat.check.speed: true
+      anticheat.check.spider: true
+      anticheat.check.nofall: true
+      anticheat.check.fastbow: true
+      anticheat.check.fasteat: true
+      anticheat.check.fastheal: true
+      anticheat.check.forcefield: true
+      anticheat.check.xray: true
+      anticheat.check.longreach: true
+      anticheat.check.projectile: true
+      anticheat.check.itemspam: true
