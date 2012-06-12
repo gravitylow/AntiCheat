@@ -1,6 +1,6 @@
 /*
  * AntiCheat for Bukkit.
- * Copyright (C) 2012 H31IX http://h31ix.net
+ * Copyright (C) 2012 AntiCheat Team | http://h31ix.net
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,79 +26,77 @@ import org.bukkit.entity.Player;
 
 /**
  * <p>
- * The manager that AntiCheat will check with to see if it should watch certain checks and certain players.
+ * The manager that AntiCheat will check with to see if it should watch certain
+ * checks and certain players.
  */
 
-public class CheckManager 
+public class CheckManager
 {
     private AnticheatManager manager = null;
     private static List<CheckType> checkIgnoreList = new ArrayList<CheckType>();
-    private static Multimap<String,CheckType> exemptList = ArrayListMultimap.create();
+    private static Multimap<String, CheckType> exemptList = ArrayListMultimap.create();
     private static int disabled = 0;
     private static int exempt = 0;
-    
-    public CheckManager(AnticheatManager instance) 
+
+    public CheckManager(AnticheatManager instance)
     {
-    	manager = instance;
+        manager = instance;
     }
-            
+
     public void activateCheck(CheckType type)
     {
-        if(checkIgnoreList.contains(type))
+        if (checkIgnoreList.contains(type))
         {
-            manager.log("The "+type.toString()+" check was activated.");
+            manager.log("The " + type.toString() + " check was activated.");
             checkIgnoreList.remove(type);
         }
     }
-          
+
     public void deactivateCheck(CheckType type)
     {
-        manager.log("The "+type.toString()+" check was deactivated.");
+        manager.log("The " + type.toString() + " check was deactivated.");
         checkIgnoreList.add(type);
         disabled++;
     }
-        
+
     public boolean isActive(CheckType type)
     {
         return !checkIgnoreList.contains(type);
     }
-         
+
     public void exemptPlayer(Player player, CheckType type)
     {
-        manager.log(player.getName()+" was exempted from the "+type.toString()+" check.");
+        manager.log(player.getName() + " was exempted from the " + type.toString() + " check.");
         exemptList.put(player.getName(), type);
         exempt++;
     }
-         
+
     public void unexemptPlayer(Player player, CheckType type)
     {
-        if(exemptList.containsEntry(player.getName(), type))
+        if (exemptList.containsEntry(player.getName(), type))
         {
-            manager.log(player.getName()+" was re-added to the "+type.toString()+" check.");
+            manager.log(player.getName() + " was re-added to the " + type.toString() + " check.");
             exemptList.remove(player.getName(), type);
         }
     }
-       
+
     public boolean isExempt(Player player, CheckType type)
     {
         return exemptList.containsEntry(player.getName(), type);
     }
-    
+
     public boolean willCheck(Player player, CheckType type)
-    {        
-        return  isActive(type) 
-                && manager.getConfiguration().checkInWorld(player.getWorld())
-                && !isExempt(player, type) 
-                && !type.checkPermission(player);
+    {
+        return isActive(type) && manager.getConfiguration().checkInWorld(player.getWorld()) && !isExempt(player, type) && !type.checkPermission(player);
     }
-    
+
     public int getExempt()
     {
         int x = exempt;
         exempt = 0;
         return x;
     }
-    
+
     public int getDisabled()
     {
         int x = disabled;

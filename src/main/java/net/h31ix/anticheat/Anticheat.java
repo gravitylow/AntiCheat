@@ -1,6 +1,6 @@
 /*
  * AntiCheat for Bukkit.
- * Copyright (C) 2012 H31IX http://h31ix.net
+ * Copyright (C) 2012 AntiCheat Team | http://h31ix.net
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Anticheat extends JavaPlugin 
+public class Anticheat extends JavaPlugin
 {
     private static AnticheatManager manager;
     private final List<Listener> eventList = new ArrayList<Listener>();
@@ -54,12 +54,12 @@ public class Anticheat extends JavaPlugin
     private static final long XRAY_TIME = 1200;
 
     @Override
-    public void onDisable() 
+    public void onDisable()
     {
         AnticheatManager.close();
         Map<String, Integer> map = manager.getPlayerManager().getLevels();
         Iterator<String> set = map.keySet().iterator();
-        while (set.hasNext()) 
+        while (set.hasNext())
         {
             String player = set.next();
             config.saveLevel(player, map.get(player));
@@ -69,7 +69,7 @@ public class Anticheat extends JavaPlugin
     }
 
     @Override
-    public void onEnable() 
+    public void onEnable()
     {
         logger = this.getLogger();
         manager = new AnticheatManager(this);
@@ -77,95 +77,95 @@ public class Anticheat extends JavaPlugin
         checkConfig();
         verbose = config.verboseStartup();
         updateFolder = config.updateFolder();
-        if (verbose) 
+        if (verbose)
         {
             logger.log(Level.INFO, "Setup the config.");
-        }         
+        }
         checkForUpdate();
         eventList.add(new PlayerListener());
         eventList.add(new BlockListener());
         eventList.add(new EntityListener());
         eventList.add(new VehicleListener());
         final XRayTracker xtracker = manager.getXRayTracker();
-        if (config.logXRay()) 
+        if (config.logXRay())
         {
             eventList.add(new XRayListener());
-            if (config.alertXRay()) 
-            {               
-                getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() 
+            if (config.alertXRay())
+            {
+                getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable()
                 {
                     @Override
-                    public void run() 
+                    public void run()
                     {
-                        for (Player player : getServer().getOnlinePlayers()) 
+                        for (Player player : getServer().getOnlinePlayers())
                         {
                             String name = player.getName();
-                            if (!xtracker.hasAlerted(name) && xtracker.sufficientData(name) && xtracker.hasAbnormal(name)) 
+                            if (!xtracker.hasAlerted(name) && xtracker.sufficientData(name) && xtracker.hasAbnormal(name))
                             {
-                                String [] alert = new String[2];
-                                alert[0] = ChatColor.YELLOW+"[ALERT] "+ChatColor.WHITE+name+ChatColor.YELLOW+" might be using xray.";
-                                alert[1] = ChatColor.YELLOW+"[ALERT] Please check their xray stats using "+ChatColor.WHITE+"/anticheat xray "+name+ChatColor.YELLOW+".";
-                                Utilities.alert(alert); 
+                                String[] alert = new String[2];
+                                alert[0] = ChatColor.YELLOW + "[ALERT] " + ChatColor.WHITE + name + ChatColor.YELLOW + " might be using xray.";
+                                alert[1] = ChatColor.YELLOW + "[ALERT] Please check their xray stats using " + ChatColor.WHITE + "/anticheat xray " + name + ChatColor.YELLOW + ".";
+                                Utilities.alert(alert);
                                 xtracker.logAlert(name);
                             }
                         }
                     }
                 }, XRAY_TIME, XRAY_TIME);
-                if (verbose) 
+                if (verbose)
                 {
                     logger.log(Level.INFO, "Scheduled the XRay checker.");
-                }                 
+                }
             }
         }
-        for (Listener listener : eventList) 
+        for (Listener listener : eventList)
         {
             getServer().getPluginManager().registerEvents(listener, this);
-            if (verbose) 
+            if (verbose)
             {
                 logger.log(Level.INFO, "Registered events for ".concat(listener.toString()));
             }
         }
         getCommand("anticheat").setExecutor(new CommandHandler());
-        if (verbose) 
+        if (verbose)
         {
             logger.log(Level.INFO, "Registered commands.");
         }
         if (update && config.autoUpdate())
         {
-            if (verbose) 
+            if (verbose)
             {
                 logger.log(Level.INFO, "Downloading the new update...");
             }
             File file = new File("plugins/" + updateFolder);
-            if (!file.exists()) 
+            if (!file.exists())
             {
-                try 
+                try
                 {
                     file.mkdir();
-                } 
-                catch (Exception ex) 
+                }
+                catch (Exception ex)
                 {
                 }
             }
-            try 
+            try
             {
-                saveFile(file.getCanonicalPath() + "/AntiCheat.jar","http://dl.dropbox.com/u/38228324/AntiCheat.jar");
-            } 
-            catch (IOException ex) 
+                saveFile(file.getCanonicalPath() + "/AntiCheat.jar", "http://dl.dropbox.com/u/38228324/AntiCheat.jar");
+            }
+            catch (IOException ex)
             {
             }
         }
-        try 
+        try
         {
             metrics = new Metrics(this);
             final EventListener listener = new EventListener();
             Graph hacksGraph = metrics.createGraph("Hacks blocked");
-            for (final CheckType type : CheckType.values()) 
+            for (final CheckType type : CheckType.values())
             {
-                hacksGraph.addPlotter(new Metrics.Plotter(CheckType.getName(type)) 
+                hacksGraph.addPlotter(new Metrics.Plotter(CheckType.getName(type))
                 {
                     @Override
-                    public int getValue() 
+                    public int getValue()
                     {
                         return listener.getCheats(type);
                     }
@@ -173,51 +173,51 @@ public class Anticheat extends JavaPlugin
                 listener.resetCheck(type);
             }
             Graph apiGraph = metrics.createGraph("API Usage");
-            apiGraph.addPlotter(new Metrics.Plotter("Checks disabled") 
+            apiGraph.addPlotter(new Metrics.Plotter("Checks disabled")
             {
                 @Override
-                public int getValue() 
+                public int getValue()
                 {
                     return manager.getCheckManager().getDisabled();
                 }
-            });  
-            apiGraph.addPlotter(new Metrics.Plotter("Players exempted") 
+            });
+            apiGraph.addPlotter(new Metrics.Plotter("Players exempted")
             {
                 @Override
-                public int getValue() 
+                public int getValue()
                 {
                     return manager.getCheckManager().getExempt();
                 }
-            });              
+            });
             metrics.start();
-            if (verbose) 
+            if (verbose)
             {
                 logger.log(Level.INFO, "Metrics started.");
-            }             
-        } 
-        catch (IOException ex) 
+            }
+        }
+        catch (IOException ex)
         {
         }
-        for (Player player : getServer().getOnlinePlayers()) 
+        for (Player player : getServer().getOnlinePlayers())
         {
             String name = player.getName();
-            manager.getPlayerManager().setLevel(player,config.getLevel(name));
-            if (verbose) 
+            manager.getPlayerManager().setLevel(player, config.getLevel(name));
+            if (verbose)
             {
-                logger.log(Level.INFO, "Data for "+player.getName()+" re-applied from flatfile");
-            }             
+                logger.log(Level.INFO, "Data for " + player.getName() + " re-applied from flatfile");
+            }
         }
-        if (verbose) 
+        if (verbose)
         {
             logger.log(Level.INFO, "Finished loading.");
         }
     }
 
-    private void saveFile(String file, String url) 
+    private void saveFile(String file, String url)
     {
         BufferedInputStream in = null;
         FileOutputStream fout = null;
-        try 
+        try
         {
             in = new BufferedInputStream(new URL(url).openStream());
             fout = new FileOutputStream(file);
@@ -228,56 +228,56 @@ public class Anticheat extends JavaPlugin
             {
                 fout.write(data, 0, count);
             }
-        } 
-        catch (Exception ex) 
+        }
+        catch (Exception ex)
         {
-        } 
-        finally 
+        }
+        finally
         {
-            try 
+            try
             {
-                if (in != null) 
+                if (in != null)
                 {
                     in.close();
                 }
-                if (fout != null) 
+                if (fout != null)
                 {
                     fout.close();
                 }
-            } 
-            catch (Exception ex) 
+            }
+            catch (Exception ex)
             {
             }
-            if (verbose) 
+            if (verbose)
             {
-                logger.log(Level.INFO,"AntiCheat update has been downloaded and will be installed on next launch.");
+                logger.log(Level.INFO, "AntiCheat update has been downloaded and will be installed on next launch.");
             }
         }
     }
 
-    public void checkConfig() 
+    public void checkConfig()
     {
-        if (!new File(getDataFolder() + "/config.yml").exists()) 
+        if (!new File(getDataFolder() + "/config.yml").exists())
         {
             saveDefaultConfig();
-            if (verbose) 
+            if (verbose)
             {
-                    logger.log(Level.INFO, "Config file created.");
+                logger.log(Level.INFO, "Config file created.");
             }
         }
-        if (!new File(getDataFolder() + "/lang.yml").exists()) 
+        if (!new File(getDataFolder() + "/lang.yml").exists())
         {
-            saveResource("lang.yml",false);
-            if (verbose) 
+            saveResource("lang.yml", false);
+            if (verbose)
             {
-                    logger.log(Level.INFO, "Lang file created.");
+                logger.log(Level.INFO, "Lang file created.");
             }
-        }        
+        }
     }
 
-    private void checkForUpdate() 
+    private void checkForUpdate()
     {
-        if (verbose) 
+        if (verbose)
         {
             logger.log(Level.INFO, "Checking for updates...");
         }
@@ -286,61 +286,61 @@ public class Anticheat extends JavaPlugin
         InputStreamReader inStream = null;
         BufferedReader buff;
         String v = "";
-        try 
+        try
         {
             url = new URL("http://dl.dropbox.com/u/38228324/anticheatVersion.txt");
             urlConn = url.openConnection();
             inStream = new InputStreamReader(urlConn.getInputStream());
-        } 
-        catch (Exception ex) 
+        }
+        catch (Exception ex)
         {
         }
         buff = new BufferedReader(inStream);
-        try 
+        try
         {
             v = buff.readLine();
             urlConn = null;
             inStream = null;
             buff.close();
             buff = null;
-        } 
-        catch (Exception ex) 
+        }
+        catch (Exception ex)
         {
         }
         String version = this.getDescription().getVersion().split("-b")[0];
-        if (!version.equalsIgnoreCase(v)) 
+        if (!version.equalsIgnoreCase(v))
         {
-            if (version.endsWith("-PRE") || version.endsWith("-DEV")) 
+            if (version.endsWith("-PRE") || version.endsWith("-DEV"))
             {
-                if (version.replaceAll("-PRE", "").replaceAll("-DEV", "").equalsIgnoreCase(v)) 
+                if (version.replaceAll("-PRE", "").replaceAll("-DEV", "").equalsIgnoreCase(v))
                 {
                     update = true;
-                    if (verbose) 
+                    if (verbose)
                     {
-                        logger.log(Level.INFO,"Your dev build has been promoted to release. Downloading the update.");
-                    }
-                } 
-                else 
-                {
-                    update = false;
-                    if (verbose) 
-                    {
-                        logger.log(Level.INFO,"Dev build detected, so skipping update checking until this version is released.");
+                        logger.log(Level.INFO, "Your dev build has been promoted to release. Downloading the update.");
                     }
                 }
-            } 
-            else 
+                else
+                {
+                    update = false;
+                    if (verbose)
+                    {
+                        logger.log(Level.INFO, "Dev build detected, so skipping update checking until this version is released.");
+                    }
+                }
+            }
+            else
             {
                 update = true;
-                if (verbose) 
+                if (verbose)
                 {
                     logger.log(Level.INFO, "An update was found.");
                 }
             }
-        } 
-        else 
+        }
+        else
         {
-            if (verbose) 
+            if (verbose)
             {
                 logger.log(Level.INFO, "No update found.");
             }
@@ -353,21 +353,21 @@ public class Anticheat extends JavaPlugin
         return manager.getPlugin();
     }
 
-    public static AnticheatManager getManager() 
+    public static AnticheatManager getManager()
     {
         return manager;
     }
 
-    public static boolean isUpdated() 
+    public static boolean isUpdated()
     {
         return !update;
     }
 
-    public static String getVersion() 
+    public static String getVersion()
     {
         return manager.getPlugin().getDescription().getVersion();
     }
-    
+
     public Logger getAnticheatLogger()
     {
         return this.getLogger();

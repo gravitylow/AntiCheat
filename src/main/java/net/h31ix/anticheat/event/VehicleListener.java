@@ -1,6 +1,6 @@
 /*
  * AntiCheat for Bukkit.
- * Copyright (C) 2012 H31IX http://h31ix.net
+ * Copyright (C) 2012 AntiCheat Team | http://h31ix.net
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,25 +24,25 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 
-public class VehicleListener extends EventListener 
-{    
+public class VehicleListener extends EventListener
+{
     private final Backend backend = getBackend();
-    
+
     @EventHandler(ignoreCancelled = true)
     public void onVehicleEnter(VehicleEnterEvent event)
     {
-        if(event.getEntered() instanceof Player)
+        if (event.getEntered() instanceof Player)
         {
-            backend.logEnterExit((Player)event.getEntered());
+            backend.logEnterExit((Player) event.getEntered());
         }
     }
-    
+
     @EventHandler(ignoreCancelled = true)
     public void onVehicleExit(VehicleExitEvent event)
     {
-        if(event.getExited() instanceof Player)
+        if (event.getExited() instanceof Player)
         {
-            backend.logEnterExit((Player)event.getExited());
+            backend.logEnterExit((Player) event.getExited());
         }
-    }    
+    }
 }

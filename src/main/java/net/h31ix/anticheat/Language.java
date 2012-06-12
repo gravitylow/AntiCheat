@@ -1,6 +1,6 @@
 /*
  * AntiCheat for Bukkit.
- * Copyright (C) 2012 H31IX http://h31ix.net
+ * Copyright (C) 2012 AntiCheat Team | http://h31ix.net
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ package net.h31ix.anticheat;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class Language 
+public class Language
 {
     private static String[] medAlert = null;
     private static String[] highAlert = null;
@@ -29,7 +29,7 @@ public class Language
     private static String banBroadcast = null;
     private static String kickReason = null;
     private static String kickBroadcast = null;
-    
+
     public Language(FileConfiguration file)
     {
         medAlert = file.getList("alert.medium_alert").toArray(new String[file.getList("alert.medium_alert").size()]);
@@ -38,41 +38,41 @@ public class Language
         banReason = file.getString("ban.ban_reason");
         banBroadcast = file.getString("ban.ban_broadcast");
         kickReason = file.getString("kick.kick_reason");
-        kickBroadcast = file.getString("kick.kick_broadcast"); 
+        kickBroadcast = file.getString("kick.kick_broadcast");
     }
-    
-    public String [] getMediumAlert()
+
+    public String[] getMediumAlert()
     {
         return medAlert;
     }
-    
-    public String [] getHighAlert()
+
+    public String[] getHighAlert()
     {
         return highAlert;
-    }    
-    
-    public String [] getWarning()
+    }
+
+    public String[] getWarning()
     {
         return warning;
-    }    
-    
+    }
+
     public String getBanReason()
     {
         return banReason;
-    }   
-    
+    }
+
     public String getBanBroadcast()
     {
         return banBroadcast;
-    }      
-    
+    }
+
     public String getKickReason()
     {
         return kickReason;
-    }   
-    
+    }
+
     public String getKickBroadcast()
     {
         return kickBroadcast;
-    }    
+    }
 }

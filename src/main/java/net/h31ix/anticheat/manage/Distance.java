@@ -1,6 +1,6 @@
 /*
  * AntiCheat for Bukkit.
- * Copyright (C) 2012 H31IX http://h31ix.net
+ * Copyright (C) 2012 AntiCheat Team | http://h31ix.net
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,47 +22,36 @@ import org.bukkit.Location;
 
 public class Distance
 {
-    private final Location l1,l2;
-    
+    private final Location l1, l2;
+
     public Distance(Location from, Location to)
     {
         l1 = to;
         l2 = from;
     }
-    
-    public double fromX() 
+
+    public double fromY()
     {
-    	return l2.getX();
+        return l2.getY();
     }
-    
-    public double fromY() 
+
+    public double toY()
     {
-    	return l2.getY();
-    }
-    
-    public double fromZ()
-    {
-    	return l2.getZ();
-    }
-    
-    public double toY() 
-    {
-    	return l1.getY();
+        return l1.getY();
     }
 
     public double getXDifference()
     {
-        return Math.abs(l1.getX()-l2.getX());   
+        return Math.abs(l1.getX() - l2.getX());
     }
 
     public double getZDifference()
     {
-        return Math.abs(l1.getZ()-l2.getZ());   
-    }    
+        return Math.abs(l1.getZ() - l2.getZ());
+    }
 
     public double getYDifference()
     {
-        return Math.abs(l1.getY()-l2.getY());   
+        return Math.abs(l1.getY() - l2.getY());
     }
-        
 }

@@ -1,6 +1,6 @@
 /*
  * AntiCheat for Bukkit.
- * Copyright (C) 2012 H31IX http://h31ix.net
+ * Copyright (C) 2012 AntiCheat Team | http://h31ix.net
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,14 @@ package net.h31ix.anticheat.util;
 
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
- 
-public class ConsoleFormatter extends Formatter {
+
+public class ConsoleFormatter extends Formatter
+{
 
     @Override
-    public String format(LogRecord record) 
+    public String format(LogRecord record)
     {
         StringBuilder output = new StringBuilder().append(record.getMessage()).append(' ');
-        return output.toString();		
+        return output.toString();
     }
 }

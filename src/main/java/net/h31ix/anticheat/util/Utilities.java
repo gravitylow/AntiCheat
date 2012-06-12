@@ -1,6 +1,6 @@
 /*
  * AntiCheat for Bukkit.
- * Copyright (C) 2012 H31IX http://h31ix.net
+ * Copyright (C) 2012 AntiCheat Team | http://h31ix.net
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,199 +24,148 @@ import java.util.ArrayList;
 import java.util.List;
 import net.h31ix.anticheat.Anticheat;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
-public final class Utilities 
+public final class Utilities
 {
     private static final List<Material> INSTANT_BREAK = new ArrayList<Material>();
     private static final List<Material> FOOD = new ArrayList<Material>();
     private static final List<Material> INTERACTABLE = new ArrayList<Material>();
-    
+
     private Utilities()
     {
-        
-    }    
-    public static void alert(String [] message)
+
+    }
+
+    public static void alert(String[] message)
     {
-        for(String msg : message)
+        for (String msg : message)
         {
             Bukkit.broadcast(msg, "anticheat.alert");
         }
-        if(Anticheat.getManager().getConfiguration().logConsole())
+        if (Anticheat.getManager().getConfiguration().logConsole())
         {
-           for(String msg : message)
-           {
-               Anticheat.getManager().log(msg);
-           }            
+            for (String msg : message)
+            {
+                Anticheat.getManager().log(msg);
+            }
         }
     }
+
     public static boolean cantStandAt(Block block)
     {
         return !canStand(block) && cantStandClose(block) && cantStandFar(block);
     }
+
     public static boolean cantStandClose(Block block)
     {
         return !canStand(block.getRelative(BlockFace.NORTH)) && !canStand(block.getRelative(BlockFace.EAST)) && !canStand(block.getRelative(BlockFace.SOUTH)) && !canStand(block.getRelative(BlockFace.WEST));
     }
+
     public static boolean cantStandFar(Block block)
     {
         return !canStand(block.getRelative(BlockFace.NORTH_WEST)) && !canStand(block.getRelative(BlockFace.NORTH_EAST)) && !canStand(block.getRelative(BlockFace.SOUTH_WEST)) && !canStand(block.getRelative(BlockFace.SOUTH_EAST));
     }
+
     public static boolean canStand(Block block)
     {
         return !(block.isLiquid() || block.getType() == Material.AIR);
     }
+
     public static boolean isInstantBreak(Material m)
     {
         return INSTANT_BREAK.contains(m);
     }
+
     public static boolean isFood(Material m)
     {
         return FOOD.contains(m);
     }
-    public static boolean isInteractable(Material m) {
+    
+    public static boolean isInteractable(Material m) 
+    {
     	return INTERACTABLE.contains(m);
     }
+
     public static boolean sprintFly(Player player)
     {
-        return player.isSprinting() || player.isFlying();       
+        return player.isSprinting() || player.isFlying();
     }
+
     public static boolean isOnLilyPad(Player player)
     {
         Block block = player.getLocation().getBlock();
         Material lily = Material.WATER_LILY;
         return block.getType() == lily || block.getRelative(BlockFace.NORTH).getType() == lily || block.getRelative(BlockFace.SOUTH).getType() == lily || block.getRelative(BlockFace.EAST).getType() == lily || block.getRelative(BlockFace.WEST).getType() == lily;
     }
-    
+
     public static boolean isUsingMcMMOAbility(Player player)
     {
         boolean b = false;
-        if(player.getServer().getPluginManager().getPlugin("mcMMO") != null)
+        if (player.getServer().getPluginManager().getPlugin("mcMMO") != null)
         {
-            if(mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.TREE_FELLER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.SUPER_BREAKER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.BERSERK) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.GIGA_DRILL_BREAKER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.BLAST_MINING))
-            {     
+            if (mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.TREE_FELLER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.SUPER_BREAKER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.BERSERK) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.GIGA_DRILL_BREAKER) || mcMMO.p.getPlayerProfile(player).getAbilityMode(AbilityType.BLAST_MINING))
+            {
                 b = true;
-            }       
+            }
         }
         return b;
     }
-    
-    /*
-     * 
-     * Credits to sk89q for the calculation of cardinal direction.
-     * 
-     * 
-     */
-    
-    /**
-     * Get the cardinal compass direction of a player.
-     * 
-     * @param player
-     * @return
-     */
-    public static String getCardinalDirection(Player player) {
-        double rot = (player.getLocation().getYaw() - 90) % 360;
-        if (rot < 0) {
-            rot += 360.0;
-        }
-        return getDirection(rot);
-    }
-    
-    /**
-     * Get the cardinal compass direction of a location.
-     * 
-     * @param location
-     * @return
-     */
-    
-    public static String getCardinalDirectionLoc(Location player) {
-        double rot = (player.getYaw() - 90) % 360;
-        if (rot < 0) {
-            rot += 360.0;
-        }
-        return getDirection(rot);
-    }
 
-    /**
-     * Converts a rotation to a cardinal direction name.
-     * 
-     * @param rot
-     * @return
-     */
-    private static String getDirection(double rot) {
-        if (0 <= rot && rot < 22.5) {
-            return "N";
-        } else if (22.5 <= rot && rot < 67.5) {
-            return "NE";
-        } else if (67.5 <= rot && rot < 112.5) {
-            return "E";
-        } else if (112.5 <= rot && rot < 157.5) {
-            return "SE";
-        } else if (157.5 <= rot && rot < 202.5) {
-            return "S";
-        } else if (202.5 <= rot && rot < 247.5) {
-            return "SW";
-        } else if (247.5 <= rot && rot < 292.5) {
-            return "W";
-        } else if (292.5 <= rot && rot < 337.5) {
-            return "NW";
-        } else if (337.5 <= rot && rot < 360.0) {
-            return "N";
-        } else {
-            return null;
-        }
-    }
-    
     public static boolean isSubmersed(Player player)
     {
         return player.getLocation().getBlock().isLiquid() && player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid();
     }
+
     public static boolean isInWater(Player player)
     {
         return player.getLocation().getBlock().isLiquid() || player.getLocation().getBlock().getRelative(BlockFace.DOWN).isLiquid() || player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid();
-    }    
+    }
+
     public static boolean isOnLadder(Player player)
     {
         return player.getLocation().getBlock().getType() == Material.VINE || player.getLocation().getBlock().getType() == Material.LADDER;
     }
+
     public static boolean isInt(String string)
     {
         boolean x = false;
-        try {
+        try
+        {
             Integer.parseInt(string);
             x = true;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
         }
         return x;
     }
-    static 
+
+    static
     {
         INSTANT_BREAK.add(Material.RED_MUSHROOM);
         INSTANT_BREAK.add(Material.RED_ROSE);
-        INSTANT_BREAK.add(Material.BROWN_MUSHROOM); 
-        INSTANT_BREAK.add(Material.YELLOW_FLOWER); 
-        INSTANT_BREAK.add(Material.REDSTONE); 
-        INSTANT_BREAK.add(Material.REDSTONE_TORCH_OFF); 
-        INSTANT_BREAK.add(Material.REDSTONE_TORCH_ON); 
-        INSTANT_BREAK.add(Material.REDSTONE_WIRE);  
+        INSTANT_BREAK.add(Material.BROWN_MUSHROOM);
+        INSTANT_BREAK.add(Material.YELLOW_FLOWER);
+        INSTANT_BREAK.add(Material.REDSTONE);
+        INSTANT_BREAK.add(Material.REDSTONE_TORCH_OFF);
+        INSTANT_BREAK.add(Material.REDSTONE_TORCH_ON);
+        INSTANT_BREAK.add(Material.REDSTONE_WIRE);
         INSTANT_BREAK.add(Material.LONG_GRASS);
-        INSTANT_BREAK.add(Material.PAINTING); 
-        INSTANT_BREAK.add(Material.WHEAT); 
-        INSTANT_BREAK.add(Material.SUGAR_CANE); 
-        INSTANT_BREAK.add(Material.SUGAR_CANE_BLOCK); 
-        INSTANT_BREAK.add(Material.DIODE); 
-        INSTANT_BREAK.add(Material.DIODE_BLOCK_OFF); 
+        INSTANT_BREAK.add(Material.PAINTING);
+        INSTANT_BREAK.add(Material.WHEAT);
+        INSTANT_BREAK.add(Material.SUGAR_CANE);
+        INSTANT_BREAK.add(Material.SUGAR_CANE_BLOCK);
+        INSTANT_BREAK.add(Material.DIODE);
+        INSTANT_BREAK.add(Material.DIODE_BLOCK_OFF);
         INSTANT_BREAK.add(Material.DIODE_BLOCK_ON);
         INSTANT_BREAK.add(Material.SAPLING);
         INSTANT_BREAK.add(Material.TORCH);
         INSTANT_BREAK.add(Material.CROPS);
-        INSTANT_BREAK.add(Material.SNOW); 
+        INSTANT_BREAK.add(Material.SNOW);
         INSTANT_BREAK.add(Material.TNT);
         INTERACTABLE.add(Material.STONE_BUTTON);
         INTERACTABLE.add(Material.LEVER);
@@ -247,6 +196,6 @@ public final class Utilities
         FOOD.add(Material.COOKIE);
         FOOD.add(Material.BREAD);
         FOOD.add(Material.SPIDER_EYE);
-        FOOD.add(Material.ROTTEN_FLESH);           
+        FOOD.add(Material.ROTTEN_FLESH);
     }
 }
