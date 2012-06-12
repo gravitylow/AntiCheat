@@ -274,26 +274,21 @@ public class Backend
     
     public boolean checkInteraction(Player player, Block block) 
     {
-    	// The most complicated check in the world...approaching nirvana.
     	int strikes = 0;
-    	
-    	// now let's swing the bat.
     	
     	// First Line of Defense
     	Block imple = player.getTargetBlock(null, 5);
     	if(imple.getTypeId() != block.getTypeId()) 
     	{
-    		strikes++;
+            strikes++;
     	}
     	
     	// Second line of defense.
     	if(!imple.getLocation().equals(block.getLocation()))
     	{
-    		strikes++;
+            strikes++;
     	}
-    	
-    	// ShamWow! That check was extremely easy!
-    	
+
     	return strikes > 0;
     }
 

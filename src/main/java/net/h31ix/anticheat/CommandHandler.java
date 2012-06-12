@@ -18,6 +18,7 @@
 
 package net.h31ix.anticheat;
 
+import net.h31ix.anticheat.manage.Permission;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

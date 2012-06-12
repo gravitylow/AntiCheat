@@ -113,6 +113,9 @@ permissions:
   anticheat.check.itemspam:
     description: Allow players to use inventory drop spam hacks
     default: false
+  anticheat.check.visual:
+    description: Allow players to interact with objects out of their view
+    default: false    
   anticheat.check.exempt:
     description: Total exemption from checks
     default: false
@@ -139,3 +142,4 @@ permissions:
       anticheat.check.longreach: true
       anticheat.check.projectile: true
       anticheat.check.itemspam: true
+      anticheat.check.visual: true

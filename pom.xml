@@ -38,8 +38,7 @@
             </resource>
         </resources>
 	</build>
-    <dependencies>
-    <!-- mbaxter is a dependency. -->        
+    <dependencies>   
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>

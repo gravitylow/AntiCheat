@@ -177,19 +177,18 @@ public class PlayerListener extends EventListener
         }
         
         /* Interactions Check */
-        //TODO: Extend this into block place/break and if working, change to visuals check.
         
         Block block = event.getClickedBlock(); 
-        if(block != null) {
-	        if(checkManager.willCheck(player, CheckType.INTERACTION) && Utilities.isInteractable(block.getType())) 
-	        {
-	            // save load and actually call the backend check here.
-	            if(backend.checkInteraction(player, block)) 
-	            {
-	                event.setCancelled(true);
-	                log("tried to interact with an object that couldn't see", player, CheckType.INTERACTION); //boring description though.
-	            }
-	       	}
+        if(block != null) 
+        {
+            if(checkManager.willCheck(player, CheckType.VISUAL) && Utilities.isInteractable(block.getType())) 
+            {
+                if(backend.checkInteraction(player, block)) 
+                {
+                    event.setCancelled(true);
+                    log("tried to interact with an object that they couldn't see", player, CheckType.VISUAL); //boring description though.
+                }
+            }
         }
     }
 

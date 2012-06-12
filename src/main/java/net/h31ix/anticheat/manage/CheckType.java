@@ -20,7 +20,6 @@ package net.h31ix.anticheat.manage;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.h31ix.anticheat.Permission;
 import org.bukkit.entity.Player;
 
 /**
@@ -42,7 +41,7 @@ public enum CheckType
     SPRINT(Permission.CHECK_SPRINT),
     SNEAK(Permission.CHECK_SNEAK),
     SPEED(Permission.CHECK_SPEED),
-    INTERACTION(Permission.CHECK_INTERACTION),
+    VISUAL(Permission.CHECK_VISUAL),
     SPIDER(Permission.CHECK_SPIDER),
     NOFALL(Permission.CHECK_NOFALL),
     FAST_BOW(Permission.CHECK_FASTBOW),

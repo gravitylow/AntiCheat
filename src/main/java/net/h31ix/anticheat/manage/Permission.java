@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.h31ix.anticheat;
+package net.h31ix.anticheat.manage;
 
 import org.bukkit.command.CommandSender;
 
@@ -45,7 +45,7 @@ public enum Permission
     CHECK_LONGREACH,
     CHECK_FASTPROJECTILE,
     CHECK_ITEMSPAM,
-    CHECK_INTERACTION,
+    CHECK_VISUAL,
 
     /* System Nodes */
     SYSTEM_LOG,
