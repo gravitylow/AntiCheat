@@ -12,3 +12,130 @@ commands:
     description: Control and view info about AntiCheat
     usage: /anticheat help
     aliases: anti
+permissions:
+  anticheat.alert:
+    description: Get alerts
+  anticheat.system.help:
+    description: Help access
+  anticheat.system.report:
+    description: Reports access
+  anticheat.system.spy:
+    description: Spy system access
+  anticheat.system.xray:
+    description: XRay info access
+  anticheat.mod:
+    description: Mod helper perm
+    children:
+      anticheat.alert: true
+      anticheat.system.help: true
+      anticheat.system.report: true
+      anticheat.system.spy: true
+      anticheat.system.xray: true
+  anticheat.system.log:
+    description: Log access
+  anticheat.system.reload:
+    description: Reload access
+  anticheat.system.reset:
+    description: Reset access
+  anticheat.system.update:
+    description: Update access
+  anticheat.admin:
+    description: Admin helper perm
+    children:
+      anticheat.mod: true
+      anticheat.system.log: true
+      anticheat.system.reload: true
+      anticheat.system.reset: true
+      anticheat.system.update: true
+  anticheat.zombe.fly:
+    description: Allow players to use zombe flymod
+    default: false
+  anticheat.zombe.noclip:
+    description: Allow players to use zombe noclip hack
+    default: false
+  anticheat.zombe.cheat:
+    description: Allow players to use zombe cheat hack
+    default: false
+  anticheat.fly:
+    description: Allow players to fly
+    default: false
+  anticheat.waterwalk:
+    description: Allow players to walk on water
+    default: false
+  anticheat.noswing:
+    description: Allow players to not ever swing their arm
+    default: false
+  anticheat.fastbreak:
+    description: Allow players to quickly break blocks
+    default: false
+  anticheat.fastplace:
+    description: Allow players to use build hacks and fastplace
+    default: false
+  anticheat.spam:
+    description: Allow players to spam the server
+    default: false
+  anticheat.sprint:
+    description: Allow players to sprint when hungry
+    default: false
+  anticheat.sneak:
+    description: Allow players to use auto-sneak
+    default: false
+  anticheat.speed:
+    description: Use this with anticheat.flyhack to allow more speed
+    default: false
+  anticheat.spider:
+    description: Allow players to climb non-climbable surfaces
+    default: false
+  anticheat.nofall:
+    description: Allow players to avoid fall damage
+    default: false
+  anticheat.fastbow:
+    description: Allow players to quickly fire bows
+    default: false
+  anticheat.fasteat:
+    description: Allow players to eat food instantly
+    default: false
+  anticheat.fastheal:
+    description: Allow players to heal up instantly
+    default: false
+  anticheat.forcefield:
+    description: Allow players to use a forcefield
+    default: false
+  anticheat.xray:
+    description: Allow players to bypass xray stats
+    default: false
+  anticheat.longreach:
+    description: Allow players to use longreaching hacks
+    default: false
+  anticheat.projectile:
+    description: Allow players to quickly launch projectiles
+    default: false
+  anticheat.itemspam:
+    description: Allow players to use inventory drop spam hacks
+    default: false
+  anticheat.exempt:
+    description: Total exemption from checks
+    default: false
+    children:
+      anticheat.zombe.fly: true
+      anticheat.zombe.noclip: true
+      anticheat.zombe.cheat: true
+      anticheat.fly: true
+      anticheat.waterwalk: true
+      anticheat.noswing: true
+      anticheat.fastbreak: true
+      anticheat.fastplace: true
+      anticheat.spam: true
+      anticheat.sprint: true
+      anticheat.sneak: true
+      anticheat.speed: true
+      anticheat.spider: true
+      anticheat.nofall: true
+      anticheat.fastbow: true
+      anticheat.fasteat: true
+      anticheat.fastheal: true
+      anticheat.forcefield: true
+      anticheat.xray: true
+      anticheat.longreach: true
+      anticheat.projectile: true
+      anticheat.itemspam: true
