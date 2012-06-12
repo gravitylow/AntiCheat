@@ -152,7 +152,7 @@ public class Configuration
             config.set("Enable in", w);
             save();
         }
-        worlds = (List<String>)(config.getList("Enable in")); 
+        worlds = config.getStringList("Enable in"); 
         if(config.getString("XRay.Log xray stats") == null)
         {
             config.set("XRay.Log xray stats", true);
