@@ -19,11 +19,9 @@
 package net.h31ix.anticheat.manage;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.*;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.Configuration;
-import net.h31ix.anticheat.util.ConsoleFormatter;
 import net.h31ix.anticheat.util.FileFormatter;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.ChatColor;
@@ -43,7 +41,6 @@ public class AnticheatManager
     private Backend backend = null;
     private static Logger LOGGER, FILE_LOGGER;
     private static Handler fileHandler;
-    private static Handler consoleHandler;
     private static final int LOG_LEVEL_HIGH = 3;
     
     public AnticheatManager(Anticheat instance)
