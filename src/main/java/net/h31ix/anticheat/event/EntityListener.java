@@ -27,132 +27,131 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.*;
 
-
-public class EntityListener extends EventListener 
-{    
+public class EntityListener extends EventListener
+{
     private final Backend backend = getBackend();
     private final CheckManager checkManager = getCheckManager();
-    
+
     @EventHandler
     public void onEntityShootBow(EntityShootBowEvent event)
     {
-        if(event.getEntity() instanceof Player)
+        if (event.getEntity() instanceof Player)
         {
-            Player player = (Player)event.getEntity();   
-            if(checkManager.willCheck(player, CheckType.FAST_BOW))
-            {      
-                if(backend.justWoundUp(player))
+            Player player = (Player) event.getEntity();
+            if (checkManager.willCheck(player, CheckType.FAST_BOW))
+            {
+                if (backend.justWoundUp(player))
                 {
                     event.setCancelled(true);
-                    log("tried to fire a bow too fast.",player,CheckType.FAST_BOW);
+                    log("tried to fire a bow too fast.", player, CheckType.FAST_BOW);
                 }
                 else
                 {
                     decrease(player);
-                }                
+                }
             }
         }
     }
-    
+
     @EventHandler
     public void onEntityRegainHealth(EntityRegainHealthEvent event)
     {
-        if(event.getEntity() instanceof Player && event.getRegainReason() == RegainReason.SATIATED)
+        if (event.getEntity() instanceof Player && event.getRegainReason() == RegainReason.SATIATED)
         {
-            Player player = (Player)event.getEntity();
-            if(checkManager.willCheck(player, CheckType.FAST_HEAL)) 
+            Player player = (Player) event.getEntity();
+            if (checkManager.willCheck(player, CheckType.FAST_HEAL))
             {
-                if(backend.justHealed(player))
+                if (backend.justHealed(player))
                 {
                     event.setCancelled(true);
-                    log("tried to heal too fast.",player,CheckType.FAST_HEAL);  
+                    log("tried to heal too fast.", player, CheckType.FAST_HEAL);
                 }
                 else
                 {
                     decrease(player);
-                }                  
+                }
             }
         }
     }
-    
+
     @EventHandler
     public void onFoodLevelChange(FoodLevelChangeEvent event)
     {
-        if(event.getEntity() instanceof Player)
+        if (event.getEntity() instanceof Player)
         {
-            Player player = (Player)event.getEntity();
-            if(checkManager.willCheck(player, CheckType.FAST_EAT)) 
+            Player player = (Player) event.getEntity();
+            if (checkManager.willCheck(player, CheckType.FAST_EAT))
             {
-                if(backend.justStartedEating(player))
+                if (backend.justStartedEating(player))
                 {
                     event.setCancelled(true);
-                    log("tried to eat too fast.",player,CheckType.FAST_EAT); 
+                    log("tried to eat too fast.", player, CheckType.FAST_EAT);
                 }
                 else
                 {
                     decrease(player);
-                }                 
+                }
             }
         }
     }
-    
+
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event)
     {
         boolean noHack = true;
         if (event instanceof EntityDamageByEntityEvent)
         {
-            EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;    
-            if(event.getEntity() instanceof Player)
-            {      
-                Player player = (Player)event.getEntity();
+            EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+            if (event.getEntity() instanceof Player)
+            {
+                Player player = (Player) event.getEntity();
                 if (e.getDamager() instanceof Player)
-                {         
-                    Player p = (Player)e.getDamager();   
+                {
+                    Player p = (Player) e.getDamager();
                     backend.logDamage(p);
                     backend.logDamage(player);
-                    if(checkManager.willCheck(p, CheckType.LONG_REACH))
+                    if (checkManager.willCheck(p, CheckType.LONG_REACH))
                     {
-                        Distance distance = new Distance(player.getLocation(),p.getLocation());
-                        if(backend.checkLongReachDamage(distance.getXDifference(),distance.getYDifference(),distance.getZDifference()))
+                        Distance distance = new Distance(player.getLocation(), p.getLocation());
+                        if (backend.checkLongReachDamage(distance.getXDifference(), distance.getYDifference(), distance.getZDifference()))
                         {
                             event.setCancelled(true);
-                            log("tried to damage a player too far away from them.",p,CheckType.LONG_REACH); 
+                            log("tried to damage a player too far away from them.", p, CheckType.LONG_REACH);
                             noHack = false;
-                        }                         
-                    }                     
+                        }
+                    }
                 }
                 else
                 {
                     backend.logDamage(player);
                 }
             }
-            if(e.getDamager() instanceof Player)
+            if (e.getDamager() instanceof Player)
             {
                 Player player = (Player) e.getDamager();
-                if(checkManager.willCheck(player, CheckType.FORCEFIELD)) 
+                if (checkManager.willCheck(player, CheckType.FORCEFIELD))
                 {
-                    if(backend.justSprinted(player))
+                    if (backend.justSprinted(player))
                     {
                         event.setCancelled(true);
-                        log("tried to sprint & damage too fast.",player,CheckType.FORCEFIELD);  
-                        noHack = false;                        
-                    }                     
+                        log("tried to sprint & damage too fast.", player, CheckType.FORCEFIELD);
+                        noHack = false;
+                    }
                 }
-                if(checkManager.willCheck(player, CheckType.NO_SWING)) 
+                if (checkManager.willCheck(player, CheckType.NO_SWING))
                 {
-                    if(!backend.justAnimated(player))
+                    if (!backend.justAnimated(player))
                     {
                         event.setCancelled(true);
-                        log("tried to damage an entity without swinging their arm.",player,CheckType.NO_SWING);  
-                        noHack = false;                        
-                    }                     
-                }                
-                if(noHack)
+                        log("tried to damage an entity without swinging their arm.", player, CheckType.NO_SWING);
+                        noHack = false;
+                    }
+                }
+                if (noHack)
                 {
                     decrease(player);
-                }                
-            }   
-        }     
+                }
+            }
+        }
     }
 }

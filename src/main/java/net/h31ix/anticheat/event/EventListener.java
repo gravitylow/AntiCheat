@@ -26,100 +26,101 @@ import net.h31ix.anticheat.manage.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-public class EventListener implements Listener 
+public class EventListener implements Listener
 {
-    private static final Map<CheckType,Integer> USAGE_LIST = new EnumMap<CheckType,Integer>(CheckType.class);
-    private static final Map<String,Integer> DECREASE_LIST = new HashMap<String,Integer>();
-    private static final CheckManager CHECK_MANAGER = Anticheat.getManager().getCheckManager();   
-    private static final Backend BACKEND = Anticheat.getManager().getBackend();  
+    private static final Map<CheckType, Integer> USAGE_LIST = new EnumMap<CheckType, Integer>(CheckType.class);
+    private static final Map<String, Integer> DECREASE_LIST = new HashMap<String, Integer>();
+    private static final CheckManager CHECK_MANAGER = Anticheat.getManager().getCheckManager();
+    private static final Backend BACKEND = Anticheat.getManager().getBackend();
     private static final Anticheat PLUGIN = Anticheat.getManager().getPlugin();
     private static final PlayerManager PLAYER_MANAGER = Anticheat.getManager().getPlayerManager();
-    
-    public void log(String message,Player player, CheckType type)
+
+    public void log(String message, Player player, CheckType type)
     {
-        Anticheat.getManager().log(player.getName()+" "+message);
+        Anticheat.getManager().log(player.getName() + " " + message);
         PLAYER_MANAGER.increaseLevel(player);
         removeDecrease(player);
-        logCheat(type,player);
+        logCheat(type, player);
     }
-    
-    private void logCheat(CheckType type,Player player)
+
+    private void logCheat(CheckType type, Player player)
     {
-        USAGE_LIST.put(type, getCheats(type)+1);
+        USAGE_LIST.put(type, getCheats(type) + 1);
         type.logUse(player);
-        if(Anticheat.getManager().getConfiguration().getFileLogLevel() == 2 && type.getUses(player) % 10 == 0)
+        if (Anticheat.getManager().getConfiguration().getFileLogLevel() == 2 && type.getUses(player) % 10 == 0)
         {
-            Anticheat.getManager().fileLog(player.getName()+" has triggered multiple "+type+" checks.");
+            Anticheat.getManager().fileLog(player.getName() + " has triggered multiple " + type + " checks.");
         }
     }
-    
+
     public void resetCheck(CheckType type)
     {
         USAGE_LIST.put(type, 0);
     }
-    
+
     public int getCheats(CheckType type)
     {
         int x = 0;
-        if(USAGE_LIST.get(type) != null)
+        if (USAGE_LIST.get(type) != null)
         {
             x = USAGE_LIST.get(type);
         }
         return x;
     }
-    
+
     private static void removeDecrease(Player player)
     {
         int x = 0;
-        if(DECREASE_LIST.get(player.getName()) != null)
+        if (DECREASE_LIST.get(player.getName()) != null)
         {
             x = DECREASE_LIST.get(player.getName());
-            x-=2;
-            if(x < 0)
+            x -= 2;
+            if (x < 0)
             {
                 x = 0;
             }
         }
-        DECREASE_LIST.put(player.getName(), x);       
+        DECREASE_LIST.put(player.getName(), x);
     }
-    
+
     public static void decrease(Player player)
     {
         int x = 0;
-        if(DECREASE_LIST.get(player.getName()) != null)
+        if (DECREASE_LIST.get(player.getName()) != null)
         {
             x = DECREASE_LIST.get(player.getName());
         }
-        x+=1;
+        x += 1;
         DECREASE_LIST.put(player.getName(), x);
-        if(x >= 10)
+        if (x >= 10)
         {
             PLAYER_MANAGER.decreaseLevel(player);
-            DECREASE_LIST.put(player.getName(),0);
+            DECREASE_LIST.put(player.getName(), 0);
         }
     }
-    
+
     public static CheckManager getCheckManager()
     {
         return CHECK_MANAGER;
     }
-    
-    public static AnticheatManager getManager() 
+
+    public static AnticheatManager getManager()
     {
-    	return Anticheat.getManager();
+        return Anticheat.getManager();
     }
-    
+
     public static Backend getBackend()
     {
         return BACKEND;
-    }  
-    
-    public static PlayerManager getPlayerManager() {
-    	return PLAYER_MANAGER;
     }
-    
+
+    public static PlayerManager getPlayerManager()
+    {
+        return PLAYER_MANAGER;
+    }
+
     public static Anticheat getPlugin()
     {
         return PLUGIN;
-    }    
+    }
 }
