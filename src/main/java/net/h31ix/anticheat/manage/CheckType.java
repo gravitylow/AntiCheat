@@ -20,9 +20,7 @@ package net.h31ix.anticheat.manage;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import net.h31ix.anticheat.Permissions;
-
+import net.h31ix.anticheat.Permission;
 import org.bukkit.entity.Player;
 
 
@@ -34,33 +32,33 @@ import org.bukkit.entity.Player;
 
 public enum CheckType 
 {
-    ZOMBE_FLY(Permissions.ZOMBE_FLY),
-    ZOMBE_NOCLIP(Permissions.ZOMBE_NOCLIP),
-    ZOMBE_CHEAT(Permissions.ZOMBE_CHEAT),
-    FLY(Permissions.FLY),
-    WATER_WALK(Permissions.WATER_WALK),
-    NO_SWING(Permissions.NO_SWING),
-    FAST_BREAK(Permissions.FAST_BREAK),
-    FAST_PLACE(Permissions.FAST_PLACE),
-    SPAM(Permissions.SPAM),
-    SPRINT(Permissions.SPRINT),
-    SNEAK(Permissions.SNEAK),
-    SPEED(Permissions.SPEED),
-    SPIDER(Permissions.SPIDER),
-    NOFALL(Permissions.NOFALL),
-    FAST_BOW(Permissions.FAST_BOW),
-    FAST_EAT(Permissions.FAST_EAT),
-    FAST_HEAL(Permissions.FAST_HEAL),
-    FORCEFIELD(Permissions.FORCEFIELD),
-    XRAY(Permissions.XRAY),
-    LONG_REACH(Permissions.LONG_REACH),
-    FAST_PROJECTILE(Permissions.FAST_PROJECTILE),
-    ITEM_SPAM(Permissions.ITEM_SPAM);
+    ZOMBE_FLY(Permission.CHECK_ZOMBE_FLY),
+    ZOMBE_NOCLIP(Permission.CHECK_ZOMBE_NOCLIP),
+    ZOMBE_CHEAT(Permission.CHECK_ZOMBE_CHEAT),
+    FLY(Permission.CHECK_FLY),
+    WATER_WALK(Permission.CHECK_WATERWALK),
+    NO_SWING(Permission.CHECK_NOSWING),
+    FAST_BREAK(Permission.CHECK_FASTBREAK),
+    FAST_PLACE(Permission.CHECK_FASTPLACE),
+    SPAM(Permission.CHECK_SPAM),
+    SPRINT(Permission.CHECK_SPRINT),
+    SNEAK(Permission.CHECK_SNEAK),
+    SPEED(Permission.CHECK_SPEED),
+    SPIDER(Permission.CHECK_SPIDER),
+    NOFALL(Permission.CHECK_NOFALL),
+    FAST_BOW(Permission.CHECK_FASTBOW),
+    FAST_EAT(Permission.CHECK_FASTEAT),
+    FAST_HEAL(Permission.CHECK_FASTHEAL),
+    FORCEFIELD(Permission.CHECK_FORCEFIELD),
+    XRAY(Permission.CHECK_XRAY),
+    LONG_REACH(Permission.CHECK_LONGREACH),
+    FAST_PROJECTILE(Permission.CHECK_FASTPROJECTILE),
+    ITEM_SPAM(Permission.CHECK_ITEMSPAM);
     
-    private final Permissions permission;
+    private final Permission permission;
     private final Map<String,Integer> level = new HashMap<String,Integer>();
     
-    private CheckType(Permissions perm) 
+    private CheckType(Permission perm) 
     {
         this.permission = perm;
     }

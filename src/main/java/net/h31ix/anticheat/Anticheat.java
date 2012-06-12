@@ -210,7 +210,7 @@ public class Anticheat extends JavaPlugin
         if (verbose) 
         {
             logger.log(Level.INFO, "Finished loading.");
-        }         
+        }
     }
 
     private void saveFile(String file, String url) 
