@@ -41,7 +41,6 @@ public class AnticheatManager
     private Backend backend = null;
     private static Logger LOGGER, FILE_LOGGER;
     private static Handler fileHandler;
-    private static Handler consoleHandler;
     private static final int LOG_LEVEL_HIGH = 3;
     
     public AnticheatManager(Anticheat instance)
