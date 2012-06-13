@@ -58,6 +58,8 @@ public class Backend
     private static final int FASTPLACE_MAXVIOLATIONS = 2;
     private static final int FASTPLACE_MAXVIOLATIONS_CREATIVE = 3;
     private static final int FASTPLACE_MAXVIOLATIONTIME = 10000;
+    
+    private static final double VISUALS_MAXOFFSET = 2;
 
     private static final int BLOCK_PUNCH_MIN = 5;
 
@@ -272,23 +274,21 @@ public class Backend
         }
     }
     
-    public boolean checkInteraction(Player player, Block block) 
+    public boolean checkInteraction(Player player, Block targetBlock, Block playerClick) 
     {
     	int strikes = 0;
     	
-    	// First Line of Defense
-    	Block imple = player.getTargetBlock(null, 5);
-    	if(imple.getTypeId() != block.getTypeId()) 
-    	{
-            strikes++;
-    	}
+    	double x = targetBlock.getX() - playerClick.getX() * ((targetBlock.getX() - playerClick.getX() * 1) < 0 ? -1 : 1);
+    	double y = targetBlock.getY() - playerClick.getY() * ((targetBlock.getY() - playerClick.getY() * 1) < 0 ? -1 : 1);
+    	double z = targetBlock.getZ() - playerClick.getZ() * ((targetBlock.getZ() - playerClick.getZ() * 1) < 0 ? -1 : 1);
     	
-    	// Second line of defense.
-    	if(!imple.getLocation().equals(block.getLocation()))
-    	{
-            strikes++;
-    	}
-
+    	player.sendMessage("X: " + x + " Y: " + y + " Z: " + z);
+    	
+    	if (x >= VISUALS_MAXOFFSET) strikes++;
+    	if (y >= VISUALS_MAXOFFSET) strikes++;
+    	if (z >= VISUALS_MAXOFFSET) strikes++;
+    	
+    	
     	return strikes > 0;
     }
 
@@ -699,7 +699,7 @@ public class Backend
     {
         logEvent(healed, player, HEAL_MIN);
     }
-
+    
     public boolean justHealed(Player player)
     {
         return healed.contains(player.getName());

@@ -157,6 +157,7 @@ public class PlayerListener extends EventListener
     public void onPlayerInteract(PlayerInteractEvent event)
     {
         Player player = event.getPlayer();
+        Block playerClick = player.getTargetBlock(null, 5);
         PlayerInventory inv = player.getInventory();
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
         {
@@ -181,9 +182,9 @@ public class PlayerListener extends EventListener
         Block block = event.getClickedBlock(); 
         if(block != null) 
         {
-            if(checkManager.willCheck(player, CheckType.VISUAL) && Utilities.isInteractable(block.getType())) 
+            if(checkManager.willCheck(player, CheckType.VISUAL)) 
             {
-                if(backend.checkInteraction(player, block)) 
+                if(backend.checkInteraction(player, block, playerClick)) 
                 {
                     event.setCancelled(true);
                     log("tried to interact with an object that they couldn't see", player, CheckType.VISUAL); //boring description though.
