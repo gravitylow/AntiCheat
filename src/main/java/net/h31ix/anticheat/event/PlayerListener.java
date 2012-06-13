@@ -171,18 +171,18 @@ public class PlayerListener extends EventListener
                 backend.logEatingStart(player);
             }
         }
-        if (event.getClickedBlock() != null)
-        {
-            Distance distance = new Distance(player.getLocation(), event.getClickedBlock().getLocation());
-            backend.checkLongReachBlock(player, distance.getXDifference(), distance.getYDifference(), distance.getZDifference());
-        }
-
-        /* Visuals Check */
-
+        
         Block block = event.getClickedBlock();
+        
         if (block != null)
         {
-            if (checkManager.willCheck(player, CheckType.VISUAL) && !Utilities.isPressurePlate(block.getType()))
+            Distance distance = new Distance(player.getLocation(), block.getLocation());
+            backend.checkLongReachBlock(player, distance.getXDifference(), distance.getYDifference(), distance.getZDifference());
+        
+
+            /* Visuals Check */
+
+            if (checkManager.willCheck(player, CheckType.VISUAL) && event.getAction()!=Action.PHYSICAL)
             {
                 if (backend.checkVisuals(player, block, playerClick))
                 {
