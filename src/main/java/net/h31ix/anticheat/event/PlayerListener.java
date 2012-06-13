@@ -114,7 +114,7 @@ public class PlayerListener extends EventListener
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerChat(PlayerChatEvent event)
     {
         Player player = event.getPlayer();
