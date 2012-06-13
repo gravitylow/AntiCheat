@@ -60,6 +60,7 @@ public class Backend
     private static final int FASTPLACE_MAXVIOLATIONTIME = 10000;
 
     private static final double VISUALS_MAXOFFSET = 2;
+    private static final long VISUALS_DELAY = 20L;
 
     private static final int BLOCK_PUNCH_MIN = 5;
 
@@ -128,6 +129,7 @@ public class Backend
     private List<String> isAscending = new ArrayList<String>();
     private List<String> trackingProjectiles = new ArrayList<String>();
     private List<String> velocitizing = new ArrayList<String>();
+    private List<String> interacting = new ArrayList<String>();
     private Map<String, Integer> ascensionCount = new HashMap<String, Integer>();
     private Map<String, String> oldMessage = new HashMap<String, String>();
     private Map<String, String> lastMessage = new HashMap<String, String>();
@@ -276,6 +278,9 @@ public class Backend
 
     public boolean checkInteraction(Player player, Block targetBlock, Block playerClick)
     {
+        if (isInteracting(player) && !Utilities.isInteractable(targetBlock.getType()))
+            return false;
+
         int strikes = 0;
 
         double x = targetBlock.getX() - playerClick.getX() * ((targetBlock.getX() - playerClick.getX() * 1) < 0 ? -1 : 1);
@@ -698,6 +703,16 @@ public class Backend
     public void logHeal(Player player)
     {
         logEvent(healed, player, HEAL_MIN);
+    }
+
+    public void logInteraction(Player player)
+    {
+        logEvent(interacting, player, VISUALS_DELAY);
+    }
+
+    public boolean isInteracting(Player player)
+    {
+        return interacting.contains(player.getName());
     }
 
     public boolean justHealed(Player player)
