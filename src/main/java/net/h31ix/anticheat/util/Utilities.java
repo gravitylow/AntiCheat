@@ -34,11 +34,7 @@ public final class Utilities
     private static final List<Material> INSTANT_BREAK = new ArrayList<Material>();
     private static final List<Material> FOOD = new ArrayList<Material>();
     private static final List<Material> INTERACTABLE = new ArrayList<Material>();
-
-    private Utilities()
-    {
-
-    }
+    private static final List<Material> PRESSURE_PLATES = new ArrayList<Material>();
 
     public static void alert(String[] message)
     {
@@ -84,12 +80,17 @@ public final class Utilities
     {
         return FOOD.contains(m);
     }
-    
-    public static boolean isInteractable(Material m) 
+
+    public static boolean isInteractable(Material m)
     {
-    	return INTERACTABLE.contains(m);
+        return INTERACTABLE.contains(m);
     }
 
+    public static boolean isPressurePlate(Material m)
+    {
+        return PRESSURE_PLATES.contains(m);
+    }
+    
     public static boolean sprintFly(Player player)
     {
         return player.isSprinting() || player.isFlying();
@@ -181,6 +182,8 @@ public final class Utilities
         INTERACTABLE.add(Material.FENCE_GATE);
         INTERACTABLE.add(Material.TRAP_DOOR);
         //INTERACTABLE.add(Material. - placeholder.
+        PRESSURE_PLATES.add(Material.STONE_PLATE);
+        PRESSURE_PLATES.add(Material.WOOD_PLATE);
         FOOD.add(Material.COOKED_BEEF);
         FOOD.add(Material.COOKED_CHICKEN);
         FOOD.add(Material.COOKED_FISH);

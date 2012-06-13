@@ -182,7 +182,7 @@ public class PlayerListener extends EventListener
         Block block = event.getClickedBlock();
         if (block != null)
         {
-            if (checkManager.willCheck(player, CheckType.VISUAL))
+            if (checkManager.willCheck(player, CheckType.VISUAL) && !Utilities.isPressurePlate(block.getType()))
             {
                 if (backend.checkVisuals(player, block, playerClick))
                 {
