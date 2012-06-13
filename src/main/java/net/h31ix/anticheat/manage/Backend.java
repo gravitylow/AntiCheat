@@ -276,7 +276,7 @@ public class Backend
         }
     }
 
-    public boolean checkInteraction(Player player, Block targetBlock, Block playerClick)
+    public boolean checkVisuals(Player player, Block targetBlock, Block playerClick)
     {
         if (isInteracting(player) && !Utilities.isInteractable(targetBlock.getType()))
             return false;
