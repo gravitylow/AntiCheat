@@ -58,7 +58,7 @@ public class Backend
     private static final int FASTPLACE_MAXVIOLATIONS = 2;
     private static final int FASTPLACE_MAXVIOLATIONS_CREATIVE = 3;
     private static final int FASTPLACE_MAXVIOLATIONTIME = 10000;
-    
+
     private static final double VISUALS_MAXOFFSET = 2;
 
     private static final int BLOCK_PUNCH_MIN = 5;
@@ -273,23 +273,23 @@ public class Backend
             return false;
         }
     }
-    
-    public boolean checkInteraction(Player player, Block targetBlock, Block playerClick) 
+
+    public boolean checkInteraction(Player player, Block targetBlock, Block playerClick)
     {
-    	int strikes = 0;
-    	
-    	double x = targetBlock.getX() - playerClick.getX() * ((targetBlock.getX() - playerClick.getX() * 1) < 0 ? -1 : 1);
-    	double y = targetBlock.getY() - playerClick.getY() * ((targetBlock.getY() - playerClick.getY() * 1) < 0 ? -1 : 1);
-    	double z = targetBlock.getZ() - playerClick.getZ() * ((targetBlock.getZ() - playerClick.getZ() * 1) < 0 ? -1 : 1);
-    	
-    	player.sendMessage("X: " + x + " Y: " + y + " Z: " + z);
-    	
-    	if (x >= VISUALS_MAXOFFSET) strikes++;
-    	if (y >= VISUALS_MAXOFFSET) strikes++;
-    	if (z >= VISUALS_MAXOFFSET) strikes++;
-    	
-    	
-    	return strikes > 0;
+        int strikes = 0;
+
+        double x = targetBlock.getX() - playerClick.getX() * ((targetBlock.getX() - playerClick.getX() * 1) < 0 ? -1 : 1);
+        double y = targetBlock.getY() - playerClick.getY() * ((targetBlock.getY() - playerClick.getY() * 1) < 0 ? -1 : 1);
+        double z = targetBlock.getZ() - playerClick.getZ() * ((targetBlock.getZ() - playerClick.getZ() * 1) < 0 ? -1 : 1);
+
+        if (x >= VISUALS_MAXOFFSET)
+            strikes++;
+        if (y >= VISUALS_MAXOFFSET)
+            strikes++;
+        if (z >= VISUALS_MAXOFFSET)
+            strikes++;
+
+        return strikes > 0;
     }
 
     public boolean checkWaterWalk(Player player, double x, double z)
@@ -699,7 +699,7 @@ public class Backend
     {
         logEvent(healed, player, HEAL_MIN);
     }
-    
+
     public boolean justHealed(Player player)
     {
         return healed.contains(player.getName());
