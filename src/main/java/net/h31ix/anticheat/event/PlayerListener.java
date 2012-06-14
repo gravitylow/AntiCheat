@@ -189,7 +189,10 @@ public class PlayerListener extends EventListener
                     event.setCancelled(true);
                     log("tried to interact with an object that they couldn't see", player, CheckType.VISUAL);
                 }
-                backend.logInteraction(player);
+                else
+                {
+                    backend.logInteraction(player);
+                }
             }
         }
     }
