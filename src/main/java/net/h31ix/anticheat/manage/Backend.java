@@ -280,7 +280,7 @@ public class Backend
 
     public boolean checkVisuals(Player player, Block targetBlock, Block playerClick)
     {
-        if (isInteracting(player))
+        if (isInteracting(player) || playerClick.isLiquid())
         {
             return false;
         }
