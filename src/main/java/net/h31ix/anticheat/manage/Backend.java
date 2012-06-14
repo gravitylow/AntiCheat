@@ -173,7 +173,7 @@ public class Backend
 
     public boolean checkSpider(Player player, double y)
     {
-        if (y <= LADDER_Y_MAX && y >= LADDER_Y_MIN && !Utilities.isOnLadder(player))
+        if (y <= LADDER_Y_MAX && y >= LADDER_Y_MIN && !Utilities.isOnClimbableBlock(player))
         {
             return true;
         }
@@ -388,7 +388,7 @@ public class Backend
         {
             return false;
         }
-        if (!isMovingExempt(player) && !Utilities.isOnLadder(player) && !player.isInsideVehicle() && !Utilities.isInWater(player))
+        if (!isMovingExempt(player) && !Utilities.isOnClimbableBlock(player) && !player.isInsideVehicle() && !Utilities.isInWater(player))
         {
             double y1 = player.getLocation().getY();
             String name = player.getName();
@@ -459,7 +459,7 @@ public class Backend
         double y1 = distance.fromY();
         double y2 = distance.toY();
         Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
-        if (y1 == y2 && !isMovingExempt(player) && !player.isInsideVehicle() && player.getFallDistance() == 0 && !Utilities.isOnLilyPad(player))
+        if (y1 == y2 && !isMovingExempt(player) && !player.isInsideVehicle() && player.getFallDistance() == 0 && !Utilities.isOnLilyPad(player) && !Utilities.isOnVine(player))
         {
             String name = player.getName();
             if (Utilities.cantStandAt(block) && !Utilities.isOnLilyPad(player) && Utilities.cantStandAt(player.getLocation().getBlock()) && !Utilities.isInWater(player))
@@ -520,7 +520,7 @@ public class Backend
             max += 12;
         }
         Block block = player.getLocation().getBlock();
-        if (!isMovingExempt(player) && !Utilities.isInWater(player) && !Utilities.isOnLadder(player) && !player.isInsideVehicle())
+        if (!isMovingExempt(player) && !Utilities.isInWater(player) && !Utilities.isOnClimbableBlock(player) && !player.isInsideVehicle())
         {
             String name = player.getName();
             if (y1 < y2)
