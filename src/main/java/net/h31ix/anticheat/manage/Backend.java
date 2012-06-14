@@ -18,6 +18,8 @@
 
 package net.h31ix.anticheat.manage;
 
+import net.h31ix.anticheat.util.Distance;
+import net.h31ix.anticheat.util.CheckType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -278,23 +280,15 @@ public class Backend
 
     public boolean checkVisuals(Player player, Block targetBlock, Block playerClick)
     {
-        if (isInteracting(player) && !Utilities.isInteractable(targetBlock.getType()))
+        if (isInteracting(player))
+        {
             return false;
-
-        int strikes = 0;
-
+        }
         double x = targetBlock.getX() - playerClick.getX() * ((targetBlock.getX() - playerClick.getX() * 1) < 0 ? -1 : 1);
         double y = targetBlock.getY() - playerClick.getY() * ((targetBlock.getY() - playerClick.getY() * 1) < 0 ? -1 : 1);
         double z = targetBlock.getZ() - playerClick.getZ() * ((targetBlock.getZ() - playerClick.getZ() * 1) < 0 ? -1 : 1);
 
-        if (x >= VISUALS_MAXOFFSET)
-            strikes++;
-        if (y >= VISUALS_MAXOFFSET)
-            strikes++;
-        if (z >= VISUALS_MAXOFFSET)
-            strikes++;
-
-        return strikes > 0;
+        return x >= VISUALS_MAXOFFSET || y >= VISUALS_MAXOFFSET || z >= VISUALS_MAXOFFSET;
     }
 
     public boolean checkWaterWalk(Player player, double x, double z)

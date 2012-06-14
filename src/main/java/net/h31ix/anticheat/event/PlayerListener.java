@@ -19,11 +19,11 @@
 package net.h31ix.anticheat.event;
 
 import net.h31ix.anticheat.Anticheat;
-import net.h31ix.anticheat.Configuration;
+import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.manage.Backend;
 import net.h31ix.anticheat.manage.CheckManager;
-import net.h31ix.anticheat.manage.CheckType;
-import net.h31ix.anticheat.manage.Distance;
+import net.h31ix.anticheat.util.CheckType;
+import net.h31ix.anticheat.util.Distance;
 import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -187,12 +187,9 @@ public class PlayerListener extends EventListener
                 if (backend.checkVisuals(player, block, playerClick))
                 {
                     event.setCancelled(true);
-                    log("tried to interact with an object that they couldn't see", player, CheckType.VISUAL); //boring description though.
+                    log("tried to interact with an object that they couldn't see", player, CheckType.VISUAL);
                 }
-                else
-                {
-                    backend.logInteraction(player);
-                }
+                backend.logInteraction(player);
             }
         }
     }

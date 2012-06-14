@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.h31ix.anticheat.manage;
+package net.h31ix.anticheat.util;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -21,7 +21,7 @@ package net.h31ix.anticheat.api;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.manage.AnticheatManager;
 import net.h31ix.anticheat.manage.CheckManager;
-import net.h31ix.anticheat.manage.CheckType;
+import net.h31ix.anticheat.util.CheckType;
 import net.h31ix.anticheat.manage.PlayerManager;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.entity.Player;

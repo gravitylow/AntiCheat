@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.h31ix.anticheat;
+package net.h31ix.anticheat.util;
 
 import org.bukkit.configuration.file.FileConfiguration;
 

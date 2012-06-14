@@ -18,12 +18,13 @@
 
 package net.h31ix.anticheat;
 
-import net.h31ix.anticheat.manage.Permission;
+import net.h31ix.anticheat.util.Configuration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.h31ix.anticheat.manage.CheckType;
+import net.h31ix.anticheat.util.CheckType;
+import net.h31ix.anticheat.util.Permission;
 import net.h31ix.anticheat.manage.PlayerManager;
 import net.h31ix.anticheat.util.Utilities;
 import net.h31ix.anticheat.xray.XRayTracker;

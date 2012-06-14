@@ -18,6 +18,7 @@
 
 package net.h31ix.anticheat.manage;
 
+import net.h31ix.anticheat.util.CheckType;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import java.util.ArrayList;

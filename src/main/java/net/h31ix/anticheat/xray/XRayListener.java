@@ -19,9 +19,9 @@
 package net.h31ix.anticheat.xray;
 
 import net.h31ix.anticheat.Anticheat;
-import net.h31ix.anticheat.Configuration;
+import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.manage.CheckManager;
-import net.h31ix.anticheat.manage.CheckType;
+import net.h31ix.anticheat.util.CheckType;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
