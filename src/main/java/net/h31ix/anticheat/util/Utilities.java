@@ -173,8 +173,8 @@ public final class Utilities
         INSTANT_BREAK.add(Material.CROPS);
         INSTANT_BREAK.add(Material.SNOW);
         INSTANT_BREAK.add(Material.TNT);
-        //INTERACTABLE.add(Material.STONE_BUTTON);
-        //INTERACTABLE.add(Material.LEVER);
+        INTERACTABLE.add(Material.STONE_BUTTON);
+        INTERACTABLE.add(Material.LEVER);
         INTERACTABLE.add(Material.CHEST);
         //INTERACTABLE.add(Material.DISPENSER);
         //INTERACTABLE.add(Material.CAULDRON);
