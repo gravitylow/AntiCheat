@@ -18,7 +18,7 @@
 
 package net.h31ix.anticheat.event;
 
-import net.h31ix.anticheat.util.CheckType;
+import net.h31ix.anticheat.manage.CheckType;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;

@@ -22,7 +22,7 @@ import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.manage.Backend;
 import net.h31ix.anticheat.manage.CheckManager;
-import net.h31ix.anticheat.util.CheckType;
+import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.util.Distance;
 import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.ChatColor;

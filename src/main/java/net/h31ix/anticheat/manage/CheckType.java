@@ -16,10 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.h31ix.anticheat.util;
+package net.h31ix.anticheat.manage;
 
 import java.util.HashMap;
 import java.util.Map;
+import net.h31ix.anticheat.util.Permission;
 import org.bukkit.entity.Player;
 
 /**

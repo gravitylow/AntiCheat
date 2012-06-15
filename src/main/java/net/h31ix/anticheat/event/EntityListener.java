@@ -20,7 +20,7 @@ package net.h31ix.anticheat.event;
 
 import net.h31ix.anticheat.manage.Backend;
 import net.h31ix.anticheat.manage.CheckManager;
-import net.h31ix.anticheat.util.CheckType;
+import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.util.Distance;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

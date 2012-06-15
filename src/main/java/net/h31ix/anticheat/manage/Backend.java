@@ -19,7 +19,6 @@
 package net.h31ix.anticheat.manage;
 
 import net.h31ix.anticheat.util.Distance;
-import net.h31ix.anticheat.util.CheckType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

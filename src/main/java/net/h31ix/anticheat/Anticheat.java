@@ -30,7 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.h31ix.anticheat.event.*;
 import net.h31ix.anticheat.manage.AnticheatManager;
-import net.h31ix.anticheat.util.CheckType;
+import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.metrics.Metrics;
 import net.h31ix.anticheat.metrics.Metrics.Graph;
 import net.h31ix.anticheat.util.Utilities;
