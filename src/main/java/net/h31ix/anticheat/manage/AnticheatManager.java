@@ -19,6 +19,8 @@
 package net.h31ix.anticheat.manage;
 
 import java.io.File;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.*;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.util.Configuration;
@@ -40,6 +42,7 @@ public class AnticheatManager
     private CheckManager checkManager = null;
     private Backend backend = null;
     private static Logger LOGGER, FILE_LOGGER;
+    private static List<String> logs = new CopyOnWriteArrayList<String>();
     private static Handler fileHandler;
     private static final int LOG_LEVEL_HIGH = 3;
 
@@ -82,11 +85,24 @@ public class AnticheatManager
         {
             fileLog(ChatColor.stripColor(message));
         }
+        logs.add(ChatColor.stripColor(message));
     }
 
     public void fileLog(String message)
     {
         FILE_LOGGER.info(message);
+    }
+
+    public List<String> getLastLogs()
+    {
+        List<String> log = new CopyOnWriteArrayList<String>();
+        if (logs.size() < 30)
+            return logs;
+        for(int i = 1; i < 31; i++) {
+            log.add(logs.get(logs.size() - i));
+        }
+        logs.clear();
+        return log;
     }
 
     public Anticheat getPlugin()

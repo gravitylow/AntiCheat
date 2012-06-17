@@ -19,6 +19,8 @@
 package net.h31ix.anticheat;
 
 import net.h31ix.anticheat.util.Configuration;
+import net.h31ix.anticheat.util.PastebinReport;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,6 +94,17 @@ public class CommandHandler implements CommandExecutor
         else
         {
             cs.sendMessage(PERMISSIONS_ERROR);
+        }
+    }
+
+    public void handlePastebin(CommandSender cs)
+    {
+        if (Permission.SYSTEM_REPORT.get(cs))
+        {
+            PastebinReport report = new PastebinReport();
+            cs.sendMessage(GREEN + "Your URL is: " + report.getURL());
+            cs.sendMessage("If you are making a new issue, use this tool every time.");
+            cs.sendMessage("It will help us resolve your issues faster.");
         }
     }
 
@@ -248,6 +261,7 @@ public class CommandHandler implements CommandExecutor
             cs.sendMessage(base + GREEN + "xray [user]" + WHITE + " - check user's xray levels");
             cs.sendMessage(base + GREEN + "spy [user]" + WHITE + " - spy on a user in secret");
             cs.sendMessage(base + GREEN + "help" + WHITE + " - access this page");
+            cs.sendMessage(base + GREEN + "pastebin" + WHITE + " - create a anticheat report");
             cs.sendMessage(base + GREEN + "update" + WHITE + " - check update status");
             cs.sendMessage("-----------------------------------------------------");
         }
@@ -492,6 +506,10 @@ public class CommandHandler implements CommandExecutor
             if (args[0].equalsIgnoreCase("help"))
             {
                 handleHelp(cs);
+            }
+            else if (args[0].equalsIgnoreCase("pastebin"))
+            {
+                handlePastebin(cs);
             }
             else if (args[0].equalsIgnoreCase("report"))
             {

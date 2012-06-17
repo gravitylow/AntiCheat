@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import net.h31ix.anticheat.event.EventListener;
 import net.h31ix.anticheat.util.Utilities;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -162,6 +164,85 @@ public class Backend
         micromanage = instance;
     }
 
+    public void buildAdvancedInformation(StringBuilder r)
+    {
+        r.append("Dropped Items List:" + '\n');
+        for (String l : droppedItem)
+        {
+            r.append(l + '\n');
+        }
+        r.append("Moving Exempt List:" + '\n');
+        for (String l : movingExempt)
+        {
+            r.append(l + '\n');
+        }
+        r.append("Broken Block List:" + '\n');
+        for (String l : brokenBlock)
+        {
+            r.append(l + '\n');
+        }
+        r.append("Placed Block List:" + '\n');
+        for (String l : placedBlock)
+        {
+            r.append(l + '\n');
+        }
+        r.append("Bow Wind Up List:" + '\n');
+        for (String l : bowWindUp)
+        {
+            r.append(l + '\n');
+        }
+        r.append("Start Eating List:" + '\n');
+        for (String l : startEat)
+        {
+            r.append(l + '\n');
+        }
+        r.append("Healed List:" + '\n');
+        for (String l : healed)
+        {
+            r.append(l + '\n');
+        }
+        r.append("Sprinted List:" + '\n');
+        for (String l : sprinted)
+        {
+            r.append(l + '\n');
+        }
+        r.append("Is In Water List:" + '\n');
+        for (String l : isInWater)
+        {
+            r.append(l + '\n');
+        }
+        r.append("Is In Water (cached) List:" + '\n');
+        for (String l : isInWaterCache)
+        {
+            r.append(l + '\n');
+        }
+        r.append("Instant Break Exempt List:" + '\n');
+        for (String l : instantBreakExempt)
+        {
+            r.append(l + '\n');
+        }
+        r.append("Is Ascending List:" + '\n');
+        for (String l : isAscending)
+        {
+            r.append(l + '\n');
+        }
+        r.append("Tracking Projectiles List:" + '\n');
+        for (String l : trackingProjectiles)
+        {
+            r.append(l + '\n');
+        }
+        r.append("Velocitizing List:" + '\n');
+        for (String l : velocitizing)
+        {
+            r.append(l + '\n');
+        }
+        r.append("Interacting List:" + '\n');
+        for (String l : interacting)
+        {
+            r.append(l + '\n');
+        }
+    }
+
     public boolean checkLongReachBlock(Player player, double x, double y, double z)
     {
         return !Utilities.isUsingMcMMOAbility(player) && (x >= BLOCK_MAX_DISTANCE || y > BLOCK_MAX_DISTANCE || z > BLOCK_MAX_DISTANCE);
@@ -283,7 +364,7 @@ public class Backend
         {
             return false;
         }*/
-        if(!Utilities.isInteractable(targetBlock.getType()))
+        if (!Utilities.isInteractable(targetBlock.getType()))
         {
             return false;
         }
