@@ -18,24 +18,14 @@
 
 package net.h31ix.anticheat.util;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Writer;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.bukkit.Bukkit;
-
 import net.h31ix.anticheat.Anticheat;
+import org.bukkit.Bukkit;
 
 public class PastebinReport
 {
@@ -69,7 +59,7 @@ public class PastebinReport
         report.append("------------ AntiCheat Report - " + format.format(date) + " ------------" + '\n');
         report.append("Version: " + Anticheat.getVersion() + '\n');
         report.append("CraftBukkit: " + Bukkit.getVersion() + '\n');
-        report.append("Plugin Count: " + Bukkit.getPluginManager().getPlugins().length);
+        report.append("Plugin Count: " + Bukkit.getPluginManager().getPlugins().length + '\n');
         appendSystemInfo();
         report.append("------------Last 30 logs------------" + '\n');
         for (String log : Anticheat.getManager().getLastLogs())
