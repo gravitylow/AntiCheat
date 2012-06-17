@@ -275,13 +275,27 @@ public class PlayerListener extends EventListener
             from.setZ(from.getZ() - 1);
             event.setTo(from);
             Block lower = player.getWorld().getHighestBlockAt(from);
-            player.teleport(new Location(lower.getWorld(), lower.getLocation().getX(), lower.getLocation().getY() + 2, lower.getLocation().getZ()));
+            if(lower.getLocation().getY() + 2 < player.getLocation().getY())
+            {
+                player.teleport(new Location(lower.getWorld(), lower.getLocation().getX(), lower.getLocation().getY() + 2, lower.getLocation().getZ()));
+            }
+            else
+            {
+                player.teleport(new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() - 1, player.getLocation().getZ()));
+            }
             log("tried to fly.", player, CheckType.FLY);
         }
         if (checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && (backend.checkYAxis(player, distance) || backend.checkAscension(player, from.getY(), to.getY())))
         {
             Block lower = player.getWorld().getHighestBlockAt(player.getLocation());
-            player.teleport(new Location(lower.getWorld(), lower.getLocation().getX(), lower.getLocation().getY() + 2, lower.getLocation().getZ()));
+            if(lower.getLocation().getY() + 2 < player.getLocation().getY())
+            {            
+                player.teleport(new Location(lower.getWorld(), lower.getLocation().getX(), lower.getLocation().getY() + 2, lower.getLocation().getZ()));
+            }
+            else
+            {
+                player.teleport(new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() - 1, player.getLocation().getZ()));
+            }            
             log("tried to fly on y-axis", player, CheckType.FLY);
         }
         if (checkManager.willCheck(player, CheckType.SPEED) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY))
