@@ -19,10 +19,10 @@
 package net.h31ix.anticheat.event;
 
 import net.h31ix.anticheat.Anticheat;
-import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.manage.Backend;
 import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
+import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Distance;
 import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.ChatColor;
@@ -53,7 +53,7 @@ public class PlayerListener extends EventListener
             backend.logChat(player);
             if (backend.checkSpam(player, event.getMessage()))
             {
-                event.setCancelled(true);
+                event.setCancelled(!config.silentMode());
                 player.sendMessage(ChatColor.RED + "Please do not spam.");
             }
         }
@@ -106,7 +106,7 @@ public class PlayerListener extends EventListener
             {
                 if (backend.extendVelocityTime(player))
                 {
-                    event.setCancelled(true);
+                    event.setCancelled(!config.silentMode());
                     return; // don't log it lol.
                 }
             }
@@ -123,8 +123,12 @@ public class PlayerListener extends EventListener
             backend.logChat(player);
             if (backend.checkSpam(player, event.getMessage()))
             {
-                event.setCancelled(true);
-                player.sendMessage(ChatColor.RED + "Please do not spam.");
+                boolean b = !config.silentMode();
+                event.setCancelled(b);
+                if(b)
+                {
+                    player.sendMessage(ChatColor.RED + "Please do not spam.");
+                }
             }
         }
     }
@@ -137,7 +141,7 @@ public class PlayerListener extends EventListener
     }
 
     @EventHandler
-    public void onPlayerRageQuit(PlayerQuitEvent event)
+    public void onPlayerQuit(PlayerQuitEvent event)
     {
         backend.garbageClean(event.getPlayer());
     }
@@ -150,7 +154,7 @@ public class PlayerListener extends EventListener
         {
             if (backend.checkSprint(event))
             {
-                event.setCancelled(true);
+                event.setCancelled(!config.silentMode());
                 log("tried to sprint while hungry.", player, CheckType.SPRINT);
             }
             else
@@ -192,7 +196,7 @@ public class PlayerListener extends EventListener
             {
                 if (backend.checkVisuals(player, block, playerClick))
                 {
-                    event.setCancelled(true);
+                    event.setCancelled(!config.silentMode());
                     log("tried to interact with an object that they couldn't see", player, CheckType.VISUAL);
                 }
                 else
@@ -211,7 +215,7 @@ public class PlayerListener extends EventListener
         {
             if (backend.justDroppedItem(player))
             {
-                event.setCancelled(true);
+                event.setCancelled(!config.silentMode());
             }
             else
             {
@@ -276,31 +280,37 @@ public class PlayerListener extends EventListener
         backend.logAscension(player, from.getY(), to.getY());
         if (checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkFlight(player, distance))
         {
-            from.setX(from.getX() - 1);
-            from.setY(from.getY() - 1);
-            from.setZ(from.getZ() - 1);
-            event.setTo(from);
-            Block lower = player.getWorld().getHighestBlockAt(from);
-            if (lower.getLocation().getY() + 2 < player.getLocation().getY())
+            if(!config.silentMode())
             {
-                player.teleport(new Location(lower.getWorld(), lower.getLocation().getX(), lower.getLocation().getY() + 2, lower.getLocation().getZ()));
-            }
-            else
-            {
-                player.teleport(new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() - 1, player.getLocation().getZ()));
+                from.setX(from.getX() - 1);
+                from.setY(from.getY() - 1);
+                from.setZ(from.getZ() - 1);
+                event.setTo(from);
+                Block lower = player.getWorld().getHighestBlockAt(from);
+                if (lower.getLocation().getY() + 2 < player.getLocation().getY())
+                {
+                    player.teleport(new Location(lower.getWorld(), lower.getLocation().getX(), lower.getLocation().getY() + 2, lower.getLocation().getZ()));
+                }
+                else
+                {
+                    player.teleport(new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() - 1, player.getLocation().getZ()));
+                }
             }
             log("tried to fly.", player, CheckType.FLY);
         }
         if (checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && (backend.checkYAxis(player, distance) || backend.checkAscension(player, from.getY(), to.getY())))
         {
-            Block lower = player.getWorld().getHighestBlockAt(player.getLocation());
-            if (lower.getLocation().getY() + 2 < player.getLocation().getY())
-            {
-                player.teleport(new Location(lower.getWorld(), lower.getLocation().getX(), lower.getLocation().getY() + 2, lower.getLocation().getZ()));
-            }
-            else
-            {
-                player.teleport(new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() - 1, player.getLocation().getZ()));
+            if(!config.silentMode())
+            {            
+                Block lower = player.getWorld().getHighestBlockAt(player.getLocation());
+                if (lower.getLocation().getY() + 2 < player.getLocation().getY())
+                {
+                    player.teleport(new Location(lower.getWorld(), lower.getLocation().getX(), lower.getLocation().getY() + 2, lower.getLocation().getZ()));
+                }
+                else
+                {
+                    player.teleport(new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() - 1, player.getLocation().getZ()));
+                }
             }
             log("tried to fly on y-axis", player, CheckType.FLY);
         }
@@ -308,18 +318,27 @@ public class PlayerListener extends EventListener
         {
             if (event.getFrom().getY() < event.getTo().getY() && backend.checkYSpeed(player, y))
             {
-                event.setTo(from);
+                if(!config.silentMode())
+                {                
+                    event.setTo(from);
+                }
                 log("tried to ascend too fast.", player, CheckType.SPEED);
             }
             if (backend.checkXZSpeed(player, x, z))
             {
-                event.setTo(from);
+                if(!config.silentMode())
+                {                
+                    event.setTo(from);
+                }
                 log("tried to move too fast.", player, CheckType.SPEED);
             }
         }
         if (checkManager.willCheck(player, CheckType.NOFALL) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY) && event.getFrom().getY() > event.getTo().getY() && backend.checkNoFall(player, y))
         {
-            event.setTo(from);
+            if(!config.silentMode())
+            {            
+                event.setTo(from);
+            }
             log("tried avoid fall damage.", player, CheckType.NOFALL);
         }
     }
@@ -338,18 +357,27 @@ public class PlayerListener extends EventListener
             double z = distance.getZDifference();
             if (checkManager.willCheck(player, CheckType.WATER_WALK) && backend.checkWaterWalk(player, x, z))
             {
-                event.setTo(from);
+                if(!config.silentMode())
+                {                
+                    event.setTo(from);
+                }
                 log("tried to walk on water.", player, CheckType.WATER_WALK);
             }
             if (checkManager.willCheck(player, CheckType.SNEAK) && backend.checkSneak(player, x, z))
             {
-                event.setTo(from);
-                player.setSneaking(false);
+                if(!config.silentMode())
+                {                
+                    event.setTo(from);
+                    player.setSneaking(false);
+                }
                 log("tried to sneak too fast.", player, CheckType.SNEAK);
             }
             if (checkManager.willCheck(player, CheckType.SPIDER) && backend.checkSpider(player, y))
             {
-                event.setTo(from);
+                if(!config.silentMode())
+                {                
+                    event.setTo(from);
+                }
                 log("tried to climb a wall.", player, CheckType.SPIDER);
             }
         }

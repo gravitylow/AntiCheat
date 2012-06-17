@@ -47,6 +47,7 @@ public class Configuration
     private boolean verboseStartup;
     private boolean chatSpam;
     private boolean commandSpam;
+    private boolean silentMode;
     private int fileLogLevel = 0;
     private String updateFolder;
     private static Language language;
@@ -113,6 +114,11 @@ public class Configuration
     {
         return updateFolder;
     }
+    
+    public boolean silentMode()
+    {
+        return silentMode;
+    }    
 
     public int getFileLogLevel()
     {
@@ -195,6 +201,12 @@ public class Configuration
             save();
         }
         commandSpam = config.getBoolean("System.Block command spam");
+        if (config.getString("System.Silent mode") == null)
+        {
+            config.set("System.Silent mode", false);
+            save();
+        }
+        silentMode = config.getBoolean("System.Silent mode");        
     }
 
     public String getResult(String event)

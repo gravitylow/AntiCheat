@@ -18,9 +18,11 @@
 
 package net.h31ix.anticheat.event;
 
+import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.manage.Backend;
 import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
+import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Distance;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,6 +33,7 @@ public class EntityListener extends EventListener
 {
     private final Backend backend = getBackend();
     private final CheckManager checkManager = getCheckManager();
+    private final Configuration config = Anticheat.getManager().getConfiguration();
 
     @EventHandler
     public void onEntityShootBow(EntityShootBowEvent event)
@@ -42,7 +45,7 @@ public class EntityListener extends EventListener
             {
                 if (backend.justWoundUp(player))
                 {
-                    event.setCancelled(true);
+                    event.setCancelled(!config.silentMode());
                     log("tried to fire a bow too fast.", player, CheckType.FAST_BOW);
                 }
                 else
@@ -63,7 +66,7 @@ public class EntityListener extends EventListener
             {
                 if (backend.justHealed(player))
                 {
-                    event.setCancelled(true);
+                    event.setCancelled(!config.silentMode());
                     log("tried to heal too fast.", player, CheckType.FAST_HEAL);
                 }
                 else
@@ -84,7 +87,7 @@ public class EntityListener extends EventListener
             {
                 if (backend.justStartedEating(player))
                 {
-                    event.setCancelled(true);
+                    event.setCancelled(!config.silentMode());
                     log("tried to eat too fast.", player, CheckType.FAST_EAT);
                 }
                 else
@@ -115,7 +118,7 @@ public class EntityListener extends EventListener
                         Distance distance = new Distance(player.getLocation(), p.getLocation());
                         if (backend.checkLongReachDamage(distance.getXDifference(), distance.getYDifference(), distance.getZDifference()))
                         {
-                            event.setCancelled(true);
+                            event.setCancelled(!config.silentMode());
                             log("tried to damage a player too far away from them.", p, CheckType.LONG_REACH);
                             noHack = false;
                         }
@@ -133,7 +136,7 @@ public class EntityListener extends EventListener
                 {
                     if (backend.justSprinted(player))
                     {
-                        event.setCancelled(true);
+                        event.setCancelled(!config.silentMode());
                         log("tried to sprint & damage too fast.", player, CheckType.FORCEFIELD);
                         noHack = false;
                     }
@@ -142,7 +145,7 @@ public class EntityListener extends EventListener
                 {
                     if (!backend.justAnimated(player))
                     {
-                        event.setCancelled(true);
+                        event.setCancelled(!config.silentMode());
                         log("tried to damage an entity without swinging their arm.", player, CheckType.NO_SWING);
                         noHack = false;
                     }
