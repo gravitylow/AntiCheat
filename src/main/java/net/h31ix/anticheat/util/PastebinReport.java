@@ -69,6 +69,7 @@ public class PastebinReport
         report.append("------------ AntiCheat Report - " + format.format(date) + " ------------" + '\n');
         report.append("Version: " + Anticheat.getVersion() + '\n');
         report.append("CraftBukkit: " + Bukkit.getVersion() + '\n');
+        report.append("Plugin Count: " + Bukkit.getPluginManager().getPlugins().length);
         appendSystemInfo();
         report.append("------------Last 30 logs------------" + '\n');
         for (String log : Anticheat.getManager().getLastLogs())
