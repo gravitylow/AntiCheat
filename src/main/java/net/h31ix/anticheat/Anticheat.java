@@ -282,70 +282,77 @@ public class Anticheat extends JavaPlugin
         {
             logger.log(Level.INFO, "Checking for updates...");
         }
-        URL url;
-        URLConnection urlConn;
-        InputStreamReader inStream = null;
-        BufferedReader buff;
-        String v = "";
         try
         {
-            url = new URL("http://dl.dropbox.com/u/38228324/anticheatVersion.txt");
-            urlConn = url.openConnection();
-            inStream = new InputStreamReader(urlConn.getInputStream());
-        }
-        catch (Exception ex)
-        {
-        }
-        buff = new BufferedReader(inStream);
-        try
-        {
-            v = buff.readLine();
-            urlConn = null;
-            inStream = null;
-            buff.close();
-            buff = null;
-        }
-        catch (Exception ex)
-        {
-        }
-        String version = this.getDescription().getVersion().split("-b")[0];
-        if (!version.equalsIgnoreCase(v))
-        {
-            if (version.endsWith("-PRE") || version.endsWith("-DEV"))
+            URL url;
+            URLConnection urlConn;
+            InputStreamReader inStream = null;
+            BufferedReader buff;
+            String v = "";
+            try
             {
-                if (version.replaceAll("-PRE", "").replaceAll("-DEV", "").equalsIgnoreCase(v))
+                url = new URL("http://dl.dropbox.com/u/38228324/anticheatVersion.txt");
+                urlConn = url.openConnection();
+                inStream = new InputStreamReader(urlConn.getInputStream());
+            }
+            catch (Exception ex)
+            {
+            }
+            buff = new BufferedReader(inStream);
+            try
+            {
+                v = buff.readLine();
+                urlConn = null;
+                inStream = null;
+                buff.close();
+                buff = null;
+            }
+            catch (Exception ex)
+            {
+            }
+            String version = this.getDescription().getVersion().split("-b")[0];
+            if (!version.equalsIgnoreCase(v))
+            {
+                if (version.endsWith("-PRE") || version.endsWith("-DEV"))
                 {
-                    update = true;
-                    if (verbose)
+                    if (version.replaceAll("-PRE", "").replaceAll("-DEV", "").equalsIgnoreCase(v))
                     {
-                        logger.log(Level.INFO, "Your dev build has been promoted to release. Downloading the update.");
+                        update = true;
+                        if (verbose)
+                        {
+                            logger.log(Level.INFO, "Your dev build has been promoted to release. Downloading the update.");
+                        }
+                    }
+                    else
+                    {
+                        update = false;
+                        if (verbose)
+                        {
+                            logger.log(Level.INFO, "Dev build detected, so skipping update checking until this version is released.");
+                        }
                     }
                 }
                 else
                 {
-                    update = false;
+                    update = true;
                     if (verbose)
                     {
-                        logger.log(Level.INFO, "Dev build detected, so skipping update checking until this version is released.");
+                        logger.log(Level.INFO, "An update was found.");
                     }
                 }
             }
             else
             {
-                update = true;
                 if (verbose)
                 {
-                    logger.log(Level.INFO, "An update was found.");
+                    logger.log(Level.INFO, "No update found.");
                 }
+                update = false;
             }
         }
-        else
+        catch (Exception e)
         {
-            if (verbose)
-            {
-                logger.log(Level.INFO, "No update found.");
-            }
-            update = false;
+            logger.log(Level.SEVERE, "Updating failed.  Possible connection failure.");
         }
     }
 
