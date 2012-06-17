@@ -133,6 +133,13 @@ public class PlayerListener extends EventListener
     public void onPlayerKick(PlayerKickEvent event)
     {
         backend.clearChatLevel(event.getPlayer());
+        backend.garbageClean(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onPlayerRageQuit(PlayerQuitEvent event)
+    {
+        backend.garbageClean(event.getPlayer());
     }
 
     @EventHandler
@@ -171,18 +178,17 @@ public class PlayerListener extends EventListener
                 backend.logEatingStart(player);
             }
         }
-        
+
         Block block = event.getClickedBlock();
-        
+
         if (block != null)
         {
             Distance distance = new Distance(player.getLocation(), block.getLocation());
             backend.checkLongReachBlock(player, distance.getXDifference(), distance.getYDifference(), distance.getZDifference());
-        
 
             /* Visuals Check */
 
-            if (checkManager.willCheck(player, CheckType.VISUAL) && event.getAction()!=Action.PHYSICAL)
+            if (checkManager.willCheck(player, CheckType.VISUAL) && event.getAction() != Action.PHYSICAL)
             {
                 if (backend.checkVisuals(player, block, playerClick))
                 {
@@ -275,7 +281,7 @@ public class PlayerListener extends EventListener
             from.setZ(from.getZ() - 1);
             event.setTo(from);
             Block lower = player.getWorld().getHighestBlockAt(from);
-            if(lower.getLocation().getY() + 2 < player.getLocation().getY())
+            if (lower.getLocation().getY() + 2 < player.getLocation().getY())
             {
                 player.teleport(new Location(lower.getWorld(), lower.getLocation().getX(), lower.getLocation().getY() + 2, lower.getLocation().getZ()));
             }
@@ -288,14 +294,14 @@ public class PlayerListener extends EventListener
         if (checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && (backend.checkYAxis(player, distance) || backend.checkAscension(player, from.getY(), to.getY())))
         {
             Block lower = player.getWorld().getHighestBlockAt(player.getLocation());
-            if(lower.getLocation().getY() + 2 < player.getLocation().getY())
-            {            
+            if (lower.getLocation().getY() + 2 < player.getLocation().getY())
+            {
                 player.teleport(new Location(lower.getWorld(), lower.getLocation().getX(), lower.getLocation().getY() + 2, lower.getLocation().getZ()));
             }
             else
             {
                 player.teleport(new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() - 1, player.getLocation().getZ()));
-            }            
+            }
             log("tried to fly on y-axis", player, CheckType.FLY);
         }
         if (checkManager.willCheck(player, CheckType.SPEED) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY))
