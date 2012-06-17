@@ -243,6 +243,91 @@ public class Backend
         }
     }
 
+    public void garbageClean(Player player)
+    {
+        String pN = player.getName();
+        if (droppedItem.contains(pN))
+            droppedItem.remove(pN);
+        if (movingExempt.contains(pN))
+            movingExempt.remove(pN);
+        if (brokenBlock.contains(pN))
+            brokenBlock.remove(pN);
+        if (placedBlock.contains(pN))
+            placedBlock.remove(pN);
+        if (bowWindUp.contains(pN))
+            bowWindUp.remove(pN);
+        if (startEat.contains(pN))
+            startEat.remove(pN);
+        if (healed.contains(pN))
+            healed.remove(pN);
+        if (sprinted.contains(pN))
+            sprinted.remove(pN);
+        if (isInWater.contains(pN))
+            isInWater.remove(pN);
+        if (isInWaterCache.contains(pN))
+            isInWaterCache.remove(pN);
+        if (instantBreakExempt.contains(pN))
+            instantBreakExempt.remove(pN);
+        if (isAscending.contains(pN))
+            isAscending.remove(pN);
+        if (trackingProjectiles.contains(pN))
+            trackingProjectiles.remove(pN);
+        if (velocitizing.contains(pN))
+            velocitizing.remove(pN);
+        if (interacting.contains(pN))
+            interacting.remove(pN);
+        if (ascensionCount.containsKey(pN))
+            ascensionCount.remove(pN);
+        if (oldMessage.containsKey(pN))
+            oldMessage.remove(pN);
+        if (lastMessage.containsKey(pN))
+            lastMessage.remove(pN);
+        if (flightViolation.containsKey(pN))
+            flightViolation.remove(pN);
+        if (chatLevel.containsKey(pN))
+            chatLevel.remove(pN);
+        if (chatKicks.containsKey(pN))
+            chatKicks.remove(pN);
+        if (nofallViolation.containsKey(pN))
+            nofallViolation.remove(pN);
+        if (fastBreakViolation.containsKey(pN))
+            fastBreakViolation.remove(pN);
+        if (yAxisViolations.containsKey(pN))
+            yAxisViolations.remove(pN);
+        if (yAxisLastViolation.containsKey(pN))
+            yAxisLastViolation.remove(pN);
+        if (lastYcoord.containsKey(pN))
+            lastYcoord.remove(pN);
+        if (lastYtime.containsKey(pN))
+            lastYtime.remove(pN);
+        if (blocksBroken.containsKey(pN))
+            blocksBroken.remove(pN);
+        if (lastBlockBroken.containsKey(pN))
+            lastBlockBroken.remove(pN);
+        if (fastPlaceViolation.containsKey(pN))
+            fastPlaceViolation.remove(pN);
+        if (lastZeroHitPlace.containsKey(pN))
+            lastZeroHitPlace.remove(pN);
+        if (lastBlockPlaced.containsKey(pN))
+            lastBlockPlaced.remove(pN);
+        if (lastBlockPlaceTime.containsKey(pN))
+            lastBlockPlaceTime.remove(pN);
+        if (blockPunches.containsKey(pN))
+            blockPunches.remove(pN);
+        if (waterAscensionViolation.containsKey(pN))
+            waterAscensionViolation.remove(pN);
+        if (waterSpeedViolation.containsKey(pN))
+            waterSpeedViolation.remove(pN);
+        if (projectilesShot.containsKey(pN))
+            projectilesShot.remove(pN);
+        if (velocitized.containsKey(pN))
+            velocitized.remove(pN);
+        if (velocitytrack.containsKey(pN))
+            velocitytrack.remove(pN);
+        if (animated.containsKey(pN))
+            animated.remove(pN);
+    }
+
     public boolean checkLongReachBlock(Player player, double x, double y, double z)
     {
         return !Utilities.isUsingMcMMOAbility(player) && (x >= BLOCK_MAX_DISTANCE || y > BLOCK_MAX_DISTANCE || z > BLOCK_MAX_DISTANCE);
