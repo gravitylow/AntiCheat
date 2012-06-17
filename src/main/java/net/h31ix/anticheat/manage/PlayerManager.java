@@ -35,7 +35,6 @@ import org.bukkit.entity.Player;
 
 public class PlayerManager
 {
-
     private static Map<String, Integer> level = new HashMap<String, Integer>();
     private static Configuration config = null;
     private static Language lang;
@@ -62,31 +61,39 @@ public class PlayerManager
         Utilities.alert(formatArray(lang.getHighAlert(), player, ChatColor.RED));
     }
 
-    public void increaseLevel(Player player)
+    public boolean increaseLevel(Player player, CheckType type)
     {
-        final String name = player.getName();
-        if (level.get(name) == null || level.get(name) == 0)
+        if(config.silentMode() && type.getUses(player) % 4 != 0)
         {
-            level.put(name, 1);
+            return false;
         }
         else
         {
-            final int playerLevel = level.get(name);
-            level.put(name, playerLevel + 1);
-            if (playerLevel <= MED_THRESHOLD && playerLevel + 1 > MED_THRESHOLD && playerLevel + 1 <= HIGH_THRESHOLD)
+            final String name = player.getName();
+            if (level.get(name) == null || level.get(name) == 0)
             {
-                reactMedium(player);
+                level.put(name, 1);
             }
-            else if (playerLevel <= HIGH_THRESHOLD && playerLevel + 1 > HIGH_THRESHOLD)
+            else
             {
-                reactHigh(player);
-                level.put(player.getName(), MED_THRESHOLD + LEVEL_BOOST);
-            }
-            else if (playerLevel > LEVEL_MAX)
-            {
-                level.put(player.getName(), MED_THRESHOLD + LEVEL_BOOST);
+                final int playerLevel = level.get(name);
+                level.put(name, playerLevel + 1);
+                if (playerLevel <= MED_THRESHOLD && playerLevel + 1 > MED_THRESHOLD && playerLevel + 1 <= HIGH_THRESHOLD)
+                {
+                    reactMedium(player);
+                }
+                else if (playerLevel <= HIGH_THRESHOLD && playerLevel + 1 > HIGH_THRESHOLD)
+                {
+                    reactHigh(player);
+                    level.put(player.getName(), MED_THRESHOLD + LEVEL_BOOST);
+                }
+                else if (playerLevel > LEVEL_MAX)
+                {
+                    level.put(player.getName(), MED_THRESHOLD + LEVEL_BOOST);
+                }
             }
         }
+        return true;
     }
 
     public void decreaseLevel(Player player)
