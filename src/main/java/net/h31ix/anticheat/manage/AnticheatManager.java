@@ -51,7 +51,7 @@ public class AnticheatManager
         plugin = instance;
         // now load all the others!!!!!
         LOGGER = Logger.getLogger("Minecraft");
-        FILE_LOGGER = Logger.getLogger("Minecraft");
+        FILE_LOGGER = plugin.getAnticheatLogger();
         configuration = new Configuration(this);
         xrayTracker = new XRayTracker();
         playerManager = new PlayerManager(this);
