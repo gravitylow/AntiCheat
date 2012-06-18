@@ -21,6 +21,7 @@ package net.h31ix.anticheat.util;
 import com.gmail.nossr50.datatypes.AbilityType;
 import com.gmail.nossr50.mcMMO;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import net.h31ix.anticheat.Anticheat;
 import org.bukkit.Bukkit;
@@ -34,7 +35,7 @@ public final class Utilities
     private static final List<Material> INSTANT_BREAK = new ArrayList<Material>();
     private static final List<Material> FOOD = new ArrayList<Material>();
     private static final List<Material> INTERACTABLE = new ArrayList<Material>();
-    private static final List<Material> PRESSURE_PLATES = new ArrayList<Material>();
+    private static final HashSet<Byte> NOTSOLID = new HashSet<Byte>();
 
     public static void alert(String[] message)
     {
@@ -48,79 +49,6 @@ public final class Utilities
             {
                 Anticheat.getManager().log(msg);
             }
-        }
-    }
-
-    /*
-     * 
-     * Credits to sk89q for the calculation of cardinal direction.
-     * 
-     * 
-     */
-
-    /**
-     * Get the cardinal compass direction of a player.
-     * 
-     * @param player
-     * @return
-     */
-    public static String getCardinalDirection(Player player)
-    {
-        double rot = (player.getLocation().getYaw() - 90) % 360;
-        if (rot < 0)
-        {
-            rot += 360.0;
-        }
-        return getDirection(rot);
-    }
-
-    /**
-     * Converts a rotation to a cardinal direction name.
-     * 
-     * @param rot
-     * @return
-     */
-    private static String getDirection(double rot)
-    {
-        if (0 <= rot && rot < 22.5)
-        {
-            return "N";
-        }
-        else if (22.5 <= rot && rot < 67.5)
-        {
-            return "N";
-        }
-        else if (67.5 <= rot && rot < 112.5)
-        {
-            return "E";
-        }
-        else if (112.5 <= rot && rot < 157.5)
-        {
-            return "E";
-        }
-        else if (157.5 <= rot && rot < 202.5)
-        {
-            return "S";
-        }
-        else if (202.5 <= rot && rot < 247.5)
-        {
-            return "S";
-        }
-        else if (247.5 <= rot && rot < 292.5)
-        {
-            return "W";
-        }
-        else if (292.5 <= rot && rot < 337.5)
-        {
-            return "W";
-        }
-        else if (337.5 <= rot && rot < 360.0)
-        {
-            return "N";
-        }
-        else
-        {
-            return null;
         }
     }
 
@@ -158,10 +86,10 @@ public final class Utilities
     {
         return INTERACTABLE.contains(m);
     }
-
-    public static boolean isPressurePlate(Material m)
+    
+    public static HashSet<Byte> getNonSolid()
     {
-        return PRESSURE_PLATES.contains(m);
+        return NOTSOLID;
     }
 
     public static boolean sprintFly(Player player)
@@ -249,19 +177,20 @@ public final class Utilities
         INTERACTABLE.add(Material.STONE_BUTTON);
         INTERACTABLE.add(Material.LEVER);
         INTERACTABLE.add(Material.CHEST);
-        //INTERACTABLE.add(Material.DISPENSER);
-        //INTERACTABLE.add(Material.CAULDRON);
-        //INTERACTABLE.add(Material.ENCHANTMENT_TABLE);
-        //INTERACTABLE.add(Material.WOOD_DOOR);
-        //INTERACTABLE.add(Material.IRON_DOOR);
-        //INTERACTABLE.add(Material.WORKBENCH);
-        //INTERACTABLE.add(Material.CAKE_BLOCK);
-        //INTERACTABLE.add(Material.STONE_PLATE);
-        //INTERACTABLE.add(Material.FENCE_GATE);
-        //INTERACTABLE.add(Material.TRAP_DOOR);
-        //INTERACTABLE.add(Material. - placeholder.
-        PRESSURE_PLATES.add(Material.STONE_PLATE);
-        PRESSURE_PLATES.add(Material.WOOD_PLATE);
+        NOTSOLID.add((byte)Material.TORCH.getId());
+        NOTSOLID.add((byte)Material.REDSTONE_TORCH_OFF.getId());
+        NOTSOLID.add((byte)Material.REDSTONE_TORCH_OFF.getId());
+        NOTSOLID.add((byte)Material.FENCE.getId());
+        NOTSOLID.add((byte)Material.FENCE_GATE.getId());
+        NOTSOLID.add((byte)Material.IRON_FENCE.getId());
+        NOTSOLID.add((byte)Material.NETHER_FENCE.getId());
+        NOTSOLID.add((byte)Material.TRAP_DOOR.getId());
+        NOTSOLID.add((byte)Material.SIGN.getId());
+        NOTSOLID.add((byte)Material.STONE_BUTTON.getId());
+        NOTSOLID.add((byte)Material.LEVER.getId());
+        NOTSOLID.add((byte)Material.AIR.getId());
+        NOTSOLID.add((byte)Material.WATER.getId());
+        NOTSOLID.add((byte)Material.LAVA.getId());
         FOOD.add(Material.COOKED_BEEF);
         FOOD.add(Material.COOKED_CHICKEN);
         FOOD.add(Material.COOKED_FISH);

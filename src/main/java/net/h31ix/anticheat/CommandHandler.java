@@ -105,6 +105,10 @@ public class CommandHandler implements CommandExecutor
             cs.sendMessage(GREEN + "Debug information posted to: " + WHITE + report.getURL());
             cs.sendMessage(GREEN + "Please include this link when making bug reports.");
         }
+        else
+        {
+            cs.sendMessage(PERMISSIONS_ERROR);
+        }
     }
 
     public void handleXRay(CommandSender cs, String[] args)
