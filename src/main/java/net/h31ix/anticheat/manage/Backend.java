@@ -18,15 +18,13 @@
 
 package net.h31ix.anticheat.manage;
 
-import net.h31ix.anticheat.util.Distance;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.h31ix.anticheat.event.EventListener;
+import net.h31ix.anticheat.util.Distance;
 import net.h31ix.anticheat.util.Utilities;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;

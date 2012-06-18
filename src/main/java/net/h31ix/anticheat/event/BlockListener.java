@@ -22,6 +22,7 @@ import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.manage.Backend;
 import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
+import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Distance;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -36,6 +37,7 @@ public class BlockListener extends EventListener
     private final Backend backend = getBackend();
     private final CheckManager checkManager = getCheckManager();
     private final Anticheat plugin = getPlugin();
+    private final Configuration config = Anticheat.getManager().getConfiguration();
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onBlockDamage(BlockDamageEvent event)
@@ -55,7 +57,7 @@ public class BlockListener extends EventListener
         {
             if (backend.checkFastPlace(player))
             {
-                event.setCancelled(true);
+                event.setCancelled(!config.silentMode());
                 log("tried to place a block of " + block.getType().name() + " too fast.", player, CheckType.FAST_PLACE);
             }
             else
@@ -78,7 +80,7 @@ public class BlockListener extends EventListener
             {
                 if (backend.checkSwing(player, block))
                 {
-                    event.setCancelled(true);
+                    event.setCancelled(!config.silentMode());
                     log("tried to break a block of " + block.getType().name() + " without swinging their arm.", player, CheckType.NO_SWING);
                     noHack = false;
                 }
@@ -88,7 +90,7 @@ public class BlockListener extends EventListener
                 Distance distance = new Distance(player.getLocation(), block.getLocation());
                 if (backend.checkLongReachBlock(player, distance.getXDifference(), distance.getYDifference(), distance.getZDifference()))
                 {
-                    event.setCancelled(true);
+                    event.setCancelled(!config.silentMode());
                     log("tried to break a block of " + block.getType().name() + " that was too far away.", player, CheckType.LONG_REACH);
                     noHack = false;
                 }
@@ -97,7 +99,7 @@ public class BlockListener extends EventListener
             {
                 if (backend.checkFastBreak(player, block))
                 {
-                    event.setCancelled(true);
+                    event.setCancelled(!config.silentMode());
                     log("tried to break a block of " + block.getType().name() + " too fast.", player, CheckType.FAST_BREAK);
                     noHack = false;
                 }
