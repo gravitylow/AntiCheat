@@ -463,7 +463,6 @@ public class Backend
             Location z2 = new Location(targetBlock.getWorld(), playerClick.getX(), playerClick.getY(), playerClick.getZ() + 1);
             if (x1.equals(targetBlock.getLocation()) || x2.equals(targetBlock.getLocation()) || y1.equals(targetBlock.getLocation()) || y2.equals(targetBlock.getLocation()) || z1.equals(targetBlock.getLocation()) || z2.equals(targetBlock.getLocation()))
             {
-                System.out.println((int) playerClick.getData());
                 String dir = Utilities.getCardinalDirection(player);
                 int minimum = 0;
                 if (dir.equalsIgnoreCase("E"))
