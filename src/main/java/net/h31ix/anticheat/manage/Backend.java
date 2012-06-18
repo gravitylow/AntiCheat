@@ -620,7 +620,7 @@ public class Backend
     public void logAscension(Player player, double y1, double y2)
     {
         String name = player.getName();
-        if (y1 < y2)
+        if (y1 < y2 && !isAscending.contains(name))
         {
             isAscending.add(name);
         }
@@ -1078,7 +1078,10 @@ public class Backend
     @SuppressWarnings("unchecked")
     private void logEvent(@SuppressWarnings("rawtypes") final List list, final Player player, long time)
     {
-        list.add(player.getName());
+        if(!list.contains(player.getName()))
+        {
+            list.add(player.getName());
+        }
         micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable()
         {
             @Override
@@ -1092,7 +1095,10 @@ public class Backend
     @SuppressWarnings("unchecked")
     private void logEvent(@SuppressWarnings("rawtypes") final Map map, final Player player, final Object obj, long time)
     {
-        map.put(player.getName(), obj);
+        if(!map.containsKey(player.getName()))
+        {        
+            map.put(player.getName(), obj);
+        }
         micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable()
         {
             @Override

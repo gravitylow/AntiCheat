@@ -74,7 +74,7 @@ public class PastebinReport
     private void appendSystemInfo()
     {
         Runtime runtime = Runtime.getRuntime();
-        report.append("Java: " + System.getProperty("java.vendor") + " " + System.getProperty("java.version") + " (" + System.getProperty("java.vendor.url") + ")" + '\n');
+        report.append("Java: " + System.getProperty("java.vendor") + " " + System.getProperty("java.version") + '\n');
         report.append("OS: " + System.getProperty("os.name") + " " + System.getProperty("os.version") + '\n');
         report.append("Free Memory: " + runtime.freeMemory() / 1024 / 1024 + "MB" + '\n');
         report.append("Max Memory: " + runtime.maxMemory() / 1024 / 1024 + "MB" + '\n');
