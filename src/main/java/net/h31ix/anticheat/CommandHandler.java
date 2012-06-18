@@ -97,14 +97,13 @@ public class CommandHandler implements CommandExecutor
         }
     }
 
-    public void handlePastebin(CommandSender cs)
+    public void handleDebug(CommandSender cs)
     {
         if (Permission.SYSTEM_REPORT.get(cs))
         {
             PastebinReport report = new PastebinReport();
-            cs.sendMessage(GREEN + "Your URL is: " + report.getURL());
-            cs.sendMessage("If you are making a new issue, use this tool every time.");
-            cs.sendMessage("It will help us resolve your issues faster.");
+            cs.sendMessage(GREEN + "Debug information posted to: " + WHITE + report.getURL());
+            cs.sendMessage(GREEN + "Please include this link when making bug reports.");
         }
     }
 
@@ -261,7 +260,7 @@ public class CommandHandler implements CommandExecutor
             cs.sendMessage(base + GREEN + "xray [user]" + WHITE + " - check user's xray levels");
             cs.sendMessage(base + GREEN + "spy [user]" + WHITE + " - spy on a user in secret");
             cs.sendMessage(base + GREEN + "help" + WHITE + " - access this page");
-            cs.sendMessage(base + GREEN + "pastebin" + WHITE + " - create a anticheat report");
+            cs.sendMessage(base + GREEN + "debug" + WHITE + " - post debug information");
             cs.sendMessage(base + GREEN + "update" + WHITE + " - check update status");
             cs.sendMessage("-----------------------------------------------------");
         }
@@ -507,9 +506,9 @@ public class CommandHandler implements CommandExecutor
             {
                 handleHelp(cs);
             }
-            else if (args[0].equalsIgnoreCase("pastebin"))
+            else if (args[0].equalsIgnoreCase("debug"))
             {
-                handlePastebin(cs);
+                handleDebug(cs);
             }
             else if (args[0].equalsIgnoreCase("report"))
             {
