@@ -453,6 +453,49 @@ public class Backend
         {
             return false;
         }
+
+        //trapdoor fix
+        if (playerClick.getType() == Material.TRAP_DOOR)
+        {
+            Location x1 = new Location(targetBlock.getWorld(), playerClick.getX() - 1, playerClick.getY(), playerClick.getZ());
+            Location x2 = new Location(targetBlock.getWorld(), playerClick.getX() + 1, playerClick.getY(), playerClick.getZ());
+            Location y1 = new Location(targetBlock.getWorld(), playerClick.getX(), playerClick.getY() - 1, playerClick.getZ());
+            Location y2 = new Location(targetBlock.getWorld(), playerClick.getX(), playerClick.getY() + 1, playerClick.getZ());
+            Location z1 = new Location(targetBlock.getWorld(), playerClick.getX(), playerClick.getY(), playerClick.getZ() - 1);
+            Location z2 = new Location(targetBlock.getWorld(), playerClick.getX(), playerClick.getY(), playerClick.getZ() + 1);
+            if (x1.equals(targetBlock.getLocation()) || x2.equals(targetBlock.getLocation()) || y1.equals(targetBlock.getLocation()) || y2.equals(targetBlock.getLocation()) || z1.equals(targetBlock.getLocation()) || z2.equals(targetBlock.getLocation()))
+            {
+                System.out.println((int) playerClick.getData());
+                String dir = Utilities.getCardinalDirection(player);
+                int minimum = 0;
+                if (dir.equalsIgnoreCase("E"))
+                {
+                    minimum = 0;
+                }
+
+                if (dir.equalsIgnoreCase("W"))
+                {
+                    minimum = 1;
+                }
+
+                if (dir.equalsIgnoreCase("N"))
+                {
+                    minimum = 2;
+                }
+
+                if (dir.equalsIgnoreCase("S"))
+                {
+                    minimum = 3;
+                }
+
+                if ((int) playerClick.getData() == minimum)
+                    return true; // they have to be hacking here.
+
+                if ((int) playerClick.getData() == minimum + 4 && (playerClick.getLocation().distance(player.getLocation())) < 2)
+                    return false; // couldn't be hacking.
+            }
+        }
+
         double x = targetBlock.getX() - playerClick.getX() * ((targetBlock.getX() - playerClick.getX() * 1) < 0 ? -1 : 1);
         double y = targetBlock.getY() - playerClick.getY() * ((targetBlock.getY() - playerClick.getY() * 1) < 0 ? -1 : 1);
         double z = targetBlock.getZ() - playerClick.getZ() * ((targetBlock.getZ() - playerClick.getZ() * 1) < 0 ? -1 : 1);
