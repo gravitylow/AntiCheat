@@ -151,7 +151,7 @@ public class PlayerManager
         String result = config.getResult(level);
         if (result.startsWith("COMMAND["))
         {
-            String command = result.replaceAll("COMMAND\\[", "").replaceAll("]", "").replaceAll("&player", player.getName());
+            String command = result.replaceAll("COMMAND\\[", "").replaceAll("]", "").replaceAll("&player", player.getName()).replaceAll("&world", player.getWorld().getName());
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
         }
         else if (result.equalsIgnoreCase("KICK"))
