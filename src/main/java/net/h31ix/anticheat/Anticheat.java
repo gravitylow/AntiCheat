@@ -18,7 +18,6 @@
 
 package net.h31ix.anticheat;
 
-import net.h31ix.anticheat.util.Configuration;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -33,6 +32,7 @@ import net.h31ix.anticheat.manage.AnticheatManager;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.metrics.Metrics;
 import net.h31ix.anticheat.metrics.Metrics.Graph;
+import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Utilities;
 import net.h31ix.anticheat.xray.XRayListener;
 import net.h31ix.anticheat.xray.XRayTracker;
