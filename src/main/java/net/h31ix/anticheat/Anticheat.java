@@ -44,7 +44,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Anticheat extends JavaPlugin
 {
     private static AnticheatManager manager;
-    private final List<Listener> eventList = new ArrayList<Listener>();
+    private static List<Listener> eventList = new ArrayList<Listener>();
     private static boolean update = false;
     private static final int BYTE_SIZE = 1024;
     private static Logger logger;
@@ -67,6 +67,7 @@ public class Anticheat extends JavaPlugin
         }
         config.saveLevels();
         getServer().getScheduler().cancelAllTasks();
+        cleanup();
     }
 
     @Override
@@ -379,5 +380,13 @@ public class Anticheat extends JavaPlugin
     public Logger getAnticheatLogger()
     {
         return this.getLogger();
+    }
+    private void cleanup()
+    {
+        this.eventList = null;
+        this.manager = null;
+        this.config = null;
+        this.metrics = null;
+        this.logger = null;
     }
 }

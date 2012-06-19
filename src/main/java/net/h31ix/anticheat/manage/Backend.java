@@ -403,7 +403,7 @@ public class Backend
 
     public boolean checkVisuals(Player player, Block targetBlock, Block playerClick)
     {
-        if (!Utilities.isInteractable(targetBlock.getType()))
+        if (!Utilities.isInteractable(targetBlock.getType()) || playerClick.isLiquid())
         {
             return false;
         }
