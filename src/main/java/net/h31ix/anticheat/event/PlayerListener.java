@@ -182,7 +182,6 @@ public class PlayerListener extends EventListener
                 backend.logEatingStart(player);
             }
         }
-
         Block block = event.getClickedBlock();
 
         if (block != null)
