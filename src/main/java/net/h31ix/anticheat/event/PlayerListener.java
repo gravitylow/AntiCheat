@@ -191,7 +191,7 @@ public class PlayerListener extends EventListener
 
             /* Visuals Check */
 
-            if (checkManager.willCheck(player, CheckType.VISUAL) && event.getAction() != Action.PHYSICAL)
+            /**if (checkManager.willCheck(player, CheckType.VISUAL) && event.getAction() != Action.PHYSICAL)
             {
                 if (backend.checkVisuals(player, block, playerClick))
                 {
@@ -202,7 +202,7 @@ public class PlayerListener extends EventListener
                 {
                     backend.logInteraction(player);
                 }
-            }
+            }**/
         }
     }
 
