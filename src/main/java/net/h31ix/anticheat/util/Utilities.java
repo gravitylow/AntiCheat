@@ -39,9 +39,13 @@ public final class Utilities
 
     public static void alert(String[] message)
     {
-        for (String msg : message)
+        for(Player player : Bukkit.getOnlinePlayers())
         {
-            Bukkit.broadcast(msg, "anticheat.alert");
+            if(player.hasPermission("anticheat.alert"));
+            for (String msg : message)
+            {
+                player.sendMessage(msg);
+            }
         }
         if (Anticheat.getManager().getConfiguration().logConsole())
         {
