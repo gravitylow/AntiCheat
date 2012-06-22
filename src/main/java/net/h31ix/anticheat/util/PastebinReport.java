@@ -26,6 +26,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import net.h31ix.anticheat.Anticheat;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class PastebinReport
 {
@@ -34,9 +37,19 @@ public class PastebinReport
     private Date date = new Date();
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd kk:mm Z");
 
-    public PastebinReport()
+    public PastebinReport(CommandSender cs)
     {
-        createReport();
+        Player player = null;
+        try
+        {
+            player = (Player) cs;
+        }
+        catch (Exception e)
+        {
+            cs.sendMessage(ChatColor.RED + "We were unable to detect a player when making this report.  Skipping permstester");
+        }
+
+        createReport(player);
         try
         {
             writeReport();
@@ -48,13 +61,26 @@ public class PastebinReport
         }
         postReport();
     }
-    
-    public String getURL() 
+
+    public String getURL()
     {
         return url;
     }
 
-    private void createReport()
+    private void appendPermissionsTester(Player player)
+    {
+        if (player == null)
+            return;
+        
+        // alrighty then noobs.
+        for(Permission node : Permission.values())
+        {
+            report.append(player.getName() + ": " + node.toString() + " " + node.get(player) + '\n');
+        }
+        
+    }
+
+    private void createReport(Player player)
     {
         report.append("------------ AntiCheat Report - " + format.format(date) + " ------------" + '\n');
         report.append("Version: " + Anticheat.getVersion() + '\n');
@@ -66,6 +92,8 @@ public class PastebinReport
         {
             report.append("[AntiCheat] " + log + '\n');
         }
+        report.append("------------Permission Tester------------" + '\n');
+        appendPermissionsTester(player);
         report.append("------------Advanced Information------------" + '\n');
         Anticheat.getManager().getBackend().buildAdvancedInformation(report);
         report.append("-----------End Of Report------------");

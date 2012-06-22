@@ -100,7 +100,7 @@ public class CommandHandler implements CommandExecutor
     {
         if (Permission.SYSTEM_REPORT.get(cs))
         {
-            PastebinReport report = new PastebinReport();
+            PastebinReport report = new PastebinReport(cs);
             cs.sendMessage(GREEN + "Debug information posted to: " + WHITE + report.getURL());
             cs.sendMessage(GREEN + "Please include this link when making bug reports.");
         }
