@@ -52,10 +52,6 @@ public class XRayListener implements Listener
                 {
                     tracker.addIron(player);
                 }
-                else if (m == Material.COAL_ORE)
-                {
-                    tracker.addCoal(player);
-                }
                 else if (m == Material.GOLD_ORE)
                 {
                     tracker.addGold(player);

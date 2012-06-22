@@ -30,7 +30,6 @@ public class XRayTracker
     private Map<String, Integer> diamond = new HashMap<String, Integer>();
     private Map<String, Integer> gold = new HashMap<String, Integer>();
     private Map<String, Integer> iron = new HashMap<String, Integer>();
-    private Map<String, Integer> coal = new HashMap<String, Integer>();
     private Map<String, Integer> lapis = new HashMap<String, Integer>();
     private Map<String, Integer> redstone = new HashMap<String, Integer>();
     private Map<String, Integer> block = new HashMap<String, Integer>();
@@ -70,9 +69,9 @@ public class XRayTracker
 
     public boolean hasAbnormal(String player)
     {
-        XRayStats stats = new XRayStats(player, diamond, gold, iron, coal, lapis, redstone, block, totalblock);
+        XRayStats stats = new XRayStats(player, diamond, gold, iron, lapis, redstone, block, totalblock);
         double total = stats.getOther();
-        return calculate(player, stats.getDiamond(), total) || calculate(player, stats.getGold(), total) || calculate(player, stats.getIron(), total) || calculate(player, stats.getCoal(), total) || calculate(player, stats.getLapis(), total) || calculate(player, stats.getRedstone(), total);
+        return calculate(player, stats.getDiamond(), total) || calculate(player, stats.getGold(), total) || calculate(player, stats.getIron(), total) || calculate(player, stats.getLapis(), total) || calculate(player, stats.getRedstone(), total);
     }
 
     public boolean hasAlerted(String player)
@@ -92,7 +91,7 @@ public class XRayTracker
 
     public void getStats(CommandSender cs, String player)
     {
-        XRayStats stats = new XRayStats(player, diamond, gold, iron, coal, lapis, redstone, block, totalblock);
+        XRayStats stats = new XRayStats(player, diamond, gold, iron, lapis, redstone, block, totalblock);
         double total = stats.getOther();
         cs.sendMessage("--------------------[" + GREEN + "X-Ray Stats" + WHITE + "]---------------------");
         cs.sendMessage(GRAY + "Player: " + WHITE + player);
@@ -100,7 +99,6 @@ public class XRayTracker
         calculate(cs, player, stats.getDiamond(), total, "diamond");
         calculate(cs, player, stats.getGold(), total, "gold");
         calculate(cs, player, stats.getIron(), total, "iron");
-        calculate(cs, player, stats.getCoal(), total, "coal");
         calculate(cs, player, stats.getLapis(), total, "lapis");
         calculate(cs, player, stats.getRedstone(), total, "redstone");
         cs.sendMessage(GRAY + "Percent all other blocks: " + WHITE + round(stats.getOther()) + "%");
@@ -115,11 +113,6 @@ public class XRayTracker
     public void addGold(String player)
     {
         addOre(player, gold);
-    }
-
-    public void addCoal(String player)
-    {
-        addOre(player, coal);
     }
 
     public void addIron(String player)
@@ -175,7 +168,6 @@ public class XRayTracker
         diamond.put(player, 0);
         iron.put(player, 0);
         gold.put(player, 0);
-        coal.put(player, 0);
         redstone.put(player, 0);
         lapis.put(player, 0);
         totalblock.put(player, 0);

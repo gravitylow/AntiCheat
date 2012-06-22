@@ -27,12 +27,11 @@ public class XRayStats
     private double d = 0;
     private double g = 0;
     private double i = 0;
-    private double c = 0;
     private double l = 0;
     private double r = 0;
     private double o = 0;
 
-    public XRayStats(String player, Map<String, Integer> diamond, Map<String, Integer> gold, Map<String, Integer> iron, Map<String, Integer> coal, Map<String, Integer> lapis, Map<String, Integer> redstone, Map<String, Integer> other, Map<String, Integer> total)
+    public XRayStats(String player, Map<String, Integer> diamond, Map<String, Integer> gold, Map<String, Integer> iron, Map<String, Integer> lapis, Map<String, Integer> redstone, Map<String, Integer> other, Map<String, Integer> total)
     {
         if (total.get(player) != null)
         {
@@ -49,10 +48,6 @@ public class XRayStats
         if (iron.get(player) != null)
         {
             i = (iron.get(player) / t) * DIVISOR;
-        }
-        if (coal.get(player) != null)
-        {
-            c = (coal.get(player) / t) * DIVISOR;
         }
         if (lapis.get(player) != null)
         {
@@ -86,11 +81,6 @@ public class XRayStats
     public double getIron()
     {
         return i;
-    }
-
-    public double getCoal()
-    {
-        return c;
     }
 
     public double getLapis()
