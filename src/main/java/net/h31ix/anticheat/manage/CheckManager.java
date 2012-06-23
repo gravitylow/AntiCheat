@@ -54,9 +54,12 @@ public class CheckManager
 
     public void deactivateCheck(CheckType type)
     {
-        manager.log("The " + type.toString() + " check was deactivated.");
-        checkIgnoreList.add(type);
-        disabled++;
+        if (!checkIgnoreList.contains(type))
+        {        
+            manager.log("The " + type.toString() + " check was deactivated.");
+            checkIgnoreList.add(type);
+            disabled++;
+        }
     }
 
     public boolean isActive(CheckType type)
@@ -66,9 +69,12 @@ public class CheckManager
 
     public void exemptPlayer(Player player, CheckType type)
     {
-        manager.log(player.getName() + " was exempted from the " + type.toString() + " check.");
-        exemptList.put(player.getName(), type);
-        exempt++;
+        if (!exemptList.containsEntry(player.getName(), type))
+        {
+            manager.log(player.getName() + " was exempted from the " + type.toString() + " check.");
+            exemptList.put(player.getName(), type);
+            exempt++;
+        }
     }
 
     public void unexemptPlayer(Player player, CheckType type)
