@@ -70,6 +70,7 @@ public class PlayerListener extends EventListener
                 if(backend.justLaunched(player))
                 {
                     event.setCancelled(!config.silentMode());
+                    log("tried to fire projectiles too fast", player, CheckType.FAST_PROJECTILE);
                 }
                 else
                 {
