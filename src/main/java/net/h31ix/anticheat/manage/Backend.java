@@ -986,20 +986,25 @@ public class Backend
     {
         return animated.containsKey(player.getName());
     }
-    
+
     public boolean justLaunched(Player player)
     {
-        return projectileHold.contains(player.getName());
+        if (projectileHold.contains(player.getName()))
+        {
+            increment(player, projectilesShot, PROJECTILE_MAX);
+            return true;
+        }
+
+        return false;
     }
 
     public void logProjectile(final Player player, final EventListener e)
     {
-        if(projectileHold.contains(player.getName()))
+        if (projectileHold.contains(player.getName()))
         {
             player.sendMessage(ChatColor.RED + "[AntiCheat] Please stop launching projectiles and wait 10 seconds.");
             return;
         }
-        increment(player, projectilesShot, PROJECTILE_MAX);
         if (!trackingProjectiles.contains(player.getName()))
         {
             trackingProjectiles.add(player.getName());
@@ -1017,13 +1022,32 @@ public class Backend
                             @Override
                             public void run()
                             {
-                                if (!projectileHold.contains(player.getName()))
-                                    projectileHold.add(player.getName());
+                                if (projectileHold.contains(player.getName()) && projectilesShot.get(player.getName()) < PROJECTILE_MAX)
+                                {
+                                    projectileHold.remove(player.getName());
+                                }
+                                else
+                                {
+                                    projectilesShot.put(player.getName(), 0);
+                                    micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable()
+                                    {
+                                        @Override
+                                        public void run()
+                                        {
+                                            if (projectileHold.contains(player.getName()))
+                                            {
+                                                projectileHold.remove(player.getName());
+                                            }
+                                        }
+
+                                    }, PROJECTILE_HOLD);
+                                }
                             }
 
                         }, PROJECTILE_HOLD);
+                        projectileHold.add(player.getName());
+                        projectilesShot.put(player.getName(), 0);
                     }
-                    projectilesShot.put(player.getName(), 0);
                 }
             }, PROJECTILE_TIME);
         }
