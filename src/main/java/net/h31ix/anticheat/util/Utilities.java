@@ -41,10 +41,10 @@ public final class Utilities
     {
         for(Player player : Bukkit.getOnlinePlayers())
         {
-            if(player.hasPermission("anticheat.alert"));
             for (String msg : message)
             {
-                player.sendMessage(msg);
+                if(player.hasPermission("anticheat.alert"))
+                    player.sendMessage(msg);
             }
         }
         if (Anticheat.getManager().getConfiguration().logConsole())
