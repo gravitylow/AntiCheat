@@ -1050,6 +1050,7 @@ public class Backend
                     }
                 }
             }, PROJECTILE_TIME);
+            projectilesShot.put(player.getName(), 0);
         }
     }
 
