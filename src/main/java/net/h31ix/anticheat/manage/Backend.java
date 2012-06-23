@@ -1005,6 +1005,7 @@ public class Backend
             player.sendMessage(ChatColor.RED + "[AntiCheat] Please stop launching projectiles and wait 10 seconds.");
             return;
         }
+        increment(player, projectilesShot, PROJECTILE_MAX);
         if (!trackingProjectiles.contains(player.getName()))
         {
             trackingProjectiles.add(player.getName());
@@ -1022,25 +1023,9 @@ public class Backend
                             @Override
                             public void run()
                             {
-                                if (projectileHold.contains(player.getName()) && projectilesShot.get(player.getName()) < PROJECTILE_MAX)
+                                if (projectileHold.contains(player.getName()))
                                 {
                                     projectileHold.remove(player.getName());
-                                }
-                                else
-                                {
-                                    projectilesShot.put(player.getName(), 0);
-                                    micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable()
-                                    {
-                                        @Override
-                                        public void run()
-                                        {
-                                            if (projectileHold.contains(player.getName()))
-                                            {
-                                                projectileHold.remove(player.getName());
-                                            }
-                                        }
-
-                                    }, PROJECTILE_HOLD);
                                 }
                             }
 
@@ -1050,8 +1035,6 @@ public class Backend
                     }
                 }
             }, PROJECTILE_TIME);
-            if (!projectilesShot.containsKey(player.getName()))
-                projectilesShot.put(player.getName(), 0);
         }
     }
 
