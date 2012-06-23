@@ -67,7 +67,14 @@ public class PlayerListener extends EventListener
             Player player = (Player) event.getEntity().getShooter();
             if (checkManager.willCheck(player, CheckType.FAST_PROJECTILE))
             {
-                backend.logProjectile(player, this);
+                if(backend.justLaunched(player))
+                {
+                    event.setCancelled(!config.silentMode());
+                }
+                else
+                {
+                    backend.logProjectile(player, this);
+                }
             }
         }
     }

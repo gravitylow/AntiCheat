@@ -48,6 +48,7 @@ public class Backend
     private static final int DAMAGE_TIME = 50;
     private static final int KNOCKBACK_DAMAGE_TIME = 50;
     private static final int PROJECTILE_TIME = 20;
+    private static final long PROJECTILE_HOLD = 20L * 10L;
 
     private static final int FASTBREAK_LIMIT = 3;
     private static final int FASTBREAK_TIMEMAX = 500;
@@ -129,6 +130,7 @@ public class Backend
     private List<String> instantBreakExempt = new ArrayList<String>();
     private List<String> isAscending = new ArrayList<String>();
     private List<String> trackingProjectiles = new ArrayList<String>();
+    private List<String> projectileHold = new ArrayList<String>();
     private List<String> velocitizing = new ArrayList<String>();
     private List<String> interacting = new ArrayList<String>();
     private Map<String, Integer> ascensionCount = new HashMap<String, Integer>();
@@ -984,9 +986,19 @@ public class Backend
     {
         return animated.containsKey(player.getName());
     }
+    
+    public boolean justLaunched(Player player)
+    {
+        return projectileHold.contains(player.getName());
+    }
 
     public void logProjectile(final Player player, final EventListener e)
     {
+        if(projectileHold.contains(player.getName()))
+        {
+            player.sendMessage(ChatColor.RED + "[AntiCheat] Please stop launching projectiles and wait 10 seconds.");
+            return;
+        }
         increment(player, projectilesShot, PROJECTILE_MAX);
         if (!trackingProjectiles.contains(player.getName()))
         {
@@ -1000,6 +1012,16 @@ public class Backend
                     if (projectilesShot.get(player.getName()) >= PROJECTILE_MAX)
                     {
                         e.log("tried to fire projectiles too fast", player, CheckType.FAST_PROJECTILE);
+                        micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                if (!projectileHold.contains(player.getName()))
+                                    projectileHold.add(player.getName());
+                            }
+
+                        }, PROJECTILE_HOLD);
                     }
                     projectilesShot.put(player.getName(), 0);
                 }
@@ -1078,7 +1100,7 @@ public class Backend
     @SuppressWarnings("unchecked")
     private void logEvent(@SuppressWarnings("rawtypes") final List list, final Player player, long time)
     {
-        if(!list.contains(player.getName()))
+        if (!list.contains(player.getName()))
         {
             list.add(player.getName());
         }
@@ -1095,8 +1117,8 @@ public class Backend
     @SuppressWarnings("unchecked")
     private void logEvent(@SuppressWarnings("rawtypes") final Map map, final Player player, final Object obj, long time)
     {
-        if(!map.containsKey(player.getName()))
-        {        
+        if (!map.containsKey(player.getName()))
+        {
             map.put(player.getName(), obj);
         }
         micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable()
