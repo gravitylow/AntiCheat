@@ -78,17 +78,14 @@ public class PlayerManager
             }
             else
             {
-                Anticheat.getManager().log("About to increase level for " + name);
                 final int playerLevel = level.get(name);
                 level.put(name, playerLevel + 1);
                 if (playerLevel <= MED_THRESHOLD && playerLevel + 1 > MED_THRESHOLD && playerLevel + 1 <= HIGH_THRESHOLD)
                 {
-                    Anticheat.getManager().log("Level Medium given to " + name);
                     reactMedium(player);
                 }
                 else if (playerLevel <= HIGH_THRESHOLD && playerLevel + 1 > HIGH_THRESHOLD)
                 {
-                    Anticheat.getManager().log("Level High given to " + name);
                     reactHigh(player);
                     level.put(player.getName(), MED_THRESHOLD + LEVEL_BOOST);
                 }
