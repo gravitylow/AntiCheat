@@ -68,8 +68,10 @@ public class PlayerListener extends EventListener
             Player player = (Player) event.getEntity().getShooter();
 
             if (event.getEntity() instanceof Arrow)
+            {
                 // TF2 Heavy does not approve of this action. He yells "NO!"
                 return;
+            }
 
             if (checkManager.willCheck(player, CheckType.FAST_PROJECTILE))
             {
