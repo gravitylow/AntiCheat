@@ -29,6 +29,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -65,9 +66,14 @@ public class PlayerListener extends EventListener
         if (event.getEntity().getShooter() instanceof Player)
         {
             Player player = (Player) event.getEntity().getShooter();
+
+            if (event.getEntity() instanceof Arrow)
+                // TF2 Heavy does not approve of this action. He yells "NO!"
+                return;
+
             if (checkManager.willCheck(player, CheckType.FAST_PROJECTILE))
             {
-                if(backend.justLaunched(player))
+                if (backend.justLaunched(player))
                 {
                     event.setCancelled(!config.silentMode());
                     log("tried to fire projectiles too fast", player, CheckType.FAST_PROJECTILE);
@@ -133,7 +139,7 @@ public class PlayerListener extends EventListener
             {
                 boolean b = !config.silentMode();
                 event.setCancelled(b);
-                if(b)
+                if (b)
                 {
                     player.sendMessage(ChatColor.RED + "Please do not spam.");
                 }
@@ -199,18 +205,15 @@ public class PlayerListener extends EventListener
 
             /* Visuals Check */
 
-            /**if (checkManager.willCheck(player, CheckType.VISUAL) && event.getAction() != Action.PHYSICAL)
-            {
-                if (backend.checkVisuals(player, block, playerClick))
-                {
-                    event.setCancelled(!config.silentMode());
-                    log("tried to interact with an object that they couldn't see", player, CheckType.VISUAL);
-                }
-                else
-                {
-                    backend.logInteraction(player);
-                }
-            }**/
+            /**
+             * if (checkManager.willCheck(player, CheckType.VISUAL) &&
+             * event.getAction() != Action.PHYSICAL) { if
+             * (backend.checkVisuals(player, block, playerClick)) {
+             * event.setCancelled(!config.silentMode());
+             * log("tried to interact with an object that they couldn't see",
+             * player, CheckType.VISUAL); } else {
+             * backend.logInteraction(player); } }
+             **/
         }
     }
 
@@ -287,7 +290,7 @@ public class PlayerListener extends EventListener
         backend.logAscension(player, from.getY(), to.getY());
         if (checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkFlight(player, distance))
         {
-            if(!config.silentMode())
+            if (!config.silentMode())
             {
                 from.setX(from.getX() - 1);
                 from.setY(from.getY() - 1);
@@ -307,8 +310,8 @@ public class PlayerListener extends EventListener
         }
         if (checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && (backend.checkYAxis(player, distance) || backend.checkAscension(player, from.getY(), to.getY())))
         {
-            if(!config.silentMode())
-            {            
+            if (!config.silentMode())
+            {
                 Block lower = player.getWorld().getHighestBlockAt(player.getLocation());
                 if (lower.getLocation().getY() + 2 < player.getLocation().getY())
                 {
@@ -325,16 +328,16 @@ public class PlayerListener extends EventListener
         {
             if (event.getFrom().getY() < event.getTo().getY() && backend.checkYSpeed(player, y))
             {
-                if(!config.silentMode())
-                {                
+                if (!config.silentMode())
+                {
                     event.setTo(from);
                 }
                 log("tried to ascend too fast.", player, CheckType.SPEED);
             }
             if (backend.checkXZSpeed(player, x, z))
             {
-                if(!config.silentMode())
-                {                
+                if (!config.silentMode())
+                {
                     event.setTo(from);
                 }
                 log("tried to move too fast.", player, CheckType.SPEED);
@@ -342,8 +345,8 @@ public class PlayerListener extends EventListener
         }
         if (checkManager.willCheck(player, CheckType.NOFALL) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY) && event.getFrom().getY() > event.getTo().getY() && backend.checkNoFall(player, y))
         {
-            if(!config.silentMode())
-            {            
+            if (!config.silentMode())
+            {
                 event.setTo(from);
             }
             log("tried avoid fall damage.", player, CheckType.NOFALL);
@@ -364,16 +367,16 @@ public class PlayerListener extends EventListener
             double z = distance.getZDifference();
             if (checkManager.willCheck(player, CheckType.WATER_WALK) && backend.checkWaterWalk(player, x, z))
             {
-                if(!config.silentMode())
-                {                
+                if (!config.silentMode())
+                {
                     event.setTo(from);
                 }
                 log("tried to walk on water.", player, CheckType.WATER_WALK);
             }
             if (checkManager.willCheck(player, CheckType.SNEAK) && backend.checkSneak(player, x, z))
             {
-                if(!config.silentMode())
-                {                
+                if (!config.silentMode())
+                {
                     event.setTo(from);
                     player.setSneaking(false);
                 }
@@ -381,8 +384,8 @@ public class PlayerListener extends EventListener
             }
             if (checkManager.willCheck(player, CheckType.SPIDER) && backend.checkSpider(player, y))
             {
-                if(!config.silentMode())
-                {                
+                if (!config.silentMode())
+                {
                     event.setTo(from);
                 }
                 log("tried to climb a wall.", player, CheckType.SPIDER);
