@@ -35,6 +35,7 @@ public enum Permission
     CHECK_SPRINT,
     CHECK_SNEAK,
     CHECK_SPEED,
+    CHECK_VCLIP,
     CHECK_SPIDER,
     CHECK_NOFALL,
     CHECK_FASTBOW,

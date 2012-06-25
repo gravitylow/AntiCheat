@@ -326,6 +326,32 @@ public class PlayerListener extends EventListener
             }
             log("tried to fly on y-axis", player, CheckType.FLY);
         }
+        if (checkManager.willCheck(player, CheckType.VCLIP) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY))
+        {
+            if (event.getFrom().getY() > event.getTo().getY())
+            {
+                int result = backend.checkVClip(player, new Distance(event.getFrom(), event.getTo()));
+
+                if (result > 0)
+                {
+                    if (!config.silentMode())
+                    {
+                        // You come back up, and you suddenly feel sick from trying to stick yourself through the blocks..
+                        Location newloc = new Location(player.getWorld(), event.getFrom().getX(), event.getFrom().getY() + result, event.getFrom().getZ());
+                        if (newloc.getBlock().getTypeId() == 0)
+                        {
+                            event.setTo(newloc);
+                        }
+                        else
+                        {
+                            event.setTo(event.getFrom());
+                        }
+                        player.damage(3);
+                    }
+                    log("tried to move down through a block.", player, CheckType.VCLIP);
+                }
+            }
+        }
         if (checkManager.willCheck(player, CheckType.SPEED) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY))
         {
             if (event.getFrom().getY() < event.getTo().getY() && backend.checkYSpeed(player, y))
@@ -350,6 +376,7 @@ public class PlayerListener extends EventListener
             if (!config.silentMode())
             {
                 event.setTo(from);
+                player.damage(2); // I added this in here so the player(s) would still receive damage.
             }
             log("tried avoid fall damage.", player, CheckType.NOFALL);
         }

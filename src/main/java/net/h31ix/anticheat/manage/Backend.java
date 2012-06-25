@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.event.EventListener;
 import net.h31ix.anticheat.util.Distance;
 import net.h31ix.anticheat.util.Utilities;
@@ -503,9 +505,42 @@ public class Backend
         return false;
     }
 
+    // The first check in Anticheat with a integer as a result :O!
+
+    public int checkVClip(Player player, Distance distance)
+    {
+        double from = Math.round(distance.fromY());
+        double to = Math.round(distance.toY());
+
+        boolean bs = false;
+
+        if (player.isInsideVehicle())
+            return 0;
+
+        if (from == to || from < to)
+            return 0;
+
+        if (Math.round(distance.getYDifference()) < 2)
+            return 0;
+
+        for (int i = 0; i < (Math.round(distance.getYDifference())) + 1; i++)
+        {
+            Location l = new Location(player.getWorld(), player.getLocation().getX(), to + i, player.getLocation().getZ());
+            if (l.getBlock().getTypeId() != 0)
+            {
+                bs = true;
+            }
+
+            if (bs)
+                return (int) from + 3;
+        }
+
+        return 0;
+    }
+
     public boolean checkYAxis(Player player, Distance distance)
     {
-        if (distance.getYDifference() > 400)
+        if (distance.getYDifference() > 400 || distance.getYDifference() < 0)
         {
             return false;
         }
