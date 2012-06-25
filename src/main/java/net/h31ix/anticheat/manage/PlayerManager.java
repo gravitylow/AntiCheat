@@ -65,13 +65,24 @@ public class PlayerManager
 
     public boolean increaseLevel(Player player, CheckType type)
     {
-        if(config.silentMode() && type.getUses(player) % 4 != 0)
+        if (config.silentMode() && type.getUses(player) % 4 != 0)
         {
             return false;
         }
         else
         {
             final String name = player.getName();
+
+            // Sometimes, JavaBukkit likes to tie itself into a knot.
+            // And troll us with player variable showing somebody else.
+            // Because spotty haunts us in our dreams,
+            // I have to place these annotations and place this hacky fix here.
+            player = Bukkit.getPlayerExact(name);
+
+            // Why, Why, Whyyyyy!
+            if (player == null)
+                return true;
+
             if (level.get(name) == null || level.get(name) == 0)
             {
                 level.put(name, 1);
@@ -147,7 +158,7 @@ public class PlayerManager
     {
         return level;
     }
-    
+
     public void removePlayer(Player pl)
     {
         level.remove(pl.getName());
