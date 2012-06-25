@@ -81,7 +81,7 @@ public class PlayerManager
 
             // Why, Why, Whyyyyy!
             if (player == null)
-                return true;
+                return false;
 
             if (level.get(name) == null || level.get(name) == 0)
             {
