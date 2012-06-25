@@ -116,6 +116,9 @@ permissions:
   anticheat.check.visual:
     description: Allow players to interact with objects out of their view
     default: false    
+  anticheat.check.vclip:
+    description: Allow players to become slimeballs and clip down through blocks
+    default: false    
   anticheat.check.exempt:
     description: Total exemption from checks
     default: false
@@ -143,3 +146,4 @@ permissions:
       anticheat.check.projectile: true
       anticheat.check.itemspam: true
       anticheat.check.visual: true
+      anticheat.check.vclip: true
