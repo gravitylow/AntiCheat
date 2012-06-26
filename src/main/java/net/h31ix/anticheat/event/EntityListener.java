@@ -96,7 +96,6 @@ public class EntityListener extends EventListener
                 else
                 {
                     decrease(player);
-                    backend.logEatingStart(player);
                 }
             }
         }
