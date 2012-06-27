@@ -42,6 +42,7 @@ public enum CheckType
     SPRINT(Permission.CHECK_SPRINT),
     SNEAK(Permission.CHECK_SNEAK),
     SPEED(Permission.CHECK_SPEED),
+    VCLIP(Permission.CHECK_VCLIP),
     //VISUAL(Permission.CHECK_VISUAL),
     SPIDER(Permission.CHECK_SPIDER),
     NOFALL(Permission.CHECK_NOFALL),

@@ -205,7 +205,8 @@ public class CommandHandler implements CommandExecutor
                         Player player = list.get(0);
                         for (Player p : cs.getServer().getOnlinePlayers())
                         {
-                            p.hidePlayer(sender);
+                            if (!Permission.SYSTEM_SPY.get(p))
+                                p.hidePlayer(sender);
                         }
                         sender.setAllowFlight(true);
                         sender.setFlying(true);
