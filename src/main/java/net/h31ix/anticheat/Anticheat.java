@@ -19,12 +19,16 @@
 package net.h31ix.anticheat;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.h31ix.anticheat.event.*;
@@ -118,7 +122,7 @@ public class Anticheat extends JavaPlugin
                     logger.log(Level.INFO, "Scheduled the XRay checker.");
                 }
             }
-        }
+        }       
         for (Listener listener : eventList)
         {
             getServer().getPluginManager().registerEvents(listener, this);

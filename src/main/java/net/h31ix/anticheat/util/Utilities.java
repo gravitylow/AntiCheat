@@ -41,7 +41,7 @@ public final class Utilities
     {
         for (Player player : Bukkit.getOnlinePlayers())
         {
-            if (player.hasPermission("anticheat.alert"))
+            if (Permission.SYSTEM_ALERT.get(player))
             {
                 for (String msg : message)
                 {
