@@ -20,8 +20,6 @@ package net.h31ix.anticheat.manage;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Language;
 import net.h31ix.anticheat.util.Utilities;
@@ -51,19 +49,19 @@ public class PlayerManager
         lang = config.getLang();
     }
 
-    private static void reactMedium(Player player, String name)
+    private static void reactMedium(Player player, final String name)
     {
-        execute("Medium", name, player);
-        Utilities.alert(formatArray(lang.getMediumAlert(), player, ChatColor.YELLOW));
+        execute("Medium", player, name);
+        Utilities.alert(formatArray(lang.getMediumAlert(), name, ChatColor.YELLOW));
     }
 
-    private static void reactHigh(Player player, String name)
+    private static void reactHigh(Player player, final String name)
     {
-        execute("High", name, player);
-        Utilities.alert(formatArray(lang.getHighAlert(), player, ChatColor.RED));
+        execute("High", player, name);
+        Utilities.alert(formatArray(lang.getHighAlert(), name, ChatColor.RED));
     }
 
-    public boolean increaseLevel(Player player, CheckType type)
+    public boolean increaseLevel(final Player player, CheckType type)
     {
         if (config.silentMode() && type.getUses(player) % 4 != 0)
         {
@@ -72,12 +70,6 @@ public class PlayerManager
         else
         {
             final String name = player.getName();
-
-            // Sometimes, JavaBukkit likes to tie itself into a knot.
-            // And troll us with player variable showing somebody else.
-            // Because spotty haunts us in our dreams,
-            // I have to place these annotations and place this hacky fix here.
-            player = Bukkit.getPlayerExact(name);
 
             // Why, Why, Whyyyyy!
             if (player == null)
@@ -164,7 +156,7 @@ public class PlayerManager
         level.remove(pl.getName());
     }
 
-    private static void execute(String level, String name, Player player)
+    private static void execute(String level, Player player, String name)
     {
         String result = config.getResult(level);
         if (result.startsWith("COMMAND["))
@@ -174,12 +166,12 @@ public class PlayerManager
         }
         else if (result.equalsIgnoreCase("KICK"))
         {
-            player.kickPlayer(formatString(lang.getKickReason(), player, ChatColor.RED));
-            player.getServer().broadcastMessage(formatString(lang.getKickBroadcast(), player, ChatColor.RED));
+            player.kickPlayer(formatString(lang.getKickReason(), name, ChatColor.RED));
+            player.getServer().broadcastMessage(formatString(lang.getKickBroadcast(), name, ChatColor.RED));
         }
         else if (result.equalsIgnoreCase("WARN"))
         {
-            String[] message = formatArray(lang.getWarning(), player, ChatColor.RED);
+            String[] message = formatArray(lang.getWarning(), name, ChatColor.RED);
             for (String string : message)
             {
                 player.sendMessage(string);
@@ -188,22 +180,22 @@ public class PlayerManager
         else if (result.equalsIgnoreCase("BAN"))
         {
             player.setBanned(true);
-            player.kickPlayer(formatString(lang.getBanReason(), player, ChatColor.RED));
-            player.getServer().broadcastMessage(formatString(lang.getBanBroadcast(), player, ChatColor.RED));
+            player.kickPlayer(formatString(lang.getBanReason(), name, ChatColor.RED));
+            player.getServer().broadcastMessage(formatString(lang.getBanBroadcast(), name, ChatColor.RED));
         }
     }
 
-    private static String[] formatArray(String[] array, Player player, ChatColor color)
+    private static String[] formatArray(String[] array, final String name, ChatColor color)
     {
         for (int i = 0; i < array.length; i++)
         {
-            array[i] = formatString(array[i], player, color);
+            array[i] = formatString(array[i], name, color);
         }
         return array;
     }
 
-    private static String formatString(String string, Player player, ChatColor color)
+    private static String formatString(String string, final String name, ChatColor color)
     {
-        return color + string.replaceAll("&player", ChatColor.WHITE + player.getName() + color);
+        return color + string.replaceAll("&player", ChatColor.WHITE + name + color);
     }
 }
