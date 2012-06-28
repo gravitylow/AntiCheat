@@ -51,15 +51,15 @@ public class PlayerManager
         lang = config.getLang();
     }
 
-    private static void reactMedium(Player player)
+    private static void reactMedium(Player player, String name)
     {
-        execute("Medium", player);
+        execute("Medium", name, player);
         Utilities.alert(formatArray(lang.getMediumAlert(), player, ChatColor.YELLOW));
     }
 
-    private static void reactHigh(Player player)
+    private static void reactHigh(Player player, String name)
     {
-        execute("High", player);
+        execute("High", name, player);
         Utilities.alert(formatArray(lang.getHighAlert(), player, ChatColor.RED));
     }
 
@@ -93,16 +93,16 @@ public class PlayerManager
                 level.put(name, playerLevel + 1);
                 if (playerLevel <= MED_THRESHOLD && playerLevel + 1 > MED_THRESHOLD && playerLevel + 1 <= HIGH_THRESHOLD)
                 {
-                    reactMedium(player);
+                    reactMedium(player,name);
                 }
                 else if (playerLevel <= HIGH_THRESHOLD && playerLevel + 1 > HIGH_THRESHOLD)
                 {
-                    reactHigh(player);
+                    reactHigh(player,name);
                     level.put(player.getName(), MED_THRESHOLD + LEVEL_BOOST);
                 }
                 else if (playerLevel > LEVEL_MAX)
                 {
-                    level.put(player.getName(), MED_THRESHOLD + LEVEL_BOOST);
+                    level.put(name, MED_THRESHOLD + LEVEL_BOOST);
                 }
             }
         }
@@ -164,7 +164,7 @@ public class PlayerManager
         level.remove(pl.getName());
     }
 
-    private static void execute(String level, Player player)
+    private static void execute(String level, String name, Player player)
     {
         String result = config.getResult(level);
         if (result.startsWith("COMMAND["))
