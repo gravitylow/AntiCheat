@@ -48,7 +48,10 @@ public class PlayerListener extends EventListener
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
     {
+        String msg = event.getMessage().toLowerCase();
+        String cmd = msg.split(" ")[0].substring(1);
         Player player = event.getPlayer();
+
         if (checkManager.willCheck(player, CheckType.SPAM) && config.commandSpam())
         {
             backend.logChat(player);
@@ -56,6 +59,35 @@ public class PlayerListener extends EventListener
             {
                 event.setCancelled(!config.silentMode());
                 player.sendMessage(ChatColor.RED + "Please do not spam.");
+                return;
+            }
+        }
+
+        if (cmd.equals("plugins") || cmd.equals("pl") || cmd.equals("?")) 
+        {
+            if (checkManager.willCheck(player, CheckType.SEE_PLUGINS) && config.protectPlugins())
+            {
+                boolean b = !config.silentMode();
+                event.setCancelled(b);
+                if (b)
+                {
+                    player.sendMessage(ChatColor.RED + "I'm sorry, but you do not have permission to perform this command. "
+                            + "Please contact the server administrators if you believe that this is in error.");
+                    return;
+                }
+            }
+        }
+
+        if (cmd.equals("op"))
+        {
+            if (config.consoleOnly())
+            {
+                boolean b = !config.silentMode();
+                event.setCancelled(b);
+                if (b)
+                {
+                    player.sendMessage(ChatColor.RED + "This command is available only thru console.");
+                }
             }
         }
     }

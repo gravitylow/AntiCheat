@@ -53,7 +53,8 @@ public enum CheckType
     XRAY(Permission.CHECK_XRAY),
     LONG_REACH(Permission.CHECK_LONGREACH),
     FAST_PROJECTILE(Permission.CHECK_FASTPROJECTILE),
-    ITEM_SPAM(Permission.CHECK_ITEMSPAM);
+    ITEM_SPAM(Permission.CHECK_ITEMSPAM),
+    SEE_PLUGINS(Permission.CHECK_PLUGINS);
 
     private final Permission permission;
     private final Map<String, Integer> level = new HashMap<String, Integer>();

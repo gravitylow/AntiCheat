@@ -28,3 +28,7 @@ System:
   #and AntiCheat will do everything possible to keep them in the dark, but their level will still raise,
   #alerts will still be sent to console and to admins online, and events will still take place.
   Silent mode: false
+  #Should AntiCheat disallow the /op command ingame?
+  Op thru console only: true
+  #Should AntiCheat protect the plugin list?
+  Protect plugins: true

@@ -48,6 +48,8 @@ public class Configuration
     private boolean chatSpam;
     private boolean commandSpam;
     private boolean silentMode;
+    private boolean consoleop;
+    private boolean protectpl;
     private int fileLogLevel = 0;
     private String updateFolder;
     private static Language language;
@@ -118,7 +120,17 @@ public class Configuration
     public boolean silentMode()
     {
         return silentMode;
-    }    
+    }
+
+    public boolean consoleOnly()
+    {
+        return consoleop;
+    }
+    
+    public boolean protectPlugins() 
+    {
+        return protectpl;
+    }
 
     public int getFileLogLevel()
     {
@@ -206,7 +218,19 @@ public class Configuration
             config.set("System.Silent mode", false);
             save();
         }
-        silentMode = config.getBoolean("System.Silent mode");        
+        silentMode = config.getBoolean("System.Silent mode");
+        consoleop = config.getBoolean("System.Op thru console only");
+        if (config.getString("System.Op thru console only") == null)
+        {
+            config.set("System.Op thru console only", true);
+            save();
+        }
+        protectpl = config.getBoolean("System.Protect plugins");
+        if (config.getString("System.Protect plugins") == null)
+        {
+            config.set("System.Protect plugins", true);
+            save();
+        }
     }
 
     public String getResult(String event)
