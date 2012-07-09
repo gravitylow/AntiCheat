@@ -69,21 +69,12 @@ public class PlayerListener extends EventListener
 
             if (event.getEntity() instanceof Arrow)
             {
-                // TF2 Heavy does not approve of this action. He yells "NO!"
                 return;
             }
 
             if (checkManager.willCheck(player, CheckType.FAST_PROJECTILE))
             {
-                if (backend.justLaunched(player))
-                {
-                    event.setCancelled(!config.silentMode());
-                    log("tried to fire projectiles too fast", player, CheckType.FAST_PROJECTILE);
-                }
-                else
-                {
-                    backend.logProjectile(player, this);
-                }
+                backend.logProjectile(player, this);
             }
         }
     }

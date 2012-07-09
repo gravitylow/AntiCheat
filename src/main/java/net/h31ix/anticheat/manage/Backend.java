@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.event.EventListener;
 import net.h31ix.anticheat.util.Distance;
 import net.h31ix.anticheat.util.Utilities;
@@ -1021,17 +1019,6 @@ public class Backend
     public boolean justAnimated(Player player)
     {
         return animated.containsKey(player.getName());
-    }
-
-    public boolean justLaunched(Player player)
-    {
-        if (projectileHold.contains(player.getName()))
-        {
-            increment(player, projectilesShot, PROJECTILE_MAX);
-            return true;
-        }
-
-        return false;
     }
 
     public void logProjectile(final Player player, final EventListener e)
