@@ -48,6 +48,8 @@ public class PlayerListener extends EventListener
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
     {
+        String msg = e.getMessage().toLowerCase();
+        String cmd = msg.split(" ")[0].substring(1);
         Player player = event.getPlayer();
         if (checkManager.willCheck(player, CheckType.SPAM) && config.commandSpam())
         {
@@ -56,7 +58,25 @@ public class PlayerListener extends EventListener
             {
                 event.setCancelled(!config.silentMode());
                 player.sendMessage(ChatColor.RED + "Please do not spam.");
+                return;
             }
+        }
+        
+        /*
+         * Now Yeah :D
+         */
+        if (cmd.equals("plugins") || cmd.equals("pl")) {
+            if (player.hasPermission("AntiCheat.seeplugins")) {
+                player.sendMessage(ChatColor.RED + "I'm sorry, but you do not have permission to perform this command. "
+                        + "Please contact the server administrators if you believe that this is in error.");
+                e.setCancelled(true);
+                return;
+            }
+        }
+        
+        if (cmd.equals("op")) {
+            player.sendMessage(ChatColor.RED + "Console Only!");
+            e.setCancelled(true);
         }
     }
 
