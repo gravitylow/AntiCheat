@@ -524,7 +524,7 @@ public class Backend
         for (int i = 0; i < (Math.round(distance.getYDifference())) + 1; i++)
         {
             Location l = new Location(player.getWorld(), player.getLocation().getX(), to + i, player.getLocation().getZ());
-            if (l.getBlock().getTypeId() != 0)
+            if (l.getBlock().getTypeId() != 0 && !l.getBlock().isLiquid())
             {
                 bs = true;
             }
