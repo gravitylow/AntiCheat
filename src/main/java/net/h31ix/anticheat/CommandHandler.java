@@ -26,7 +26,6 @@ import net.h31ix.anticheat.util.*;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
