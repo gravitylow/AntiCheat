@@ -69,11 +69,13 @@ public class PlayerManager
         }
         else
         {
-            final String name = player.getName();
-
             // Why, Why, Whyyyyy!
             if (player == null)
                 return false;
+            
+            final String name = player.getName();
+
+            
 
             if (level.get(name) == null || level.get(name) == 0)
             {
