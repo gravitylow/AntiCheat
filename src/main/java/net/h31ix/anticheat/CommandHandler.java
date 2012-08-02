@@ -19,24 +19,19 @@
 package net.h31ix.anticheat;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.PlayerManager;
-import net.h31ix.anticheat.util.Configuration;
-import net.h31ix.anticheat.util.PastebinReport;
-import net.h31ix.anticheat.util.Permission;
-import net.h31ix.anticheat.util.Utilities;
+import net.h31ix.anticheat.util.*;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class CommandHandler implements CommandExecutor
 {
@@ -48,10 +43,10 @@ public class CommandHandler implements CommandExecutor
     private static final ChatColor GREEN = ChatColor.GREEN;
     private static final ChatColor WHITE = ChatColor.WHITE;
     private static final ChatColor GRAY = ChatColor.GRAY;
+    private static final String SPY_METADATA = "ac-spydata";
     private List<String> high = new ArrayList<String>();
     private List<String> med = new ArrayList<String>();
     private List<String> low = new ArrayList<String>();
-    private Map<String, Location> spyLocation = new HashMap<String, Location>();
     private static final Server SERVER = Bukkit.getServer();
     private static final int MED_THRESHOLD = 20;
     private static final int HIGH_THRESHOLD = 50;
@@ -194,9 +189,9 @@ public class CommandHandler implements CommandExecutor
     {
         if (cs instanceof Player)
         {
-            Player sender = (Player) cs;
             if (Permission.SYSTEM_SPY.get(cs))
             {
+                Player sender = (Player) cs;
                 if (!args[1].equalsIgnoreCase("off"))
                 {
                     List<Player> list = SERVER.matchPlayer(args[1]);
@@ -208,9 +203,13 @@ public class CommandHandler implements CommandExecutor
                             if (!Permission.SYSTEM_SPY.get(p))
                                 p.hidePlayer(sender);
                         }
+                        if(!sender.hasMetadata(SPY_METADATA)) // Maintain ORIGINAL location and other data
+                        {
+                            SpyState state = new SpyState(sender.getAllowFlight(), sender.isFlying(), sender.getLocation());
+                            sender.setMetadata(SPY_METADATA, new FixedMetadataValue(Anticheat.getPlugin(), state));
+                        }
                         sender.setAllowFlight(true);
                         sender.setFlying(true);
-                        spyLocation.put(sender.getName(), sender.getLocation());
                         sender.teleport(player);
                         sender.sendMessage(GREEN + "You have been teleported to " + player.getName() + " and made invisible.");
                         sender.sendMessage(GREEN + "To stop spying, type " + WHITE + " /AntiCheat spy off");
@@ -226,16 +225,22 @@ public class CommandHandler implements CommandExecutor
                 }
                 else
                 {
-                    sender.setFlying(false);
-                    sender.setAllowFlight(false);
-                    if (spyLocation.containsKey(sender.getName()))
+                    if (sender.hasMetadata(SPY_METADATA))
                     {
-                        sender.teleport(spyLocation.get(sender.getName()));
-                        spyLocation.remove(sender.getName());
+                        SpyState state = ((SpyState) sender.getMetadata(SPY_METADATA).get(0).value());
+                        sender.setAllowFlight(state.getAllowFlight());
+                        sender.setFlying(state.getFlying());
+                        sender.teleport(state.getLocation());
+                        sender.removeMetadata(SPY_METADATA, Anticheat.getPlugin());
+                        for (Player p : cs.getServer().getOnlinePlayers())
+                        {
+                            p.showPlayer(sender);
+                        }
+                        sender.sendMessage(GREEN + "Done spying! Brought you back to where you started!");
                     }
-                    for (Player p : cs.getServer().getOnlinePlayers())
+                    else
                     {
-                        p.showPlayer(sender);
+                        sender.sendMessage(RED + "You were not spying.");
                     }
                 }
             }
