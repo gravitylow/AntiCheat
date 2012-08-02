@@ -26,7 +26,7 @@ permissions:
   anticheat.mod:
     description: Mod helper perm
     children:
-      anticheat.alert: true
+      anticheat.system.alert: true
       anticheat.system.help: true
       anticheat.system.report: true
       anticheat.system.spy: true
