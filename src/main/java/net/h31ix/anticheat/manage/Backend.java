@@ -49,7 +49,7 @@ public class Backend
     private static final int KNOCKBACK_DAMAGE_TIME = 50;
     private static final int PROJECTILE_TIME = 20;
     private static final long PROJECTILE_HOLD = 20L * 10L;
-    private static final int TIME_MIN = 1000;
+    private static final int TIME_MIN = 700;
 
     private static final int FASTBREAK_LIMIT = 3;
     private static final int FASTBREAK_TIMEMAX = 500;
