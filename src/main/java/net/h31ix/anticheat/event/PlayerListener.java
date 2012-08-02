@@ -290,7 +290,7 @@ public class PlayerListener extends EventListener
         double y = distance.getYDifference();
         double z = distance.getZDifference();
         backend.logAscension(player, from.getY(), to.getY());
-        if (checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkFlight(player, distance))
+        if (checkManager.willCheck(player, CheckType.FLY) && !player.isFlying() && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkFlight(player, distance))
         {
             if (!config.silentMode())
             {
@@ -370,6 +370,17 @@ public class PlayerListener extends EventListener
                     event.setTo(from);
                 }
                 log("tried to move too fast.", player, CheckType.SPEED);
+            }
+            if(event.getFrom().getX() != event.getTo().getX() || event.getFrom().getZ() != event.getTo().getZ())
+            {
+                if (backend.checkTimer(player))
+                {
+                    if (!config.silentMode())
+                    {
+                        event.setTo(from);
+                    }
+                    log("tried to move too fast.", player, CheckType.SPEED);
+                }   
             }
         }
         if (checkManager.willCheck(player, CheckType.NOFALL) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY) && event.getFrom().getY() > event.getTo().getY() && backend.checkNoFall(player, y))

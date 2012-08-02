@@ -49,6 +49,7 @@ public class Backend
     private static final int KNOCKBACK_DAMAGE_TIME = 50;
     private static final int PROJECTILE_TIME = 20;
     private static final long PROJECTILE_HOLD = 20L * 10L;
+    private static final int TIME_MIN = 1000;
 
     private static final int FASTBREAK_LIMIT = 3;
     private static final int FASTBREAK_TIMEMAX = 500;
@@ -81,6 +82,7 @@ public class Backend
     private static final long VELOCITY_PREVENT = 5000;
     private static final int VELOCITY_MAXTIMES = 2;
     private static final int NOFALL_LIMIT = 5;
+    private static final int STEP_CHECK = 25;
 
     private static final int ASCENSION_COUNT_MAX = 8;
     private static final int WATER_ASCENSION_VIOLATION_MAX = 13;
@@ -140,6 +142,7 @@ public class Backend
     private Map<String, Integer> nofallViolation = new HashMap<String, Integer>();
     private Map<String, Integer> fastBreakViolation = new HashMap<String, Integer>();
     private Map<String, Integer> yAxisViolations = new HashMap<String, Integer>();
+    private Map<String, Integer> steps = new HashMap<String, Integer>();
     private Map<String, Long> yAxisLastViolation = new HashMap<String, Long>();
     private Map<String, Double> lastYcoord = new HashMap<String, Double>();
     private Map<String, Long> lastYtime = new HashMap<String, Long>();
@@ -156,6 +159,7 @@ public class Backend
     private Map<String, Long> velocitized = new HashMap<String, Long>();
     private Map<String, Integer> velocitytrack = new HashMap<String, Integer>();
     private Map<String, Location> animated = new HashMap<String, Location>();
+    private Map<String, Long> lastTime = new HashMap<String, Long>();
 
     public Backend(AnticheatManager instance)
     {
@@ -421,7 +425,7 @@ public class Backend
         Block block = player.getLocation().getBlock();
         if (player.getVehicle() == null && !player.isFlying())
         {
-            if (block.isLiquid() && block.getRelative(BlockFace.DOWN).isLiquid())
+            if (block.isLiquid())
             {
                 if (isInWater.contains(player.getName()))
                 {
@@ -598,6 +602,31 @@ public class Backend
             }
         }
         //Fix Y axis spam
+        return false;
+    }
+    
+    public boolean checkTimer(Player player)
+    {
+        String name = player.getName();
+        int step = 1;
+        if(steps.containsKey(name))
+        {
+            step = steps.get(name)+1;
+        }
+        if(step == 1)
+        {
+            lastTime.put(name,System.currentTimeMillis());
+        }
+        increment(player, steps, step);
+        if(step >= STEP_CHECK)
+        {
+            long time = System.currentTimeMillis()-lastTime.get(name);
+            steps.put(name, 0);
+            if(time < TIME_MIN)
+            {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -1047,7 +1076,7 @@ public class Backend
             time = KNOCKBACK_DAMAGE_TIME;
         }
         logEvent(movingExempt, player, time);
-    }
+    }   
 
     public void logEnterExit(final Player player)
     {
