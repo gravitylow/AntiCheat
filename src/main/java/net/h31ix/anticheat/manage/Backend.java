@@ -640,7 +640,7 @@ public class Backend
         String name = player.getName();
         int y1 = (int)distance.fromY();
         int y2 = (int)distance.toY();
-        if((y1 == y2 || y1 < y2) && Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock()))
+        if((y1 == y2 || y1 < y2) && !Utilities.isInWater(player) && Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock()))
         {
             int violation = flightViolation.containsKey(name) ? flightViolation.get(name) + 1 : 1;
             increment(player, flightViolation, violation);
