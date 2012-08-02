@@ -72,7 +72,7 @@ public class Backend
     private static final int CHAT_KICK_LEVEL = 10;
     private static final int CHAT_BAN_LEVEL = 3;
 
-    private static final int FLIGHT_LIMIT = 4;
+    private static final int FLIGHT_LIMIT = 7;
     private static final int Y_MAXVIOLATIONS = 1;
     private static final int Y_MAXVIOTIME = 5000;
     private static final int VELOCITY_TIME = 60;
@@ -113,8 +113,6 @@ public class Backend
     private static final double XZ_SPEED_MAX_SNEAK = 0.2;
     private static final double XZ_SPEED_MAX_WATER = 0.19;
     private static final double XZ_SPEED_MAX_WATER_SPRINT = 0.3;
-
-    private static final int FLY_LOOP = 5;
 
     private AnticheatManager micromanage = null;
     private List<String> droppedItem = new ArrayList<String>();
@@ -610,47 +608,27 @@ public class Backend
             //This was a teleport, so we don't care about it.
             return false;
         }
-        double y1 = distance.fromY();
-        double y2 = distance.toY();
-        Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
-        if (y1 == y2 && !isMovingExempt(player) && !player.isInsideVehicle() && player.getFallDistance() == 0 && !Utilities.isOnLilyPad(player) && !Utilities.isOnVine(player))
+        String name = player.getName();
+        int y1 = (int)distance.fromY();
+        int y2 = (int)distance.toY();
+        if((y1 == y2 || y1 < y2) && Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock()))
         {
-            String name = player.getName();
-            if (Utilities.cantStandAt(block) && !Utilities.isOnLilyPad(player) && Utilities.cantStandAt(player.getLocation().getBlock()) && !Utilities.isInWater(player))
+            int violation = flightViolation.containsKey(name) ? flightViolation.get(name) + 1 : 1;
+            increment(player, flightViolation, violation);
+            if(violation > FLIGHT_LIMIT)
             {
-                int violation = 1;
-                if (!flightViolation.containsKey(name))
-                {
-                    flightViolation.put(name, violation);
-                }
-                else
-                {
-                    violation = flightViolation.get(name) + 1;
-                    flightViolation.put(name, violation);
-                }
-                if (violation >= FLIGHT_LIMIT)
-                {
-                    flightViolation.put(name, 1);
-                    return true;
-                }
-                //Start Fly bypass patch.
-                if (flightViolation.containsKey(name) && flightViolation.get(name) > 0)
-                {
-                    for (int i = FLY_LOOP; i > 0; i--)
-                    {
-                        Location newLocation = new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() - i, player.getLocation().getZ());
-                        Block lower = newLocation.getBlock();
-                        if (lower.getTypeId() == 0)
-                        {
-                            player.teleport(newLocation);
-                            break;
-                        }
-                    }
-                }
-                //End Fly bypass patch.
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
-        return false;
+        else
+        {
+            flightViolation.put(name, 0);
+            return false;
+        }
     }
 
     public void logAscension(Player player, double y1, double y2)
