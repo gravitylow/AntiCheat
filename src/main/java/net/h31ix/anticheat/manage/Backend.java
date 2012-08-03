@@ -607,6 +607,7 @@ public class Backend
     
     public boolean checkTimer(Player player)
     {
+    /*
         String name = player.getName();
         int step = 1;
         if(steps.containsKey(name))
@@ -626,7 +627,7 @@ public class Backend
             {
                 return true;
             }
-        }
+        }*/
         return false;
     }
 
