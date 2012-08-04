@@ -303,7 +303,7 @@ public class Backend
 
     public boolean checkSpider(Player player, double y)
     {
-        if (y <= LADDER_Y_MAX && y >= LADDER_Y_MIN && !Utilities.isOnClimbableBlock(player))
+        if (y <= LADDER_Y_MAX && y >= LADDER_Y_MIN && !Utilities.isClimbableBlock(player.getLocation().getBlock()))
         {
             return true;
         }
@@ -544,7 +544,7 @@ public class Backend
         {
             return false;
         }
-        if (!isMovingExempt(player) && !Utilities.isOnClimbableBlock(player) && !player.isInsideVehicle() && !Utilities.isInWater(player))
+        if (!isMovingExempt(player) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && !Utilities.isClimbableBlock(player.getLocation().add(0, -1, 0).getBlock()) && !player.isInsideVehicle() && !Utilities.isInWater(player))
         {
             double y1 = player.getLocation().getY();
             String name = player.getName();
@@ -682,7 +682,7 @@ public class Backend
             max += 12;
         }
         Block block = player.getLocation().getBlock();
-        if (!isMovingExempt(player) && !Utilities.isInWater(player) && !Utilities.isOnClimbableBlock(player) && !player.isInsideVehicle())
+        if (!isMovingExempt(player) && !Utilities.isInWater(player) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && !player.isInsideVehicle())
         {
             String name = player.getName();
             if (y1 < y2)

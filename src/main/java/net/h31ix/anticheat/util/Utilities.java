@@ -133,9 +133,9 @@ public final class Utilities
         return player.getLocation().getBlock().isLiquid() || player.getLocation().getBlock().getRelative(BlockFace.DOWN).isLiquid() || player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid();
     }
 
-    public static boolean isOnClimbableBlock(Player player)
+    public static boolean isClimbableBlock(Block block)
     {
-        return player.getLocation().getBlock().getType() == Material.VINE || player.getLocation().getBlock().getType() == Material.LADDER;
+        return block.getType() == Material.VINE || block.getType() == Material.LADDER;
     }
 
     public static boolean isOnVine(Player player)

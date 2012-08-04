@@ -353,37 +353,7 @@ public class PlayerListener extends EventListener
                 }
             }
         }
-        if (checkManager.willCheck(player, CheckType.SPEED) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY))
-        {
-            if (event.getFrom().getY() < event.getTo().getY() && backend.checkYSpeed(player, y))
-            {
-                if (!config.silentMode())
-                {
-                    event.setTo(from);
-                }
-                log("tried to ascend too fast.", player, CheckType.SPEED);
-            }
-            if (backend.checkXZSpeed(player, x, z))
-            {
-                if (!config.silentMode())
-                {
-                    event.setTo(from);
-                }
-                log("tried to move too fast.", player, CheckType.SPEED);
-            }
-            if(event.getFrom().getX() != event.getTo().getX() || event.getFrom().getZ() != event.getTo().getZ())
-            {
-                if (backend.checkTimer(player))
-                {
-                    if (!config.silentMode())
-                    {
-                        event.setTo(from);
-                    }
-                    log("tried to move too fast.", player, CheckType.SPEED);
-                }   
-            }
-        }
-        if (checkManager.willCheck(player, CheckType.NOFALL) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY) && event.getFrom().getY() > event.getTo().getY() && backend.checkNoFall(player, y))
+        if (checkManager.willCheck(player, CheckType.NOFALL) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && event.getFrom().getY() > event.getTo().getY() && backend.checkNoFall(player, y))
         {
             if (!config.silentMode())
             {
@@ -406,6 +376,36 @@ public class PlayerListener extends EventListener
             double x = distance.getXDifference();
             double y = distance.getYDifference();
             double z = distance.getZDifference();
+            if (checkManager.willCheck(player, CheckType.SPEED) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY))
+            {
+                if (event.getFrom().getY() < event.getTo().getY() && backend.checkYSpeed(player, y))
+                {
+                    if (!config.silentMode())
+                    {
+                        event.setTo(from);
+                    }
+                    log("tried to ascend too fast.", player, CheckType.SPEED);
+                }
+                if (backend.checkXZSpeed(player, x, z))
+                {
+                    if (!config.silentMode())
+                    {
+                        event.setTo(from);
+                    }
+                    log("tried to move too fast.", player, CheckType.SPEED);
+                }
+                if(event.getFrom().getX() != event.getTo().getX() || event.getFrom().getZ() != event.getTo().getZ())
+                {
+                    if (backend.checkTimer(player))
+                    {
+                        if (!config.silentMode())
+                        {
+                            event.setTo(from);
+                        }
+                        log("tried to move too fast.", player, CheckType.SPEED);
+                    }   
+                }
+            }            
             if (checkManager.willCheck(player, CheckType.WATER_WALK) && backend.checkWaterWalk(player, x, z))
             {
                 if (!config.silentMode())
