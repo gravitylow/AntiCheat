@@ -21,7 +21,9 @@ package net.h31ix.anticheat.manage;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.bukkit.entity.Player;
 
 /**
@@ -34,7 +36,7 @@ public class CheckManager
 {
     private AnticheatManager manager = null;
     private static List<CheckType> checkIgnoreList = new ArrayList<CheckType>();
-    private static Multimap<String, CheckType> exemptList = ArrayListMultimap.create();
+    private static Map<String, List<CheckType>> exemptList = new HashMap<String, List<CheckType>>();
     private static int disabled = 0;
     private static int exempt = 0;
 
@@ -45,7 +47,7 @@ public class CheckManager
 
     public void activateCheck(CheckType type)
     {
-        if (checkIgnoreList.contains(type))
+        if (isActive(type))
         {
             manager.log("The " + type.toString() + " check was activated.");
             checkIgnoreList.remove(type);
@@ -54,7 +56,7 @@ public class CheckManager
 
     public void deactivateCheck(CheckType type)
     {
-        if (!checkIgnoreList.contains(type))
+        if (!isActive(type))
         {        
             manager.log("The " + type.toString() + " check was deactivated.");
             checkIgnoreList.add(type);
@@ -69,26 +71,30 @@ public class CheckManager
 
     public void exemptPlayer(Player player, CheckType type)
     {
-        if (!exemptList.containsEntry(player.getName(), type))
+        if (!isExempt(player, type))
         {
+            if(!exemptList.containsKey(player.getName()))
+            {
+                exemptList.put(player.getName(), new ArrayList<CheckType>());
+            }
             manager.log(player.getName() + " was exempted from the " + type.toString() + " check.");
-            exemptList.put(player.getName(), type);
+            exemptList.get(player.getName()).add(type);
             exempt++;
         }
     }
 
     public void unexemptPlayer(Player player, CheckType type)
     {
-        if (exemptList.containsEntry(player.getName(), type))
+        if (isExempt(player, type))
         {
             manager.log(player.getName() + " was re-added to the " + type.toString() + " check.");
-            exemptList.remove(player.getName(), type);
+            exemptList.get(player.getName()).remove(type);
         }
     }
 
     public boolean isExempt(Player player, CheckType type)
     {
-        return exemptList.containsEntry(player.getName(), type);
+        return exemptList.containsKey(player.getName()) ? exemptList.get(player.getName()).contains(type) : false;
     }
 
     public boolean willCheck(Player player, CheckType type)

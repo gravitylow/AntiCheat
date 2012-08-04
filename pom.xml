@@ -52,19 +52,6 @@
             <version>1.3.08</version>
             <type>jar</type>
             <scope>compile</scope>
-        </dependency>          
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>12.0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>jsr305</artifactId>
-                    <groupId>com.google.code.findbugs</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>           
+        </dependency>                    
     </dependencies>
 </project>
