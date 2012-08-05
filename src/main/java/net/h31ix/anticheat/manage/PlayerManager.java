@@ -74,9 +74,7 @@ public class PlayerManager
                 return false;
             
             final String name = player.getName();
-
             
-
             if (level.get(name) == null || level.get(name) == 0)
             {
                 level.put(name, 1);

@@ -35,7 +35,7 @@ public class EventListener implements Listener
     private static final Anticheat PLUGIN = Anticheat.getManager().getPlugin();
     private static final PlayerManager PLAYER_MANAGER = Anticheat.getManager().getPlayerManager();
 
-    public void log(String message, Player player, CheckType type)
+    public static void log(String message, Player player, CheckType type)
     {
         if (PLAYER_MANAGER.increaseLevel(player,type))
         {
@@ -45,7 +45,7 @@ public class EventListener implements Listener
         logCheat(type, player);
     }
 
-    private void logCheat(CheckType type, Player player)
+    private static void logCheat(CheckType type, Player player)
     {
         USAGE_LIST.put(type, getCheats(type) + 1);
         type.logUse(player);
@@ -60,7 +60,7 @@ public class EventListener implements Listener
         USAGE_LIST.put(type, 0);
     }
 
-    public int getCheats(CheckType type)
+    public static int getCheats(CheckType type)
     {
         int x = 0;
         if (USAGE_LIST.get(type) != null)

@@ -83,7 +83,7 @@ public class Anticheat extends JavaPlugin
         {
             logger.log(Level.INFO, "Setup the config.");
         }
-        checkForUpdate();
+        checkForUpdate();        
         eventList.add(new PlayerListener());
         eventList.add(new BlockListener());
         eventList.add(new EntityListener());
@@ -209,6 +209,24 @@ public class Anticheat extends JavaPlugin
                 logger.log(Level.INFO, "Data for " + player.getName() + " re-applied from flatfile");
             }
         }
+        String v = this.getServer().getVersion().split("-")[6];
+        if(v.contains("jnks"))
+        {
+            v = v.replaceAll("b", "").replaceAll("jnks", "").split(" ")[0];
+            int build  = 0;
+            try 
+            {
+                build = Integer.parseInt(v);
+            } 
+            catch(Exception ex){ }
+            if(build != 0 && build < 2287)
+            {
+                System.out.println("[WARNING] You are using an UNSUPPORTED version of CraftBukkit that does not contain the API required to run AntiCheat.");
+                System.out.println("[WARNING] Please update your server to be build #2287 or higher at http://dl.bukkit.org/downloads/craftbukkit/");
+                System.out.println("[WARNING] AntiCheat will now disable itself, and your server will not be protected until you update.");
+                getServer().getPluginManager().disablePlugin(this);
+            }
+        }        
         if (verbose)
         {
             logger.log(Level.INFO, "Finished loading.");
