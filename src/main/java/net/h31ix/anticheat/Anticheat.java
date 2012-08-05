@@ -407,7 +407,6 @@ public class Anticheat extends JavaPlugin
             catch (Exception ex)
             {
             }    
-            System.out.println(updateUrl);
     }
 
     public static Anticheat getPlugin()
