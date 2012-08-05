@@ -46,6 +46,7 @@ public class Anticheat extends JavaPlugin
     private static AnticheatManager manager;
     private static List<Listener> eventList = new ArrayList<Listener>();
     private static boolean update = false;
+    private static String updateUrl = null;
     private static final int BYTE_SIZE = 1024;
     private static Logger logger;
     private static Configuration config;
@@ -138,6 +139,7 @@ public class Anticheat extends JavaPlugin
             {
                 logger.log(Level.INFO, "Downloading the new update...");
             }
+            getUrl();
             File file = new File("plugins/" + updateFolder);
             if (!file.exists())
             {
@@ -151,7 +153,7 @@ public class Anticheat extends JavaPlugin
             }
             try
             {
-                saveFile(file.getCanonicalPath() + "/AntiCheat.jar", "http://dl.dropbox.com/u/38228324/AntiCheat.jar");
+                saveFile(file.getCanonicalPath() + "/AntiCheat.jar", updateUrl);
             }
             catch (IOException ex)
             {
@@ -209,7 +211,7 @@ public class Anticheat extends JavaPlugin
                 logger.log(Level.INFO, "Data for " + player.getName() + " re-applied from flatfile");
             }
         }
-        try 
+        /*try 
         {        
             if(this.getServer().getVersion().split("-").length >= 7)
             {
@@ -229,7 +231,7 @@ public class Anticheat extends JavaPlugin
                 }
             }
         }
-        catch(Exception ex){ }
+        catch(Exception ex){ }*/
         if (verbose)
         {
             logger.log(Level.INFO, "Finished loading.");
@@ -376,6 +378,36 @@ public class Anticheat extends JavaPlugin
         {
             logger.log(Level.SEVERE, "Updating failed.  Possible connection failure.");
         }
+    }
+    
+    private void getUrl()
+    {
+            URL url;
+            URLConnection urlConn;
+            InputStreamReader inStream = null;
+            BufferedReader buff;
+            try
+            {
+                url = new URL("http://dl.dropbox.com/u/38228324/anticheatUrl.txt");
+                urlConn = url.openConnection();
+                inStream = new InputStreamReader(urlConn.getInputStream());
+            }
+            catch (Exception ex)
+            {
+            }
+            buff = new BufferedReader(inStream);
+            try
+            {
+                updateUrl = "http://dev.bukkit.org/media/files/"+buff.readLine();
+                urlConn = null;
+                inStream = null;
+                buff.close();
+                buff = null;
+            }
+            catch (Exception ex)
+            {
+            }    
+            System.out.println(updateUrl);
     }
 
     public static Anticheat getPlugin()

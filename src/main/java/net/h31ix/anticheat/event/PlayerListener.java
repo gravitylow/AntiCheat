@@ -131,7 +131,7 @@ public class PlayerListener extends EventListener
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerChat(AsyncPlayerChatEvent event)
+    public void onPlayerChat(PlayerChatEvent event)
     {
         Player player = event.getPlayer();
         if (checkManager.willCheck(player, CheckType.SPAM) && config.chatSpam())
