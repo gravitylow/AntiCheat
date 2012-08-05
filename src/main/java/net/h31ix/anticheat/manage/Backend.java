@@ -81,7 +81,7 @@ public class Backend
     private static final long VELOCITY_CHECKTIME = 2100;
     private static final long VELOCITY_PREVENT = 5000;
     private static final int VELOCITY_MAXTIMES = 2;
-    private static final int NOFALL_LIMIT = 5;
+    private static final int NOFALL_LIMIT = 9;
     private static final int STEP_CHECK = 25;
 
     private static final int ASCENSION_COUNT_MAX = 8;
