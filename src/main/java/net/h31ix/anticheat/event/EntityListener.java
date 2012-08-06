@@ -24,7 +24,10 @@ import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Distance;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.*;
@@ -114,8 +117,9 @@ public class EntityListener extends EventListener
                 if (e.getDamager() instanceof Player)
                 {
                     Player p = (Player) e.getDamager();
-                    backend.logDamage(p);
-                    backend.logDamage(player);
+                    backend.logDamage(p, 1);
+                    int value = p.getInventory().getItemInHand().containsEnchantment(Enchantment.KNOCKBACK) ? 2 : 1;
+                    backend.logDamage(player, value);
                     if (checkManager.willCheck(p, CheckType.LONG_REACH))
                     {
                         Distance distance = new Distance(player.getLocation(), p.getLocation());
@@ -129,7 +133,14 @@ public class EntityListener extends EventListener
                 }
                 else
                 {
-                    backend.logDamage(player);
+                    if (e.getDamager() instanceof TNTPrimed || e.getDamager() instanceof Creeper)
+                    {
+                        backend.logDamage(player, 3);
+                    }
+                    else
+                    {
+                        backend.logDamage(player, 1);
+                    }
                 }
             }
             if (e.getDamager() instanceof Player)

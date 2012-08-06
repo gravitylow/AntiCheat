@@ -46,7 +46,8 @@ public class Backend
     private static final int JOIN_TIME = 40;
     private static final int DROPPED_ITEM_TIME = 2;
     private static final int DAMAGE_TIME = 50;
-    private static final int KNOCKBACK_DAMAGE_TIME = 50;
+    private static final int KNOCKBACK_DAMAGE_TIME = 70;
+    private static final int EXPLOSION_DAMAGE_TIME = 100;
     private static final int PROJECTILE_TIME = 20;
     private static final long PROJECTILE_HOLD = 20L * 10L;
     private static final int TIME_MIN = 700;
@@ -641,7 +642,7 @@ public class Backend
         String name = player.getName();
         int y1 = (int)distance.fromY();
         int y2 = (int)distance.toY();
-        if((y1 == y2 || y1 < y2) && !Utilities.isInWater(player) && !Utilities.canStand(player.getLocation().getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock()))
+        if(!isMovingExempt(player) && (y1 == y2 || y1 < y2) && !Utilities.isInWater(player) && !Utilities.canStand(player.getLocation().getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock()))
         {
             int violation = flightViolation.containsKey(name) ? flightViolation.get(name) + 1 : 1;
             increment(player, flightViolation, violation);
@@ -1069,12 +1070,24 @@ public class Backend
         }
     }
 
-    public void logDamage(final Player player)
+    public void logDamage(final Player player, int type)
     {
-        int time = DAMAGE_TIME;
-        if (player.getInventory().getItemInHand().getEnchantments().containsKey(Enchantment.KNOCKBACK))
+        int time;
+        switch(type)
         {
-            time = KNOCKBACK_DAMAGE_TIME;
+            case 1:
+                time = DAMAGE_TIME;
+                break;
+            case 2:
+                time = KNOCKBACK_DAMAGE_TIME;
+                break;
+            case 3: 
+                time = EXPLOSION_DAMAGE_TIME;
+                break;
+            default:
+                time = DAMAGE_TIME;
+                break;
+                
         }
         logEvent(movingExempt, player, time);
     }   
