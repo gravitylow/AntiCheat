@@ -309,33 +309,49 @@ public class CommandHandler implements CommandExecutor
         }
     }
 
-    public void handleReport(CommandSender cs)
+    public void handleReport(CommandSender cs, String[] args)
     {
         if (Permission.SYSTEM_REPORT.get(cs))
         {
             getPlayers();
-            if (!low.isEmpty())
+            if(args.length > 1)
             {
-                cs.sendMessage(GREEN + "----Level: Low (Not likely hacking)----");
-                for (String string : low)
-                {
-                    cs.sendMessage(GREEN + string);
+                String group = args[1];
+                if(group.equalsIgnoreCase("low"))
+                {    
+                    int num = getReportPageNum(args);
+                    if (num > 0)
+                    {
+                        sendReport(cs, low, "Low", GREEN, num);
+                    }
+                    else
+                    {
+                        cs.sendMessage(RED + "Not a valid page number: " + WHITE + args[2]);
+                    }                      
                 }
-            }
-            if (!med.isEmpty())
-            {
-                cs.sendMessage(YELLOW + "----Level: Medium (Possibly hacking/lagging)----");
-                for (String string : med)
+                else if(group.equalsIgnoreCase("medium"))
                 {
-                    cs.sendMessage(YELLOW + string);
-                }
-            }
-            if (!high.isEmpty())
-            {
-                cs.sendMessage(RED + "----Level: High (Probably hacking or bad connection)----");
-                for (String string : high)
+                    int num = getReportPageNum(args);
+                    if (num > 0)
+                    {
+                        sendReport(cs, med, "Medium", YELLOW, num);
+                    }
+                    else
+                    {
+                        cs.sendMessage(RED + "Not a valid page number: " + WHITE + args[2]);
+                    }                      
+                }                
+                if(group.equalsIgnoreCase("high"))
                 {
-                    cs.sendMessage(RED + string);
+                    int num = getReportPageNum(args);
+                    if (num > 0)
+                    {
+                        sendReport(cs, high, "High", RED, num);
+                    }
+                    else
+                    {
+                        cs.sendMessage(RED + "Not a valid page number: " + WHITE + args[2]);
+                    }                     
                 }
             }
         }
@@ -344,6 +360,56 @@ public class CommandHandler implements CommandExecutor
             cs.sendMessage(PERMISSIONS_ERROR);
         }
     }
+    
+    public int getReportPageNum(String [] args)
+    {
+        if (args.length == 2)
+        {
+            return 1;
+        }
+        else if (Utilities.isInt(args[2]))
+        {
+            return  Integer.parseInt(args[2]);
+        }
+        else
+        {
+            return -1;
+        }         
+    }
+    
+    public void sendReport(CommandSender cs, List<String> players, String group, ChatColor color, int page)
+    {
+        int pages = (int)Math.ceil(((float)players.size())/7);    
+        if(page <= pages && page > 0)
+        {
+            cs.sendMessage("--------------------[" + GREEN + "REPORT[" + page + "/"+pages+"]" + WHITE + "]---------------------");
+            cs.sendMessage(GRAY + "Group: " + color + group);
+            for (int x = 0; x < 7; x++)
+            {
+                int index = ((page-1)*6)+(x+((page-1)*1));
+                if(index < players.size())
+                {
+                    String player = players.get(index);
+                    cs.sendMessage(GRAY + player);
+                }
+            }
+            cs.sendMessage("-----------------------------------------------------");
+        }
+        else
+        {
+            if(pages == 0)
+            {
+                cs.sendMessage("--------------------[" + GREEN + "REPORT[1/1]" + WHITE + "]---------------------");
+                cs.sendMessage(GRAY + "Group: " + color + group);    
+                cs.sendMessage(GRAY + "There are no users in this group."); 
+                cs.sendMessage("-----------------------------------------------------");
+            }
+            else
+            {
+                cs.sendMessage(RED+"Page not found. Requested "+WHITE+page+RED+", Max "+WHITE+pages);
+            }
+        }
+    }    
 
     public void handlePlayerReport(CommandSender cs, String[] args)
     {
@@ -353,21 +419,22 @@ public class CommandHandler implements CommandExecutor
             if (list.size() == 1)
             {
                 Player player = list.get(0);
+                List<CheckType> l = new ArrayList();
+                for(CheckType type : CheckType.values())
+                {
+                    if(type.getUses(player) > 0)
+                    {
+                        l.add(type);
+                    }
+                }
                 if (args.length == 2)
                 {
-                    sendPlayerReport(cs, CheckType.values(), player, 1);
+                    sendPlayerReport(cs, l, player, 1);
                 }
                 else if (Utilities.isInt(args[2]))
                 {
                     int num = Integer.parseInt(args[2]);
-                    if (num <= 3 && num > 1)
-                    {
-                        sendPlayerReport(cs, CheckType.values(), player, num);
-                    }
-                    else
-                    {
-                        cs.sendMessage(RED + "Page: " + num + RED + " does not exist.");
-                    }
+                    sendPlayerReport(cs, l, player, num);
                 }
                 else
                 {
@@ -389,74 +456,59 @@ public class CommandHandler implements CommandExecutor
         }
     }
 
-    public void sendPlayerReport(CommandSender cs, CheckType[] types, Player player, int page)
+    public void sendPlayerReport(CommandSender cs, List<CheckType> types, Player player, int page)
     {
-        cs.sendMessage("--------------------[" + GREEN + "REPORT[" + page + "/3]" + WHITE + "]---------------------");
-        if (page == 1)
+        int pages = (int)Math.ceil(((float)types.size())/6);
+        int level = playerManager.getLevel(player);
+        String levelString = GREEN + "Low";
+        if (level >= 20)
         {
-            int level = playerManager.getLevel(player);
-            String levelString = GREEN + "Low";
-            if (level >= 20)
-            {
-                levelString = YELLOW + "Medium";
-            }
-            else if (level >= 50)
-            {
-                levelString = RED + "High";
-            }
+            levelString = YELLOW + "Medium";
+        }
+        else if (level >= 50)
+        {
+            levelString = RED + "High";
+        }       
+        if(page <= pages && page > 0)
+        {
+            cs.sendMessage("--------------------[" + GREEN + "REPORT[" + page + "/"+pages+"]" + WHITE + "]---------------------");
             cs.sendMessage(GRAY + "Player: " + WHITE + player.getName());
             cs.sendMessage(GRAY + "Level: " + levelString);
-            for (int i = 0; i < 6; i++)
+            for (int x = 0; x < 6; x++)
             {
-                int use = types[i].getUses(player);
-                ChatColor color = WHITE;
-                if (use >= 20)
+                int index = ((page-1)*5)+(x+((page-1)*1));
+                if(index < types.size())
                 {
-                    color = YELLOW;
+                    int use = types.get(index).getUses(player);
+                    ChatColor color = WHITE;
+                    if (use >= 20)
+                    {
+                        color = YELLOW;
+                    }
+                    else if (use > 50)
+                    {
+                        color = RED;
+                    }
+                    cs.sendMessage(GRAY + CheckType.getName(types.get(index)) + ": " + color + use);
                 }
-                else if (use > 50)
-                {
-                    color = RED;
-                }
-                cs.sendMessage(GRAY + CheckType.getName(types[i]) + ": " + color + use);
             }
+            cs.sendMessage("-----------------------------------------------------");
         }
-        else if (page == 2)
+        else
         {
-            for (int i = 6; i < 14; i++)
+            if(pages == 0)
             {
-                int use = types[i].getUses(player);
-                ChatColor color = WHITE;
-                if (use >= 20)
-                {
-                    color = YELLOW;
-                }
-                else if (use > 50)
-                {
-                    color = RED;
-                }
-                cs.sendMessage(GRAY + CheckType.getName(types[i]) + ": " + color + use);
+                cs.sendMessage("--------------------[" + GREEN + "REPORT[1/1]" + WHITE + "]---------------------");
+                cs.sendMessage(GRAY + "Player: " + WHITE + player.getName());
+                cs.sendMessage(GRAY + "Level: " + levelString);      
+                cs.sendMessage(GRAY + "This user has not failed any checks."); 
+                cs.sendMessage("-----------------------------------------------------");
+            }
+            else
+            {
+                cs.sendMessage(RED+"Page not found. Requested "+WHITE+page+RED+", Max "+WHITE+pages);
             }
         }
-        else if (page == 3)
-        {
-            for (int i = 14; i < 21; i++)
-            {
-                int use = types[i].getUses(player);
-                ChatColor color = WHITE;
-                if (use >= 20)
-                {
-                    color = YELLOW;
-                }
-                else if (use > 50)
-                {
-                    color = RED;
-                }
-                cs.sendMessage(GRAY + CheckType.getName(types[i]) + ": " + color + use);
-            }
-        }
-        cs.sendMessage("-----------------------------------------------------");
-
     }
 
     public void handleReload(CommandSender cs)
@@ -479,7 +531,14 @@ public class CommandHandler implements CommandExecutor
         {
             if (args[0].equalsIgnoreCase("report"))
             {
-                handlePlayerReport(cs, args);
+                if(args[1].equalsIgnoreCase("low") || args[1].equalsIgnoreCase("medium") || args[1].equalsIgnoreCase("high"))
+                {
+                    handleReport(cs, args);
+                }
+                else
+                {
+                    handlePlayerReport(cs, args);
+                }
             }
         }
         else if (args.length == 2)
@@ -502,7 +561,14 @@ public class CommandHandler implements CommandExecutor
             }
             else if (args[0].equalsIgnoreCase("report"))
             {
-                handlePlayerReport(cs, args);
+                if(args[1].equalsIgnoreCase("low") || args[1].equalsIgnoreCase("medium") || args[1].equalsIgnoreCase("high"))
+                {
+                    handleReport(cs, args);
+                }
+                else
+                {
+                    handlePlayerReport(cs, args);  
+                }
             }
             else
             {
@@ -521,8 +587,13 @@ public class CommandHandler implements CommandExecutor
             }
             else if (args[0].equalsIgnoreCase("report"))
             {
-                handleReport(cs);
-            }
+                cs.sendMessage(ChatColor.GREEN+"To see the report of a specific user, type their name, like so:");
+                cs.sendMessage(ChatColor.WHITE+"/anticheat report [user]");
+                cs.sendMessage(ChatColor.GRAY+" - This will allow you to see the checks that user has failed.");
+                cs.sendMessage(ChatColor.GREEN+"To see the report of an AntiCheat group, type it's name, like so:");
+                cs.sendMessage(ChatColor.WHITE+"/anticheat report [low/medium/high]");
+                cs.sendMessage(ChatColor.GRAY+" - This will allow you to see which players are good, and which could be hacking.");
+            }            
             else if (args[0].equalsIgnoreCase("reload"))
             {
                 handleReload(cs);
