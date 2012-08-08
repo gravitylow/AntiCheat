@@ -184,6 +184,7 @@ public class PlayerListener extends EventListener
     public void onPlayerInteract(PlayerInteractEvent event)
     {
         Player player = event.getPlayer();
+
         //Block playerClick = player.getTargetBlock(Utilities.getNonSolid(), 5);
         PlayerInventory inv = player.getInventory();
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)

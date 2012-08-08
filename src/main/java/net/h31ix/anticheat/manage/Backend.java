@@ -50,7 +50,6 @@ public class Backend
     private static final int EXPLOSION_DAMAGE_TIME = 100;
     private static final int PROJECTILE_TIME = 20;
     private static final long PROJECTILE_HOLD = 20L * 10L;
-    private static final int TIME_MIN = 700;
 
     private static final int FASTBREAK_LIMIT = 3;
     private static final int FASTBREAK_TIMEMAX = 500;
@@ -83,7 +82,6 @@ public class Backend
     private static final long VELOCITY_PREVENT = 5000;
     private static final int VELOCITY_MAXTIMES = 2;
     private static final int NOFALL_LIMIT = 9;
-    private static final int STEP_CHECK = 25;
 
     private static final int ASCENSION_COUNT_MAX = 8;
     private static final int WATER_ASCENSION_VIOLATION_MAX = 13;
@@ -109,10 +107,10 @@ public class Backend
     private static final double Y_SPEED_MAX = 0.5;
     private static final double Y_MAXDIFF = 5;
     private static final double Y_TIME = 1000;
-    private static final double XZ_SPEED_MAX = 0.4;
+    private static final double XZ_SPEED_MAX = 0.5;
     private static final double XZ_SPEED_MAX_SPRINT = 0.65;
     private static final double XZ_SPEED_MAX_FLY = 0.56;
-    private static final double XZ_SPEED_MAX_POTION = 0.85;
+    private static final double XZ_SPEED_MAX_POTION = 0.7;
     private static final double XZ_SPEED_MAX_SNEAK = 0.2;
     private static final double XZ_SPEED_MAX_WATER = 0.19;
     private static final double XZ_SPEED_MAX_WATER_SPRINT = 0.3;
@@ -143,7 +141,6 @@ public class Backend
     private Map<String, Integer> nofallViolation = new HashMap<String, Integer>();
     private Map<String, Integer> fastBreakViolation = new HashMap<String, Integer>();
     private Map<String, Integer> yAxisViolations = new HashMap<String, Integer>();
-    private Map<String, Integer> steps = new HashMap<String, Integer>();
     private Map<String, Long> yAxisLastViolation = new HashMap<String, Long>();
     private Map<String, Double> lastYcoord = new HashMap<String, Double>();
     private Map<String, Long> lastYtime = new HashMap<String, Long>();
@@ -160,7 +157,6 @@ public class Backend
     private Map<String, Long> velocitized = new HashMap<String, Long>();
     private Map<String, Integer> velocitytrack = new HashMap<String, Integer>();
     private Map<String, Location> animated = new HashMap<String, Location>();
-    private Map<String, Long> lastTime = new HashMap<String, Long>();
 
     public Backend(AnticheatManager instance)
     {
@@ -360,15 +356,15 @@ public class Backend
         if (!isSpeedExempt(player) && player.getVehicle() == null)
         {
             if (player.isFlying())
-            {
+            {              
                 return x > XZ_SPEED_MAX_FLY || z > XZ_SPEED_MAX_FLY;
             }
             else if (player.hasPotionEffect(PotionEffectType.SPEED))
-            {
+            {             
                 return x > XZ_SPEED_MAX_POTION || z > XZ_SPEED_MAX_POTION;
             }
             else if (player.isSprinting())
-            {
+            {                                 
                 return x > XZ_SPEED_MAX_SPRINT || z > XZ_SPEED_MAX_SPRINT;
             }
             else
