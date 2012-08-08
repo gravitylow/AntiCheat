@@ -262,7 +262,7 @@ public class CommandHandler implements CommandExecutor
             String base = "/AntiCheat ";
             cs.sendMessage("----------------------[" + GREEN + "AntiCheat" + WHITE + "]----------------------");
             cs.sendMessage(base + GREEN + "log [Enable/Disable]" + WHITE + " - toggle logging");
-            cs.sendMessage(base + GREEN + "report" + WHITE + " - get a detailed cheat report");
+            cs.sendMessage(base + GREEN + "report [low/medium/high]" + WHITE + " - show users in groups");
             cs.sendMessage(base + GREEN + "report [user]" + WHITE + " - get a player's cheat report");
             cs.sendMessage(base + GREEN + "reload" + WHITE + " - reload AntiCheat configuration");
             cs.sendMessage(base + GREEN + "reset [user]" + WHITE + " - reset user's hack level");
