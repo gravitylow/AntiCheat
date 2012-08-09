@@ -659,20 +659,10 @@ public class Backend
         String name = player.getName();
         int y1 = (int)distance.fromY();
         int y2 = (int)distance.toY();
-            System.out.println("Moving exempt: "+!isMovingExempt(player));
-            System.out.println("Y value: "+(y1 == y2 || y1 < y2));
-            System.out.println("In water: "+!Utilities.isInWater(player));
-            System.out.println("Can stand at current: "+!Utilities.canStand(player.getLocation().getBlock()));
-            System.out.println("Cant stand at -1: "+Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()));
-            System.out.println("Cant stand at -2: "+Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock()));
-            System.out.println("TOTAL: "+(!isMovingExempt(player) && (y1 == y2 || y1 < y2) && !Utilities.isInWater(player) && !Utilities.canStand(player.getLocation().getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock())));
-            System.out.println("--------------------------------------");
         if(!isMovingExempt(player) && (y1 == y2 || y1 < y2) && !Utilities.isInWater(player) && !Utilities.canStand(player.getLocation().getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock()))
         {
-            System.out.println("YEAH!");
             int violation = flightViolation.containsKey(name) ? flightViolation.get(name)+1 : 1;
             increment(player, flightViolation, violation);
-            System.out.println("Increasing violation to "+violation);
             if(violation > FLIGHT_LIMIT)
             {
                 return true;
