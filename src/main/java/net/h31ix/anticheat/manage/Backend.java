@@ -114,6 +114,7 @@ public class Backend
     private static final double XZ_SPEED_MAX_SNEAK = 0.2;
     private static final double XZ_SPEED_MAX_WATER = 0.19;
     private static final double XZ_SPEED_MAX_WATER_SPRINT = 0.3;
+    private static final int SPEED_MAX = 3;
 
     private AnticheatManager micromanage = null;
     private List<String> droppedItem = new ArrayList<String>();
@@ -139,6 +140,7 @@ public class Backend
     private Map<String, Integer> chatLevel = new HashMap<String, Integer>();
     private Map<String, Integer> chatKicks = new HashMap<String, Integer>();
     private Map<String, Integer> nofallViolation = new HashMap<String, Integer>();
+    private Map<String, Integer> speedViolation = new HashMap<String, Integer>();
     private Map<String, Integer> fastBreakViolation = new HashMap<String, Integer>();
     private Map<String, Integer> yAxisViolations = new HashMap<String, Integer>();
     private Map<String, Long> yAxisLastViolation = new HashMap<String, Long>();
@@ -355,21 +357,39 @@ public class Backend
     {
         if (!isSpeedExempt(player) && player.getVehicle() == null)
         {
+            boolean speed = false;
             if (player.isFlying())
             {              
-                return x > XZ_SPEED_MAX_FLY || z > XZ_SPEED_MAX_FLY;
+                speed = x > XZ_SPEED_MAX_FLY || z > XZ_SPEED_MAX_FLY;
             }
             else if (player.hasPotionEffect(PotionEffectType.SPEED))
             {             
-                return x > XZ_SPEED_MAX_POTION || z > XZ_SPEED_MAX_POTION;
+                speed = x > XZ_SPEED_MAX_POTION || z > XZ_SPEED_MAX_POTION;
             }
             else if (player.isSprinting())
             {                                 
-                return x > XZ_SPEED_MAX_SPRINT || z > XZ_SPEED_MAX_SPRINT;
+                speed = x > XZ_SPEED_MAX_SPRINT || z > XZ_SPEED_MAX_SPRINT;
             }
             else
             {
-                return x > XZ_SPEED_MAX || z > XZ_SPEED_MAX;
+                speed = x > XZ_SPEED_MAX || z > XZ_SPEED_MAX;
+            }
+            if(speed)
+            {
+                int num = this.increment(player, speedViolation, SPEED_MAX);
+                if(num >= SPEED_MAX)
+                {
+                    return true;
+                }
+                else
+                {
+                    speedViolation.put(player.getName(), 0);
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
             }
         }
         else
@@ -1222,12 +1242,13 @@ public class Backend
         }
     }
 
-    public void increment(Player player, Map<String, Integer> map, int num)
+    public int increment(Player player, Map<String, Integer> map, int num)
     {
         String name = player.getName();
         if (map.get(name) == null)
         {
             map.put(name, 1);
+            return 1;
         }
         else
         {
@@ -1235,10 +1256,12 @@ public class Backend
             if (amount < num + 1)
             {
                 map.put(name, amount);
+                return amount;
             }
             else
             {
                 map.put(name, num);
+                return num;
             }
         }
     }
