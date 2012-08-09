@@ -88,7 +88,6 @@ public class Backend
     private static final int WATER_SPEED_VIOLATION_MAX = 4;
 
     private static final int SPRINT_FOOD_MIN = 6;
-    private static final int EAT_MIN = 20;
     private static final int HEAL_MIN = 35;
     private static final int ANIMATION_MIN = 60;
     private static final int CHAT_MIN = 100;
@@ -97,6 +96,7 @@ public class Backend
     private static final int SPRINT_MIN = 2;
     private static final int BLOCK_BREAK_MIN = 1;
     private static final long BLOCK_PLACE_MIN = 1 / 3;
+    private static final long HEAL_TIME_MIN = 1200L;
 
     private static final double BLOCK_MAX_DISTANCE = 6.0;
     private static final double ENTITY_MAX_DISTANCE = 5.5;
@@ -122,7 +122,6 @@ public class Backend
     private List<String> brokenBlock = new ArrayList<String>();
     private List<String> placedBlock = new ArrayList<String>();
     private List<String> bowWindUp = new ArrayList<String>();
-    private List<String> startEat = new ArrayList<String>();
     private List<String> healed = new ArrayList<String>();
     private List<String> sprinted = new ArrayList<String>();
     private List<String> isInWater = new ArrayList<String>();
@@ -159,6 +158,7 @@ public class Backend
     private Map<String, Long> velocitized = new HashMap<String, Long>();
     private Map<String, Integer> velocitytrack = new HashMap<String, Integer>();
     private Map<String, Location> animated = new HashMap<String, Location>();
+    private Map<String, Long> startEat = new HashMap<String, Long>();
 
     public Backend(AnticheatManager instance)
     {
@@ -193,7 +193,7 @@ public class Backend
             r.append(l + '\n');
         }
         r.append("Start Eating List:" + '\n');
-        for (String l : startEat)
+        for (String l : startEat.keySet())
         {
             r.append(l + '\n');
         }
@@ -871,12 +871,16 @@ public class Backend
 
     public void logEatingStart(Player player)
     {
-        logEvent(startEat, player, EAT_MIN);
+        startEat.put(player.getName(), System.currentTimeMillis());
     }
 
     public boolean justStartedEating(Player player)
     {
-        return startEat.contains(player.getName());
+        if(startEat.containsKey(player.getName())) // Otherwise it was modified by a plugin, don't worry about it.
+        {
+            return (System.currentTimeMillis()-startEat.get(player.getName())) < HEAL_TIME_MIN;
+        }
+        return false;
     }
 
     public void logHeal(Player player)

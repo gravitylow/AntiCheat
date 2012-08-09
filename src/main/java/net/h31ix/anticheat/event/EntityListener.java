@@ -71,7 +71,6 @@ public class EntityListener extends EventListener
                 {
                     event.setCancelled(!config.silentMode());
                     log("tried to heal too fast.", player, CheckType.FAST_HEAL);
-                    return;
                 }
                 else
                 {
@@ -94,7 +93,6 @@ public class EntityListener extends EventListener
                 {
                     event.setCancelled(!config.silentMode());
                     log("tried to eat too fast.", player, CheckType.FAST_EAT);
-                    return;
                 }
                 else
                 {
