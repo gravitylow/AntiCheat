@@ -287,44 +287,21 @@ public class PlayerListener extends EventListener
         Location from = event.getFrom();
         Location to = event.getTo();
         Distance distance = new Distance(from, to);
-        double x = distance.getXDifference();
         double y = distance.getYDifference();
-        double z = distance.getZDifference();
         backend.logAscension(player, from.getY(), to.getY());
         if (checkManager.willCheck(player, CheckType.FLY) && !player.isFlying() && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkFlight(player, distance))
         {
             if (!config.silentMode())
             {
-                from.setX(from.getX() - 1);
-                from.setY(from.getY() - 1);
-                from.setZ(from.getZ() - 1);
-                event.setTo(from);
-                Block lower = player.getWorld().getHighestBlockAt(from);
-                if (lower.getLocation().getY() + 2 < player.getLocation().getY())
-                {
-                    player.teleport(new Location(lower.getWorld(), lower.getLocation().getX(), lower.getLocation().getY() + 2, lower.getLocation().getZ()));
-                }
-                else
-                {
-                    player.teleport(new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() - 1, player.getLocation().getZ()));
-                }
+                event.setTo(from.clone());
             }
             log("tried to fly.", player, CheckType.FLY);
-            
         }
         if (checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && (backend.checkYAxis(player, distance) || backend.checkAscension(player, from.getY(), to.getY())))
         {
             if (!config.silentMode())
             {
-                Block lower = player.getWorld().getHighestBlockAt(player.getLocation());
-                if (lower.getLocation().getY() + 2 < player.getLocation().getY())
-                {
-                    player.teleport(new Location(lower.getWorld(), lower.getLocation().getX(), lower.getLocation().getY() + 2, lower.getLocation().getZ()));
-                }
-                else
-                {
-                    player.teleport(new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY() - 1, player.getLocation().getZ()));
-                }
+                event.setTo(from.clone());
             }
             log("tried to fly on y-axis", player, CheckType.FLY);
         }

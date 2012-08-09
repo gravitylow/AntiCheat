@@ -40,7 +40,7 @@ public class Backend
 {
     private static final int ENTERED_EXTITED_TIME = 20;
     private static final int SNEAK_TIME = 5;
-    private static final int TELEPORT_TIME = 50;
+    private static final int TELEPORT_TIME = 20;
     private static final int EXIT_FLY_TIME = 40;
     private static final int INSTANT_BREAK_TIME = 100;
     private static final int JOIN_TIME = 40;
@@ -73,7 +73,7 @@ public class Backend
     private static final int CHAT_KICK_LEVEL = 10;
     private static final int CHAT_BAN_LEVEL = 3;
 
-    private static final int FLIGHT_LIMIT = 7;
+    private static final int FLIGHT_LIMIT = 3;
     private static final int Y_MAXVIOLATIONS = 1;
     private static final int Y_MAXVIOTIME = 5000;
     private static final int VELOCITY_TIME = 60;
@@ -650,6 +650,7 @@ public class Backend
 
     public boolean checkFlight(Player player, Distance distance)
     {
+        System.out.println("Checking flight");
         if (distance.getYDifference() > 400)
         {
             //This was a teleport, so we don't care about it.
@@ -658,10 +659,20 @@ public class Backend
         String name = player.getName();
         int y1 = (int)distance.fromY();
         int y2 = (int)distance.toY();
+            System.out.println("Moving exempt: "+!isMovingExempt(player));
+            System.out.println("Y value: "+(y1 == y2 || y1 < y2));
+            System.out.println("In water: "+!Utilities.isInWater(player));
+            System.out.println("Can stand at current: "+!Utilities.canStand(player.getLocation().getBlock()));
+            System.out.println("Cant stand at -1: "+Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()));
+            System.out.println("Cant stand at -2: "+Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock()));
+            System.out.println("TOTAL: "+(!isMovingExempt(player) && (y1 == y2 || y1 < y2) && !Utilities.isInWater(player) && !Utilities.canStand(player.getLocation().getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock())));
+            System.out.println("--------------------------------------");
         if(!isMovingExempt(player) && (y1 == y2 || y1 < y2) && !Utilities.isInWater(player) && !Utilities.canStand(player.getLocation().getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock()))
         {
-            int violation = flightViolation.containsKey(name) ? flightViolation.get(name) + 1 : 1;
+            System.out.println("YEAH!");
+            int violation = flightViolation.containsKey(name) ? flightViolation.get(name)+1 : 1;
             increment(player, flightViolation, violation);
+            System.out.println("Increasing violation to "+violation);
             if(violation > FLIGHT_LIMIT)
             {
                 return true;
