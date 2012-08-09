@@ -650,7 +650,6 @@ public class Backend
 
     public boolean checkFlight(Player player, Distance distance)
     {
-        System.out.println("Checking flight");
         if (distance.getYDifference() > 400)
         {
             //This was a teleport, so we don't care about it.
