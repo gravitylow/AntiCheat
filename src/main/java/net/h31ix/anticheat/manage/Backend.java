@@ -73,7 +73,7 @@ public class Backend
     private static final int CHAT_KICK_LEVEL = 10;
     private static final int CHAT_BAN_LEVEL = 3;
 
-    private static final int FLIGHT_LIMIT = 3;
+    private static final int FLIGHT_LIMIT = 5;
     private static final int Y_MAXVIOLATIONS = 1;
     private static final int Y_MAXVIOTIME = 5000;
     private static final int VELOCITY_TIME = 60;
