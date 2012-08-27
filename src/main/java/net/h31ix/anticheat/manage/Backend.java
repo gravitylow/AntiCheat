@@ -74,6 +74,7 @@ public class Backend
     private static final int CHAT_BAN_LEVEL = 3;
 
     private static final int FLIGHT_LIMIT = 5;
+    private static final double WATER_CLIMB_MAX = 0.15;
     private static final int Y_MAXVIOLATIONS = 1;
     private static final int Y_MAXVIOTIME = 5000;
     private static final int VELOCITY_TIME = 60;
@@ -660,6 +661,13 @@ public class Backend
         int y2 = (int)distance.toY();
         if(!isMovingExempt(player) && (y1 == y2 || y1 < y2) && !Utilities.isInWater(player) && !Utilities.canStand(player.getLocation().getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock()))
         {
+            Block block = player.getLocation().getBlock();
+            //Check if the player is climbing up water. 
+            if(block.getRelative(BlockFace.NORTH).isLiquid() || block.getRelative(BlockFace.SOUTH).isLiquid() || block.getRelative(BlockFace.EAST).isLiquid() || block.getRelative(BlockFace.WEST).isLiquid())
+            {
+                //Even if they are using a hacked client and flying next to water to abuse this, they can't be go past the speed limit so they might as well swim
+                return distance.getYDifference() > WATER_CLIMB_MAX;
+            }
             int violation = flightViolation.containsKey(name) ? flightViolation.get(name)+1 : 1;
             increment(player, flightViolation, violation);
             if(violation > FLIGHT_LIMIT)
