@@ -18,9 +18,11 @@
 
 package net.h31ix.anticheat;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +34,7 @@ import net.h31ix.anticheat.manage.AnticheatManager;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.metrics.Metrics;
 import net.h31ix.anticheat.metrics.Metrics.Graph;
+import net.h31ix.anticheat.update.Updater;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Utilities;
 import net.h31ix.anticheat.xray.XRayListener;
@@ -46,12 +49,10 @@ public class Anticheat extends JavaPlugin
     private static AnticheatManager manager;
     private static List<Listener> eventList = new ArrayList<Listener>();
     private static boolean update = false;
-    private static String updateUrl = null;
     private static final int BYTE_SIZE = 1024;
     private static Logger logger;
     private static Configuration config;
     private static boolean verbose;
-    private static String updateFolder;
     private static Metrics metrics;
     private static final long XRAY_TIME = 1200;
 
@@ -79,12 +80,10 @@ public class Anticheat extends JavaPlugin
         config = manager.getConfiguration();
         checkConfig();
         verbose = config.verboseStartup();
-        updateFolder = config.updateFolder();
         if (verbose)
         {
             logger.log(Level.INFO, "Setup the config.");
-        }
-        checkForUpdate();        
+        }      
         eventList.add(new PlayerListener());
         eventList.add(new BlockListener());
         eventList.add(new EntityListener());
@@ -133,31 +132,18 @@ public class Anticheat extends JavaPlugin
         {
             logger.log(Level.INFO, "Registered commands.");
         }
-        if (update && config.autoUpdate())
+        if (config.autoUpdate())
         {
             if (verbose)
             {
-                logger.log(Level.INFO, "Downloading the new update...");
-            }
-            getUrl();
-            File file = new File("plugins/" + updateFolder);
-            if (!file.exists())
+                logger.log(Level.INFO, "Checking for a new update...");
+            }            
+            Updater updater = new Updater(this, "anticheat", this.getFile(), true);
+            update = updater.getResult() != Updater.UpdateResult.NO_UPDATE;
+            if (verbose)
             {
-                try
-                {
-                    file.mkdir();
-                }
-                catch (Exception ex)
-                {
-                }
-            }
-            try
-            {
-                saveFile(file.getCanonicalPath() + "/AntiCheat.jar", updateUrl);
-            }
-            catch (IOException ex)
-            {
-            }
+                logger.log(Level.INFO, "Update avaliable: "+update);
+            }             
         }
         try
         {
@@ -298,115 +284,6 @@ public class Anticheat extends JavaPlugin
                 logger.log(Level.INFO, "Lang file created.");
             }
         }
-    }
-
-    private void checkForUpdate()
-    {
-        if (verbose)
-        {
-            logger.log(Level.INFO, "Checking for updates...");
-        }
-        try
-        {
-            URL url;
-            URLConnection urlConn;
-            InputStreamReader inStream = null;
-            BufferedReader buff;
-            String v = "";
-            try
-            {
-                url = new URL("http://dl.dropbox.com/u/38228324/anticheatVersion.txt");
-                urlConn = url.openConnection();
-                inStream = new InputStreamReader(urlConn.getInputStream());
-            }
-            catch (Exception ex)
-            {
-            }
-            buff = new BufferedReader(inStream);
-            try
-            {
-                v = buff.readLine();
-                urlConn = null;
-                inStream = null;
-                buff.close();
-                buff = null;
-            }
-            catch (Exception ex)
-            {
-            }
-            String version = this.getDescription().getVersion().split("-b")[0];
-            if (!version.equalsIgnoreCase(v))
-            {
-                if (version.endsWith("-PRE") || version.endsWith("-DEV"))
-                {
-                    if (version.replaceAll("-PRE", "").replaceAll("-DEV", "").equalsIgnoreCase(v))
-                    {
-                        update = true;
-                        if (verbose)
-                        {
-                            logger.log(Level.INFO, "Your dev build has been promoted to release. Downloading the update.");
-                        }
-                    }
-                    else
-                    {
-                        update = false;
-                        if (verbose)
-                        {
-                            logger.log(Level.INFO, "Dev build detected, so skipping update checking until this version is released.");
-                        }
-                    }
-                }
-                else
-                {
-                    update = true;
-                    if (verbose)
-                    {
-                        logger.log(Level.INFO, "An update was found.");
-                    }
-                }
-            }
-            else
-            {
-                if (verbose)
-                {
-                    logger.log(Level.INFO, "No update found.");
-                }
-                update = false;
-            }
-        }
-        catch (Exception e)
-        {
-            logger.log(Level.SEVERE, "Updating failed.  Possible connection failure.");
-        }
-    }
-    
-    private void getUrl()
-    {
-            URL url;
-            URLConnection urlConn;
-            InputStreamReader inStream = null;
-            BufferedReader buff;
-            try
-            {
-                url = new URL("http://dl.dropbox.com/u/38228324/anticheatUrl.txt");
-                urlConn = url.openConnection();
-                inStream = new InputStreamReader(urlConn.getInputStream());
-            }
-            catch (Exception ex)
-            {
-            }
-            buff = new BufferedReader(inStream);
-            try
-            {
-                updateUrl = "http://dev.bukkit.org/media/files/"+buff.readLine();
-                urlConn = null;
-                inStream = null;
-                buff.close();
-                buff = null;
-            }
-            catch (Exception ex)
-            {
-            }    
     }
 
     public static Anticheat getPlugin()
