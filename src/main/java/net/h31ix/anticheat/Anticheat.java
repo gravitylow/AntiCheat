@@ -138,7 +138,7 @@ public class Anticheat extends JavaPlugin
             {
                 logger.log(Level.INFO, "Checking for a new update...");
             }            
-            Updater updater = new Updater(this, "anticheat", this.getFile(), true);
+            Updater updater = new Updater(this, "anticheat", this.getFile(), Updater.UpdateType.DEFAULT, false);
             update = updater.getResult() != Updater.UpdateResult.NO_UPDATE;
             if (verbose)
             {
