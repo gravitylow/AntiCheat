@@ -668,6 +668,14 @@ public class Backend
                 //Even if they are using a hacked client and flying next to water to abuse this, they can't be go past the speed limit so they might as well swim
                 return distance.getYDifference() > WATER_CLIMB_MAX;
             }
+            //Check if the player is crouching on slabs
+            if(player.isSneaking())
+            {
+                if(block.getRelative(BlockFace.NORTH).getTypeId() == 43 || block.getRelative(BlockFace.NORTH).getTypeId() == 44 || block.getRelative(BlockFace.SOUTH).getTypeId() == 43 || block.getRelative(BlockFace.SOUTH).getTypeId() == 44 || block.getRelative(BlockFace.EAST).getTypeId() == 43 || block.getRelative(BlockFace.EAST).getTypeId() == 44 || block.getRelative(BlockFace.WEST).getTypeId() == 43 || block.getRelative(BlockFace.WEST).getTypeId() == 44)
+                {
+                    return false;
+                }
+            }
             int violation = flightViolation.containsKey(name) ? flightViolation.get(name)+1 : 1;
             increment(player, flightViolation, violation);
             if(violation > FLIGHT_LIMIT)
