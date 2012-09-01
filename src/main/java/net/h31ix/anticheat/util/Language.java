@@ -18,6 +18,7 @@
 
 package net.h31ix.anticheat.util;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Language
@@ -29,11 +30,29 @@ public class Language
     private static String banBroadcast = null;
     private static String kickReason = null;
     private static String kickBroadcast = null;
+    
+    private static final ChatColor GOLD = ChatColor.GOLD;
+    private static final ChatColor GRAY = ChatColor.GRAY;
 
     public Language(FileConfiguration file)
     {
-        medAlert = file.getList("alert.medium_alert").toArray(new String[file.getList("alert.medium_alert").size()]);
-        highAlert = file.getList("alert.high_alert").toArray(new String[file.getList("alert.high_alert").size()]);
+        String [] temp = file.getList("alert.medium_alert").toArray(new String[file.getList("alert.medium_alert").size()]);
+        medAlert = new String [temp.length+2];
+        medAlert[0] = GOLD + "----------------------[" + GRAY + "AntiCheat" + GOLD + "]----------------------";
+        for(int i=0;i<temp.length;i++)
+        {
+            medAlert[i+1] = GRAY + temp[i];
+        }
+        medAlert[medAlert.length-1] = GOLD + "-----------------------------------------------------";
+        temp = file.getList("alert.high_alert").toArray(new String[file.getList("alert.high_alert").size()]);
+        highAlert = new String [temp.length+2];
+        highAlert[0] = GOLD + "----------------------[" + GRAY + "AntiCheat" + GOLD + "]----------------------";
+        for(int i=0;i<temp.length;i++)
+        {
+            highAlert[i+1] = GRAY + temp[i];
+        }
+        highAlert[highAlert.length-1] = GOLD + "-----------------------------------------------------";
+        
         warning = file.getList("warning.player_warning").toArray(new String[file.getList("warning.player_warning").size()]);
         banReason = file.getString("ban.ban_reason");
         banBroadcast = file.getString("ban.ban_broadcast");

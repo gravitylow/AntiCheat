@@ -43,7 +43,6 @@ public enum CheckType
     SNEAK(Permission.CHECK_SNEAK),
     SPEED(Permission.CHECK_SPEED),
     VCLIP(Permission.CHECK_VCLIP),
-    //VISUAL(Permission.CHECK_VISUAL),
     SPIDER(Permission.CHECK_SPIDER),
     NOFALL(Permission.CHECK_NOFALL),
     FAST_BOW(Permission.CHECK_FASTBOW),
@@ -68,33 +67,20 @@ public enum CheckType
         return permission.get(player);
     }
 
-    public void logUse(Player player)
+    public void logUse(String name)
     {
-        String name = player.getName();
-        if (level.get(name) == null)
-        {
-            level.put(name, 1);
-        }
-        else
-        {
-            int amount = level.get(name) + 1;
-            level.put(name, amount);
-        }
+        int amount = level.get(name) == null ? 1 : level.get(name) + 1;
+        level.put(name, amount);
     }
 
-    public void clearUse(Player player)
+    public void clearUse(String name)
     {
-        level.put(player.getName(), 0);
+        level.put(name, 0);
     }
 
-    public int getUses(Player player)
+    public int getUses(String name)
     {
-        int use = 0;
-        if (level.get(player.getName()) != null)
-        {
-            use = level.get(player.getName());
-        }
-        return use;
+        return level.get(name) != null ? level.get(name) : 0;
     }
 
     public static String getName(CheckType type)

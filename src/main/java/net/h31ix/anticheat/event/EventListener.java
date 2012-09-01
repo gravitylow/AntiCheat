@@ -33,25 +33,26 @@ public class EventListener implements Listener
     private static final CheckManager CHECK_MANAGER = Anticheat.getManager().getCheckManager();
     private static final Backend BACKEND = Anticheat.getManager().getBackend();
     private static final Anticheat PLUGIN = Anticheat.getManager().getPlugin();
-    private static final PlayerManager PLAYER_MANAGER = Anticheat.getManager().getPlayerManager();
+    private static final UserManager USER_MANAGER = Anticheat.getManager().getUserManager();
 
     public static void log(String message, Player player, CheckType type)
     {
-        if (PLAYER_MANAGER.increaseLevel(player,type))
+        User user = getUserManager().getUser(player.getName());
+        if (user.increaseLevel(type))
         {
-            Anticheat.getManager().log(player.getName() + " " + message);
+            Anticheat.getManager().log(user.getName() + " " + message);
         }
-        removeDecrease(player);
-        logCheat(type, player);
+        removeDecrease(user);
+        logCheat(type, user);
     }
 
-    private static void logCheat(CheckType type, Player player)
+    private static void logCheat(CheckType type, User user)
     {
         USAGE_LIST.put(type, getCheats(type) + 1);
-        type.logUse(player);
-        if (Anticheat.getManager().getConfiguration().getFileLogLevel() == 2 && type.getUses(player) % 10 == 0)
+        type.logUse(user.getName());
+        if (Anticheat.getManager().getConfiguration().getFileLogLevel() == 2 && type.getUses(user.getName()) % 10 == 0)
         {
-            Anticheat.getManager().fileLog(player.getName() + " has triggered multiple " + type + " checks.");
+            Anticheat.getManager().fileLog(user.getName() + " has triggered multiple " + type + " checks.");
         }
     }
 
@@ -70,34 +71,35 @@ public class EventListener implements Listener
         return x;
     }
 
-    private static void removeDecrease(Player player)
+    private static void removeDecrease(User user)
     {
         int x = 0;
-        if (DECREASE_LIST.get(player.getName()) != null)
+        if (DECREASE_LIST.get(user.getName()) != null)
         {
-            x = DECREASE_LIST.get(player.getName());
+            x = DECREASE_LIST.get(user.getName());
             x -= 2;
             if (x < 0)
             {
                 x = 0;
             }
         }
-        DECREASE_LIST.put(player.getName(), x);
+        DECREASE_LIST.put(user.getName(), x);
     }
 
     public static void decrease(Player player)
     {
+        User user = getUserManager().getUser(player.getName());
         int x = 0;
-        if (DECREASE_LIST.get(player.getName()) != null)
+        if (DECREASE_LIST.get(user.getName()) != null)
         {
-            x = DECREASE_LIST.get(player.getName());
+            x = DECREASE_LIST.get(user.getName());
         }
         x += 1;
-        DECREASE_LIST.put(player.getName(), x);
+        DECREASE_LIST.put(user.getName(), x);
         if (x >= 10)
         {
-            PLAYER_MANAGER.decreaseLevel(player);
-            DECREASE_LIST.put(player.getName(), 0);
+            user.decreaseLevel();
+            DECREASE_LIST.put(user.getName(), 0);
         }
     }
 
@@ -116,9 +118,9 @@ public class EventListener implements Listener
         return BACKEND;
     }
 
-    public static PlayerManager getPlayerManager()
+    public static UserManager getUserManager()
     {
-        return PLAYER_MANAGER;
+        return USER_MANAGER;
     }
 
     public static Anticheat getPlugin()

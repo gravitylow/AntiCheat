@@ -10,6 +10,10 @@ Events:
   #&player will be replaced with player's name, and any command on your server can be used.
   Level Medium: WARN
   Level High: KICK
+  #How many warnings should the player get before entering medium?
+  Medium threshold: 20
+  #How many warnings should the player get before entering high?
+  High threshold: 50
   
 System:
   #Turning auto-update off is a _BAD_ idea. You will no longer be protected by the latest hacks/cheats if you do so.

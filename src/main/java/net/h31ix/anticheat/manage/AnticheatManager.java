@@ -29,6 +29,7 @@ import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.FileFormatter;
 import net.h31ix.anticheat.xray.XRayTracker;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 /**
@@ -41,23 +42,24 @@ public class AnticheatManager
     private Anticheat plugin = null;
     private Configuration configuration;
     private XRayTracker xrayTracker = null;
-    private PlayerManager playerManager = null;
+    private UserManager userManager = null;
     private CheckManager checkManager = null;
     private Backend backend = null;
-    private static Logger LOGGER, FILE_LOGGER;
+    private Logger logger;
+    private Logger fileLogger;
     private static List<String> logs = new CopyOnWriteArrayList<String>();
     private static Handler fileHandler;
     private static final int LOG_LEVEL_HIGH = 3;
 
-    public AnticheatManager(Anticheat instance)
+    public AnticheatManager(Anticheat instance, Logger logger)
     {
         plugin = instance;
         // now load all the others!!!!!
-        LOGGER = Logger.getLogger("Minecraft");
-        FILE_LOGGER = plugin.getAnticheatLogger();
+        this.logger = logger;
+        this.fileLogger = Logger.getLogger("net.h31ix.anticheat.Anticheat");
         configuration = new Configuration(this);
         xrayTracker = new XRayTracker();
-        playerManager = new PlayerManager(this);
+        userManager = new UserManager(configuration);
         checkManager = new CheckManager(this);
         backend = new Backend(this);
         try
@@ -72,17 +74,17 @@ public class AnticheatManager
         }
         catch (Exception ex)
         {
-            LOGGER.log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         }
-        FILE_LOGGER.setUseParentHandlers(false);
-        FILE_LOGGER.addHandler(fileHandler);
+        fileLogger.setUseParentHandlers(false);
+        fileLogger.addHandler(fileHandler);
     }
 
     public void log(String message)
     {
         if (getConfiguration().logConsole())
         {
-            LOGGER.info("[AntiCheat] " + ChatColor.stripColor(message)); //This is temporary. Is something wrong with jline?
+            Bukkit.getConsoleSender().sendMessage(message);
         }
         if (getConfiguration().getFileLogLevel() == LOG_LEVEL_HIGH)
         {
@@ -93,7 +95,7 @@ public class AnticheatManager
 
     public void fileLog(String message)
     {
-        FILE_LOGGER.info(message);
+        logger.info(message);
     }
 
     public List<String> getLastLogs()
@@ -123,9 +125,9 @@ public class AnticheatManager
         return xrayTracker;
     }
 
-    public PlayerManager getPlayerManager()
+    public UserManager getUserManager()
     {
-        return playerManager;
+        return userManager;
     }
 
     public CheckManager getCheckManager()

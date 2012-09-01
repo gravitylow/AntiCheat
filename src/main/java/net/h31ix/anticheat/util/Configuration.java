@@ -35,7 +35,6 @@ public class Configuration
     private AnticheatManager micromanage = null; //like a boss!
     private File configFile = null;
     private File levelFile = null;
-    private File bukkitFile = null;
     private File langFile = null;
     private FileConfiguration config;
     private FileConfiguration level;
@@ -49,6 +48,8 @@ public class Configuration
     private boolean commandSpam;
     private boolean silentMode;
     private int fileLogLevel = 0;
+    private int medThreshold = 0;
+    private int highThreshold = 0;
     private String updateFolder;
     private static Language language;
     private List<String> worlds = new ArrayList<String>();
@@ -58,7 +59,6 @@ public class Configuration
         micromanage = instance;
         configFile = new File(micromanage.getPlugin().getDataFolder() + "/config.yml");
         levelFile = new File(micromanage.getPlugin().getDataFolder() + "/data/level.yml");
-        bukkitFile = new File("bukkit.yml");
         langFile = new File(micromanage.getPlugin().getDataFolder() + "/lang.yml");
         load();
     }
@@ -118,7 +118,17 @@ public class Configuration
     public boolean silentMode()
     {
         return silentMode;
-    }    
+    }   
+    
+    public int medThreshold()
+    {
+        return medThreshold;
+    }
+    
+    public int highThreshold()
+    {
+        return highThreshold;
+    }
 
     public int getFileLogLevel()
     {
@@ -132,22 +142,26 @@ public class Configuration
 
     public final void load()
     {
-        FileConfiguration bukkit;
         micromanage.getPlugin().checkConfig();
         config = YamlConfiguration.loadConfiguration(configFile);
         level = YamlConfiguration.loadConfiguration(levelFile);
-        bukkit = YamlConfiguration.loadConfiguration(bukkitFile);
         lang = YamlConfiguration.loadConfiguration(langFile);
         language = new Language(lang);
-        updateFolder = bukkit.getString("settings.update-folder");
-        if (config.getString("Logging.Log to console") != null)
-        {
-            boolean b = config.getBoolean("Logging.Log to console");
-            config.set("Logging", null);
-            config.set("System.Log to console", b);
-            save();
-        }
-        logConsole = config.getBoolean("System.Log to console");
+        updateFolder = Bukkit.getUpdateFolder();
+        
+        // Begin pulling values from config.
+        logConsole = getBoolean("System.Log to console", false);
+        logXRay = getBoolean ("XRay.Log xray stats", true);
+        autoUpdate = getBoolean ("System.Auto update", true);
+        verboseStartup = getBoolean ("System.Verbose startup", false);
+        alertXRay = getBoolean("XRay.Alert when xray is found", false);
+        fileLogLevel = getInt("System.File log level", 1);
+        chatSpam = getBoolean("System.Block chat spam", true);
+        commandSpam = getBoolean("System.Block command spam", false);
+        silentMode = getBoolean("System.Silent mode", false);
+        medThreshold = getInt("Events.Medium threshold", 20);
+        highThreshold = getInt("Events.High threshold", 50);
+        
         if (config.getList("Enable in") == null)
         {
             List<String> w = new ArrayList<String>();
@@ -158,55 +172,35 @@ public class Configuration
             config.set("Enable in", w);
             save();
         }
-        worlds = config.getStringList("Enable in");
-        if (config.getString("XRay.Log xray stats") == null)
+        worlds = config.getStringList("Enable in");    
+        // End pulling values from config
+        save();
+    }
+    
+    private boolean getBoolean(String entry, boolean d)
+    {
+        if (config.getString(entry) == null)
         {
-            config.set("XRay.Log xray stats", true);
-            save();
+            config.set(entry, d);
+            return d;
         }
-        logXRay = config.getBoolean("XRay.Log xray stats");
-        if (config.getString("System.Auto update") == null)
+        else
         {
-            config.set("System.Auto update", true);
-            save();
+            return config.getBoolean(entry);        
         }
-        autoUpdate = config.getBoolean("System.Auto update");
-        if (config.getString("System.Verbose startup") == null)
+    }
+    
+    private int getInt(String entry, int d)
+    {
+        if (config.getString(entry) == null)
         {
-            config.set("System.Verbose startup", false);
-            save();
+            config.set(entry, d);
+            return d;
         }
-        verboseStartup = config.getBoolean("System.Verbose startup");
-        if (config.getString("XRay.Alert when xray is found") == null)
+        else
         {
-            config.set("XRay.Alert when xray is found", false);
-            save();
+            return config.getInt(entry);   
         }
-        alertXRay = config.getBoolean("XRay.Alert when xray is found");
-        if (config.getString("System.File log level") == null)
-        {
-            config.set("System.File log level", 1);
-            save();
-        }
-        fileLogLevel = config.getInt("System.File log level");
-        if (config.getString("System.Block chat spam") == null)
-        {
-            config.set("System.Block chat spam", true);
-            save();
-        }
-        chatSpam = config.getBoolean("System.Block chat spam");
-        if (config.getString("System.Block command spam") == null)
-        {
-            config.set("System.Block command spam", true);
-            save();
-        }
-        commandSpam = config.getBoolean("System.Block command spam");
-        if (config.getString("System.Silent mode") == null)
-        {
-            config.set("System.Silent mode", false);
-            save();
-        }
-        silentMode = config.getBoolean("System.Silent mode");        
     }
 
     public String getResult(String event)
@@ -250,7 +244,7 @@ public class Configuration
 
     public int getLevel(String player)
     {
-        int x = 0;
+        int x = -1;
         if (level.getString(player) != null)
         {
             x = level.getInt(player);
@@ -258,9 +252,9 @@ public class Configuration
         return x;
     }
 
-    public void saveLevel(String player, int x)
+    public void saveLevel(String user, int x)
     {
-        level.set(player, x);
+        level.set(user, x);
     }
 
     public void saveLevels()

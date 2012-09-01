@@ -18,20 +18,15 @@
 
 package net.h31ix.anticheat;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.h31ix.anticheat.event.*;
 import net.h31ix.anticheat.manage.AnticheatManager;
 import net.h31ix.anticheat.manage.CheckType;
+import net.h31ix.anticheat.manage.User;
 import net.h31ix.anticheat.metrics.Metrics;
 import net.h31ix.anticheat.metrics.Metrics.Graph;
 import net.h31ix.anticheat.update.Updater;
@@ -49,45 +44,49 @@ public class Anticheat extends JavaPlugin
     private static AnticheatManager manager;
     private static List<Listener> eventList = new ArrayList<Listener>();
     private static boolean update = false;
-    private static final int BYTE_SIZE = 1024;
-    private static Logger logger;
     private static Configuration config;
     private static boolean verbose;
     private static Metrics metrics;
     private static final long XRAY_TIME = 1200;
+    
+    @Override
+    public void onEnable()
+    {
+        manager = new AnticheatManager(this, getLogger());
+        eventList.add(new PlayerListener());
+        eventList.add(new BlockListener());
+        eventList.add(new EntityListener());
+        eventList.add(new VehicleListener());   
+        // Order is important in some cases, don't screw with these unless needed, especially config
+        setupConfig();  
+        // Xray must come before events
+        setupXray();
+        setupEvents();
+        setupCommands();
+        setupUpdater();
+        setupMetrics();
+        restoreLevels();
+        if (verbose)
+        {
+            getLogger().log(Level.INFO, "Finished loading.");
+        }
+    }    
 
     @Override
     public void onDisable()
     {
         AnticheatManager.close();
-        Map<String, Integer> map = manager.getPlayerManager().getLevels();
-        Iterator<String> set = map.keySet().iterator();
-        while (set.hasNext())
+        for(User user : manager.getUserManager().getUsers())
         {
-            String player = set.next();
-            config.saveLevel(player, map.get(player));
+            config.saveLevel(user.getName(), user.getLevel());
         }
         config.saveLevels();
         getServer().getScheduler().cancelAllTasks();
         cleanup();
     }
-
-    @Override
-    public void onEnable()
+    
+    private void setupXray()
     {
-        logger = this.getLogger();
-        manager = new AnticheatManager(this);
-        config = manager.getConfiguration();
-        checkConfig();
-        verbose = config.verboseStartup();
-        if (verbose)
-        {
-            logger.log(Level.INFO, "Setup the config.");
-        }      
-        eventList.add(new PlayerListener());
-        eventList.add(new BlockListener());
-        eventList.add(new EntityListener());
-        eventList.add(new VehicleListener());
         final XRayTracker xtracker = manager.getXRayTracker();
         if (config.logXRay())
         {
@@ -115,36 +114,52 @@ public class Anticheat extends JavaPlugin
                 }, XRAY_TIME, XRAY_TIME);
                 if (verbose)
                 {
-                    logger.log(Level.INFO, "Scheduled the XRay checker.");
+                    getLogger().log(Level.INFO, "Scheduled the XRay checker.");
                 }
             }
-        }       
+        }        
+    }
+    
+    private void setupEvents()
+    {
         for (Listener listener : eventList)
         {
             getServer().getPluginManager().registerEvents(listener, this);
             if (verbose)
             {
-                logger.log(Level.INFO, "Registered events for ".concat(listener.toString()));
+                getLogger().log(Level.INFO, "Registered events for ".concat(listener.toString().split("@")[0].split(".anticheat.")[1]));
             }
-        }
+        }        
+    }
+    
+    private void setupCommands()
+    {
         getCommand("anticheat").setExecutor(new CommandHandler());
         if (verbose)
         {
-            logger.log(Level.INFO, "Registered commands.");
-        }
+            getLogger().log(Level.INFO, "Registered commands.");
+        }        
+    }
+    
+    private void setupUpdater()
+    {
         if (config.autoUpdate())
         {
             if (verbose)
             {
-                logger.log(Level.INFO, "Checking for a new update...");
+                getLogger().log(Level.INFO, "Checking for a new update...");
             }            
             Updater updater = new Updater(this, "anticheat", this.getFile(), Updater.UpdateType.DEFAULT, false);
             update = updater.getResult() != Updater.UpdateResult.NO_UPDATE;
             if (verbose)
             {
-                logger.log(Level.INFO, "Update avaliable: "+update);
+                getLogger().log(Level.INFO, "Update avaliable: "+update);
             }             
-        }
+        }        
+    }
+    
+    private void setupMetrics()
+    {
         try
         {
             metrics = new Metrics(this);
@@ -182,88 +197,36 @@ public class Anticheat extends JavaPlugin
             metrics.start();
             if (verbose)
             {
-                logger.log(Level.INFO, "Metrics started.");
+                getLogger().log(Level.INFO, "Metrics started.");
             }
         }
         catch (IOException ex)
         {
-        }
+        }        
+    }
+    
+    private void setupConfig()
+    {
+        config = manager.getConfiguration();
+        checkConfig();
+        verbose = config.verboseStartup();
+        if (verbose)
+        {
+            getLogger().log(Level.INFO, "Setup the config.");
+        }        
+    }
+    
+    private void restoreLevels()
+    {
         for (Player player : getServer().getOnlinePlayers())
         {
             String name = player.getName();
-            manager.getPlayerManager().setLevel(player, config.getLevel(name));
+            manager.getUserManager().addUser(new User(player.getName(), config.getLevel(name)));
             if (verbose)
             {
-                logger.log(Level.INFO, "Data for " + player.getName() + " re-applied from flatfile");
+                getLogger().log(Level.INFO, "Data for " + player.getName() + " re-applied from flatfile");
             }
-        }
-        /*try 
-        {        
-            if(this.getServer().getVersion().split("-").length >= 7)
-            {
-                String v = this.getServer().getVersion().split("-")[6];
-                if(v.contains("jnks"))
-                {
-                    v = v.replaceAll("b", "").replaceAll("jnks", "").split(" ")[0];
-                    int build  = 0;
-                    build = Integer.parseInt(v);
-                    if(build != 0 && build < 2287)
-                    {
-                        System.out.println("[WARNING] You are using an UNSUPPORTED version of CraftBukkit that does not contain the API required to run AntiCheat.");
-                        System.out.println("[WARNING] Please update your server to be build #2287 or higher at http://dl.bukkit.org/downloads/craftbukkit/");
-                        System.out.println("[WARNING] AntiCheat will now disable itself, and your server will not be protected until you update.");
-                        getServer().getPluginManager().disablePlugin(this);
-                    }
-                }
-            }
-        }
-        catch(Exception ex){ }*/
-        if (verbose)
-        {
-            logger.log(Level.INFO, "Finished loading.");
-        }
-    }
-
-    private void saveFile(String file, String url)
-    {
-        BufferedInputStream in = null;
-        FileOutputStream fout = null;
-        try
-        {
-            in = new BufferedInputStream(new URL(url).openStream());
-            fout = new FileOutputStream(file);
-
-            byte[] data = new byte[BYTE_SIZE];
-            int count;
-            while ((count = in.read(data, 0, BYTE_SIZE)) != -1)
-            {
-                fout.write(data, 0, count);
-            }
-        }
-        catch (Exception ex)
-        {
-        }
-        finally
-        {
-            try
-            {
-                if (in != null)
-                {
-                    in.close();
-                }
-                if (fout != null)
-                {
-                    fout.close();
-                }
-            }
-            catch (Exception ex)
-            {
-            }
-            if (verbose)
-            {
-                logger.log(Level.INFO, "AntiCheat update has been downloaded and will be installed on next launch.");
-            }
-        }
+        }        
     }
 
     public void checkConfig()
@@ -273,7 +236,7 @@ public class Anticheat extends JavaPlugin
             saveDefaultConfig();
             if (verbose)
             {
-                logger.log(Level.INFO, "Config file created.");
+                getLogger().log(Level.INFO, "Config file created.");
             }
         }
         if (!new File(getDataFolder() + "/lang.yml").exists())
@@ -281,7 +244,7 @@ public class Anticheat extends JavaPlugin
             saveResource("lang.yml", false);
             if (verbose)
             {
-                logger.log(Level.INFO, "Lang file created.");
+                getLogger().log(Level.INFO, "Lang file created.");
             }
         }
     }
@@ -305,17 +268,12 @@ public class Anticheat extends JavaPlugin
     {
         return manager.getPlugin().getDescription().getVersion();
     }
-
-    public Logger getAnticheatLogger()
-    {
-        return this.getLogger();
-    }
+    
     private void cleanup()
     {
         eventList = null;
         manager = null;
         config = null;
         metrics = null;
-        logger = null;
     }
 }

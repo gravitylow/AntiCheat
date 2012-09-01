@@ -19,10 +19,7 @@
 package net.h31ix.anticheat.api;
 
 import net.h31ix.anticheat.Anticheat;
-import net.h31ix.anticheat.manage.AnticheatManager;
-import net.h31ix.anticheat.manage.CheckManager;
-import net.h31ix.anticheat.manage.CheckType;
-import net.h31ix.anticheat.manage.PlayerManager;
+import net.h31ix.anticheat.manage.*;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.entity.Player;
 
@@ -34,7 +31,7 @@ import org.bukkit.entity.Player;
 public class AnticheatAPI
 {
     private static CheckManager chk = Anticheat.getManager().getCheckManager();
-    private static PlayerManager pmr = Anticheat.getManager().getPlayerManager();
+    private static UserManager umr = Anticheat.getManager().getUserManager();
     private static XRayTracker xtracker = Anticheat.getManager().getXRayTracker();
 
     //CheckManager API
@@ -133,8 +130,7 @@ public class AnticheatAPI
     //PlayerManager API
 
     /**
-     * Get a player's integer hack level (0-19 = Low, 20-49 = Medium, 50-60 =
-     * High)
+     * Get a player's integer hack level
      * 
      * @param player
      *            Player to check
@@ -142,15 +138,12 @@ public class AnticheatAPI
      */
     public static int getLevel(Player player)
     {
-        if (!pmr.hasLevel(player))
-        {
-            return 0;
-        }
-        return pmr.getLevel(player);
+        return umr.safeGetLevel(player.getName());
     }
+    
 
     /**
-     * Set a player's hack level (Min = 0, Max = 60)
+     * Set a player's hack level (Min = 0, Max = 50)
      * 
      * @param player
      *            Player to set
@@ -159,7 +152,7 @@ public class AnticheatAPI
      */
     public static void setLevel(Player player, int level)
     {
-        pmr.setLevel(player, level);
+        umr.safeSetLevel(player.getName(), level);
     }
 
     //XrayTracker API

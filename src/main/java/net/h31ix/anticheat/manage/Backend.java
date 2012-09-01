@@ -248,7 +248,7 @@ public class Backend
     public void garbageClean(Player player)
     {
         String pN = player.getName();
-        micromanage.getPlayerManager().removePlayer(player);
+        micromanage.getUserManager().remove(micromanage.getUserManager().getUser(pN));
         droppedItem.remove(pN);
         movingExempt.remove(pN);
         brokenBlock.remove(pN);

@@ -22,10 +22,12 @@ import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.manage.Backend;
 import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
+import net.h31ix.anticheat.manage.User;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Distance;
 import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -68,6 +70,15 @@ public class PlayerListener extends EventListener
             backend.logEnterExit(event.getPlayer());
         }
     }
+    
+    @EventHandler
+    public void onPlayerGameModeChange(PlayerGameModeChangeEvent event)
+    {
+        if(event.getNewGameMode() != GameMode.CREATIVE)
+        {
+            backend.logEnterExit(event.getPlayer());
+        }
+    }    
 
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent event)
@@ -205,18 +216,6 @@ public class PlayerListener extends EventListener
         {
             Distance distance = new Distance(player.getLocation(), block.getLocation());
             backend.checkLongReachBlock(player, distance.getXDifference(), distance.getYDifference(), distance.getZDifference());
-
-            /* Visuals Check */
-
-            /**
-             * if (checkManager.willCheck(player, CheckType.VISUAL) &&
-             * event.getAction() != Action.PHYSICAL) { if
-             * (backend.checkVisuals(player, block, playerClick)) {
-             * event.setCancelled(!config.silentMode());
-             * log("tried to interact with an object that they couldn't see",
-             * player, CheckType.VISUAL); } else {
-             * backend.logInteraction(player); } }
-             **/
         }
     }
 
@@ -274,9 +273,13 @@ public class PlayerListener extends EventListener
             player.sendMessage(section + "f " + section + "f " + section + "4 " + section + "0 " + section + "9 " + section + "6");
         }
         backend.logJoin(event.getPlayer());
-        if (!getPlayerManager().hasLevel(player))
+        if (getUserManager().getUser(player.getName()) == null)
         {
-            getPlayerManager().setLevel(player, getManager().getConfiguration().getLevel(player.getName()));
+            getUserManager().addUser(new User(player.getName()));
+        }
+        else
+        {
+            getUserManager().addUserFromFile(player.getName());
         }
     }
 

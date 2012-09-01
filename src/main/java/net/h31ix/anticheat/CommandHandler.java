@@ -21,7 +21,8 @@ package net.h31ix.anticheat;
 import java.util.ArrayList;
 import java.util.List;
 import net.h31ix.anticheat.manage.CheckType;
-import net.h31ix.anticheat.manage.PlayerManager;
+import net.h31ix.anticheat.manage.User;
+import net.h31ix.anticheat.manage.UserManager;
 import net.h31ix.anticheat.util.*;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.Bukkit;
@@ -36,7 +37,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 public class CommandHandler implements CommandExecutor
 {
     private static final Configuration config = Anticheat.getManager().getConfiguration();
-    private static final PlayerManager playerManager = Anticheat.getManager().getPlayerManager();
+    private static final UserManager userManager = Anticheat.getManager().getUserManager();
     private static final XRayTracker xtracker = Anticheat.getManager().getXRayTracker();
     private static final ChatColor RED = ChatColor.RED;
     private static final ChatColor YELLOW = ChatColor.YELLOW;
@@ -158,13 +159,13 @@ public class CommandHandler implements CommandExecutor
             if (list.size() == 1)
             {
                 Player player = list.get(0);
-                if (playerManager.getLevel(player) == 0)
+                if (userManager.safeGetLevel(player.getName()) == 0)
                 {
                     cs.sendMessage(player.getName() + RED + " is already in Low Level!");
                 }
                 else
                 {
-                    playerManager.reset(player);
+                    userManager.safeReset(player.getName());
                     cs.sendMessage(player.getName() + GREEN + " has been reset to Low Level.");
                 }
                 xtracker.reset(player.getName());
@@ -415,39 +416,46 @@ public class CommandHandler implements CommandExecutor
     {
         if (Permission.SYSTEM_REPORT.get(cs))
         {
-            List<Player> list = SERVER.matchPlayer(args[1]);
-            if (list.size() == 1)
+            User user = Anticheat.getManager().getUserManager().getUser(args[1]);
+            boolean cont = false;
+            if (user == null)
             {
-                Player player = list.get(0);
+                if((user = Anticheat.getManager().getUserManager().loadUserFromFile(args[1])) == null)
+                {
+                    cs.sendMessage(RED + "Player: " + WHITE + args[1] + RED + " not found.");
+                }
+                else
+                {
+                    cont = true;
+                }
+            }
+            else
+            {
+                cont = true;
+            }
+            if (cont)
+            {
                 List<CheckType> l = new ArrayList();
                 for(CheckType type : CheckType.values())
                 {
-                    if(type.getUses(player) > 0)
+                    if(type.getUses(user.getName()) > 0)
                     {
                         l.add(type);
                     }
                 }
                 if (args.length == 2)
                 {
-                    sendPlayerReport(cs, l, player, 1);
+                    sendPlayerReport(cs, l, user, 1);
                 }
                 else if (Utilities.isInt(args[2]))
                 {
                     int num = Integer.parseInt(args[2]);
-                    sendPlayerReport(cs, l, player, num);
+                    sendPlayerReport(cs, l, user, num);
                 }
                 else
                 {
                     cs.sendMessage(RED + "Not a valid page number: " + WHITE + args[2]);
                 }
-            }
-            else if (list.size() > 1)
-            {
-                cs.sendMessage(RED + "Multiple players found by name: " + WHITE + args[1] + RED + ".");
-            }
-            else
-            {
-                cs.sendMessage(RED + "Player: " + WHITE + args[1] + RED + " not found.");
             }
         }
         else
@@ -456,30 +464,31 @@ public class CommandHandler implements CommandExecutor
         }
     }
 
-    public void sendPlayerReport(CommandSender cs, List<CheckType> types, Player player, int page)
+    public void sendPlayerReport(CommandSender cs, List<CheckType> types, User user, int page)
     {
+        String name = user.getName();
         int pages = (int)Math.ceil(((float)types.size())/6);
-        int level = playerManager.getLevel(player);
+        int level = user.getLevel();
         String levelString = GREEN + "Low";
-        if (level >= 20)
+        if (level >= config.medThreshold())
         {
             levelString = YELLOW + "Medium";
         }
-        else if (level >= 50)
+        else if (level >= config.highThreshold())
         {
             levelString = RED + "High";
         }       
         if(page <= pages && page > 0)
         {
             cs.sendMessage("--------------------[" + GREEN + "REPORT[" + page + "/"+pages+"]" + WHITE + "]---------------------");
-            cs.sendMessage(GRAY + "Player: " + WHITE + player.getName());
+            cs.sendMessage(GRAY + "Player: " + WHITE + name);
             cs.sendMessage(GRAY + "Level: " + levelString);
             for (int x = 0; x < 6; x++)
             {
                 int index = ((page-1)*5)+(x+((page-1)*1));
                 if(index < types.size())
                 {
-                    int use = types.get(index).getUses(player);
+                    int use = types.get(index).getUses(name);
                     ChatColor color = WHITE;
                     if (use >= 20)
                     {
@@ -499,7 +508,7 @@ public class CommandHandler implements CommandExecutor
             if(pages == 0)
             {
                 cs.sendMessage("--------------------[" + GREEN + "REPORT[1/1]" + WHITE + "]---------------------");
-                cs.sendMessage(GRAY + "Player: " + WHITE + player.getName());
+                cs.sendMessage(GRAY + "Player: " + WHITE + name);
                 cs.sendMessage(GRAY + "Level: " + levelString);      
                 cs.sendMessage(GRAY + "This user has not failed any checks."); 
                 cs.sendMessage("-----------------------------------------------------");
@@ -621,7 +630,7 @@ public class CommandHandler implements CommandExecutor
         low.clear();
         for (Player player : SERVER.getOnlinePlayers())
         {
-            int level = playerManager.getLevel(player);
+            int level = userManager.safeGetLevel(player.getName());
             if (level <= MED_THRESHOLD)
             {
                 low.add(player.getName());
