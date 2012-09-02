@@ -384,12 +384,12 @@ public class Backend
                 }
                 else
                 {
-                    speedViolation.put(player.getName(), 0);
                     return false;
                 }
             }
             else
             {
+                speedViolation.put(player.getName(), 0);
                 return false;
             }
         }

@@ -2,7 +2,6 @@ package net.h31ix.anticheat.manage;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Language;
 import net.h31ix.anticheat.util.Utilities;
