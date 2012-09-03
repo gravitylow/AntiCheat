@@ -506,7 +506,7 @@ public class Updater
             if(title.split("v").length == 2)
             {
                 String remoteVersion = title.split("v")[1].split(" ")[0]; // Get the newest file's version number
-                if(hasTag(version) || version.equalsIgnoreCase(remoteVersion))
+                if(hasTag(version, remoteVersion) || version.equalsIgnoreCase(remoteVersion))
                 {
                     // We already have the latest version, or this build is tagged for no-update
                     result = Updater.UpdateResult.NO_UPDATE;
@@ -529,13 +529,21 @@ public class Updater
     /**
      * Evaluate whether the version number is marked showing that it should not be updated by this program
      */  
-    private boolean hasTag(String version)
+    private boolean hasTag(String version, String remoteVersion)
     {
         for(String string : noUpdateTag)
         {
             if(version.contains(string))
             {
-                return true;
+                if(version.replaceAll(string, "").equals(remoteVersion))
+                {
+                    // The build has a tag, but the version was upgraded to release so we should do an update anyway
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
             }
         }
         return false;
