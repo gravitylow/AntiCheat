@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
@@ -97,7 +98,20 @@ public class CheckManager
 
     public boolean willCheck(Player player, CheckType type)
     {
-        return isActive(type) && manager.getConfiguration().checkInWorld(player.getWorld()) && !isExempt(player, type) && !type.checkPermission(player);
+        return isActive(type) && manager.getConfiguration().checkInWorld(player.getWorld()) && !isExempt(player, type) && !type.checkPermission(player) && isOnline(player);
+    }
+    
+    public boolean isOnline(Player player)
+    {
+        // Check if the player is on the user list, e.g. is not an NPC
+        for(Player p : Bukkit.getOnlinePlayers())
+        {
+            if(p.getName().equals(player.getName()))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public int getExempt()
