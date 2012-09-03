@@ -89,7 +89,6 @@ public class Backend
     private static final int WATER_SPEED_VIOLATION_MAX = 4;
 
     private static final int SPRINT_FOOD_MIN = 6;
-    private static final int HEAL_MIN = 35;
     private static final int ANIMATION_MIN = 60;
     private static final int CHAT_MIN = 100;
     private static final int CHAT_REPEAT_MIN = 260;
@@ -97,7 +96,8 @@ public class Backend
     private static final int SPRINT_MIN = 2;
     private static final int BLOCK_BREAK_MIN = 1;
     private static final long BLOCK_PLACE_MIN = 1 / 3;
-    private static final long HEAL_TIME_MIN = 1200L;
+    private static final long HEAL_TIME_MIN = 3000L;
+    private static final long EAT_TIME_MIN = 1200L;
 
     private static final double BLOCK_MAX_DISTANCE = 6.0;
     private static final double ENTITY_MAX_DISTANCE = 5.5;
@@ -123,7 +123,6 @@ public class Backend
     private List<String> brokenBlock = new ArrayList<String>();
     private List<String> placedBlock = new ArrayList<String>();
     private List<String> bowWindUp = new ArrayList<String>();
-    private List<String> healed = new ArrayList<String>();
     private List<String> sprinted = new ArrayList<String>();
     private List<String> isInWater = new ArrayList<String>();
     private List<String> isInWaterCache = new ArrayList<String>();
@@ -160,6 +159,7 @@ public class Backend
     private Map<String, Integer> velocitytrack = new HashMap<String, Integer>();
     private Map<String, Location> animated = new HashMap<String, Location>();
     private Map<String, Long> startEat = new HashMap<String, Long>();
+    private Map<String, Long> lastHeal = new HashMap<String, Long>();
 
     public Backend(AnticheatManager instance)
     {
@@ -199,7 +199,7 @@ public class Backend
             r.append(l + '\n');
         }
         r.append("Healed List:" + '\n');
-        for (String l : healed)
+        for (String l : lastHeal.keySet())
         {
             r.append(l + '\n');
         }
@@ -255,7 +255,7 @@ public class Backend
         placedBlock.remove(pN);
         bowWindUp.remove(pN);
         startEat.remove(pN);
-        healed.remove(pN);
+        lastHeal.remove(pN);
         sprinted.remove(pN);
         isInWater.remove(pN);
         isInWaterCache.remove(pN);
@@ -894,14 +894,16 @@ public class Backend
     {
         if(startEat.containsKey(player.getName())) // Otherwise it was modified by a plugin, don't worry about it.
         {
-            return (System.currentTimeMillis()-startEat.get(player.getName())) < HEAL_TIME_MIN;
+            long l = startEat.get(player.getName());
+            startEat.remove(player.getName());
+            return (System.currentTimeMillis()-l) < EAT_TIME_MIN;
         }
         return false;
     }
 
     public void logHeal(Player player)
     {
-        logEvent(healed, player, HEAL_MIN);
+        lastHeal.put(player.getName(),System.currentTimeMillis());
     }
 
     public void logInteraction(Player player)
@@ -916,7 +918,13 @@ public class Backend
 
     public boolean justHealed(Player player)
     {
-        return healed.contains(player.getName());
+        if(lastHeal.containsKey(player.getName())) // Otherwise it was modified by a plugin, don't worry about it.
+        {
+            long l = lastHeal.get(player.getName());
+            lastHeal.remove(player.getName());
+            return (System.currentTimeMillis()-l) < HEAL_TIME_MIN;         
+        }
+        return false;
     }
 
     public void logChat(Player player)

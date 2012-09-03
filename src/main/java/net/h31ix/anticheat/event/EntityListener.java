@@ -87,16 +87,19 @@ public class EntityListener extends EventListener
         if (event.getEntity() instanceof Player)
         {
             Player player = (Player) event.getEntity();
-            if (checkManager.willCheck(player, CheckType.FAST_EAT))
+            if(player.getFoodLevel() < event.getFoodLevel()) // Make sure it's them actually gaining a food level
             {
-                if (backend.justStartedEating(player))
+                if (checkManager.willCheck(player, CheckType.FAST_EAT))
                 {
-                    event.setCancelled(!config.silentMode());
-                    log("tried to eat too fast.", player, CheckType.FAST_EAT);
-                }
-                else
-                {
-                    decrease(player);
+                    if (backend.justStartedEating(player))
+                    {
+                        event.setCancelled(!config.silentMode());
+                        log("tried to eat too fast.", player, CheckType.FAST_EAT);
+                    }
+                    else
+                    {
+                        decrease(player);
+                    }
                 }
             }
         }
