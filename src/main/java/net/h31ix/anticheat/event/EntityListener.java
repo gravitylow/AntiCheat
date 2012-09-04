@@ -165,6 +165,15 @@ public class EntityListener extends EventListener
                         noHack = false;
                     }
                 }
+                if (checkManager.willCheck(player, CheckType.FORCEFIELD))
+                {
+                    if(!backend.checkSight(player, e.getEntity()))
+                    {
+                        event.setCancelled(!config.silentMode());
+                        log("tried to damage an entity that they couldn't see.", player, CheckType.FORCEFIELD);
+                        noHack = false;                    
+                    }
+                }
                 if (noHack)
                 {
                     decrease(player);
