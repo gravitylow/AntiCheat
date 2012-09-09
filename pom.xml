@@ -45,13 +45,6 @@
             <version>1.3.2-R0.1</version>
             <type>jar</type>
             <scope>compile</scope>
-        </dependency>         
-        <dependency>
-            <groupId>com.gmail.nossr50</groupId>
-            <artifactId>mcMMO</artifactId>
-            <version>1.3.08</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>                    
+        </dependency>                            
     </dependencies>
 </project>

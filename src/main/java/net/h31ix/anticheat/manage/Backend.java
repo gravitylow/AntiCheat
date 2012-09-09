@@ -294,7 +294,7 @@ public class Backend
 
     public boolean checkLongReachBlock(Player player, double x, double y, double z)
     {
-        return !Utilities.isUsingMcMMOAbility(player) && (x >= BLOCK_MAX_DISTANCE || y > BLOCK_MAX_DISTANCE || z > BLOCK_MAX_DISTANCE);
+        return (x >= BLOCK_MAX_DISTANCE || y > BLOCK_MAX_DISTANCE || z > BLOCK_MAX_DISTANCE);
     }
 
     public boolean checkLongReachDamage(double x, double y, double z)
@@ -745,71 +745,68 @@ public class Backend
 
     public boolean checkSwing(Player player, Block block)
     {
-        return !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !justAnimated(player) && !Utilities.isUsingMcMMOAbility(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES);
+        return !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES);
     }
 
     public boolean checkFastBreak(Player player, Block block)
     {
-        if (!Utilities.isUsingMcMMOAbility(player))
+        int violations = FASTBREAK_MAXVIOLATIONS;
+        if (player.getGameMode() == GameMode.CREATIVE)
         {
-            int violations = FASTBREAK_MAXVIOLATIONS;
-            if (player.getGameMode() == GameMode.CREATIVE)
+            violations = FASTBREAK_MAXVIOLATIONS_CREATIVE;
+        }
+        String name = player.getName();
+        if (!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES))
+        {
+            if (blockPunches.get(name) != null && player.getGameMode() != GameMode.CREATIVE)
             {
-                violations = FASTBREAK_MAXVIOLATIONS_CREATIVE;
-            }
-            String name = player.getName();
-            if (!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES))
-            {
-                if (blockPunches.get(name) != null && player.getGameMode() != GameMode.CREATIVE)
+                int i = blockPunches.get(name);
+                if (i < BLOCK_PUNCH_MIN)
                 {
-                    int i = blockPunches.get(name);
-                    if (i < BLOCK_PUNCH_MIN)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
-                if (!fastBreakViolation.containsKey(name))
+            }
+            if (!fastBreakViolation.containsKey(name))
+            {
+                fastBreakViolation.put(name, 0);
+            }
+            else
+            {
+                Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
+                if (fastBreakViolation.get(name) > violations && math < FASTBREAK_MAXVIOLATIONTIME)
+                {
+                    lastBlockBroken.put(name, System.currentTimeMillis());
+                    player.sendMessage(ChatColor.RED + "[AntiCheat] Fastbreaking detected. Please wait 10 seconds before breaking blocks.");
+                    return true;
+                }
+                else if (fastBreakViolation.get(name) > 0 && math > FASTBREAK_MAXVIOLATIONTIME)
                 {
                     fastBreakViolation.put(name, 0);
                 }
-                else
+            }
+            if (!blocksBroken.containsKey(name) || !lastBlockBroken.containsKey(name))
+            {
+                if (!lastBlockBroken.containsKey(name))
                 {
-                    Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
-                    if (fastBreakViolation.get(name) > violations && math < FASTBREAK_MAXVIOLATIONTIME)
-                    {
-                        lastBlockBroken.put(name, System.currentTimeMillis());
-                        player.sendMessage(ChatColor.RED + "[AntiCheat] Fastbreaking detected. Please wait 10 seconds before breaking blocks.");
-                        return true;
-                    }
-                    else if (fastBreakViolation.get(name) > 0 && math > FASTBREAK_MAXVIOLATIONTIME)
-                    {
-                        fastBreakViolation.put(name, 0);
-                    }
+                    lastBlockBroken.put(name, System.currentTimeMillis());
                 }
-                if (!blocksBroken.containsKey(name) || !lastBlockBroken.containsKey(name))
+                blocksBroken.put(name, 0);
+            }
+            else
+            {
+                blocksBroken.put(name, blocksBroken.get(name) + 1);
+                Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
+                if (blocksBroken.get(name) > FASTBREAK_LIMIT && math < FASTBREAK_TIMEMAX)
                 {
-                    if (!lastBlockBroken.containsKey(name))
-                    {
-                        lastBlockBroken.put(name, System.currentTimeMillis());
-                    }
                     blocksBroken.put(name, 0);
+                    lastBlockBroken.put(name, System.currentTimeMillis());
+                    fastBreakViolation.put(name, fastBreakViolation.get(name) + 1);
+                    return true;
                 }
-                else
+                else if (blocksBroken.get(name) > FASTBREAK_LIMIT)
                 {
-                    blocksBroken.put(name, blocksBroken.get(name) + 1);
-                    Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
-                    if (blocksBroken.get(name) > FASTBREAK_LIMIT && math < FASTBREAK_TIMEMAX)
-                    {
-                        blocksBroken.put(name, 0);
-                        lastBlockBroken.put(name, System.currentTimeMillis());
-                        fastBreakViolation.put(name, fastBreakViolation.get(name) + 1);
-                        return true;
-                    }
-                    else if (blocksBroken.get(name) > FASTBREAK_LIMIT)
-                    {
-                        lastBlockBroken.put(name, System.currentTimeMillis());
-                        blocksBroken.put(name, 0);
-                    }
+                    lastBlockBroken.put(name, System.currentTimeMillis());
+                    blocksBroken.put(name, 0);
                 }
             }
         }
