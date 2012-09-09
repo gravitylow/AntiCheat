@@ -97,8 +97,8 @@ public class Backend
     private static final int SPRINT_MIN = 2;
     private static final int BLOCK_BREAK_MIN = 1;
     private static final long BLOCK_PLACE_MIN = 1 / 3;
-    private static final long HEAL_TIME_MIN = 3000L;
-    private static final long EAT_TIME_MIN = 1200L;
+    private static final long HEAL_TIME_MIN = 2000L;
+    private static final long EAT_TIME_MIN = 1000L;
 
     private static final double BLOCK_MAX_DISTANCE = 6.0;
     private static final double ENTITY_MAX_DISTANCE = 5.5;
@@ -902,6 +902,7 @@ public class Backend
         {
             long l = startEat.get(player.getName());
             startEat.remove(player.getName());
+            System.out.println(player.getName()+" ate in "+(System.currentTimeMillis()-l));
             return (System.currentTimeMillis()-l) < EAT_TIME_MIN;
         }
         return false;
