@@ -35,7 +35,7 @@ public final class Utilities
     private static final List<Material> INTERACTABLE = new ArrayList<Material>();
     private static final HashSet<Byte> NOTSOLID = new HashSet<Byte>();
 
-    public static void alert(String[] message)
+    public static void alert(List<String> message)
     {
         for (Player player : Bukkit.getOnlinePlayers())
         {

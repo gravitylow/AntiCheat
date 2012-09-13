@@ -113,27 +113,30 @@ public class UserManager
     
     public void alertMed(User user, CheckType type)
     {
-        String [] message = lang.getMediumAlert();
-        for(int i=0;i<message.length;i++)
+        List<String> messageArray = lang.getMediumAlert();
+        for(int i=0;i<messageArray.size();i++)
         {
-            message[i] = message[i].replaceAll("&player", GOLD + user.getName() + GRAY);
-            message[i] = message[i].replaceAll("&check", GOLD + CheckType.getName(type) + GRAY);
-            message[i] = message[i].replaceAll("medium", YELLOW + "medium" + GRAY);
+            String message = messageArray.get(i);
+            message = message.replaceAll("&player", GOLD + user.getName() + GRAY);
+            message = message.replaceAll("&check", GOLD + CheckType.getName(type) + GRAY);
+            message = message.replaceAll("medium", YELLOW + "medium" + GRAY);
+            messageArray.set(i, message);
         }
-        Utilities.alert(message);
+        Utilities.alert(messageArray);
         execute(user, "Medium");
     }
     
     public void alertHigh(User user, CheckType type)
     {
-        String [] message = lang.getHighAlert();
-        for(int i=0;i<message.length;i++)
+        List<String> messageArray = lang.getHighAlert();
+        for(int i=0;i<messageArray.size();i++)
         {
-            message[i] = message[i].replaceAll("&player", user.getName());
-            message[i] = message[i].replaceAll("&check", CheckType.getName(type));
-            message[i] = message[i].replaceAll("high", RED + "high" + GRAY);
+            String message = messageArray.get(i);
+            message = message.replaceAll("&player", user.getName());
+            message = message.replaceAll("&check", CheckType.getName(type));
+            message = message.replaceAll("high", RED + "high" + GRAY);
         }
-        Utilities.alert(message); 
+        Utilities.alert(messageArray); 
         execute(user, "High");
     }
     
@@ -153,7 +156,7 @@ public class UserManager
         }
         else if (result.equalsIgnoreCase("WARN"))
         {
-            String[] message = lang.getWarning();
+            List<String> message = lang.getWarning();
             for (String string : message)
             {
                 user.getPlayer().sendMessage(RED + string);
