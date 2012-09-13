@@ -18,6 +18,10 @@
 
 package net.h31ix.anticheat.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -60,19 +64,19 @@ public class Language
         kickBroadcast = file.getString("kick.kick_broadcast");
     }
 
-    public String[] getMediumAlert()
+    public List<String> getMediumAlert()
     {
-        return medAlert;
+        return new ArrayList<String>(Arrays.asList(medAlert));
     }
 
-    public String[] getHighAlert()
+    public List<String> getHighAlert()
     {
-        return highAlert;
+        return new ArrayList<String>(Arrays.asList(highAlert));
     }
 
-    public String[] getWarning()
+    public List<String> getWarning()
     {
-        return warning;
+        return new ArrayList<String>(Arrays.asList(warning));
     }
 
     public String getBanReason()
