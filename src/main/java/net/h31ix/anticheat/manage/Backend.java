@@ -249,7 +249,11 @@ public class Backend
     public void garbageClean(Player player)
     {
         String pN = player.getName();
-        micromanage.getUserManager().remove(micromanage.getUserManager().getUser(pN));
+        User user = micromanage.getUserManager().getUser(pN);
+        if(user != null)
+        {
+            micromanage.getUserManager().remove(user);
+        }
         droppedItem.remove(pN);
         movingExempt.remove(pN);
         brokenBlock.remove(pN);
@@ -534,24 +538,29 @@ public class Backend
         boolean bs = false;
 
         if (player.isInsideVehicle())
+        {
             return 0;
-
+        }
         if (from == to || from < to)
+        {    
             return 0;
-
+        }
         if (Math.round(distance.getYDifference()) < 2)
+        {
             return 0;
+        }
 
         for (int i = 0; i < (Math.round(distance.getYDifference())) + 1; i++)
         {
             Location l = new Location(player.getWorld(), player.getLocation().getX(), to + i, player.getLocation().getZ());
-            if (l.getBlock().getTypeId() != 0 && !l.getBlock().isLiquid())
+            if (l.getBlock().getTypeId() != 0 && net.minecraft.server.Block.byId[l.getBlock().getTypeId()].material.isSolid() && !l.getBlock().isLiquid())
             {
                 bs = true;
             }
-
             if (bs)
+            {
                 return (int) from + 3;
+            }
         }
 
         return 0;
