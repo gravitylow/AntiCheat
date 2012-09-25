@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.h31ix.anticheat.event.EventListener;
 import net.h31ix.anticheat.util.Distance;
 import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.ChatColor;
@@ -88,7 +87,7 @@ public class Backend
     private static final int WATER_SPEED_VIOLATION_MAX = 4;
 
     private static final int SPRINT_FOOD_MIN = 6;
-    private static final int ANIMATION_MIN = 60;
+    private static final int ANIMATION_MIN = 200;
     private static final int CHAT_MIN = 100;
     private static final int CHAT_REPEAT_MIN = 260;
     private static final int BOW_MIN = 2;
@@ -155,7 +154,7 @@ public class Backend
     private Map<String, Integer> projectilesShot = new HashMap<String, Integer>();
     private Map<String, Long> velocitized = new HashMap<String, Long>();
     private Map<String, Integer> velocitytrack = new HashMap<String, Integer>();
-    private Map<String, Location> animated = new HashMap<String, Location>();
+    private Map<String, Long> animated = new HashMap<String, Long>();
     private Map<String, Long> startEat = new HashMap<String, Long>();
     private Map<String, Long> lastHeal = new HashMap<String, Long>();
     private Map<String, Long> projectileTime = new HashMap<String, Long>();
@@ -770,7 +769,14 @@ public class Backend
 
     public boolean checkSwing(Player player, Block block)
     {
-        return !player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES);
+        if(!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES))
+        {
+            return !justAnimated(player);
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public boolean checkFastBreak(Player player, Block block)
@@ -1088,7 +1094,7 @@ public class Backend
 
     public void logAnimation(final Player player)
     {
-        logEvent(animated, player, player.getLocation(), ANIMATION_MIN);
+        animated.put(player.getName(), System.currentTimeMillis());
         increment(player, blockPunches, BLOCK_PUNCH_MIN);
     }
 
@@ -1100,7 +1106,17 @@ public class Backend
 
     public boolean justAnimated(Player player)
     {
-        return animated.containsKey(player.getName());
+        String name = player.getName();
+        if(animated.containsKey(name))
+        {
+            long time = System.currentTimeMillis()-animated.get(name);
+            animated.remove(player.getName());
+            return time < ANIMATION_MIN;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public void logDamage(final Player player, int type)
