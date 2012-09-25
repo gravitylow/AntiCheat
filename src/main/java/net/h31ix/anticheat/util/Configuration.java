@@ -47,6 +47,7 @@ public class Configuration
     private boolean chatSpam;
     private boolean commandSpam;
     private boolean silentMode;
+    private boolean opExempt;
     private int fileLogLevel = 0;
     private int medThreshold = 0;
     private int highThreshold = 0;
@@ -120,6 +121,11 @@ public class Configuration
         return silentMode;
     }   
     
+    public boolean opExempt()
+    {
+        return opExempt;
+    }       
+    
     public int medThreshold()
     {
         return medThreshold;
@@ -161,6 +167,7 @@ public class Configuration
         silentMode = getBoolean("System.Silent mode", false);
         medThreshold = getInt("Events.Medium threshold", 20);
         highThreshold = getInt("Events.High threshold", 50);
+        opExempt = getBoolean("System.Exempt op", false);
         
         if (config.getList("Enable in") == null)
         {

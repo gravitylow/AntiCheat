@@ -103,14 +103,6 @@ public class BlockListener extends EventListener
                     log("tried to break a block of " + block.getType().name() + " too fast.", player, CheckType.FAST_BREAK);
                     noHack = false;
                 }
-                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        backend.checkSwing(player, block);
-                    }
-                }, 2L);
             }
         }
         if (noHack)

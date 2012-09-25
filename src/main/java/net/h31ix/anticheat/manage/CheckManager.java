@@ -95,10 +95,15 @@ public class CheckManager
     {
         return exemptList.containsKey(player.getName()) ? exemptList.get(player.getName()).contains(type) : false;
     }
+    
+    public boolean isOpExempt(Player player)
+    {
+        return (this.manager.getConfiguration().opExempt() && player.isOp());
+    }
 
     public boolean willCheck(Player player, CheckType type)
     {
-        return isActive(type) && manager.getConfiguration().checkInWorld(player.getWorld()) && !isExempt(player, type) && !type.checkPermission(player) && isOnline(player);
+        return isActive(type) && manager.getConfiguration().checkInWorld(player.getWorld()) && !isExempt(player, type) && !type.checkPermission(player) && isOnline(player) && !isOpExempt(player);
     }
     
     public boolean isOnline(Player player)
