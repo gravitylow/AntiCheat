@@ -19,7 +19,6 @@
 package net.h31ix.anticheat.util;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import net.h31ix.anticheat.Anticheat;
 import org.bukkit.Bukkit;
@@ -33,7 +32,6 @@ public final class Utilities
     private static final List<Material> INSTANT_BREAK = new ArrayList<Material>();
     private static final List<Material> FOOD = new ArrayList<Material>();
     private static final List<Material> INTERACTABLE = new ArrayList<Material>();
-    private static final HashSet<Byte> NOTSOLID = new HashSet<Byte>();
 
     public static void alert(List<String> message)
     {
@@ -89,11 +87,6 @@ public final class Utilities
     public static boolean isInteractable(Material m)
     {
         return INTERACTABLE.contains(m);
-    }
-
-    public static HashSet<Byte> getNonSolid()
-    {
-        return NOTSOLID;
     }
 
     public static boolean sprintFly(Player player)
@@ -168,36 +161,6 @@ public final class Utilities
         INTERACTABLE.add(Material.STONE_BUTTON);
         INTERACTABLE.add(Material.LEVER);
         INTERACTABLE.add(Material.CHEST);
-        NOTSOLID.add((byte) Material.TORCH.getId());
-        NOTSOLID.add((byte) Material.REDSTONE_TORCH_OFF.getId());
-        NOTSOLID.add((byte) Material.REDSTONE_TORCH_OFF.getId());
-        NOTSOLID.add((byte) Material.FENCE.getId());
-        NOTSOLID.add((byte) Material.FENCE_GATE.getId());
-        NOTSOLID.add((byte) Material.IRON_FENCE.getId());
-        NOTSOLID.add((byte) Material.NETHER_FENCE.getId());
-        NOTSOLID.add((byte) Material.TRAP_DOOR.getId());
-        NOTSOLID.add((byte) Material.SIGN.getId());
-        NOTSOLID.add((byte) Material.STONE_BUTTON.getId());
-        NOTSOLID.add((byte) Material.LEVER.getId());
-        NOTSOLID.add((byte) Material.AIR.getId());
-        NOTSOLID.add((byte) Material.WATER.getId());
-        NOTSOLID.add((byte) Material.LAVA.getId());
-        NOTSOLID.add((byte) Material.REDSTONE_WIRE.getId());
-        NOTSOLID.add((byte) Material.WOOD_PLATE.getId());
-        NOTSOLID.add((byte) Material.STONE_PLATE.getId());
-        NOTSOLID.add((byte) Material.SAPLING.getId());
-        NOTSOLID.add((byte) Material.RED_ROSE.getId());
-        NOTSOLID.add((byte) Material.YELLOW_FLOWER.getId());
-        NOTSOLID.add((byte) Material.BROWN_MUSHROOM.getId());
-        NOTSOLID.add((byte) Material.RED_MUSHROOM.getId());
-        NOTSOLID.add((byte) Material.THIN_GLASS.getId());
-        NOTSOLID.add((byte) Material.LADDER.getId());
-        NOTSOLID.add((byte) Material.RAILS.getId());
-        NOTSOLID.add((byte) Material.DETECTOR_RAIL.getId());
-        NOTSOLID.add((byte) Material.POWERED_RAIL.getId());
-        NOTSOLID.add((byte) Material.STEP.getId());
-        NOTSOLID.add((byte) Material.VINE.getId());
-        NOTSOLID.add((byte) Material.ENCHANTMENT_TABLE.getId());
         FOOD.add(Material.COOKED_BEEF);
         FOOD.add(Material.COOKED_CHICKEN);
         FOOD.add(Material.COOKED_FISH);

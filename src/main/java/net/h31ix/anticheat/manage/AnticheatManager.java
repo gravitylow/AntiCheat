@@ -45,8 +45,7 @@ public class AnticheatManager
     private UserManager userManager = null;
     private CheckManager checkManager = null;
     private Backend backend = null;
-    private Logger logger;
-    private Logger fileLogger;
+    private final Logger fileLogger;
     private static List<String> logs = new CopyOnWriteArrayList<String>();
     private static Handler fileHandler;
     private static final int LOG_LEVEL_HIGH = 3;
@@ -55,8 +54,7 @@ public class AnticheatManager
     {
         plugin = instance;
         // now load all the others!!!!!
-        this.logger = logger;
-        this.fileLogger = Logger.getLogger("net.h31ix.anticheat.Anticheat");
+        fileLogger = Logger.getLogger("net.h31ix.anticheat.Anticheat");
         configuration = new Configuration(this);
         xrayTracker = new XRayTracker();
         userManager = new UserManager(configuration);
@@ -84,7 +82,7 @@ public class AnticheatManager
     {
         if (getConfiguration().logConsole())
         {
-            Bukkit.getConsoleSender().sendMessage(message);
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED+message);
         }
         if (getConfiguration().getFileLogLevel() == LOG_LEVEL_HIGH)
         {
@@ -95,15 +93,18 @@ public class AnticheatManager
 
     public void fileLog(String message)
     {
-        logger.info(message);
+        fileLogger.info(message);
     }
 
     public List<String> getLastLogs()
     {
         List<String> log = new CopyOnWriteArrayList<String>();
         if (logs.size() < 30)
+        {
             return logs;
-        for(int i = 1; i < 31; i++) {
+        }
+        for(int i = 1; i < 31; i++)
+        {
             log.add(logs.get(logs.size() - i));
         }
         logs.clear();

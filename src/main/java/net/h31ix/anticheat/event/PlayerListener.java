@@ -65,6 +65,7 @@ public class PlayerListener extends EventListener
     @EventHandler
     public void onPlayerToggleFlight(PlayerToggleFlightEvent event)
     {
+        log("wtf'ed", event.getPlayer(), CheckType.FLY);
         if(!event.isFlying())
         {
             backend.logEnterExit(event.getPlayer());
