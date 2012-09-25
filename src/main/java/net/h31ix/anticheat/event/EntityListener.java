@@ -29,8 +29,8 @@ import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 
 public class EntityListener extends EventListener
 {

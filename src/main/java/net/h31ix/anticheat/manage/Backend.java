@@ -49,8 +49,8 @@ public class Backend
     private static final int DAMAGE_TIME = 50;
     private static final int KNOCKBACK_DAMAGE_TIME = 70;
     private static final int EXPLOSION_DAMAGE_TIME = 100;
-    private static final int PROJECTILE_TIME = 20;
-    private static final long PROJECTILE_HOLD = 20L * 10L;
+    private static final int PROJECTILE_TIME_MIN = 1500;
+    private static final int PROJECTILE_CHECK = 10;
 
     private static final int FASTBREAK_LIMIT = 3;
     private static final int FASTBREAK_TIMEMAX = 500;
@@ -67,8 +67,6 @@ public class Backend
     private static final long VISUALS_DELAY = 20L;
 
     private static final int BLOCK_PUNCH_MIN = 5;
-
-    private static final int PROJECTILE_MAX = 8;
 
     private static final int CHAT_WARN_LEVEL = 7;
     private static final int CHAT_KICK_LEVEL = 10;
@@ -130,7 +128,6 @@ public class Backend
     private List<String> instantBreakExempt = new ArrayList<String>();
     private List<String> isAscending = new ArrayList<String>();
     private List<String> trackingProjectiles = new ArrayList<String>();
-    private List<String> projectileHold = new ArrayList<String>();
     private List<String> velocitizing = new ArrayList<String>();
     private List<String> interacting = new ArrayList<String>();
     private Map<String, Integer> ascensionCount = new HashMap<String, Integer>();
@@ -161,6 +158,7 @@ public class Backend
     private Map<String, Location> animated = new HashMap<String, Location>();
     private Map<String, Long> startEat = new HashMap<String, Long>();
     private Map<String, Long> lastHeal = new HashMap<String, Long>();
+    private Map<String, Long> projectileTime = new HashMap<String, Long>();
 
     public Backend(AnticheatManager instance)
     {
@@ -295,6 +293,24 @@ public class Backend
         velocitytrack.remove(pN);
         animated.remove(pN);
     }
+    
+    public boolean checkProjectile(Player player)
+    {
+        increment(player, projectilesShot, 10);
+        if (!projectileTime.containsKey(player.getName()))
+        {
+            projectileTime.put(player.getName(), System.currentTimeMillis());
+            return false;
+        }
+        else if(projectilesShot.get(player.getName()) == PROJECTILE_CHECK)
+        {
+            long time = System.currentTimeMillis()-projectileTime.get(player.getName());
+            projectileTime.remove(player.getName());
+            projectilesShot.remove(player.getName());
+            return time < PROJECTILE_TIME_MIN;
+        }
+        return false;
+    }    
 
     public boolean checkLongReachBlock(Player player, double x, double y, double z)
     {
@@ -1085,46 +1101,6 @@ public class Backend
     public boolean justAnimated(Player player)
     {
         return animated.containsKey(player.getName());
-    }
-
-    public void logProjectile(final Player player, final EventListener e)
-    {
-        if (projectileHold.contains(player.getName()))
-        {
-            player.sendMessage(ChatColor.RED + "[AntiCheat] Please stop launching projectiles and wait 10 seconds.");
-            return;
-        }
-        increment(player, projectilesShot, PROJECTILE_MAX);
-        if (!trackingProjectiles.contains(player.getName()))
-        {
-            trackingProjectiles.add(player.getName());
-            micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    trackingProjectiles.remove(player.getName());
-                    if (projectilesShot.get(player.getName()) >= PROJECTILE_MAX)
-                    {
-                        e.log("tried to fire projectiles too fast", player, CheckType.FAST_PROJECTILE);
-                        micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                if (projectileHold.contains(player.getName()))
-                                {
-                                    projectileHold.remove(player.getName());
-                                }
-                            }
-
-                        }, PROJECTILE_HOLD);
-                        projectileHold.add(player.getName());
-                        projectilesShot.put(player.getName(), 0);
-                    }
-                }
-            }, PROJECTILE_TIME);
-        }
     }
 
     public void logDamage(final Player player, int type)

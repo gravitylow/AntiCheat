@@ -37,8 +37,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.PlayerInventory;
 
 public class PlayerListener extends EventListener
@@ -94,7 +94,11 @@ public class PlayerListener extends EventListener
 
             if (checkManager.willCheck(player, CheckType.FAST_PROJECTILE))
             {
-                backend.logProjectile(player, this);
+                if (backend.checkProjectile(player))
+                {
+                    event.setCancelled(!config.silentMode());
+                    log("tried to fire projectiles too fast.", player, CheckType.FAST_PROJECTILE);
+                }
             }
         }
     }
