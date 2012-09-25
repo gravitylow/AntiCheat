@@ -132,9 +132,10 @@ public class UserManager
         for(int i=0;i<messageArray.size();i++)
         {
             String message = messageArray.get(i);
-            message = message.replaceAll("&player", user.getName());
-            message = message.replaceAll("&check", CheckType.getName(type));
+            message = message.replaceAll("&player", GOLD + user.getName() + GRAY);
+            message = message.replaceAll("&check", GOLD + CheckType.getName(type) + GRAY);
             message = message.replaceAll("high", RED + "high" + GRAY);
+            messageArray.set(i, message);
         }
         Utilities.alert(messageArray); 
         execute(user, "High");
