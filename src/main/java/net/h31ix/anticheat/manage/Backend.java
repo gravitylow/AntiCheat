@@ -38,16 +38,16 @@ import org.bukkit.potion.PotionEffectType;
 
 public class Backend
 {
-    private static final int ENTERED_EXTITED_TIME = 20;
-    private static final int SNEAK_TIME = 5;
-    private static final int TELEPORT_TIME = 20;
-    private static final int EXIT_FLY_TIME = 40;
-    private static final int INSTANT_BREAK_TIME = 100;
-    private static final int JOIN_TIME = 40;
-    private static final int DROPPED_ITEM_TIME = 2;
-    private static final int DAMAGE_TIME = 50;
-    private static final int KNOCKBACK_DAMAGE_TIME = 70;
-    private static final int EXPLOSION_DAMAGE_TIME = 100;
+    private static final int ENTERED_EXTITED_TIME = 1000;
+    private static final int SNEAK_TIME = 250;
+    private static final int TELEPORT_TIME = 1000;
+    private static final int EXIT_FLY_TIME = 2000;
+    private static final int INSTANT_BREAK_TIME = 5;
+    private static final int JOIN_TIME = 2000;
+    private static final int DROPPED_ITEM_TIME = 100;
+    private static final long DAMAGE_TIME = 3000;
+    private static final long KNOCKBACK_DAMAGE_TIME = 4000;
+    private static final long EXPLOSION_DAMAGE_TIME = 5000;
     private static final int PROJECTILE_TIME_MIN = 1500;
     private static final int PROJECTILE_CHECK = 10;
 
@@ -62,9 +62,6 @@ public class Backend
     private static final int FASTPLACE_MAXVIOLATIONS_CREATIVE = 3;
     private static final int FASTPLACE_MAXVIOLATIONTIME = 10000;
 
-    private static final double VISUALS_MAXOFFSET = 2;
-    private static final long VISUALS_DELAY = 20L;
-
     private static final int BLOCK_PUNCH_MIN = 5;
 
     private static final int CHAT_WARN_LEVEL = 7;
@@ -75,7 +72,7 @@ public class Backend
     private static final double WATER_CLIMB_MAX = 0.15;
     private static final int Y_MAXVIOLATIONS = 1;
     private static final int Y_MAXVIOTIME = 5000;
-    private static final int VELOCITY_TIME = 60;
+    private static final int VELOCITY_TIME = 3;
     private static final long VELOCITY_SCHETIME = 2;
     private static final long VELOCITY_CHECKTIME = 2100;
     private static final long VELOCITY_PREVENT = 5000;
@@ -90,12 +87,13 @@ public class Backend
     private static final int ANIMATION_MIN = 200;
     private static final int CHAT_MIN = 100;
     private static final int CHAT_REPEAT_MIN = 260;
-    private static final int BOW_MIN = 2;
-    private static final int SPRINT_MIN = 2;
-    private static final int BLOCK_BREAK_MIN = 1;
-    private static final long BLOCK_PLACE_MIN = 1 / 3;
+    private static final double SPRINT_MIN = 0.2;
+    private static final double BLOCK_BREAK_MIN = 0.1;
+    private static final double BLOCK_PLACE_MIN = 0.1;
     private static final long HEAL_TIME_MIN = 2000L;
     private static final long EAT_TIME_MIN = 1000L;
+    
+    private static final double BOW_ERROR = 0.25;
 
     private static final double BLOCK_MAX_DISTANCE = 6.0;
     private static final double ENTITY_MAX_DISTANCE = 5.5;
@@ -116,19 +114,9 @@ public class Backend
     private static final int SPEED_MAX = 3;
 
     private AnticheatManager micromanage = null;
-    private List<String> droppedItem = new ArrayList<String>();
-    private List<String> movingExempt = new ArrayList<String>();
-    private List<String> brokenBlock = new ArrayList<String>();
-    private List<String> placedBlock = new ArrayList<String>();
-    private List<String> bowWindUp = new ArrayList<String>();
-    private List<String> sprinted = new ArrayList<String>();
     private List<String> isInWater = new ArrayList<String>();
     private List<String> isInWaterCache = new ArrayList<String>();
-    private List<String> instantBreakExempt = new ArrayList<String>();
     private List<String> isAscending = new ArrayList<String>();
-    private List<String> trackingProjectiles = new ArrayList<String>();
-    private List<String> velocitizing = new ArrayList<String>();
-    private List<String> interacting = new ArrayList<String>();
     private Map<String, Integer> ascensionCount = new HashMap<String, Integer>();
     private Map<String, String> oldMessage = new HashMap<String, String>();
     private Map<String, String> lastMessage = new HashMap<String, String>();
@@ -158,6 +146,13 @@ public class Backend
     private Map<String, Long> startEat = new HashMap<String, Long>();
     private Map<String, Long> lastHeal = new HashMap<String, Long>();
     private Map<String, Long> projectileTime = new HashMap<String, Long>();
+    private Map<String, Long> bowWindUp = new HashMap<String, Long>();
+    private Map<String, Long> instantBreakExempt = new HashMap<String, Long>();
+    private Map<String, Long> sprinted = new HashMap<String, Long>();
+    private Map<String, Long> brokenBlock = new HashMap<String, Long>();
+    private Map<String, Long> placedBlock = new HashMap<String, Long>();
+    private Map<String, Long> movingExempt = new HashMap<String, Long>();
+    private Map<String, Long> droppedItem = new HashMap<String, Long>();
 
     public Backend(AnticheatManager instance)
     {
@@ -167,27 +162,27 @@ public class Backend
     public void buildAdvancedInformation(StringBuilder r)
     {
         r.append("Dropped Items List:" + '\n');
-        for (String l : droppedItem)
+        for (String l : droppedItem.keySet())
         {
             r.append(l + '\n');
         }
         r.append("Moving Exempt List:" + '\n');
-        for (String l : movingExempt)
+        for (String l : movingExempt.keySet())
         {
             r.append(l + '\n');
         }
         r.append("Broken Block List:" + '\n');
-        for (String l : brokenBlock)
+        for (String l : brokenBlock.keySet())
         {
             r.append(l + '\n');
         }
         r.append("Placed Block List:" + '\n');
-        for (String l : placedBlock)
+        for (String l : placedBlock.keySet())
         {
             r.append(l + '\n');
         }
         r.append("Bow Wind Up List:" + '\n');
-        for (String l : bowWindUp)
+        for (String l : bowWindUp.keySet())
         {
             r.append(l + '\n');
         }
@@ -202,7 +197,7 @@ public class Backend
             r.append(l + '\n');
         }
         r.append("Sprinted List:" + '\n');
-        for (String l : sprinted)
+        for (String l : sprinted.keySet())
         {
             r.append(l + '\n');
         }
@@ -217,27 +212,12 @@ public class Backend
             r.append(l + '\n');
         }
         r.append("Instant Break Exempt List:" + '\n');
-        for (String l : instantBreakExempt)
+        for (String l : instantBreakExempt.keySet())
         {
             r.append(l + '\n');
         }
         r.append("Is Ascending List:" + '\n');
         for (String l : isAscending)
-        {
-            r.append(l + '\n');
-        }
-        r.append("Tracking Projectiles List:" + '\n');
-        for (String l : trackingProjectiles)
-        {
-            r.append(l + '\n');
-        }
-        r.append("Velocitizing List:" + '\n');
-        for (String l : velocitizing)
-        {
-            r.append(l + '\n');
-        }
-        r.append("Interacting List:" + '\n');
-        for (String l : interacting)
         {
             r.append(l + '\n');
         }
@@ -263,9 +243,6 @@ public class Backend
         isInWaterCache.remove(pN);
         instantBreakExempt.remove(pN);
         isAscending.remove(pN);
-        trackingProjectiles.remove(pN);
-        velocitizing.remove(pN);
-        interacting.remove(pN);
         ascensionCount.remove(pN);
         oldMessage.remove(pN);
         lastMessage.remove(pN);
@@ -292,6 +269,16 @@ public class Backend
         velocitytrack.remove(pN);
         animated.remove(pN);
     }
+    
+    public boolean checkFastBow(Player player, float force)
+    {
+        int ticks = (int)((((System.currentTimeMillis()-bowWindUp.get(player.getName()))*20)/1000)+3);
+        bowWindUp.remove(player.getName());
+        float f = (float) ticks / 20.0F;
+        f = (f * f + f * 2.0F) / 3.0F;
+        f = f > 1.0F ? 1.0F : f;   
+        return Math.abs(force-f) > BOW_ERROR;
+    }    
     
     public boolean checkProjectile(Player player)
     {
@@ -332,7 +319,7 @@ public class Backend
 
     public boolean checkYSpeed(Player player, double y)
     {
-        if (!player.isInsideVehicle() && y > Y_SPEED_MAX && !isVelocity(player) && !player.hasPotionEffect(PotionEffectType.JUMP))
+        if (!player.isInsideVehicle() && y > Y_SPEED_MAX && !isDoing(player, velocitized, VELOCITY_TIME) && !player.hasPotionEffect(PotionEffectType.JUMP))
         {
             return true;
         }
@@ -442,20 +429,6 @@ public class Backend
         {
             return false;
         }
-    }
-
-    public boolean checkVisuals(Player player, Block targetBlock, Block playerClick)
-    {
-        if (!Utilities.isInteractable(targetBlock.getType()) || playerClick.isLiquid())
-        {
-            return false;
-        }
-
-        double x = targetBlock.getX() - playerClick.getX() * ((targetBlock.getX() - playerClick.getX() * 1) < 0 ? -1 : 1);
-        double y = targetBlock.getY() - playerClick.getY() * ((targetBlock.getY() - playerClick.getY() * 1) < 0 ? -1 : 1);
-        double z = targetBlock.getZ() - playerClick.getZ() * ((targetBlock.getZ() - playerClick.getZ() * 1) < 0 ? -1 : 1);
-
-        return x >= VISUALS_MAXOFFSET || y >= VISUALS_MAXOFFSET || z >= VISUALS_MAXOFFSET;
     }
 
     public boolean checkWaterWalk(Player player, double x, double z)
@@ -911,12 +884,7 @@ public class Backend
 
     public void logBowWindUp(Player player)
     {
-        logEvent(bowWindUp, player, BOW_MIN);
-    }
-
-    public boolean justWoundUp(Player player)
-    {
-        return bowWindUp.contains(player.getName());
+        bowWindUp.put(player.getName(), System.currentTimeMillis());
     }
 
     public void logEatingStart(Player player)
@@ -939,16 +907,6 @@ public class Backend
     public void logHeal(Player player)
     {
         lastHeal.put(player.getName(),System.currentTimeMillis());
-    }
-
-    public void logInteraction(Player player)
-    {
-        logEvent(interacting, player, VISUALS_DELAY);
-    }
-
-    public boolean isInteracting(Player player)
-    {
-        return interacting.contains(player.getName());
     }
 
     public boolean justHealed(Player player)
@@ -1010,49 +968,43 @@ public class Backend
 
     public void logInstantBreak(final Player player)
     {
-        logEvent(instantBreakExempt, player, INSTANT_BREAK_TIME);
+        instantBreakExempt.put(player.getName(), System.currentTimeMillis());
     }
 
     public boolean isInstantBreakExempt(Player player)
     {
-        return instantBreakExempt.contains(player.getName());
+        return isDoing(player, instantBreakExempt, INSTANT_BREAK_TIME);
     }
 
     public void logSprint(final Player player)
     {
-        logEvent(sprinted, player, SPRINT_MIN);
+        sprinted.put(player.getName(), System.currentTimeMillis());
     }
 
     public boolean justSprinted(Player player)
     {
-        return sprinted.contains(player.getName());
+        return isDoing(player, sprinted, SPRINT_MIN);
     }
 
     public void logBlockBreak(final Player player)
     {
-        logEvent(brokenBlock, player, BLOCK_BREAK_MIN);
+        brokenBlock.put(player.getName(), System.currentTimeMillis());
         resetAnimation(player);
     }
 
     public boolean justBroke(Player player)
     {
-        return brokenBlock.contains(player.getName());
+        return isDoing(player, brokenBlock, BLOCK_BREAK_MIN);
     }
 
     public void logVelocity(final Player player)
     {
-        logEvent(velocitizing, player, VELOCITY_TIME);
         velocitized.put(player.getName(), System.currentTimeMillis());
     }
 
     public boolean justVelocity(Player player)
     {
-        return isVelocity(player) || (velocitized.containsKey(player.getName()) ? (System.currentTimeMillis() - velocitized.get(player.getName())) < VELOCITY_CHECKTIME : false);
-    }
-
-    public boolean isVelocity(Player player)
-    {
-        return velocitizing.contains(player.getName());
+        return (velocitized.containsKey(player.getName()) ? (System.currentTimeMillis() - velocitized.get(player.getName())) < VELOCITY_CHECKTIME : false);
     }
 
     public boolean extendVelocityTime(final Player player)
@@ -1084,12 +1036,12 @@ public class Backend
 
     public void logBlockPlace(final Player player)
     {
-        logEvent(placedBlock, player, BLOCK_PLACE_MIN);
+        placedBlock.put(player.getName(), System.currentTimeMillis());
     }
 
     public boolean justPlaced(Player player)
     {
-        return placedBlock.contains(player.getName());
+        return isDoing(player, placedBlock, BLOCK_PLACE_MIN);
     }
 
     public void logAnimation(final Player player)
@@ -1121,7 +1073,7 @@ public class Backend
 
     public void logDamage(final Player player, int type)
     {
-        int time;
+        long time;
         switch(type)
         {
             case 1:
@@ -1138,22 +1090,23 @@ public class Backend
                 break;
                 
         }
-        logEvent(movingExempt, player, time);
+        movingExempt.put(player.getName(), System.currentTimeMillis()+time);
+        // Only map in which termination time is calculated beforehand.
     }   
 
     public void logEnterExit(final Player player)
     {
-        logEvent(movingExempt, player, ENTERED_EXTITED_TIME);
+        movingExempt.put(player.getName(), System.currentTimeMillis()+ENTERED_EXTITED_TIME);
     }
 
     public void logToggleSneak(final Player player)
     {
-        logEvent(movingExempt, player, SNEAK_TIME);
+        movingExempt.put(player.getName(), System.currentTimeMillis()+SNEAK_TIME);
     }
 
     public void logTeleport(final Player player)
     {
-        logEvent(movingExempt, player, TELEPORT_TIME);
+        movingExempt.put(player.getName(), System.currentTimeMillis()+TELEPORT_TIME);
 
         /* Data for fly/speed should be reset */
         nofallViolation.remove(player.getName());
@@ -1166,17 +1119,17 @@ public class Backend
 
     public void logExitFly(final Player player)
     {
-        logEvent(movingExempt, player, EXIT_FLY_TIME);
+        movingExempt.put(player.getName(), System.currentTimeMillis()+EXIT_FLY_TIME);
     }
 
     public void logJoin(final Player player)
     {
-        logEvent(movingExempt, player, JOIN_TIME);
+        movingExempt.put(player.getName(), System.currentTimeMillis()+JOIN_TIME);
     }
 
     public boolean isMovingExempt(Player player)
     {
-        return movingExempt.contains(player.getName()) || player.isFlying() || isVelocity(player);
+        return isDoing(player, movingExempt, -1);
     }
 
     public boolean isAscending(Player player)
@@ -1186,34 +1139,17 @@ public class Backend
 
     public boolean isSpeedExempt(Player player)
     {
-        return movingExempt.contains(player.getName()) || isVelocity(player);
+        return isMovingExempt(player) || justVelocity(player);
     }
 
     public void logDroppedItem(final Player player)
     {
-        logEvent(droppedItem, player, DROPPED_ITEM_TIME);
+        droppedItem.put(player.getName(), System.currentTimeMillis());
     }
 
     public boolean justDroppedItem(Player player)
     {
-        return droppedItem.contains(player.getName());
-    }
-
-    @SuppressWarnings("unchecked")
-    private void logEvent(@SuppressWarnings("rawtypes") final List list, final Player player, long time)
-    {
-        if (!list.contains(player.getName()))
-        {
-            list.add(player.getName());
-        }
-        micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                list.remove(player.getName());
-            }
-        }, time);
+        return isDoing(player, droppedItem, DROPPED_ITEM_TIME);
     }
 
     @SuppressWarnings("unchecked")
@@ -1238,6 +1174,42 @@ public class Backend
                 }
             }
         }, time);
+    }
+    
+    private boolean isDoing(Player player, Map<String, Long> map, double max)
+    {
+        if(map.containsKey(player.getName()))
+        {
+            if(max != -1)
+            {
+                if((map.get(player.getName())/1000) > max)
+                {
+                    map.remove(player.getName());
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                // Termination time has already been calculated
+                if(map.get(player.getName()) < System.currentTimeMillis())
+                {
+                    map.remove(player.getName());
+                    return false;                    
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            return false;
+        }        
     }
 
     private void checkChatLevel(Player player, int amount)

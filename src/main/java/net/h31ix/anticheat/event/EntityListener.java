@@ -46,7 +46,7 @@ public class EntityListener extends EventListener
             Player player = (Player) event.getEntity();
             if (checkManager.willCheck(player, CheckType.FAST_BOW))
             {
-                if (backend.justWoundUp(player))
+                if (backend.checkFastBow(player, event.getForce()))
                 {
                     event.setCancelled(!config.silentMode());
                     log("tried to fire a bow too fast.", player, CheckType.FAST_BOW);
