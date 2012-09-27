@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.h31ix.anticheat.event.*;
 import net.h31ix.anticheat.manage.AnticheatManager;
 import net.h31ix.anticheat.manage.CheckType;
@@ -248,6 +247,14 @@ public class Anticheat extends JavaPlugin
                 getLogger().log(Level.INFO, "Lang file created.");
             }
         }
+        if (!new File(getDataFolder() + "/magic.yml").exists())
+        {
+            saveResource("magic.yml", false);
+            if (verbose)
+            {
+                getLogger().log(Level.INFO, "Magic file created.");
+            }
+        }        
     }
 
     public static Anticheat getPlugin()

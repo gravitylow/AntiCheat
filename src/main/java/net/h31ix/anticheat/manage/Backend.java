@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.h31ix.anticheat.util.Distance;
+import net.h31ix.anticheat.util.Magic;
 import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -38,82 +39,6 @@ import org.bukkit.potion.PotionEffectType;
 
 public class Backend
 {
-    private static final int ENTERED_EXTITED_TIME = 1000;
-    private static final int SNEAK_TIME = 250;
-    private static final int TELEPORT_TIME = 1000;
-    private static final int EXIT_FLY_TIME = 2000;
-    private static final int INSTANT_BREAK_TIME = 5;
-    private static final int JOIN_TIME = 2000;
-    private static final int DROPPED_ITEM_TIME = 100;
-    private static final long DAMAGE_TIME = 3000;
-    private static final long KNOCKBACK_DAMAGE_TIME = 4000;
-    private static final long EXPLOSION_DAMAGE_TIME = 5000;
-    private static final int PROJECTILE_TIME_MIN = 1500;
-    private static final int PROJECTILE_CHECK = 10;
-
-    private static final int FASTBREAK_LIMIT = 3;
-    private static final int FASTBREAK_TIMEMAX = 500;
-    private static final int FASTBREAK_MAXVIOLATIONS = 2;
-    private static final int FASTBREAK_MAXVIOLATIONS_CREATIVE = 3;
-    private static final int FASTBREAK_MAXVIOLATIONTIME = 10000;
-    private static final int FASTPLACE_ZEROLIMIT = 3;
-    private static final int FASTPLACE_TIMEMAX = 100;
-    private static final int FASTPLACE_MAXVIOLATIONS = 2;
-    private static final int FASTPLACE_MAXVIOLATIONS_CREATIVE = 3;
-    private static final int FASTPLACE_MAXVIOLATIONTIME = 10000;
-
-    private static final int BLOCK_PUNCH_MIN = 5;
-
-    private static final int CHAT_WARN_LEVEL = 7;
-    private static final int CHAT_KICK_LEVEL = 10;
-    private static final int CHAT_BAN_LEVEL = 3;
-
-    private static final int FLIGHT_LIMIT = 5;
-    private static final double WATER_CLIMB_MAX = 0.15;
-    private static final int Y_MAXVIOLATIONS = 1;
-    private static final int Y_MAXVIOTIME = 5000;
-    private static final int VELOCITY_TIME = 3;
-    private static final long VELOCITY_SCHETIME = 2;
-    private static final long VELOCITY_CHECKTIME = 2100;
-    private static final long VELOCITY_PREVENT = 5000;
-    private static final int VELOCITY_MAXTIMES = 2;
-    private static final int NOFALL_LIMIT = 9;
-
-    private static final int ASCENSION_COUNT_MAX = 8;
-    private static final int WATER_ASCENSION_VIOLATION_MAX = 13;
-    private static final int WATER_SPEED_VIOLATION_MAX = 4;
-
-    private static final int SPRINT_FOOD_MIN = 6;
-    private static final int ANIMATION_MIN = 200;
-    private static final int CHAT_MIN = 100;
-    private static final int CHAT_REPEAT_MIN = 260;
-    private static final double SPRINT_MIN = 0.2;
-    private static final double BLOCK_BREAK_MIN = 0.1;
-    private static final double BLOCK_PLACE_MIN = 0.1;
-    private static final long HEAL_TIME_MIN = 2000L;
-    private static final long EAT_TIME_MIN = 1000L;
-    
-    private static final double BOW_ERROR = 0.25;
-
-    private static final double BLOCK_MAX_DISTANCE = 6.0;
-    private static final double ENTITY_MAX_DISTANCE = 5.5;
-
-    private static final double LADDER_Y_MAX = 0.11761;
-    private static final double LADDER_Y_MIN = 0.11759;
-
-    private static final double Y_SPEED_MAX = 0.5;
-    private static final double Y_MAXDIFF = 5;
-    private static final double Y_TIME = 1000;
-    private static final double XZ_SPEED_MAX = 0.5;
-    private static final double XZ_SPEED_MAX_SPRINT = 0.65;
-    private static final double XZ_SPEED_MAX_FLY = 0.56;
-    private static final double XZ_SPEED_MAX_POTION = 0.7;
-    private static final double XZ_SPEED_MAX_SNEAK = 0.2;
-    private static final double XZ_SPEED_MAX_WATER = 0.19;
-    private static final double XZ_SPEED_MAX_WATER_SPRINT = 0.3;
-    private static final int SPEED_MAX = 3;
-
-    private AnticheatManager micromanage = null;
     private List<String> isInWater = new ArrayList<String>();
     private List<String> isInWaterCache = new ArrayList<String>();
     private List<String> isAscending = new ArrayList<String>();
@@ -153,9 +78,13 @@ public class Backend
     private Map<String, Long> placedBlock = new HashMap<String, Long>();
     private Map<String, Long> movingExempt = new HashMap<String, Long>();
     private Map<String, Long> droppedItem = new HashMap<String, Long>();
+    
+    private Magic magic;
+    private AnticheatManager micromanage = null;
 
     public Backend(AnticheatManager instance)
     {
+        magic = new Magic(instance.getConfiguration().getMagic());
         micromanage = instance;
     }
 
@@ -277,7 +206,7 @@ public class Backend
         float f = (float) ticks / 20.0F;
         f = (f * f + f * 2.0F) / 3.0F;
         f = f > 1.0F ? 1.0F : f;   
-        return Math.abs(force-f) > BOW_ERROR;
+        return Math.abs(force-f) > magic.BOW_ERROR;
     }    
     
     public boolean checkProjectile(Player player)
@@ -288,29 +217,29 @@ public class Backend
             projectileTime.put(player.getName(), System.currentTimeMillis());
             return false;
         }
-        else if(projectilesShot.get(player.getName()) == PROJECTILE_CHECK)
+        else if(projectilesShot.get(player.getName()) == magic.PROJECTILE_CHECK)
         {
             long time = System.currentTimeMillis()-projectileTime.get(player.getName());
             projectileTime.remove(player.getName());
             projectilesShot.remove(player.getName());
-            return time < PROJECTILE_TIME_MIN;
+            return time < magic.PROJECTILE_TIME_MIN;
         }
         return false;
     }    
 
     public boolean checkLongReachBlock(Player player, double x, double y, double z)
     {
-        return (x >= BLOCK_MAX_DISTANCE || y > BLOCK_MAX_DISTANCE || z > BLOCK_MAX_DISTANCE);
+        return (x >= magic.BLOCK_MAX_DISTANCE || y > magic.BLOCK_MAX_DISTANCE || z > magic.BLOCK_MAX_DISTANCE);
     }
 
     public boolean checkLongReachDamage(double x, double y, double z)
     {
-        return x >= ENTITY_MAX_DISTANCE || y > ENTITY_MAX_DISTANCE || z > ENTITY_MAX_DISTANCE;
+        return x >= magic.ENTITY_MAX_DISTANCE || y > magic.ENTITY_MAX_DISTANCE || z > magic.ENTITY_MAX_DISTANCE;
     }
 
     public boolean checkSpider(Player player, double y)
     {
-        if (y <= LADDER_Y_MAX && y >= LADDER_Y_MIN && !Utilities.isClimbableBlock(player.getLocation().getBlock()))
+        if (y <= magic.LADDER_Y_MAX && y >= magic.LADDER_Y_MIN && !Utilities.isClimbableBlock(player.getLocation().getBlock()))
         {
             return true;
         }
@@ -319,7 +248,7 @@ public class Backend
 
     public boolean checkYSpeed(Player player, double y)
     {
-        if (!player.isInsideVehicle() && y > Y_SPEED_MAX && !isDoing(player, velocitized, VELOCITY_TIME) && !player.hasPotionEffect(PotionEffectType.JUMP))
+        if (!player.isInsideVehicle() && y > magic.Y_SPEED_MAX && !isDoing(player, velocitized, magic.VELOCITY_TIME) && !player.hasPotionEffect(PotionEffectType.JUMP))
         {
             return true;
         }
@@ -342,7 +271,7 @@ public class Backend
                     nofallViolation.put(name, nofallViolation.get(player.getName()) + 1);
                 }
 
-                if (nofallViolation.get(name) >= NOFALL_LIMIT)
+                if (nofallViolation.get(name) >= magic.NOFALL_LIMIT)
                 {
                     nofallViolation.put(player.getName(), 1);
                     return true;
@@ -368,24 +297,24 @@ public class Backend
             boolean speed = false;
             if (player.isFlying())
             {              
-                speed = x > XZ_SPEED_MAX_FLY || z > XZ_SPEED_MAX_FLY;
+                speed = x > magic.XZ_SPEED_MAX_FLY || z > magic.XZ_SPEED_MAX_FLY;
             }
             else if (player.hasPotionEffect(PotionEffectType.SPEED))
             {             
-                speed = x > XZ_SPEED_MAX_POTION || z > XZ_SPEED_MAX_POTION;
+                speed = x > magic.XZ_SPEED_MAX_POTION || z > magic.XZ_SPEED_MAX_POTION;
             }
             else if (player.isSprinting())
             {                                 
-                speed = x > XZ_SPEED_MAX_SPRINT || z > XZ_SPEED_MAX_SPRINT;
+                speed = x > magic.XZ_SPEED_MAX_SPRINT || z > magic.XZ_SPEED_MAX_SPRINT;
             }
             else
             {
-                speed = x > XZ_SPEED_MAX || z > XZ_SPEED_MAX;
+                speed = x > magic.XZ_SPEED_MAX || z > magic.XZ_SPEED_MAX;
             }
             if(speed)
             {
-                int num = this.increment(player, speedViolation, SPEED_MAX);
-                if(num >= SPEED_MAX)
+                int num = this.increment(player, speedViolation, magic.SPEED_MAX);
+                if(num >= magic.SPEED_MAX)
                 {
                     return true;
                 }
@@ -410,7 +339,7 @@ public class Backend
     {
         if (player.isSneaking() && !player.isFlying() && !isMovingExempt(player))
         {
-            return x > XZ_SPEED_MAX_SNEAK || z > XZ_SPEED_MAX_SNEAK;
+            return x > magic.XZ_SPEED_MAX_SNEAK || z > magic.XZ_SPEED_MAX_SNEAK;
         }
         else
         {
@@ -423,7 +352,7 @@ public class Backend
         Player player = event.getPlayer();
         if (event.isSprinting())
         {
-            return player.getFoodLevel() <= SPRINT_FOOD_MIN && player.getGameMode() != GameMode.CREATIVE;
+            return player.getFoodLevel() <= magic.SPRINT_FOOD_MIN && player.getGameMode() != GameMode.CREATIVE;
         }
         else
         {
@@ -445,11 +374,11 @@ public class Backend
                         if (player.getNearbyEntities(1, 1, 1).isEmpty())
                         {
                             boolean b = false;
-                            if (!Utilities.sprintFly(player) && x > XZ_SPEED_MAX_WATER || z > XZ_SPEED_MAX_WATER)
+                            if (!Utilities.sprintFly(player) && x > magic.XZ_SPEED_MAX_WATER || z > magic.XZ_SPEED_MAX_WATER)
                             {
                                 b = true;
                             }
-                            else if (x > XZ_SPEED_MAX_WATER_SPRINT || z > XZ_SPEED_MAX_WATER_SPRINT)
+                            else if (x > magic.XZ_SPEED_MAX_WATER_SPRINT || z > magic.XZ_SPEED_MAX_WATER_SPRINT)
                             {
                                 b = true;
                             }
@@ -458,7 +387,7 @@ public class Backend
                                 if (waterSpeedViolation.containsKey(player.getName()))
                                 {
                                     int v = waterSpeedViolation.get(player.getName());
-                                    if (v >= WATER_SPEED_VIOLATION_MAX)
+                                    if (v >= magic.WATER_SPEED_VIOLATION_MAX)
                                     {
                                         waterSpeedViolation.put(player.getName(), 0);
                                         return true;
@@ -492,7 +421,7 @@ public class Backend
                 if (waterAscensionViolation.containsKey(player.getName()))
                 {
                     int v = waterAscensionViolation.get(player.getName());
-                    if (v >= WATER_ASCENSION_VIOLATION_MAX)
+                    if (v >= magic.WATER_ASCENSION_VIOLATION_MAX)
                     {
                         waterAscensionViolation.put(player.getName(), 0);
                         return true;
@@ -574,7 +503,7 @@ public class Backend
             }
             else
             {
-                if (y1 > lastYcoord.get(name) && yAxisViolations.get(name) > Y_MAXVIOLATIONS && (System.currentTimeMillis() - yAxisLastViolation.get(name)) < Y_MAXVIOTIME)
+                if (y1 > lastYcoord.get(name) && yAxisViolations.get(name) > magic.Y_MAXVIOLATIONS && (System.currentTimeMillis() - yAxisLastViolation.get(name)) < magic.Y_MAXVIOTIME)
                 {
                     Location g = player.getLocation();
                     g.setY(lastYcoord.get(name));
@@ -589,13 +518,13 @@ public class Backend
                 }
                 else
                 {
-                    if (yAxisViolations.get(name) > Y_MAXVIOLATIONS && (System.currentTimeMillis() - yAxisLastViolation.get(name)) > Y_MAXVIOTIME)
+                    if (yAxisViolations.get(name) > magic.Y_MAXVIOLATIONS && (System.currentTimeMillis() - yAxisLastViolation.get(name)) > magic.Y_MAXVIOTIME)
                     {
                         yAxisViolations.put(name, 0);
                         yAxisLastViolation.put(name, 0L);
                     }
                 }
-                if ((y1 - lastYcoord.get(name)) > Y_MAXDIFF && (System.currentTimeMillis() - lastYtime.get(name)) < Y_TIME)
+                if ((y1 - lastYcoord.get(name)) > magic.Y_MAXDIFF && (System.currentTimeMillis() - lastYtime.get(name)) < magic.Y_TIME)
                 {
                     Location g = player.getLocation();
                     g.setY(lastYcoord.get(name));
@@ -609,7 +538,7 @@ public class Backend
                 }
                 else
                 {
-                    if ((y1 - lastYcoord.get(name)) > Y_MAXDIFF + 1 || (System.currentTimeMillis() - lastYtime.get(name)) > Y_TIME)
+                    if ((y1 - lastYcoord.get(name)) > magic.Y_MAXDIFF + 1 || (System.currentTimeMillis() - lastYtime.get(name)) > magic.Y_TIME)
                     {
                         lastYtime.put(name, System.currentTimeMillis());
                         lastYcoord.put(name, y1);
@@ -669,7 +598,7 @@ public class Backend
             if(block.getRelative(BlockFace.NORTH).isLiquid() || block.getRelative(BlockFace.SOUTH).isLiquid() || block.getRelative(BlockFace.EAST).isLiquid() || block.getRelative(BlockFace.WEST).isLiquid())
             {
                 //Even if they are using a hacked client and flying next to water to abuse this, they can't be go past the speed limit so they might as well swim
-                return distance.getYDifference() > WATER_CLIMB_MAX;
+                return distance.getYDifference() > magic.WATER_CLIMB_MAX;
             }
             //Check if the player is crouching on slabs
             if(player.isSneaking())
@@ -681,7 +610,7 @@ public class Backend
             }
             int violation = flightViolation.containsKey(name) ? flightViolation.get(name)+1 : 1;
             increment(player, flightViolation, violation);
-            if(violation > FLIGHT_LIMIT)
+            if(violation > magic.FLIGHT_LIMIT)
             {
                 return true;
             }
@@ -712,7 +641,7 @@ public class Backend
 
     public boolean checkAscension(Player player, double y1, double y2)
     {
-        int max = ASCENSION_COUNT_MAX;
+        int max = magic.ASCENSION_COUNT_MAX;
         if (player.hasPotionEffect(PotionEffectType.JUMP))
         {
             max += 12;
@@ -754,10 +683,10 @@ public class Backend
 
     public boolean checkFastBreak(Player player, Block block)
     {
-        int violations = FASTBREAK_MAXVIOLATIONS;
+        int violations = magic.FASTBREAK_MAXVIOLATIONS;
         if (player.getGameMode() == GameMode.CREATIVE)
         {
-            violations = FASTBREAK_MAXVIOLATIONS_CREATIVE;
+            violations = magic.FASTBREAK_MAXVIOLATIONS_CREATIVE;
         }
         String name = player.getName();
         if (!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES))
@@ -765,7 +694,7 @@ public class Backend
             if (blockPunches.get(name) != null && player.getGameMode() != GameMode.CREATIVE)
             {
                 int i = blockPunches.get(name);
-                if (i < BLOCK_PUNCH_MIN)
+                if (i < magic.BLOCK_PUNCH_MIN)
                 {
                     return true;
                 }
@@ -777,13 +706,13 @@ public class Backend
             else
             {
                 Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
-                if (fastBreakViolation.get(name) > violations && math < FASTBREAK_MAXVIOLATIONTIME)
+                if (fastBreakViolation.get(name) > violations && math < magic.FASTBREAK_MAXVIOLATIONTIME)
                 {
                     lastBlockBroken.put(name, System.currentTimeMillis());
                     player.sendMessage(ChatColor.RED + "[AntiCheat] Fastbreaking detected. Please wait 10 seconds before breaking blocks.");
                     return true;
                 }
-                else if (fastBreakViolation.get(name) > 0 && math > FASTBREAK_MAXVIOLATIONTIME)
+                else if (fastBreakViolation.get(name) > 0 && math > magic.FASTBREAK_MAXVIOLATIONTIME)
                 {
                     fastBreakViolation.put(name, 0);
                 }
@@ -800,14 +729,14 @@ public class Backend
             {
                 blocksBroken.put(name, blocksBroken.get(name) + 1);
                 Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
-                if (blocksBroken.get(name) > FASTBREAK_LIMIT && math < FASTBREAK_TIMEMAX)
+                if (blocksBroken.get(name) > magic.FASTBREAK_LIMIT && math < magic.FASTBREAK_TIMEMAX)
                 {
                     blocksBroken.put(name, 0);
                     lastBlockBroken.put(name, System.currentTimeMillis());
                     fastBreakViolation.put(name, fastBreakViolation.get(name) + 1);
                     return true;
                 }
-                else if (blocksBroken.get(name) > FASTBREAK_LIMIT)
+                else if (blocksBroken.get(name) > magic.FASTBREAK_LIMIT)
                 {
                     lastBlockBroken.put(name, System.currentTimeMillis());
                     blocksBroken.put(name, 0);
@@ -819,10 +748,10 @@ public class Backend
 
     public boolean checkFastPlace(Player player)
     {
-        int violations = FASTPLACE_MAXVIOLATIONS;
+        int violations = magic.FASTPLACE_MAXVIOLATIONS;
         if (player.getGameMode() == GameMode.CREATIVE)
         {
-            violations = FASTPLACE_MAXVIOLATIONS_CREATIVE;
+            violations = magic.FASTPLACE_MAXVIOLATIONS_CREATIVE;
         }
         long time = System.currentTimeMillis();
         String name = player.getName();
@@ -837,13 +766,13 @@ public class Backend
         else if (fastPlaceViolation.containsKey(name) && fastPlaceViolation.get(name) > violations)
         {
             Long math = System.currentTimeMillis() - lastBlockPlaced.get(name);
-            if (lastBlockPlaced.get(name) > 0 && math < FASTPLACE_MAXVIOLATIONTIME)
+            if (lastBlockPlaced.get(name) > 0 && math < magic.FASTPLACE_MAXVIOLATIONTIME)
             {
                 lastBlockPlaced.put(name, time);
                 player.sendMessage(ChatColor.RED + "[AntiCheat] Fastplacing detected. Please wait 10 seconds before placing blocks.");
                 return true;
             }
-            else if (lastBlockPlaced.get(name) > 0 && math > FASTPLACE_MAXVIOLATIONTIME)
+            else if (lastBlockPlaced.get(name) > 0 && math > magic.FASTPLACE_MAXVIOLATIONTIME)
             {
                 fastPlaceViolation.put(name, 0);
             }
@@ -869,7 +798,7 @@ public class Backend
                     lastZeroHitPlace.put(name, lastZeroHitPlace.get(name) + 1);
                 }
             }
-            if (thisTime < FASTPLACE_TIMEMAX && lastTime < FASTPLACE_TIMEMAX && nocheck && lastZeroHitPlace.get(name) > FASTPLACE_ZEROLIMIT)
+            if (thisTime < magic.FASTPLACE_TIMEMAX && lastTime < magic.FASTPLACE_TIMEMAX && nocheck && lastZeroHitPlace.get(name) > magic.FASTPLACE_ZEROLIMIT)
             {
                 lastBlockPlaceTime.put(name, (time - last));
                 lastBlockPlaced.put(name, time);
@@ -898,8 +827,7 @@ public class Backend
         {
             long l = startEat.get(player.getName());
             startEat.remove(player.getName());
-            System.out.println(player.getName()+" ate in "+(System.currentTimeMillis()-l));
-            return (System.currentTimeMillis()-l) < EAT_TIME_MIN;
+            return (System.currentTimeMillis()-l) < magic.EAT_TIME_MIN;
         }
         return false;
     }
@@ -915,7 +843,7 @@ public class Backend
         {
             long l = lastHeal.get(player.getName());
             lastHeal.remove(player.getName());
-            return (System.currentTimeMillis()-l) < HEAL_TIME_MIN;         
+            return (System.currentTimeMillis()-l) < magic.HEAL_TIME_MIN;         
         }
         return false;
     }
@@ -925,12 +853,12 @@ public class Backend
         String name = player.getName();
         if (chatLevel.get(name) == null)
         {
-            logEvent(chatLevel, player, 1, CHAT_MIN);
+            logEvent(chatLevel, player, 1, magic.CHAT_MIN);
         }
         else
         {
             int amount = chatLevel.get(name) + 1;
-            logEvent(chatLevel, player, amount, CHAT_MIN);
+            logEvent(chatLevel, player, amount, magic.CHAT_MIN);
             checkChatLevel(player, amount);
         }
     }
@@ -940,7 +868,7 @@ public class Backend
         String name = player.getName();
         if (lastMessage.get(name) == null)
         {
-            logEvent(lastMessage, player, msg, CHAT_REPEAT_MIN);
+            logEvent(lastMessage, player, msg, magic.CHAT_REPEAT_MIN);
             //lastMessage.put(name, msg);
         }
         else
@@ -951,10 +879,8 @@ public class Backend
             }
             else
             {
-                logEvent(oldMessage, player, lastMessage.get(name), CHAT_REPEAT_MIN);
-                //oldMessage.put(name, lastMessage.get(name));
-                logEvent(oldMessage, player, msg, CHAT_REPEAT_MIN);
-                //lastMessage.put(name, msg);
+                logEvent(oldMessage, player, lastMessage.get(name), magic.CHAT_REPEAT_MIN);
+                logEvent(oldMessage, player, msg, magic.CHAT_REPEAT_MIN);
                 return false;
             }
         }
@@ -973,7 +899,7 @@ public class Backend
 
     public boolean isInstantBreakExempt(Player player)
     {
-        return isDoing(player, instantBreakExempt, INSTANT_BREAK_TIME);
+        return isDoing(player, instantBreakExempt, magic.INSTANT_BREAK_TIME);
     }
 
     public void logSprint(final Player player)
@@ -983,7 +909,7 @@ public class Backend
 
     public boolean justSprinted(Player player)
     {
-        return isDoing(player, sprinted, SPRINT_MIN);
+        return isDoing(player, sprinted, magic.SPRINT_MIN);
     }
 
     public void logBlockBreak(final Player player)
@@ -994,7 +920,7 @@ public class Backend
 
     public boolean justBroke(Player player)
     {
-        return isDoing(player, brokenBlock, BLOCK_BREAK_MIN);
+        return isDoing(player, brokenBlock, magic.BLOCK_BREAK_MIN);
     }
 
     public void logVelocity(final Player player)
@@ -1004,7 +930,7 @@ public class Backend
 
     public boolean justVelocity(Player player)
     {
-        return (velocitized.containsKey(player.getName()) ? (System.currentTimeMillis() - velocitized.get(player.getName())) < VELOCITY_CHECKTIME : false);
+        return (velocitized.containsKey(player.getName()) ? (System.currentTimeMillis() - velocitized.get(player.getName())) < magic.VELOCITY_CHECKTIME : false);
     }
 
     public boolean extendVelocityTime(final Player player)
@@ -1012,9 +938,9 @@ public class Backend
         if (velocitytrack.containsKey(player.getName()))
         {
             velocitytrack.put(player.getName(), velocitytrack.get(player.getName()) + 1);
-            if (velocitytrack.get(player.getName()) > VELOCITY_MAXTIMES)
+            if (velocitytrack.get(player.getName()) > magic.VELOCITY_MAXTIMES)
             {
-                velocitized.put(player.getName(), System.currentTimeMillis() + VELOCITY_PREVENT);
+                velocitized.put(player.getName(), System.currentTimeMillis() + magic.VELOCITY_PREVENT);
                 micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable()
                 {
                     @Override
@@ -1022,7 +948,7 @@ public class Backend
                     {
                         velocitytrack.put(player.getName(), 0);
                     }
-                }, VELOCITY_SCHETIME * 20L);
+                }, magic.VELOCITY_SCHETIME * 20L);
                 return true;
             }
         }
@@ -1041,13 +967,13 @@ public class Backend
 
     public boolean justPlaced(Player player)
     {
-        return isDoing(player, placedBlock, BLOCK_PLACE_MIN);
+        return isDoing(player, placedBlock, magic.BLOCK_PLACE_MIN);
     }
 
     public void logAnimation(final Player player)
     {
         animated.put(player.getName(), System.currentTimeMillis());
-        increment(player, blockPunches, BLOCK_PUNCH_MIN);
+        increment(player, blockPunches, magic.BLOCK_PUNCH_MIN);
     }
 
     public void resetAnimation(final Player player)
@@ -1063,7 +989,7 @@ public class Backend
         {
             long time = System.currentTimeMillis()-animated.get(name);
             animated.remove(player.getName());
-            return time < ANIMATION_MIN;
+            return time < magic.ANIMATION_MIN;
         }
         else
         {
@@ -1077,16 +1003,16 @@ public class Backend
         switch(type)
         {
             case 1:
-                time = DAMAGE_TIME;
+                time = magic.DAMAGE_TIME;
                 break;
             case 2:
-                time = KNOCKBACK_DAMAGE_TIME;
+                time = magic.KNOCKBACK_DAMAGE_TIME;
                 break;
             case 3: 
-                time = EXPLOSION_DAMAGE_TIME;
+                time = magic.EXPLOSION_DAMAGE_TIME;
                 break;
             default:
-                time = DAMAGE_TIME;
+                time = magic.DAMAGE_TIME;
                 break;
                 
         }
@@ -1096,17 +1022,17 @@ public class Backend
 
     public void logEnterExit(final Player player)
     {
-        movingExempt.put(player.getName(), System.currentTimeMillis()+ENTERED_EXTITED_TIME);
+        movingExempt.put(player.getName(), System.currentTimeMillis()+magic.ENTERED_EXITED_TIME);
     }
 
     public void logToggleSneak(final Player player)
     {
-        movingExempt.put(player.getName(), System.currentTimeMillis()+SNEAK_TIME);
+        movingExempt.put(player.getName(), System.currentTimeMillis()+magic.SNEAK_TIME);
     }
 
     public void logTeleport(final Player player)
     {
-        movingExempt.put(player.getName(), System.currentTimeMillis()+TELEPORT_TIME);
+        movingExempt.put(player.getName(), System.currentTimeMillis()+magic.TELEPORT_TIME);
 
         /* Data for fly/speed should be reset */
         nofallViolation.remove(player.getName());
@@ -1119,12 +1045,12 @@ public class Backend
 
     public void logExitFly(final Player player)
     {
-        movingExempt.put(player.getName(), System.currentTimeMillis()+EXIT_FLY_TIME);
+        movingExempt.put(player.getName(), System.currentTimeMillis()+magic.EXIT_FLY_TIME);
     }
 
     public void logJoin(final Player player)
     {
-        movingExempt.put(player.getName(), System.currentTimeMillis()+JOIN_TIME);
+        movingExempt.put(player.getName(), System.currentTimeMillis()+magic.JOIN_TIME);
     }
 
     public boolean isMovingExempt(Player player)
@@ -1149,16 +1075,14 @@ public class Backend
 
     public boolean justDroppedItem(Player player)
     {
-        return isDoing(player, droppedItem, DROPPED_ITEM_TIME);
+        return isDoing(player, droppedItem, magic.DROPPED_ITEM_TIME);
     }
 
     @SuppressWarnings("unchecked")
     private void logEvent(@SuppressWarnings("rawtypes") final Map map, final Player player, final Object obj, long time)
     {
-        if (!map.containsKey(player.getName()))
-        {
-            map.put(player.getName(), obj);
-        }
+        
+        map.put(player.getName(), obj);
         micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable()
         {
             @Override
@@ -1214,11 +1138,11 @@ public class Backend
 
     private void checkChatLevel(Player player, int amount)
     {
-        if (amount >= CHAT_WARN_LEVEL)
+        if (amount >= magic.CHAT_WARN_LEVEL)
         {
             player.sendMessage(ChatColor.RED + "Please stop flooding the server!");
         }
-        if (amount >= CHAT_KICK_LEVEL)
+        if (amount >= magic.CHAT_KICK_LEVEL)
         {
             String name = player.getName();
             int kick;
@@ -1233,7 +1157,7 @@ public class Backend
                 chatKicks.put(name, kick);
             }
 
-            if (chatKicks.get(name) <= CHAT_BAN_LEVEL)
+            if (chatKicks.get(name) <= magic.CHAT_BAN_LEVEL)
             {
                 player.kickPlayer(ChatColor.RED + "Spamming, kick " + kick + "/3");
                 micromanage.getPlugin().getServer().broadcastMessage(ChatColor.RED + player.getName() + " was kicked for spamming.");

@@ -36,9 +36,11 @@ public class Configuration
     private File configFile = null;
     private File levelFile = null;
     private File langFile = null;
+    private File magicFile = null;
     private FileConfiguration config;
     private FileConfiguration level;
     private FileConfiguration lang;
+    private FileConfiguration magic;
     private boolean logConsole;
     private boolean logXRay;
     private boolean alertXRay;
@@ -61,6 +63,7 @@ public class Configuration
         configFile = new File(micromanage.getPlugin().getDataFolder() + "/config.yml");
         levelFile = new File(micromanage.getPlugin().getDataFolder() + "/data/level.yml");
         langFile = new File(micromanage.getPlugin().getDataFolder() + "/lang.yml");
+        magicFile = new File(micromanage.getPlugin().getDataFolder() + "/magic.yml");
         load();
     }
 
@@ -152,6 +155,7 @@ public class Configuration
         config = YamlConfiguration.loadConfiguration(configFile);
         level = YamlConfiguration.loadConfiguration(levelFile);
         lang = YamlConfiguration.loadConfiguration(langFile);
+        magic = YamlConfiguration.loadConfiguration(magicFile);
         language = new Language(lang);
         updateFolder = Bukkit.getUpdateFolder();
         
@@ -242,6 +246,11 @@ public class Configuration
     public File getLevelFile()
     {
         return levelFile;
+    }
+    
+    public FileConfiguration getMagic()
+    {
+        return magic;
     }
 
     public boolean checkInWorld(World world)

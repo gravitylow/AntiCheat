@@ -34,6 +34,7 @@
                     <include>plugin.yml</include>
                     <include>config.yml</include>
                     <include>lang.yml</include>
+                    <include>magic.yml</include>
                 </includes>
             </resource>
         </resources>
