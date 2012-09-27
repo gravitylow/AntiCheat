@@ -1159,7 +1159,7 @@ public class Backend
 
             if (chatKicks.get(name) <= magic.CHAT_BAN_LEVEL)
             {
-                player.kickPlayer(ChatColor.RED + "Spamming, kick " + kick + "/3");
+                player.kickPlayer(ChatColor.RED + "Spamming, kick " + kick + "/"+magic.CHAT_BAN_LEVEL);
                 micromanage.getPlugin().getServer().broadcastMessage(ChatColor.RED + player.getName() + " was kicked for spamming.");
             }
             else
