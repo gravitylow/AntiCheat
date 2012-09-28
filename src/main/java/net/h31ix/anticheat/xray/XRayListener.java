@@ -1,6 +1,6 @@
 /*
  * AntiCheat for Bukkit.
- * Copyright (C) 2012 AntiCheat Team | http://h31ix.net
+ * Copyright (C) 2012 AntiCheat Team | http://gravitydevelopment.net
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@
 package net.h31ix.anticheat.xray;
 
 import net.h31ix.anticheat.Anticheat;
-import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
+import net.h31ix.anticheat.util.Configuration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

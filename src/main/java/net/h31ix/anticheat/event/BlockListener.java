@@ -1,6 +1,6 @@
 /*
  * AntiCheat for Bukkit.
- * Copyright (C) 2012 AntiCheat Team | http://h31ix.net
+ * Copyright (C) 2012 AntiCheat Team | http://gravitydevelopment.net
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,6 @@ public class BlockListener extends EventListener
 {
     private final Backend backend = getBackend();
     private final CheckManager checkManager = getCheckManager();
-    private final Anticheat plugin = getPlugin();
     private final Configuration config = Anticheat.getManager().getConfiguration();
     
     @EventHandler(priority = EventPriority.MONITOR)

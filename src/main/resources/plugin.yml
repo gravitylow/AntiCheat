@@ -5,7 +5,7 @@ main: net.h31ix.anticheat.Anticheat
 name: AntiCheat
 softdepend: [AntiCheat]
 startup: postworld
-url: http://H31IX.NET/
+url: http://gravitydevelopment.net
 version: ${project.version}-DEV-b${BUILD_NUMBER}
 commands:
   anticheat:
