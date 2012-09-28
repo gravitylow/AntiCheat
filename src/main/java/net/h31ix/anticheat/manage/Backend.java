@@ -1106,7 +1106,7 @@ public class Backend
         {
             if(max != -1)
             {
-                if((map.get(player.getName())/1000) > max)
+                if(((System.currentTimeMillis()-map.get(player.getName()))/1000) > max)
                 {
                     map.remove(player.getName());
                     return false;
