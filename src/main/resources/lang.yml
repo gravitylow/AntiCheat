@@ -1,3 +1,5 @@
+# AntiCheat language file
+# Please report any bugs: http://dev.bukkit.org/server-mods/anticheat/
 alert:
   medium_alert:
   - "&player has just entered the medium hack level."

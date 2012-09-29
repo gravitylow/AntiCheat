@@ -25,10 +25,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.h31ix.anticheat.manage.AnticheatManager;
+import net.h31ix.anticheat.util.yaml.CommentedConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Configuration
 {
@@ -37,10 +36,10 @@ public class Configuration
     private File levelFile = null;
     private File langFile = null;
     private File magicFile = null;
-    private FileConfiguration config;
-    private FileConfiguration level;
-    private FileConfiguration lang;
-    private FileConfiguration magic;
+    private CommentedConfiguration config;
+    private CommentedConfiguration level;
+    private CommentedConfiguration lang;
+    private CommentedConfiguration magic;
     private boolean logConsole;
     private boolean logXRay;
     private boolean alertXRay;
@@ -151,11 +150,11 @@ public class Configuration
 
     public final void load()
     {
-        micromanage.getPlugin().checkConfig();
-        config = YamlConfiguration.loadConfiguration(configFile);
-        level = YamlConfiguration.loadConfiguration(levelFile);
-        lang = YamlConfiguration.loadConfiguration(langFile);
-        magic = YamlConfiguration.loadConfiguration(magicFile);
+        micromanage.getPlugin().checkConfigs();
+        config = CommentedConfiguration.loadConfig(configFile);
+        level = CommentedConfiguration.loadConfig(levelFile);
+        lang = CommentedConfiguration.loadConfig(langFile);
+        magic = CommentedConfiguration.loadConfig(magicFile);
         language = new Language(lang);
         updateFolder = Bukkit.getUpdateFolder();
         
@@ -248,7 +247,7 @@ public class Configuration
         return levelFile;
     }
     
-    public FileConfiguration getMagic()
+    public CommentedConfiguration getMagic()
     {
         return magic;
     }

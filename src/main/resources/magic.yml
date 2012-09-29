@@ -1,6 +1,6 @@
-#Magic number configuration file for AntiCheat
-#Documentation for these values is available at http://gravitydevelopment.net/docs/anticheat/net/h31ix/anticheat/util/Magic.html
-
+# AntiCheat configuration file
+# Please report any bugs: http://dev.bukkit.org/server-mods/anticheat/
+# Documentation for these values is available at http://gravitydevelopment.net/docs/anticheat/net/h31ix/anticheat/util/Magic.html
 ENTERED_EXITED_TIME: 1000
 SNEAK_TIME: 250
 TELEPORT_TIME: 1000

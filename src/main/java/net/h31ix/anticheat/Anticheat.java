@@ -19,7 +19,10 @@
 package net.h31ix.anticheat;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -83,6 +86,34 @@ public class Anticheat extends JavaPlugin
         config.saveLevels();
         getServer().getScheduler().cancelAllTasks();
         cleanup();
+    }
+    
+    private void save(InputStream in, File file) 
+    {
+        if (!file.exists())
+        {        
+            file.getParentFile().mkdirs();
+            try 
+            {
+                OutputStream out = new FileOutputStream(file);
+                byte[] buf = new byte[1024];
+                int len;
+                while((len=in.read(buf))>0)
+                {
+                    out.write(buf,0,len);
+                }
+                out.close();
+                in.close();
+            } 
+            catch (Exception e) 
+            {
+                e.printStackTrace();
+            }
+            if (verbose)
+            {
+                getLogger().log(Level.INFO, file.getName()+" created.");
+            }            
+        }
     }
     
     private void setupXray()
@@ -208,7 +239,7 @@ public class Anticheat extends JavaPlugin
     private void setupConfig()
     {
         config = manager.getConfiguration();
-        checkConfig();
+        checkConfigs();
         verbose = config.verboseStartup();
         if (verbose)
         {
@@ -229,32 +260,11 @@ public class Anticheat extends JavaPlugin
         }        
     }
 
-    public void checkConfig()
+    public void checkConfigs()
     {
-        if (!new File(getDataFolder() + "/config.yml").exists())
-        {
-            saveDefaultConfig();
-            if (verbose)
-            {
-                getLogger().log(Level.INFO, "Config file created.");
-            }
-        }
-        if (!new File(getDataFolder() + "/lang.yml").exists())
-        {
-            saveResource("lang.yml", false);
-            if (verbose)
-            {
-                getLogger().log(Level.INFO, "Lang file created.");
-            }
-        }
-        if (!new File(getDataFolder() + "/magic.yml").exists())
-        {
-            saveResource("magic.yml", false);
-            if (verbose)
-            {
-                getLogger().log(Level.INFO, "Magic file created.");
-            }
-        }        
+        save(getResource("config.yml"), new File(getDataFolder() + "/config.yml"));
+        save(getResource("lang.yml"), new File(getDataFolder() + "/lang.yml"));
+        save(getResource("magic.yml"), new File(getDataFolder() + "/magic.yml"));   
     }
 
     public static Anticheat getPlugin()
