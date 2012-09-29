@@ -578,7 +578,35 @@ public class Backend
     
     public boolean checkSight(Player player, Entity entity)
     {
-        return player.hasLineOfSight(entity);
+        // Check to make sure the entity's head is not surrounded
+        Block head = entity.getLocation().add(0, 1, 0).getBlock();
+        boolean solid = false;
+        if(head.getRelative(BlockFace.NORTH).getTypeId() != 0)
+        {
+            solid = net.minecraft.server.Block.byId[head.getRelative(BlockFace.NORTH).getTypeId()].material.isSolid();
+        }
+        if(!solid)
+        {
+            if(head.getRelative(BlockFace.SOUTH).getTypeId() != 0)
+            {
+                solid = net.minecraft.server.Block.byId[head.getRelative(BlockFace.SOUTH).getTypeId()].material.isSolid();
+            }            
+        }
+        if(!solid)
+        {
+            if(head.getRelative(BlockFace.EAST).getTypeId() != 0)
+            {
+                solid = net.minecraft.server.Block.byId[head.getRelative(BlockFace.EAST).getTypeId()].material.isSolid();
+            }            
+        }
+        if(!solid)
+        {
+            if(head.getRelative(BlockFace.WEST).getTypeId() != 0)
+            {
+                solid = net.minecraft.server.Block.byId[head.getRelative(BlockFace.WEST).getTypeId()].material.isSolid();
+            }            
+        }   
+        return solid ? true : player.hasLineOfSight(entity);
     }
 
     public boolean checkFlight(Player player, Distance distance)
