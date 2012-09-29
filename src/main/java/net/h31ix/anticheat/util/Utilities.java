@@ -52,6 +52,13 @@ public final class Utilities
                 Anticheat.getManager().log(msg);
             }
         }
+        if (Anticheat.getManager().getConfiguration().getFileLogLevel() != 0)
+        {
+            for (String msg : message)
+            {
+                Anticheat.getManager().log(msg, 1);
+            }
+        }
     }
 
     public static boolean cantStandAt(Block block)

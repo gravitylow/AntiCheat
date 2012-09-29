@@ -591,39 +591,42 @@ public class Backend
         String name = player.getName();
         int y1 = (int)distance.fromY();
         int y2 = (int)distance.toY();
-        if(!isMovingExempt(player) && (y1 == y2 || y1 < y2) && !Utilities.isInWater(player) && !Utilities.canStand(player.getLocation().getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock()))
+        if(!isMovingExempt(player) && !Utilities.isInWater(player) && !Utilities.canStand(player.getLocation().getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock()))
         {
             Block block = player.getLocation().getBlock();
             //Check if the player is climbing up water. 
             if(block.getRelative(BlockFace.NORTH).isLiquid() || block.getRelative(BlockFace.SOUTH).isLiquid() || block.getRelative(BlockFace.EAST).isLiquid() || block.getRelative(BlockFace.WEST).isLiquid())
             {
-                //Even if they are using a hacked client and flying next to water to abuse this, they can't be go past the speed limit so they might as well swim
-                return distance.getYDifference() > magic.WATER_CLIMB_MAX;
+                if(y1 < y2)
+                {
+                    //Even if they are using a hacked client and flying next to water to abuse this, they can't be go past the speed limit so they might as well swim
+                    return distance.getYDifference() > magic.WATER_CLIMB_MAX;
+                }
             }
-            //Check if the player is crouching on slabs
-            if(player.isSneaking())
+            else if(y1 == y2 || y1 < y2)
             {
-                if(block.getRelative(BlockFace.NORTH).getTypeId() == 43 || block.getRelative(BlockFace.NORTH).getTypeId() == 44 || block.getRelative(BlockFace.SOUTH).getTypeId() == 43 || block.getRelative(BlockFace.SOUTH).getTypeId() == 44 || block.getRelative(BlockFace.EAST).getTypeId() == 43 || block.getRelative(BlockFace.EAST).getTypeId() == 44 || block.getRelative(BlockFace.WEST).getTypeId() == 43 || block.getRelative(BlockFace.WEST).getTypeId() == 44)
+                //Check if the player is crouching on slabs
+                if(player.isSneaking())
+                {
+                    if(block.getRelative(BlockFace.NORTH).getTypeId() == 43 || block.getRelative(BlockFace.NORTH).getTypeId() == 44 || block.getRelative(BlockFace.SOUTH).getTypeId() == 43 || block.getRelative(BlockFace.SOUTH).getTypeId() == 44 || block.getRelative(BlockFace.EAST).getTypeId() == 43 || block.getRelative(BlockFace.EAST).getTypeId() == 44 || block.getRelative(BlockFace.WEST).getTypeId() == 43 || block.getRelative(BlockFace.WEST).getTypeId() == 44)
+                    {
+                        return false;
+                    }
+                }
+                int violation = flightViolation.containsKey(name) ? flightViolation.get(name)+1 : 1;
+                increment(player, flightViolation, violation);
+                if(violation > magic.FLIGHT_LIMIT)
+                {
+                    return true;
+                }
+                else
                 {
                     return false;
                 }
             }
-            int violation = flightViolation.containsKey(name) ? flightViolation.get(name)+1 : 1;
-            increment(player, flightViolation, violation);
-            if(violation > magic.FLIGHT_LIMIT)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
-        else
-        {
-            flightViolation.put(name, 0);
-            return false;
-        }
+        flightViolation.put(name, 0);
+        return false;
     }
 
     public void logAscension(Player player, double y1, double y2)

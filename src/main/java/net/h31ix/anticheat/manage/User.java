@@ -80,19 +80,14 @@ public class User
             if(level == med)
             {
                 Anticheat.getManager().getUserManager().alertMed(this, type);
-                return true;
             }
             else if(level == high)
             {
                 Anticheat.getManager().getUserManager().alertHigh(this, type);
                 // Prevent the player from going over the high limit
                 level = high-10;
-                return true;
             }
-            else
-            {
-                return true;
-            }
+            return true;
         }
     }
     

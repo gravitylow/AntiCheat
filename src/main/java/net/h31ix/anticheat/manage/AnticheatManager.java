@@ -77,16 +77,25 @@ public class AnticheatManager
         fileLogger.setUseParentHandlers(false);
         fileLogger.addHandler(fileHandler);
     }
-
+    
     public void log(String message)
+    {
+        log(message, 0);
+    }
+
+    public void log(String message, int i)
     {
         if (getConfiguration().logConsole())
         {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED+message);
-        }
-        if (getConfiguration().getFileLogLevel() == LOG_LEVEL_HIGH)
+        }        
+        if(i == 0 && getConfiguration().getFileLogLevel() == LOG_LEVEL_HIGH) // Not an alert, normal log message
         {
-            fileLog(ChatColor.stripColor(message));
+            fileLog(message);          
+        }
+        else if(getConfiguration().getFileLogLevel() != 0)// alert
+        {
+            fileLog(message);            
         }
         logs.add(ChatColor.stripColor(message));
     }
@@ -103,9 +112,9 @@ public class AnticheatManager
         {
             return logs;
         }
-        for(int i = 1; i < 31; i++)
+        for(int i = logs.size()-1; i >= 0; i--)
         {
-            log.add(logs.get(logs.size() - i));
+            log.add(logs.get(i));
         }
         logs.clear();
         return log;
