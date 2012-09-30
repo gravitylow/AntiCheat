@@ -80,7 +80,7 @@ public class Backend
     private Map<String, Long> movingExempt = new HashMap<String, Long>();
     private Map<String, Long> blockTime = new HashMap<String, Long>();
     private Map<String, Integer> blocksDropped = new HashMap<String, Integer>();
-    
+
     private Magic magic;
     private AnticheatManager micromanage = null;
 
@@ -137,17 +137,17 @@ public class Backend
         velocitytrack.remove(pN);
         animated.remove(pN);
     }
-    
+
     public boolean checkFastBow(Player player, float force)
     {
         int ticks = (int)((((System.currentTimeMillis()-bowWindUp.get(player.getName()))*20)/1000)+3);
         bowWindUp.remove(player.getName());
         float f = (float) ticks / 20.0F;
         f = (f * f + f * 2.0F) / 3.0F;
-        f = f > 1.0F ? 1.0F : f;   
+        f = f > 1.0F ? 1.0F : f;
         return Math.abs(force-f) > magic.BOW_ERROR;
-    }    
-    
+    }
+
     public boolean checkProjectile(Player player)
     {
         increment(player, projectilesShot, 10);
@@ -164,8 +164,8 @@ public class Backend
             return time < magic.PROJECTILE_TIME_MIN;
         }
         return false;
-    } 
-    
+    }
+
     public boolean checkFastDrop(Player player)
     {
         increment(player, blocksDropped, 10);
@@ -181,7 +181,7 @@ public class Backend
             blocksDropped.remove(player.getName());
             return time < magic.DROP_TIME_MIN;
         }
-        return false;        
+        return false;
     }
 
     public boolean checkLongReachBlock(Player player, double x, double y, double z)
@@ -215,7 +215,7 @@ public class Backend
     public boolean checkNoFall(Player player, double y)
     {
         String name = player.getName();
-        if (player.getGameMode() != GameMode.CREATIVE && player.getVehicle() == null && !isMovingExempt(player) && !Utilities.isInWater(player))
+        if (player.getGameMode() != GameMode.CREATIVE && player.getVehicle() == null && !isMovingExempt(player) && !justPlaced(player) && !Utilities.isInWater(player))
         {
             if (player.getFallDistance() == 0)
             {
@@ -253,15 +253,15 @@ public class Backend
         {
             boolean speed = false;
             if (player.isFlying())
-            {              
+            {
                 speed = x > magic.XZ_SPEED_MAX_FLY || z > magic.XZ_SPEED_MAX_FLY;
             }
             else if (player.hasPotionEffect(PotionEffectType.SPEED))
-            {             
+            {
                 speed = x > magic.XZ_SPEED_MAX_POTION || z > magic.XZ_SPEED_MAX_POTION;
             }
             else if (player.isSprinting())
-            {                                 
+            {
                 speed = x > magic.XZ_SPEED_MAX_SPRINT || z > magic.XZ_SPEED_MAX_SPRINT;
             }
             else
@@ -416,7 +416,7 @@ public class Backend
             return 0;
         }
         if (from == to || from < to)
-        {    
+        {
             return 0;
         }
         if (Math.round(distance.getYDifference()) < 2)
@@ -506,7 +506,7 @@ public class Backend
         //Fix Y axis spam
         return false;
     }
-    
+
     public boolean checkTimer(Player player)
     {
     /*
@@ -532,7 +532,7 @@ public class Backend
         }*/
         return false;
     }
-    
+
     public boolean checkSight(Player player, Entity entity)
     {
         // Check to make sure the entity's head is not surrounded
@@ -547,22 +547,22 @@ public class Backend
             if(head.getRelative(BlockFace.SOUTH).getTypeId() != 0)
             {
                 solid = net.minecraft.server.Block.byId[head.getRelative(BlockFace.SOUTH).getTypeId()].material.isSolid();
-            }            
+            }
         }
         if(!solid)
         {
             if(head.getRelative(BlockFace.EAST).getTypeId() != 0)
             {
                 solid = net.minecraft.server.Block.byId[head.getRelative(BlockFace.EAST).getTypeId()].material.isSolid();
-            }            
+            }
         }
         if(!solid)
         {
             if(head.getRelative(BlockFace.WEST).getTypeId() != 0)
             {
                 solid = net.minecraft.server.Block.byId[head.getRelative(BlockFace.WEST).getTypeId()].material.isSolid();
-            }            
-        }   
+            }
+        }
         return solid ? true : player.hasLineOfSight(entity);
     }
 
@@ -579,7 +579,7 @@ public class Backend
         if(!isMovingExempt(player) && !Utilities.isInWater(player) && !Utilities.canStand(player.getLocation().getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock()))
         {
             Block block = player.getLocation().getBlock();
-            //Check if the player is climbing up water. 
+            //Check if the player is climbing up water.
             if(block.getRelative(BlockFace.NORTH).isLiquid() || block.getRelative(BlockFace.SOUTH).isLiquid() || block.getRelative(BlockFace.EAST).isLiquid() || block.getRelative(BlockFace.WEST).isLiquid())
             {
                 if(y1 < y2)
@@ -635,7 +635,7 @@ public class Backend
             max += 12;
         }
         Block block = player.getLocation().getBlock();
-        if (!isMovingExempt(player) && !Utilities.isInWater(player) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && !player.isInsideVehicle())
+        if (!isMovingExempt(player) && !Utilities.isInWater(player) && !justBroke(player) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && !player.isInsideVehicle())
         {
             String name = player.getName();
             if (y1 < y2)
@@ -831,7 +831,7 @@ public class Backend
         {
             long l = lastHeal.get(player.getName());
             lastHeal.remove(player.getName());
-            return (System.currentTimeMillis()-l) < magic.HEAL_TIME_MIN;         
+            return (System.currentTimeMillis()-l) < magic.HEAL_TIME_MIN;
         }
         return false;
     }
@@ -996,17 +996,17 @@ public class Backend
             case 2:
                 time = magic.KNOCKBACK_DAMAGE_TIME;
                 break;
-            case 3: 
+            case 3:
                 time = magic.EXPLOSION_DAMAGE_TIME;
                 break;
             default:
                 time = magic.DAMAGE_TIME;
                 break;
-                
+
         }
         movingExempt.put(player.getName(), System.currentTimeMillis()+time);
         // Only map in which termination time is calculated beforehand.
-    }   
+    }
 
     public void logEnterExit(final Player player)
     {
@@ -1059,7 +1059,7 @@ public class Backend
     @SuppressWarnings("unchecked")
     private void logEvent(@SuppressWarnings("rawtypes") final Map map, final Player player, final Object obj, long time)
     {
-        
+
         map.put(player.getName(), obj);
         micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable()
         {
@@ -1077,7 +1077,7 @@ public class Backend
             }
         }, time);
     }
-    
+
     private boolean isDoing(Player player, Map<String, Long> map, double max)
     {
         if(map.containsKey(player.getName()))
@@ -1100,7 +1100,7 @@ public class Backend
                 if(map.get(player.getName()) < System.currentTimeMillis())
                 {
                     map.remove(player.getName());
-                    return false;                    
+                    return false;
                 }
                 else
                 {
@@ -1111,7 +1111,7 @@ public class Backend
         else
         {
             return false;
-        }        
+        }
     }
 
     private void checkChatLevel(Player player, int amount)
