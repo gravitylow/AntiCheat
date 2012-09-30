@@ -401,8 +401,6 @@ public class Magic
         else
         {
             int i = defaults.getInt(path);
-            System.out.println("Loading "+path+" into magic");
-            System.out.println("DEFAULT: "+i);
             magic.set(path, i);
             config.saveMagic(magic);
             return i;
