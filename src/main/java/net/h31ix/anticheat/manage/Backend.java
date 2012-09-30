@@ -574,8 +574,8 @@ public class Backend
             return false;
         }
         String name = player.getName();
-        int y1 = (int)distance.fromY();
-        int y2 = (int)distance.toY();
+        double y1 = distance.fromY();
+        double y2 = distance.toY();
         if(!isMovingExempt(player) && !Utilities.isInWater(player) && !Utilities.canStand(player.getLocation().getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock()))
         {
             Block block = player.getLocation().getBlock();
