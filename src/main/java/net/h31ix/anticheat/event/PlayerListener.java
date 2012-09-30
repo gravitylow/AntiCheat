@@ -226,16 +226,9 @@ public class PlayerListener extends EventListener
     public void onPlayerDropItem(PlayerDropItemEvent event)
     {
         Player player = event.getPlayer();
-        if (checkManager.willCheck(player, CheckType.ITEM_SPAM))
+        if (checkManager.willCheck(player, CheckType.ITEM_SPAM) && backend.checkFastDrop(player))
         {
-            if (backend.justDroppedItem(player))
-            {
-                event.setCancelled(!config.silentMode());
-            }
-            else
-            {
-                backend.logDroppedItem(player);
-            }
+            event.setCancelled(!config.silentMode());
         }
     }
 

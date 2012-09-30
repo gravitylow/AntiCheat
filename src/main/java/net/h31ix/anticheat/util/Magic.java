@@ -18,7 +18,10 @@
 
 package net.h31ix.anticheat.util;
 
+import net.h31ix.anticheat.Anticheat;
+import net.h31ix.anticheat.util.yaml.CommentedConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * Magic number class. Modifications to values in magic.yml will be accepted here.
@@ -85,13 +88,21 @@ public class Magic
      */
     public final int DROPPED_ITEM_TIME;
     /**
-     * Time to wait in between firing a given number projectiles; Type=system, +Leniency=Decrease.
+     * Minimum time it takes to fire X projectiles; Type=system, +Leniency=Decrease.
      */    
     public final int PROJECTILE_TIME_MIN;
     /**
      * Number of projectiles to wait for before checking how long they took to fire off; Type=integer.
      */     
     public final int PROJECTILE_CHECK;
+    /**
+     * Minimum time it takes to drop X items; Type=system, +Leniency=Decrease.
+     */    
+    public final int DROP_TIME_MIN;
+    /**
+     * Number of item drops to wait for before checking how long they took to drop; Type=integer.
+     */     
+    public final int DROP_CHECK;    
     /**
      * Max number of blocks that can be broken in a given time; Type=integer, +Leniency=Increase.
      */     
@@ -299,73 +310,134 @@ public class Magic
     /**
      * Maximum times a player can fail the speed check before action is taken; Type=integer, +Leniency=Increase.
      */
-    public final int SPEED_MAX;     
+    public final int SPEED_MAX;    
     
-    public Magic(FileConfiguration magic)
+    private FileConfiguration defaults;
+    private CommentedConfiguration magic;
+    private Configuration config;
+    
+    public Magic(CommentedConfiguration magic, Configuration config, FileConfiguration defaults)
     { 
-         ENTERED_EXITED_TIME = magic.getInt("ENTERED_EXITED_TIME");
-         SNEAK_TIME = magic.getInt("SNEAK_TIME");
-         TELEPORT_TIME = magic.getInt("TELEPORT_TIME");
-         EXIT_FLY_TIME = magic.getInt("EXIT_FLY_TIME");
-         JOIN_TIME = magic.getInt("JOIN_TIME");    
-         INSTANT_BREAK_TIME = magic.getInt("INSTANT_BREAK_TIME"); 
-         DAMAGE_TIME = magic.getLong("DAMAGE_TIME");
-         KNOCKBACK_DAMAGE_TIME = magic.getLong("KNOCKBACK_DAMAGE_TIME");  
-         EXPLOSION_DAMAGE_TIME = magic.getLong("EXPLOSION_DAMAGE_TIME");    
-         DROPPED_ITEM_TIME = magic.getInt("DROPPED_ITEM_TIME");   
-         PROJECTILE_TIME_MIN = magic.getInt("PROJECTILE_TIME_MIN");    
-         PROJECTILE_CHECK = magic.getInt("PROJECTILE_CHECK");   
-         FASTBREAK_LIMIT = magic.getInt("FASTBREAK_LIMIT");    
-         FASTBREAK_TIMEMAX = magic.getInt("FASTBREAK_TIMEMAX");     
-         FASTBREAK_MAXVIOLATIONS = magic.getInt("FASTBREAK_MAXVIOLATIONS");
-         FASTBREAK_MAXVIOLATIONS_CREATIVE = magic.getInt("FASTBREAK_MAXVIOLATIONS_CREATIVE");   
-         FASTBREAK_MAXVIOLATIONTIME = magic.getInt("FASTBREAK_MAXVIOLATIONTIME");     
-         FASTPLACE_ZEROLIMIT = magic.getInt("FASTPLACE_ZEROLIMIT");
-         FASTPLACE_TIMEMAX = magic.getInt("FASTPLACE_TIMEMAX");
-         FASTPLACE_MAXVIOLATIONS = magic.getInt("FASTPLACE_MAXVIOLATIONS");
-         FASTPLACE_MAXVIOLATIONS_CREATIVE = magic.getInt("FASTPLACE_MAXVIOLATIONS_CREATIVE");
-         FASTPLACE_MAXVIOLATIONTIME = magic.getInt("FASTPLACE_MAXVIOLATIONTIME");
-         BLOCK_PUNCH_MIN = magic.getInt("BLOCK_PUNCH_MIN");
-         CHAT_WARN_LEVEL = magic.getInt("CHAT_WARN_LEVEL");
-         CHAT_KICK_LEVEL = magic.getInt("CHAT_KICK_LEVEL");
-         CHAT_BAN_LEVEL = magic.getInt("CHAT_BAN_LEVEL");
-         FLIGHT_LIMIT = magic.getInt("FLIGHT_LIMIT");
-         WATER_CLIMB_MAX = magic.getDouble("WATER_CLIMB_MAX");
-         Y_MAXVIOLATIONS = magic.getInt("Y_MAXVIOLATIONS");
-         Y_MAXVIOTIME = magic.getInt("Y_MAXVIOTIME");
-         VELOCITY_TIME = magic.getInt("VELOCITY_TIME");   
-         VELOCITY_SCHETIME = magic.getLong("VELOCITY_SCHETIME");
-         VELOCITY_CHECKTIME = magic.getLong("VELOCITY_CHECKTIME");
-         VELOCITY_PREVENT = magic.getLong("VELOCITY_PREVENT");
-         VELOCITY_MAXTIMES = magic.getInt("VELOCITY_MAXTIMES");
-         NOFALL_LIMIT = magic.getInt("NOFALL_LIMIT");
-         ASCENSION_COUNT_MAX = magic.getInt("ASCENSION_COUNT_MAX");
-         WATER_ASCENSION_VIOLATION_MAX = magic.getInt("WATER_ASCENSION_VIOLATION_MAX");
-         WATER_SPEED_VIOLATION_MAX = magic.getInt("WATER_SPEED_VIOLATION_MAX");
-         SPRINT_FOOD_MIN = magic.getInt("SPRINT_FOOD_MIN");
-         ANIMATION_MIN = magic.getInt("ANIMATION_MIN");
-         CHAT_MIN = magic.getInt("CHAT_MIN");
-         CHAT_REPEAT_MIN = magic.getInt("CHAT_REPEAT_MIN");
-         SPRINT_MIN = magic.getDouble("SPRINT_MIN");
-         BLOCK_BREAK_MIN = magic.getDouble("BLOCK_BREAK_MIN");
-         BLOCK_PLACE_MIN = magic.getDouble("BLOCK_PLACE_MIN");
-         HEAL_TIME_MIN = magic.getLong("HEAL_TIME_MIN");
-         EAT_TIME_MIN = magic.getLong("EAT_TIME_MIN");
-         BOW_ERROR = magic.getDouble("BOW_ERROR");
-         BLOCK_MAX_DISTANCE = magic.getDouble("BLOCK_MAX_DISTANCE");
-         ENTITY_MAX_DISTANCE = magic.getDouble("ENTITY_MAX_DISTANCE");
-         LADDER_Y_MAX = magic.getDouble("LADDER_Y_MAX");
-         LADDER_Y_MIN = magic.getDouble("LADDER_Y_MIN");
-         Y_SPEED_MAX = magic.getDouble("Y_SPEED_MAX");
-         Y_MAXDIFF = magic.getDouble("Y_MAXDIFF");
-         Y_TIME = magic.getLong("Y_TIME ");
-         XZ_SPEED_MAX = magic.getDouble("XZ_SPEED_MAX");
-         XZ_SPEED_MAX_SPRINT = magic.getDouble("XZ_SPEED_MAX_SPRINT");
-         XZ_SPEED_MAX_FLY = magic.getDouble("XZ_SPEED_MAX_FLY");
-         XZ_SPEED_MAX_POTION = magic.getDouble("XZ_SPEED_MAX_POTION");
-         XZ_SPEED_MAX_SNEAK = magic.getDouble("XZ_SPEED_MAX_SNEAK");
-         XZ_SPEED_MAX_WATER = magic.getDouble("XZ_SPEED_MAX_WATER");
-         XZ_SPEED_MAX_WATER_SPRINT = magic.getDouble("XZ_SPEED_MAX_WATER_SPRINT");
-         SPEED_MAX = magic.getInt("SPEED_MAX");         
+         this.magic = magic;
+         this.config = config;
+         this.defaults = defaults;
+         
+         // 
+         
+         ENTERED_EXITED_TIME = getInt("ENTERED_EXITED_TIME");
+         SNEAK_TIME = getInt("SNEAK_TIME");
+         TELEPORT_TIME = getInt("TELEPORT_TIME");
+         EXIT_FLY_TIME = getInt("EXIT_FLY_TIME");
+         JOIN_TIME = getInt("JOIN_TIME");    
+         INSTANT_BREAK_TIME = getInt("INSTANT_BREAK_TIME"); 
+         DAMAGE_TIME = getLong("DAMAGE_TIME");
+         KNOCKBACK_DAMAGE_TIME = getLong("KNOCKBACK_DAMAGE_TIME");  
+         EXPLOSION_DAMAGE_TIME = getLong("EXPLOSION_DAMAGE_TIME");    
+         DROPPED_ITEM_TIME = getInt("DROPPED_ITEM_TIME");   
+         PROJECTILE_TIME_MIN = getInt("PROJECTILE_TIME_MIN");    
+         PROJECTILE_CHECK = getInt("PROJECTILE_CHECK");   
+         DROP_TIME_MIN = getInt("DROP_TIME_MIN");    
+         DROP_CHECK = getInt("DROP_CHECK");           
+         FASTBREAK_LIMIT = getInt("FASTBREAK_LIMIT");    
+         FASTBREAK_TIMEMAX = getInt("FASTBREAK_TIMEMAX");     
+         FASTBREAK_MAXVIOLATIONS = getInt("FASTBREAK_MAXVIOLATIONS");
+         FASTBREAK_MAXVIOLATIONS_CREATIVE = getInt("FASTBREAK_MAXVIOLATIONS_CREATIVE");   
+         FASTBREAK_MAXVIOLATIONTIME = getInt("FASTBREAK_MAXVIOLATIONTIME");     
+         FASTPLACE_ZEROLIMIT = getInt("FASTPLACE_ZEROLIMIT");
+         FASTPLACE_TIMEMAX = getInt("FASTPLACE_TIMEMAX");
+         FASTPLACE_MAXVIOLATIONS = getInt("FASTPLACE_MAXVIOLATIONS");
+         FASTPLACE_MAXVIOLATIONS_CREATIVE = getInt("FASTPLACE_MAXVIOLATIONS_CREATIVE");
+         FASTPLACE_MAXVIOLATIONTIME = getInt("FASTPLACE_MAXVIOLATIONTIME");
+         BLOCK_PUNCH_MIN = getInt("BLOCK_PUNCH_MIN");
+         CHAT_WARN_LEVEL = getInt("CHAT_WARN_LEVEL");
+         CHAT_KICK_LEVEL = getInt("CHAT_KICK_LEVEL");
+         CHAT_BAN_LEVEL = getInt("CHAT_BAN_LEVEL");
+         FLIGHT_LIMIT = getInt("FLIGHT_LIMIT");
+         WATER_CLIMB_MAX = getDouble("WATER_CLIMB_MAX");
+         Y_MAXVIOLATIONS = getInt("Y_MAXVIOLATIONS");
+         Y_MAXVIOTIME = getInt("Y_MAXVIOTIME");
+         VELOCITY_TIME = getInt("VELOCITY_TIME");   
+         VELOCITY_SCHETIME = getLong("VELOCITY_SCHETIME");
+         VELOCITY_CHECKTIME = getLong("VELOCITY_CHECKTIME");
+         VELOCITY_PREVENT = getLong("VELOCITY_PREVENT");
+         VELOCITY_MAXTIMES = getInt("VELOCITY_MAXTIMES");
+         NOFALL_LIMIT = getInt("NOFALL_LIMIT");
+         ASCENSION_COUNT_MAX = getInt("ASCENSION_COUNT_MAX");
+         WATER_ASCENSION_VIOLATION_MAX = getInt("WATER_ASCENSION_VIOLATION_MAX");
+         WATER_SPEED_VIOLATION_MAX = getInt("WATER_SPEED_VIOLATION_MAX");
+         SPRINT_FOOD_MIN = getInt("SPRINT_FOOD_MIN");
+         ANIMATION_MIN = getInt("ANIMATION_MIN");
+         CHAT_MIN = getInt("CHAT_MIN");
+         CHAT_REPEAT_MIN = getInt("CHAT_REPEAT_MIN");
+         SPRINT_MIN = getDouble("SPRINT_MIN");
+         BLOCK_BREAK_MIN = getDouble("BLOCK_BREAK_MIN");
+         BLOCK_PLACE_MIN = getDouble("BLOCK_PLACE_MIN");
+         HEAL_TIME_MIN = getLong("HEAL_TIME_MIN");
+         EAT_TIME_MIN = getLong("EAT_TIME_MIN");
+         BOW_ERROR = getDouble("BOW_ERROR");
+         BLOCK_MAX_DISTANCE = getDouble("BLOCK_MAX_DISTANCE");
+         ENTITY_MAX_DISTANCE = getDouble("ENTITY_MAX_DISTANCE");
+         LADDER_Y_MAX = getDouble("LADDER_Y_MAX");
+         LADDER_Y_MIN = getDouble("LADDER_Y_MIN");
+         Y_SPEED_MAX = getDouble("Y_SPEED_MAX");
+         Y_MAXDIFF = getDouble("Y_MAXDIFF");
+         Y_TIME = getLong("Y_TIME");
+         XZ_SPEED_MAX = getDouble("XZ_SPEED_MAX");
+         XZ_SPEED_MAX_SPRINT = getDouble("XZ_SPEED_MAX_SPRINT");
+         XZ_SPEED_MAX_FLY = getDouble("XZ_SPEED_MAX_FLY");
+         XZ_SPEED_MAX_POTION = getDouble("XZ_SPEED_MAX_POTION");
+         XZ_SPEED_MAX_SNEAK = getDouble("XZ_SPEED_MAX_SNEAK");
+         XZ_SPEED_MAX_WATER = getDouble("XZ_SPEED_MAX_WATER");
+         XZ_SPEED_MAX_WATER_SPRINT = getDouble("XZ_SPEED_MAX_WATER_SPRINT");
+         SPEED_MAX = getInt("SPEED_MAX");         
     }
+    
+    private int getInt(String path)
+    {
+        if(magic.contains(path))
+        {
+            return magic.getInt(path);
+        }
+        else
+        {
+            int i = defaults.getInt(path);
+            System.out.println("Loading "+path+" into magic");
+            System.out.println("DEFAULT: "+i);
+            magic.set(path, i);
+            config.saveMagic(magic);
+            return i;
+        }
+    }
+    
+    private double getDouble(String path)
+    {
+        if(magic.contains(path))
+        {
+            return magic.getDouble(path);
+        }
+        else
+        {
+            double i = defaults.getDouble(path);
+            magic.set(path, i);
+            config.saveMagic(magic);
+            return i;
+        }
+    }
+    
+    private long getLong(String path)
+    {
+        if(magic.contains(path))
+        {
+            return magic.getLong(path);
+        }
+        else
+        {
+            long i = defaults.getLong(path);
+            magic.set(path, i);
+            config.saveMagic(magic);
+            return i;
+        }
+    }    
+    
+    
 }

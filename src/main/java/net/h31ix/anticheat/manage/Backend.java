@@ -25,12 +25,14 @@ import java.util.Map;
 import net.h31ix.anticheat.util.Distance;
 import net.h31ix.anticheat.util.Magic;
 import net.h31ix.anticheat.util.Utilities;
+import net.h31ix.anticheat.util.yaml.CommentedConfiguration;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -77,23 +79,24 @@ public class Backend
     private Map<String, Long> brokenBlock = new HashMap<String, Long>();
     private Map<String, Long> placedBlock = new HashMap<String, Long>();
     private Map<String, Long> movingExempt = new HashMap<String, Long>();
-    private Map<String, Long> droppedItem = new HashMap<String, Long>();
+    private Map<String, Long> blockTime = new HashMap<String, Long>();
+    private Map<String, Integer> blocksDropped = new HashMap<String, Integer>();
     
     private Magic magic;
     private AnticheatManager micromanage = null;
 
     public Backend(AnticheatManager instance)
     {
-        magic = new Magic(instance.getConfiguration().getMagic());
+        magic = new Magic(instance.getConfiguration().getMagic(), instance.getConfiguration(), CommentedConfiguration.loadConfiguration(instance.getPlugin().getResource("magic.yml")));
         micromanage = instance;
     }
 
     public void buildAdvancedInformation(StringBuilder r)
     {
-        r.append("Dropped Items List:" + '\n');
-        for (String l : droppedItem.keySet())
+        //r.append("Dropped Items List:" + '\n');
+        //for (String l : droppedItem.keySet())
         {
-            r.append(l + '\n');
+            //r.append(l + '\n');
         }
         r.append("Moving Exempt List:" + '\n');
         for (String l : movingExempt.keySet())
@@ -160,7 +163,7 @@ public class Backend
         {
             micromanage.getUserManager().remove(user);
         }
-        droppedItem.remove(pN);
+        //droppedItem.remove(pN);
         movingExempt.remove(pN);
         brokenBlock.remove(pN);
         placedBlock.remove(pN);
@@ -225,7 +228,25 @@ public class Backend
             return time < magic.PROJECTILE_TIME_MIN;
         }
         return false;
-    }    
+    } 
+    
+    public boolean checkFastDrop(Player player)
+    {
+        increment(player, blocksDropped, 10);
+        if (!blockTime.containsKey(player.getName()))
+        {
+            blockTime.put(player.getName(), System.currentTimeMillis());
+            return false;
+        }
+        else if(blocksDropped.get(player.getName()) == magic.DROP_CHECK)
+        {
+            long time = System.currentTimeMillis()-blockTime.get(player.getName());
+            blockTime.remove(player.getName());
+            blocksDropped.remove(player.getName());
+            return time < magic.DROP_TIME_MIN;
+        }
+        return false;        
+    }
 
     public boolean checkLongReachBlock(Player player, double x, double y, double z)
     {
@@ -1097,16 +1118,6 @@ public class Backend
     public boolean isSpeedExempt(Player player)
     {
         return isMovingExempt(player) || justVelocity(player);
-    }
-
-    public void logDroppedItem(final Player player)
-    {
-        droppedItem.put(player.getName(), System.currentTimeMillis());
-    }
-
-    public boolean justDroppedItem(Player player)
-    {
-        return isDoing(player, droppedItem, magic.DROPPED_ITEM_TIME);
     }
 
     @SuppressWarnings("unchecked")

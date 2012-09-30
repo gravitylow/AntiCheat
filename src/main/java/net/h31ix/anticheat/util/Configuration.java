@@ -283,4 +283,16 @@ public class Configuration
             Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void saveMagic(CommentedConfiguration newMagic)
+    {
+        try
+        {
+            newMagic.save(magicFile);
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+    }
 }
