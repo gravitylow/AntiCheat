@@ -20,6 +20,7 @@ package net.h31ix.anticheat;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.h31ix.anticheat.util.Calibrator;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.User;
 import net.h31ix.anticheat.manage.UserManager;
@@ -310,6 +311,27 @@ public class CommandHandler implements CommandExecutor
         }
     }
 
+    public void handleCalibrate(CommandSender cs)
+    {
+        if(cs instanceof Player)
+        {
+            if (Permission.SYSTEM_CALIBRATE.get(cs))
+            {
+                Calibrator c = new Calibrator((Player)cs);
+                SERVER.getPluginManager().registerEvents(c, Anticheat.getPlugin());
+                c.calibrate();
+            }
+            else
+            {
+                cs.sendMessage(PERMISSIONS_ERROR);
+            }
+        }
+        else
+        {
+            cs.sendMessage(RED + "Sorry, but you cannot calibrate from console.");
+        }
+    }
+
     public void handleReport(CommandSender cs, String[] args)
     {
         if (Permission.SYSTEM_REPORT.get(cs))
@@ -319,7 +341,7 @@ public class CommandHandler implements CommandExecutor
             {
                 String group = args[1];
                 if(group.equalsIgnoreCase("low"))
-                {    
+                {
                     int num = getReportPageNum(args);
                     if (num > 0)
                     {
@@ -328,7 +350,7 @@ public class CommandHandler implements CommandExecutor
                     else
                     {
                         cs.sendMessage(RED + "Not a valid page number: " + WHITE + args[2]);
-                    }                      
+                    }
                 }
                 else if(group.equalsIgnoreCase("medium"))
                 {
@@ -340,8 +362,8 @@ public class CommandHandler implements CommandExecutor
                     else
                     {
                         cs.sendMessage(RED + "Not a valid page number: " + WHITE + args[2]);
-                    }                      
-                }                
+                    }
+                }
                 if(group.equalsIgnoreCase("high"))
                 {
                     int num = getReportPageNum(args);
@@ -352,7 +374,7 @@ public class CommandHandler implements CommandExecutor
                     else
                     {
                         cs.sendMessage(RED + "Not a valid page number: " + WHITE + args[2]);
-                    }                     
+                    }
                 }
             }
         }
@@ -361,7 +383,7 @@ public class CommandHandler implements CommandExecutor
             cs.sendMessage(PERMISSIONS_ERROR);
         }
     }
-    
+
     public int getReportPageNum(String [] args)
     {
         if (args.length == 2)
@@ -375,12 +397,12 @@ public class CommandHandler implements CommandExecutor
         else
         {
             return -1;
-        }         
+        }
     }
-    
+
     public void sendReport(CommandSender cs, List<String> players, String group, ChatColor color, int page)
     {
-        int pages = (int)Math.ceil(((float)players.size())/7);    
+        int pages = (int)Math.ceil(((float)players.size())/7);
         if(page <= pages && page > 0)
         {
             cs.sendMessage("--------------------[" + GREEN + "REPORT[" + page + "/"+pages+"]" + WHITE + "]---------------------");
@@ -401,8 +423,8 @@ public class CommandHandler implements CommandExecutor
             if(pages == 0)
             {
                 cs.sendMessage("--------------------[" + GREEN + "REPORT[1/1]" + WHITE + "]---------------------");
-                cs.sendMessage(GRAY + "Group: " + color + group);    
-                cs.sendMessage(GRAY + "There are no users in this group."); 
+                cs.sendMessage(GRAY + "Group: " + color + group);
+                cs.sendMessage(GRAY + "There are no users in this group.");
                 cs.sendMessage("-----------------------------------------------------");
             }
             else
@@ -410,7 +432,7 @@ public class CommandHandler implements CommandExecutor
                 cs.sendMessage(RED+"Page not found. Requested "+WHITE+page+RED+", Max "+WHITE+pages);
             }
         }
-    }    
+    }
 
     public void handlePlayerReport(CommandSender cs, String[] args)
     {
@@ -477,7 +499,7 @@ public class CommandHandler implements CommandExecutor
         else if (level >= config.highThreshold())
         {
             levelString = RED + "High";
-        }       
+        }
         if(page <= pages && page > 0)
         {
             cs.sendMessage("--------------------[" + GREEN + "REPORT[" + page + "/"+pages+"]" + WHITE + "]---------------------");
@@ -509,8 +531,8 @@ public class CommandHandler implements CommandExecutor
             {
                 cs.sendMessage("--------------------[" + GREEN + "REPORT[1/1]" + WHITE + "]---------------------");
                 cs.sendMessage(GRAY + "Player: " + WHITE + name);
-                cs.sendMessage(GRAY + "Level: " + levelString);      
-                cs.sendMessage(GRAY + "This user has not failed any checks."); 
+                cs.sendMessage(GRAY + "Level: " + levelString);
+                cs.sendMessage(GRAY + "This user has not failed any checks.");
                 cs.sendMessage("-----------------------------------------------------");
             }
             else
@@ -576,7 +598,7 @@ public class CommandHandler implements CommandExecutor
                 }
                 else
                 {
-                    handlePlayerReport(cs, args);  
+                    handlePlayerReport(cs, args);
                 }
             }
             else
@@ -602,7 +624,7 @@ public class CommandHandler implements CommandExecutor
                 cs.sendMessage(ChatColor.GREEN+"To see the report of an AntiCheat group, type it's name, like so:");
                 cs.sendMessage(ChatColor.WHITE+"/anticheat report [low/medium/high]");
                 cs.sendMessage(ChatColor.GRAY+" - This will allow you to see which players are good, and which could be hacking.");
-            }            
+            }
             else if (args[0].equalsIgnoreCase("reload"))
             {
                 handleReload(cs);
@@ -610,6 +632,10 @@ public class CommandHandler implements CommandExecutor
             else if (args[0].equalsIgnoreCase("update"))
             {
                 handleUpdate(cs);
+            }
+            else if (args[0].equalsIgnoreCase("calibrate"))
+            {
+                handleCalibrate(cs);
             }
             else
             {

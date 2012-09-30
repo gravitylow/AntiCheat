@@ -57,6 +57,7 @@ public enum Permission
     SYSTEM_UPDATE,
     SYSTEM_REPORT,
     SYSTEM_ALERT,
+    SYSTEM_CALIBRATE,
     SYSTEM_RELOAD;
 
     public boolean get(CommandSender cs)

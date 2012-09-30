@@ -23,6 +23,8 @@ permissions:
     description: Spy system access
   anticheat.system.xray:
     description: XRay info access
+  anticheat.system.calibrate:
+    description: Calibrate info access
   anticheat.mod:
     description: Mod helper perm
     children:
@@ -47,6 +49,7 @@ permissions:
       anticheat.system.reload: true
       anticheat.system.reset: true
       anticheat.system.update: true
+      anticheat.system.calibrate: true
   anticheat.check.zombe.fly:
     description: Allow players to use zombe flymod
     default: false
@@ -115,10 +118,10 @@ permissions:
     default: false
   anticheat.check.visual:
     description: Allow players to interact with objects out of their view
-    default: false    
+    default: false
   anticheat.check.vclip:
     description: Allow players to become slimeballs and clip down through blocks
-    default: false    
+    default: false
   anticheat.check.exempt:
     description: Total exemption from checks
     default: false
