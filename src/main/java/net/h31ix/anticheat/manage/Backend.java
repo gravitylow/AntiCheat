@@ -186,7 +186,14 @@ public class Backend
 
     public boolean checkLongReachBlock(Player player, double x, double y, double z)
     {
-        return (x >= magic.BLOCK_MAX_DISTANCE || y > magic.BLOCK_MAX_DISTANCE || z > magic.BLOCK_MAX_DISTANCE);
+        if(isInstantBreakExempt(player))
+        {
+            return false;
+        }
+        else
+        {
+            return (x >= magic.BLOCK_MAX_DISTANCE || y > magic.BLOCK_MAX_DISTANCE || z > magic.BLOCK_MAX_DISTANCE);
+        }
     }
 
     public boolean checkLongReachDamage(double x, double y, double z)

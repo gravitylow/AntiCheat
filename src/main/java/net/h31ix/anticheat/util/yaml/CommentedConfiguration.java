@@ -24,9 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
@@ -41,19 +39,19 @@ import org.yaml.snakeyaml.representer.Representer;
 public class CommentedConfiguration extends YamlConfiguration
 {
     private Map<Integer, String> comments = new HashMap<Integer, String>();
-    
+
     private final DumperOptions yamlOptions = new DumperOptions();
     private final Representer yamlRepresenter = new YamlRepresenter();
-    private final Yaml yaml = new Yaml(new YamlConstructor(), yamlRepresenter, yamlOptions);    
-    
+    private final Yaml yaml = new Yaml(new YamlConstructor(), yamlRepresenter, yamlOptions);
+
     @Override
     public String saveToString() {
         yamlOptions.setIndent(options().indent());
         yamlOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         yamlRepresenter.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        
+
         String dump = yaml.dump(getValues(false));
-        
+
         if (dump.equals(BLANK_CONFIG)) {
             dump = "";
         } else {
@@ -74,14 +72,14 @@ public class CommentedConfiguration extends YamlConfiguration
 
         return dump;
     }
-    
+
     @Override
     public void load(InputStream stream) throws IOException, InvalidConfigurationException {
 
         InputStreamReader reader = new InputStreamReader(stream);
         StringBuilder builder = new StringBuilder();
         BufferedReader input = new BufferedReader(reader);
-        
+
         try {
             String line;
             int i = 0;
@@ -98,8 +96,8 @@ public class CommentedConfiguration extends YamlConfiguration
         }
 
         loadFromString(builder.toString());
-    }    
-    
+    }
+
     public static CommentedConfiguration loadConfig(File file) {
 
         CommentedConfiguration config = new CommentedConfiguration();
@@ -113,5 +111,5 @@ public class CommentedConfiguration extends YamlConfiguration
         }
 
         return config;
-    }    
+    }
 }
