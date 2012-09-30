@@ -94,8 +94,6 @@ public class PastebinReport
         }
         report.append("------------Permission Tester------------" + '\n');
         appendPermissionsTester(player);
-        report.append("------------Advanced Information------------" + '\n');
-        Anticheat.getManager().getBackend().buildAdvancedInformation(report);
         report.append("-----------End Of Report------------");
     }
 

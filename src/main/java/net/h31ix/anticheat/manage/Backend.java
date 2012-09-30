@@ -91,70 +91,6 @@ public class Backend
         micromanage = instance;
     }
 
-    public void buildAdvancedInformation(StringBuilder r)
-    {
-        //r.append("Dropped Items List:" + '\n');
-        //for (String l : droppedItem.keySet())
-        {
-            //r.append(l + '\n');
-        }
-        r.append("Moving Exempt List:" + '\n');
-        for (String l : movingExempt.keySet())
-        {
-            r.append(l + '\n');
-        }
-        r.append("Broken Block List:" + '\n');
-        for (String l : brokenBlock.keySet())
-        {
-            r.append(l + '\n');
-        }
-        r.append("Placed Block List:" + '\n');
-        for (String l : placedBlock.keySet())
-        {
-            r.append(l + '\n');
-        }
-        r.append("Bow Wind Up List:" + '\n');
-        for (String l : bowWindUp.keySet())
-        {
-            r.append(l + '\n');
-        }
-        r.append("Start Eating List:" + '\n');
-        for (String l : startEat.keySet())
-        {
-            r.append(l + '\n');
-        }
-        r.append("Healed List:" + '\n');
-        for (String l : lastHeal.keySet())
-        {
-            r.append(l + '\n');
-        }
-        r.append("Sprinted List:" + '\n');
-        for (String l : sprinted.keySet())
-        {
-            r.append(l + '\n');
-        }
-        r.append("Is In Water List:" + '\n');
-        for (String l : isInWater)
-        {
-            r.append(l + '\n');
-        }
-        r.append("Is In Water (cached) List:" + '\n');
-        for (String l : isInWaterCache)
-        {
-            r.append(l + '\n');
-        }
-        r.append("Instant Break Exempt List:" + '\n');
-        for (String l : instantBreakExempt.keySet())
-        {
-            r.append(l + '\n');
-        }
-        r.append("Is Ascending List:" + '\n');
-        for (String l : isAscending)
-        {
-            r.append(l + '\n');
-        }
-    }
-
     public void garbageClean(Player player)
     {
         String pN = player.getName();
@@ -163,7 +99,8 @@ public class Backend
         {
             micromanage.getUserManager().remove(user);
         }
-        //droppedItem.remove(pN);
+        blocksDropped.remove(pN);
+        blockTime.remove(pN);
         movingExempt.remove(pN);
         brokenBlock.remove(pN);
         placedBlock.remove(pN);
