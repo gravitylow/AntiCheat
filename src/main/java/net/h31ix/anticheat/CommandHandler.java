@@ -633,10 +633,10 @@ public class CommandHandler implements CommandExecutor
             {
                 handleUpdate(cs);
             }
-            else if (args[0].equalsIgnoreCase("calibrate"))
+            /**else if (args[0].equalsIgnoreCase("calibrate"))
             {
                 handleCalibrate(cs);
-            }
+            }*/
             else
             {
                 cs.sendMessage(RED + "Unrecognized command.");
