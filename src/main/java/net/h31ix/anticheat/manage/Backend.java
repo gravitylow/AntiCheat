@@ -116,7 +116,6 @@ public class Backend
         lastMessage.remove(pN);
         flightViolation.remove(pN);
         chatLevel.remove(pN);
-        chatKicks.remove(pN);
         nofallViolation.remove(pN);
         fastBreakViolation.remove(pN);
         yAxisViolations.remove(pN);
@@ -1125,7 +1124,7 @@ public class Backend
     {
         if (amount >= magic.CHAT_WARN_LEVEL)
         {
-            player.sendMessage(ChatColor.RED + "Please stop flooding the server!");
+            player.sendMessage(ChatColor.RED + "Stop flooding the server or you will be kicked!");
         }
         if (amount >= magic.CHAT_KICK_LEVEL)
         {
@@ -1134,15 +1133,15 @@ public class Backend
             if (chatKicks.get(name) == null || chatKicks.get(name) == 0)
             {
                 kick = 1;
-                chatKicks.put(name, 1);
+                chatKicks.put(name, kick);
             }
             else
             {
-                kick = (int) chatKicks.get(name) + 1;
+                kick = chatKicks.get(name) + 1;
                 chatKicks.put(name, kick);
             }
 
-            if (chatKicks.get(name) <= magic.CHAT_BAN_LEVEL)
+            if (kick <= magic.CHAT_BAN_LEVEL)
             {
                 player.kickPlayer(ChatColor.RED + "Spamming, kick " + kick + "/"+magic.CHAT_BAN_LEVEL);
                 micromanage.getPlugin().getServer().broadcastMessage(ChatColor.RED + player.getName() + " was kicked for spamming.");
