@@ -25,6 +25,7 @@ import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Distance;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -115,6 +116,15 @@ public class EntityListener extends EventListener
             if (event.getEntity() instanceof Player)
             {
                 Player player = (Player) event.getEntity();
+                // Keep players from shooting an arrow at themselves in order to fly
+                if(e.getDamager() instanceof Arrow)
+                {
+                    Arrow arrow = (Arrow)e.getDamager();
+                    if(arrow.getShooter() instanceof Player && event.getEntity() == arrow.getShooter())
+                    {
+                        event.setCancelled(true);
+                    }
+                }
                 if (e.getDamager() instanceof Player)
                 {
                     Player p = (Player) e.getDamager();
@@ -171,7 +181,7 @@ public class EntityListener extends EventListener
                     {
                         event.setCancelled(!config.silentMode());
                         log("tried to damage an entity that they couldn't see.", player, CheckType.FORCEFIELD);
-                        noHack = false;                    
+                        noHack = false;
                     }
                 }
                 if (noHack)
