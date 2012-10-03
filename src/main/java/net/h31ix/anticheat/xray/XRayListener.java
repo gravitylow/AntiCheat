@@ -22,6 +22,7 @@ import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.util.Configuration;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,6 +41,13 @@ public class XRayListener implements Listener
         if (config.logXRay())
         {
             Player p = event.getPlayer();
+            if(p.getGameMode() == GameMode.CREATIVE)
+            {
+                if(!config.trackCreativeXRay())
+                {
+                    return;
+                }
+            }
             String player = p.getName();
             if (checkManager.willCheck(p, CheckType.XRAY))
             {

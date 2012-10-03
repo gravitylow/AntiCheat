@@ -2,12 +2,15 @@
 # Please report any bugs: http://dev.bukkit.org/server-mods/anticheat/
 XRay:
   Log xray stats: true
+  # Should a warning be sent to admins when a person is found that could be xraying?
   Alert when xray is found: false
+  # Should players in creative mode be tracked for possible xray usage?
+  Track creative: true
 # Events occur when a player's hack level changes. You may configure reactions to these events here.
 # Valid events = NONE,WARN,KICK,BAN,COMMAND[command]
 # Use commands like so: COMMAND[ban &player 30] or COMMAND[kick &player hacking] or COMMAND[jail &player 10]
 # &player will be replaced with player's name, and any command on your server can be used.
-Events: 
+Events:
   Level Medium: WARN
   Level High: KICK
   # How many warnings should the player get before entering medium?

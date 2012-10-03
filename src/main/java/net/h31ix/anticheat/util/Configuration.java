@@ -49,6 +49,7 @@ public class Configuration
     private boolean commandSpam;
     private boolean silentMode;
     private boolean opExempt;
+    private boolean trackCreativeXRay;
     private int fileLogLevel = 0;
     private int medThreshold = 0;
     private int highThreshold = 0;
@@ -117,22 +118,27 @@ public class Configuration
     {
         return updateFolder;
     }
-    
+
     public boolean silentMode()
     {
         return silentMode;
-    }   
-    
+    }
+
     public boolean opExempt()
     {
         return opExempt;
-    }       
-    
+    }
+
+    public boolean trackCreativeXRay()
+    {
+        return trackCreativeXRay;
+    }
+
     public int medThreshold()
     {
         return medThreshold;
     }
-    
+
     public int highThreshold()
     {
         return highThreshold;
@@ -157,7 +163,7 @@ public class Configuration
         magic = CommentedConfiguration.loadConfig(magicFile);
         language = new Language(lang);
         updateFolder = Bukkit.getUpdateFolder();
-        
+
         // Begin pulling values from config.
         logConsole = getBoolean("System.Log to console", false);
         logXRay = getBoolean ("XRay.Log xray stats", true);
@@ -171,7 +177,8 @@ public class Configuration
         medThreshold = getInt("Events.Medium threshold", 20);
         highThreshold = getInt("Events.High threshold", 50);
         opExempt = getBoolean("System.Exempt op", false);
-        
+        trackCreativeXRay = getBoolean("XRay.Track creative", true);
+
         if (config.getList("Enable in") == null)
         {
             List<String> w = new ArrayList<String>();
@@ -182,11 +189,11 @@ public class Configuration
             config.set("Enable in", w);
             save();
         }
-        worlds = config.getStringList("Enable in");    
+        worlds = config.getStringList("Enable in");
         // End pulling values from config
         save();
     }
-    
+
     private boolean getBoolean(String entry, boolean d)
     {
         if (config.getString(entry) == null)
@@ -196,10 +203,10 @@ public class Configuration
         }
         else
         {
-            return config.getBoolean(entry);        
+            return config.getBoolean(entry);
         }
     }
-    
+
     private int getInt(String entry, int d)
     {
         if (config.getString(entry) == null)
@@ -209,7 +216,7 @@ public class Configuration
         }
         else
         {
-            return config.getInt(entry);   
+            return config.getInt(entry);
         }
     }
 
@@ -246,7 +253,7 @@ public class Configuration
     {
         return levelFile;
     }
-    
+
     public CommentedConfiguration getMagic()
     {
         return magic;
@@ -283,7 +290,7 @@ public class Configuration
             Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void saveMagic(CommentedConfiguration newMagic)
     {
         try
@@ -293,6 +300,6 @@ public class Configuration
         catch (IOException ex)
         {
             Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        }
     }
 }
