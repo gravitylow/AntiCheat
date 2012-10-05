@@ -32,6 +32,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -542,7 +543,7 @@ public class Backend
     public boolean checkSight(Player player, Entity entity)
     {
         // Check to make sure the entity's head is not surrounded
-        Block head = entity.getLocation().add(0, 1, 0).getBlock();
+        Block head = entity.getWorld().getBlockAt((int)entity.getLocation().getX(), (int)((CraftEntity)entity).getHandle().getHeadHeight(), (int)entity.getLocation().getZ());
         boolean solid = false;
         if(head.getRelative(BlockFace.NORTH).getTypeId() != 0)
         {

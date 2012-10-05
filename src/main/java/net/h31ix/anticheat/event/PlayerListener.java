@@ -61,7 +61,7 @@ public class PlayerListener extends EventListener
             }
         }
     }
-    
+
     @EventHandler
     public void onPlayerToggleFlight(PlayerToggleFlightEvent event)
     {
@@ -70,7 +70,7 @@ public class PlayerListener extends EventListener
             backend.logEnterExit(event.getPlayer());
         }
     }
-    
+
     @EventHandler
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent event)
     {
@@ -78,7 +78,7 @@ public class PlayerListener extends EventListener
         {
             backend.logEnterExit(event.getPlayer());
         }
-    }    
+    }
 
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent event)
@@ -380,14 +380,14 @@ public class PlayerListener extends EventListener
                             event.setTo(from);
                         }
                         log("tried to move too fast.", player, CheckType.SPEED);
-                    }   
+                    }
                 }
-            }            
+            }
             if (checkManager.willCheck(player, CheckType.WATER_WALK) && backend.checkWaterWalk(player, x, z))
             {
                 if (!config.silentMode())
                 {
-                    event.setTo(from);
+                    player.teleport(player.getLocation().add(0, -1, 0));
                 }
                 log("tried to walk on water.", player, CheckType.WATER_WALK);
             }
