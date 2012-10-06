@@ -18,17 +18,15 @@
 
 package net.h31ix.anticheat.util;
 
-import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.util.yaml.CommentedConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * Magic number class. Modifications to values in magic.yml will be accepted here.
  * <p>
  * Note that although each value is documented, changing it may have unintended side-effects. For instance, setting something to 0 that the plugin then uses as a dividend will result in an error.
  * <br>
- * Also realize that the smaller a value is, the less you should change it; it's probably small for a reason. The larger a value is, the safer it is to probably change it. 
+ * Also realize that the smaller a value is, the less you should change it; it's probably small for a reason. The larger a value is, the safer it is to probably change it.
  * <p>
  * <b>How to read the value documentation:</b>
  * <br>
@@ -49,7 +47,7 @@ public class Magic
 {
    /**
      * Time to exempt a player from moving because of entering/exiting a vehicle; Type=system, +Leniency=Increase.
-     */    
+     */
     public final int ENTERED_EXITED_TIME;
     /**
      * Time to exempt a player from moving because of entering/exiting sneak mode; Type=system, +Leniency=Increase.
@@ -65,15 +63,15 @@ public class Magic
     public final int EXIT_FLY_TIME;
     /**
      * Time to exempt a player from moving because of joining the server; Type=system, +Leniency=Increase.
-     */   
-    public final int JOIN_TIME;    
+     */
+    public final int JOIN_TIME;
     /**
      * Time to exempt a player from fastbreak check because of using instant break; Type=seconds, +Leniency=Increase.
      */
     public final int INSTANT_BREAK_TIME;
     /**
      * Time to exempt a player from moving because of taking damage; Type=system, +Leniency=Increase.
-     */    
+     */
     public final long DAMAGE_TIME;
     /**
      * Time to exempt a player from moving because of taking damage with knockback effects; Type=system, +Leniency=Increase.
@@ -81,75 +79,71 @@ public class Magic
     public final long KNOCKBACK_DAMAGE_TIME;
     /**
      * Time to exempt a player from moving because of taking damage from an explosion; Type=system, +Leniency=Increase.
-     */    
-    public final long EXPLOSION_DAMAGE_TIME;    
-    /**
-     * Time to wait in between item drops; Type=system, +Leniency=Decrease.
      */
-    public final int DROPPED_ITEM_TIME;
+    public final long EXPLOSION_DAMAGE_TIME;
     /**
      * Minimum time it takes to fire X projectiles; Type=system, +Leniency=Decrease.
-     */    
+     */
     public final int PROJECTILE_TIME_MIN;
     /**
      * Number of projectiles to wait for before checking how long they took to fire off; Type=integer.
-     */     
+     */
     public final int PROJECTILE_CHECK;
     /**
      * Minimum time it takes to drop X items; Type=system, +Leniency=Decrease.
-     */    
+     */
     public final int DROP_TIME_MIN;
     /**
      * Number of item drops to wait for before checking how long they took to drop; Type=integer.
-     */     
-    public final int DROP_CHECK;    
+     */
+    public final int DROP_CHECK;
     /**
      * Max number of blocks that can be broken in a given time; Type=integer, +Leniency=Increase.
-     */     
+     */
     public final int FASTBREAK_LIMIT;
     /**
      * Time to wait before checking block breaks; Type=system, +Leniency=Increase.
-     */      
+     */
     public final int FASTBREAK_TIMEMAX;
     /**
      * Number of times fastbreak can be observed before taking action; Type=integer, +Leniency=Increase.
-     */      
+     */
     public final int FASTBREAK_MAXVIOLATIONS;
     /**
      * Number of times fastbreak can be observed before taking action in creative mode; Type=integer, +Leniency=Increase.
-     */ 
+     */
     public final int FASTBREAK_MAXVIOLATIONS_CREATIVE;
     /**
      * Time a player is forced to wait after fastbreak has been detected; Type=system, +Leniency=Decrease.
-     */    
+     */
     public final int FASTBREAK_MAXVIOLATIONTIME;
     /**
      * Number of blocks that can be broken without being hit before taking action; Type=integer, +Leniency=Increase.
-     */     
+     */
     public final int FASTPLACE_ZEROLIMIT;
     /**
      * Time to wait before checking block places; Type=system, +Leniency=Increase.
-     */ 
+     */
     public final int FASTPLACE_TIMEMAX;
     /**
      * Number of times fastplace can be observed before taking action; Type=integer, +Leniency=Increase.
-     */ 
+     */
     public final int FASTPLACE_MAXVIOLATIONS;
     /**
      * Number of times fastplace can be observed before taking action in creative mode; Type=integer, +Leniency=Increase.
-     */ 
+     */
     public final int FASTPLACE_MAXVIOLATIONS_CREATIVE;
     /**
      * Time a player is forced to wait after fastplace has been detected; Type=system, +Leniency=Decrease.
-     */ 
+     */
     public final int FASTPLACE_MAXVIOLATIONTIME;
     /**
      * Number of times required to punch a block before it breaks; Type=integer, +Leniency=Decrease.
-     */ 
+     */
     public final int BLOCK_PUNCH_MIN;
     /**
      * Number of chat spam violations before a player is warned; Type=integer, +Leniency=Increase.
-     */ 
+     */
     public final int CHAT_WARN_LEVEL;
     /**
      * Number of chat spam violations before a player is kicked; Type=integer, +Leniency=Increase.
@@ -181,7 +175,7 @@ public class Magic
     public final int VELOCITY_TIME;
     /**
      * Time used to schedule increasing a players velocity count - probably not touching this would be good; Type=integer.
-     */    
+     */
     public final long VELOCITY_SCHETIME;
     /**
      * Maximum time a player is considered to have a change in velocity; Type=system, +Leniency=Increase.
@@ -310,39 +304,38 @@ public class Magic
     /**
      * Maximum times a player can fail the speed check before action is taken; Type=integer, +Leniency=Increase.
      */
-    public final int SPEED_MAX;    
-    
+    public final int SPEED_MAX;
+
     private FileConfiguration defaults;
     private CommentedConfiguration magic;
     private Configuration config;
-    
+
     public Magic(CommentedConfiguration magic, Configuration config, FileConfiguration defaults)
-    { 
+    {
          this.magic = magic;
          this.config = config;
          this.defaults = defaults;
-         
-         // 
-         
+
+         //
+
          ENTERED_EXITED_TIME = getInt("ENTERED_EXITED_TIME");
          SNEAK_TIME = getInt("SNEAK_TIME");
          TELEPORT_TIME = getInt("TELEPORT_TIME");
          EXIT_FLY_TIME = getInt("EXIT_FLY_TIME");
-         JOIN_TIME = getInt("JOIN_TIME");    
-         INSTANT_BREAK_TIME = getInt("INSTANT_BREAK_TIME"); 
+         JOIN_TIME = getInt("JOIN_TIME");
+         INSTANT_BREAK_TIME = getInt("INSTANT_BREAK_TIME");
          DAMAGE_TIME = getLong("DAMAGE_TIME");
-         KNOCKBACK_DAMAGE_TIME = getLong("KNOCKBACK_DAMAGE_TIME");  
-         EXPLOSION_DAMAGE_TIME = getLong("EXPLOSION_DAMAGE_TIME");    
-         DROPPED_ITEM_TIME = getInt("DROPPED_ITEM_TIME");   
-         PROJECTILE_TIME_MIN = getInt("PROJECTILE_TIME_MIN");    
-         PROJECTILE_CHECK = getInt("PROJECTILE_CHECK");   
-         DROP_TIME_MIN = getInt("DROP_TIME_MIN");    
-         DROP_CHECK = getInt("DROP_CHECK");           
-         FASTBREAK_LIMIT = getInt("FASTBREAK_LIMIT");    
-         FASTBREAK_TIMEMAX = getInt("FASTBREAK_TIMEMAX");     
+         KNOCKBACK_DAMAGE_TIME = getLong("KNOCKBACK_DAMAGE_TIME");
+         EXPLOSION_DAMAGE_TIME = getLong("EXPLOSION_DAMAGE_TIME");
+         PROJECTILE_TIME_MIN = getInt("PROJECTILE_TIME_MIN");
+         PROJECTILE_CHECK = getInt("PROJECTILE_CHECK");
+         DROP_TIME_MIN = getInt("DROP_TIME_MIN");
+         DROP_CHECK = getInt("DROP_CHECK");
+         FASTBREAK_LIMIT = getInt("FASTBREAK_LIMIT");
+         FASTBREAK_TIMEMAX = getInt("FASTBREAK_TIMEMAX");
          FASTBREAK_MAXVIOLATIONS = getInt("FASTBREAK_MAXVIOLATIONS");
-         FASTBREAK_MAXVIOLATIONS_CREATIVE = getInt("FASTBREAK_MAXVIOLATIONS_CREATIVE");   
-         FASTBREAK_MAXVIOLATIONTIME = getInt("FASTBREAK_MAXVIOLATIONTIME");     
+         FASTBREAK_MAXVIOLATIONS_CREATIVE = getInt("FASTBREAK_MAXVIOLATIONS_CREATIVE");
+         FASTBREAK_MAXVIOLATIONTIME = getInt("FASTBREAK_MAXVIOLATIONTIME");
          FASTPLACE_ZEROLIMIT = getInt("FASTPLACE_ZEROLIMIT");
          FASTPLACE_TIMEMAX = getInt("FASTPLACE_TIMEMAX");
          FASTPLACE_MAXVIOLATIONS = getInt("FASTPLACE_MAXVIOLATIONS");
@@ -356,7 +349,7 @@ public class Magic
          WATER_CLIMB_MAX = getDouble("WATER_CLIMB_MAX");
          Y_MAXVIOLATIONS = getInt("Y_MAXVIOLATIONS");
          Y_MAXVIOTIME = getInt("Y_MAXVIOTIME");
-         VELOCITY_TIME = getInt("VELOCITY_TIME");   
+         VELOCITY_TIME = getInt("VELOCITY_TIME");
          VELOCITY_SCHETIME = getLong("VELOCITY_SCHETIME");
          VELOCITY_CHECKTIME = getLong("VELOCITY_CHECKTIME");
          VELOCITY_PREVENT = getLong("VELOCITY_PREVENT");
@@ -389,9 +382,9 @@ public class Magic
          XZ_SPEED_MAX_SNEAK = getDouble("XZ_SPEED_MAX_SNEAK");
          XZ_SPEED_MAX_WATER = getDouble("XZ_SPEED_MAX_WATER");
          XZ_SPEED_MAX_WATER_SPRINT = getDouble("XZ_SPEED_MAX_WATER_SPRINT");
-         SPEED_MAX = getInt("SPEED_MAX");         
+         SPEED_MAX = getInt("SPEED_MAX");
     }
-    
+
     private int getInt(String path)
     {
         if(magic.contains(path))
@@ -406,7 +399,7 @@ public class Magic
             return i;
         }
     }
-    
+
     private double getDouble(String path)
     {
         if(magic.contains(path))
@@ -421,7 +414,7 @@ public class Magic
             return i;
         }
     }
-    
+
     private long getLong(String path)
     {
         if(magic.contains(path))
@@ -435,7 +428,7 @@ public class Magic
             config.saveMagic(magic);
             return i;
         }
-    }    
-    
-    
+    }
+
+
 }

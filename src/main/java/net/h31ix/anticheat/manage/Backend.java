@@ -666,14 +666,14 @@ public class Backend
 
     public boolean checkSwing(Player player, Block block)
     {
-        if(!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES))
+        if(!isInstantBreakExempt(player))
         {
-            return !justAnimated(player);
+            if(!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES))
+            {
+                return !justAnimated(player);
+            }
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     public boolean checkFastBreak(Player player, Block block)

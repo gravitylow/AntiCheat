@@ -37,7 +37,7 @@ public class BlockListener extends EventListener
     private final Backend backend = getBackend();
     private final CheckManager checkManager = getCheckManager();
     private final Configuration config = Anticheat.getManager().getConfiguration();
-    
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void onBlockDamage(BlockDamageEvent event)
     {
