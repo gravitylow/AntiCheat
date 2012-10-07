@@ -545,9 +545,16 @@ public class Backend
         // Check to make sure the entity's head is not surrounded
         Block head = entity.getWorld().getBlockAt((int)entity.getLocation().getX(), (int)((CraftEntity)entity).getHandle().getHeadHeight(), (int)entity.getLocation().getZ());
         boolean solid = false;
-        if(head.getRelative(BlockFace.NORTH).getTypeId() != 0)
+        if(head.getTypeId() != 0)
         {
-            solid = net.minecraft.server.Block.byId[head.getRelative(BlockFace.NORTH).getTypeId()].material.isSolid();
+            solid = net.minecraft.server.Block.byId[head.getTypeId()].material.isSolid();
+        }
+        if(!solid)
+        {
+            if(head.getRelative(BlockFace.NORTH).getTypeId() != 0)
+            {
+                solid = net.minecraft.server.Block.byId[head.getRelative(BlockFace.NORTH).getTypeId()].material.isSolid();
+            }
         }
         if(!solid)
         {

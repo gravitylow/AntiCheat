@@ -26,7 +26,7 @@ import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
-public class UserManager 
+public class UserManager
 {
     private List<User> users = new ArrayList<User>();
     private static Configuration config;
@@ -35,13 +35,13 @@ public class UserManager
     private static final ChatColor GOLD = ChatColor.GOLD;
     private static final ChatColor YELLOW = ChatColor.YELLOW;
     private static final ChatColor RED = ChatColor.RED;
-    
+
     public UserManager(Configuration config)
     {
         this.config = config;
         lang = config.getLang();
     }
-    
+
     public User getUser(String name)
     {
         for(User user : users)
@@ -54,23 +54,23 @@ public class UserManager
         // Otherwise try to load them
         return loadUserFromFile(name);
     }
-    
+
     public List<User> getUsers()
     {
         return users;
     }
-    
+
     public void addUser(User user)
     {
         users.add(user);
     }
-    
+
     public void remove(User user)
     {
         config.saveLevel(user.getName(), user.getLevel());
         users.remove(user);
     }
-    
+
     public int safeGetLevel(String name)
     {
         User user = getUser(name);
@@ -83,7 +83,7 @@ public class UserManager
             return user.getLevel();
         }
     }
-    
+
     public void safeSetLevel(String name, int level)
     {
         User user = getUser(name);
@@ -91,8 +91,8 @@ public class UserManager
         {
             user.setLevel(level);
         }
-    }    
-    
+    }
+
     public void safeReset(String name)
     {
         User user = getUser(name);
@@ -100,8 +100,8 @@ public class UserManager
         {
             user.resetLevel();
         }
-    }   
-    
+    }
+
     public boolean addUserFromFile(String name)
     {
         User user = loadUserFromFile(name);
@@ -115,7 +115,7 @@ public class UserManager
             return false;
         }
     }
-    
+
     public User loadUserFromFile(String name)
     {
         int level = config.getLevel(name);
@@ -128,7 +128,7 @@ public class UserManager
             return new User(name, level);
         }
     }
-    
+
     public void alertMed(User user, CheckType type)
     {
         List<String> messageArray = lang.getMediumAlert();
@@ -143,7 +143,7 @@ public class UserManager
         Utilities.alert(messageArray);
         execute(user, "Medium");
     }
-    
+
     public void alertHigh(User user, CheckType type)
     {
         List<String> messageArray = lang.getHighAlert();
@@ -155,10 +155,10 @@ public class UserManager
             message = message.replaceAll("high", RED + "high" + GRAY);
             messageArray.set(i, message);
         }
-        Utilities.alert(messageArray); 
+        Utilities.alert(messageArray);
         execute(user, "High");
     }
-    
+
     public void execute(User user, String event)
     {
         final String result = config.getResult(event);
@@ -169,9 +169,13 @@ public class UserManager
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
         }
         else if (result.equalsIgnoreCase("KICK"))
-        {          
+        {
             user.getPlayer().kickPlayer(RED + lang.getKickReason());
-            Bukkit.broadcastMessage(RED + lang.getKickBroadcast().replaceAll("&player", name));
+            String msg = RED + lang.getKickBroadcast().replaceAll("&player", name);
+            if(!msg.equals(""))
+            {
+                Bukkit.broadcastMessage(msg);
+            }
         }
         else if (result.equalsIgnoreCase("WARN"))
         {
@@ -185,8 +189,12 @@ public class UserManager
         {
             user.getPlayer().setBanned(true);
             user.getPlayer().kickPlayer(RED + lang.getBanReason());
-            user.getPlayer().getServer().broadcastMessage(RED + lang.getBanBroadcast().replaceAll("&player", name));           
+            String msg = RED + lang.getBanBroadcast().replaceAll("&player", name);
+            if(!msg.equals(""))
+            {
+                Bukkit.broadcastMessage(msg);
+            }
         }
     }
-    
+
 }
