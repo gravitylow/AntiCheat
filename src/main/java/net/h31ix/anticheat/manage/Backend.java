@@ -604,14 +604,14 @@ public class Backend
             }
             else if(y1 == y2 || y1 < y2)
             {
-                //Check if the player is crouching on slabs or stairs
-                if(player.isSneaking())
+                if(y1 == y2)
                 {
+                    //Check if the player is on slabs or crouching on stairs
                     if(block.getRelative(BlockFace.NORTH).getTypeId() == 43 || block.getRelative(BlockFace.NORTH).getTypeId() == 44 || block.getRelative(BlockFace.SOUTH).getTypeId() == 43 || block.getRelative(BlockFace.SOUTH).getTypeId() == 44 || block.getRelative(BlockFace.EAST).getTypeId() == 43 || block.getRelative(BlockFace.EAST).getTypeId() == 44 || block.getRelative(BlockFace.WEST).getTypeId() == 43 || block.getRelative(BlockFace.WEST).getTypeId() == 44)
                     {
                         return false;
                     }
-                    if(Utilities.isStair(block.getRelative(BlockFace.NORTH)) || Utilities.isStair(block.getRelative(BlockFace.SOUTH)) || Utilities.isStair(block.getRelative(BlockFace.EAST)) || Utilities.isStair(block.getRelative(BlockFace.WEST)))
+                    else if(player.isSneaking() && Utilities.isStair(block.getRelative(BlockFace.NORTH)) || Utilities.isStair(block.getRelative(BlockFace.SOUTH)) || Utilities.isStair(block.getRelative(BlockFace.EAST)) || Utilities.isStair(block.getRelative(BlockFace.WEST)))
                     {
                         return false;
                     }
