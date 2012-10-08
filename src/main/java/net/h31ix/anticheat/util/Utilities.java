@@ -91,6 +91,12 @@ public final class Utilities
         return FOOD.contains(m);
     }
 
+    public static boolean isStair(Block block)
+    {
+        int id = block.getTypeId();
+        return id == 53 || id == 67 || id == 108 || id == 109 || id == 114 || id == 128 || id ==  134 || id == 135 || id == 136;
+    }
+
     public static boolean isInteractable(Material m)
     {
         return INTERACTABLE.contains(m);
