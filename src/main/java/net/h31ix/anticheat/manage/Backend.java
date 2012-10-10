@@ -543,38 +543,24 @@ public class Backend
     public boolean checkSight(Player player, Entity entity)
     {
         // Check to make sure the entity's head is not surrounded
-        Block head = entity.getWorld().getBlockAt((int)entity.getLocation().getX(), (int)((CraftEntity)entity).getHandle().getHeadHeight(), (int)entity.getLocation().getZ());
+        Block head = entity.getWorld().getBlockAt((int)entity.getLocation().getX(), (int)(entity.getLocation().getY()+((CraftEntity)entity).getHandle().getHeadHeight()), (int)entity.getLocation().getZ());
         boolean solid = false;
-        if(head.getTypeId() != 0)
+        //TODO: This sucks. See if it's possible to not have as many false-positives while still retaining most of the check.
+        for(int x=-2;x<=2;x++)
         {
-            solid = net.minecraft.server.Block.byId[head.getTypeId()].material.isSolid();
-        }
-        if(!solid)
-        {
-            if(head.getRelative(BlockFace.NORTH).getTypeId() != 0)
+            for(int z=-2;z<=2;z++)
             {
-                solid = net.minecraft.server.Block.byId[head.getRelative(BlockFace.NORTH).getTypeId()].material.isSolid();
-            }
-        }
-        if(!solid)
-        {
-            if(head.getRelative(BlockFace.SOUTH).getTypeId() != 0)
-            {
-                solid = net.minecraft.server.Block.byId[head.getRelative(BlockFace.SOUTH).getTypeId()].material.isSolid();
-            }
-        }
-        if(!solid)
-        {
-            if(head.getRelative(BlockFace.EAST).getTypeId() != 0)
-            {
-                solid = net.minecraft.server.Block.byId[head.getRelative(BlockFace.EAST).getTypeId()].material.isSolid();
-            }
-        }
-        if(!solid)
-        {
-            if(head.getRelative(BlockFace.WEST).getTypeId() != 0)
-            {
-                solid = net.minecraft.server.Block.byId[head.getRelative(BlockFace.WEST).getTypeId()].material.isSolid();
+                for(int y=-1;y<2;y++)
+                {
+                    if(head.getRelative(x, y, z).getTypeId() != 0)
+                    {
+                        if(net.minecraft.server.Block.byId[head.getRelative(x, y, z).getTypeId()].material.isSolid())
+                        {
+                            solid = true;
+                            break;
+                        }
+                    }
+                }
             }
         }
         return solid ? true : player.hasLineOfSight(entity);
