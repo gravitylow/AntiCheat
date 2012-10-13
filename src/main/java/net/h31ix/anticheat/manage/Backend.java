@@ -597,7 +597,7 @@ public class Backend
                     {
                         return false;
                     }
-                    else if(player.isSneaking() && Utilities.isStair(block.getRelative(BlockFace.NORTH)) || Utilities.isStair(block.getRelative(BlockFace.SOUTH)) || Utilities.isStair(block.getRelative(BlockFace.EAST)) || Utilities.isStair(block.getRelative(BlockFace.WEST)))
+                    else if(player.isSneaking() && (Utilities.isStair(block.getRelative(BlockFace.NORTH)) || Utilities.isStair(block.getRelative(BlockFace.SOUTH)) || Utilities.isStair(block.getRelative(BlockFace.EAST)) || Utilities.isStair(block.getRelative(BlockFace.WEST)) || Utilities.isStair(block.getRelative(BlockFace.NORTH_EAST)) || Utilities.isStair(block.getRelative(BlockFace.SOUTH_EAST)) || Utilities.isStair(block.getRelative(BlockFace.SOUTH_WEST)) || Utilities.isStair(block.getRelative(BlockFace.NORTH_WEST))))
                     {
                         return false;
                     }
