@@ -55,7 +55,7 @@ public class Configuration
     private int highThreshold = 0;
     private String updateFolder;
     private static Language language;
-    private List<String> worlds = new ArrayList<String>();
+    private List<String> exemptWorlds = new ArrayList<String>();
 
     public Configuration(AnticheatManager instance)
     {
@@ -179,17 +179,34 @@ public class Configuration
         opExempt = getBoolean("System.Exempt op", false);
         trackCreativeXRay = getBoolean("XRay.Track creative", true);
 
-        if (config.getList("Enable in") == null)
+        // Worlds
+        List<String> list = new ArrayList<String>();
+        list.add("example-world");
+        list.add("example-world-2");
+
+        if (config.getList("Enable in") != null)
         {
-            List<String> w = new ArrayList<String>();
-            for (World world : Bukkit.getServer().getWorlds())
+            List<String> list2 = config.getStringList("Enable in");
+            List<String> list3 = new ArrayList<String>();
+            for(World world : micromanage.getPlugin().getServer().getWorlds())
             {
-                w.add(world.getName());
+                if(!list2.contains(world.getName()))
+                {
+                    list3.add(world.getName());
+                }
             }
-            config.set("Enable in", w);
-            save();
+            if(!list3.isEmpty())
+            {
+                list = list3;
+            }
+            config.set("Enable in", null);
         }
-        worlds = config.getStringList("Enable in");
+        if (config.getList("Disable in") == null)
+        {
+            config.set("Disable in", list);
+        }
+
+        exemptWorlds = config.getStringList("Disable in");
         // End pulling values from config
         save();
     }
@@ -239,9 +256,9 @@ public class Configuration
         }
     }
 
-    public List<String> getWorlds()
+    public List<String> getWorldsExempt()
     {
-        return worlds;
+        return exemptWorlds;
     }
 
     public File getConfigFile()
@@ -261,7 +278,7 @@ public class Configuration
 
     public boolean checkInWorld(World world)
     {
-        return worlds.contains(world.getName());
+        return !exemptWorlds.contains(world.getName());
     }
 
     public int getLevel(String player)

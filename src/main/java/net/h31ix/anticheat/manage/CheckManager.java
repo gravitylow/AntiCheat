@@ -56,7 +56,7 @@ public class CheckManager
     public void deactivateCheck(CheckType type)
     {
         if (!isActive(type))
-        {        
+        {
             manager.log("The " + type.toString() + " check was deactivated.");
             checkIgnoreList.add(type);
             disabled++;
@@ -95,7 +95,7 @@ public class CheckManager
     {
         return exemptList.containsKey(player.getName()) ? exemptList.get(player.getName()).contains(type) : false;
     }
-    
+
     public boolean isOpExempt(Player player)
     {
         return (this.manager.getConfiguration().opExempt() && player.isOp());
@@ -105,7 +105,7 @@ public class CheckManager
     {
         return isActive(type) && manager.getConfiguration().checkInWorld(player.getWorld()) && !isExempt(player, type) && !type.checkPermission(player) && isOnline(player) && !isOpExempt(player);
     }
-    
+
     public boolean isOnline(Player player)
     {
         // Check if the player is on the user list, e.g. is not an NPC
