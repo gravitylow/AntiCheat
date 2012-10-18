@@ -597,7 +597,7 @@ public class Backend
                 if(y1 == y2)
                 {
                     //Check if the player is on slabs or crouching on stairs
-                    if(block.getRelative(BlockFace.NORTH).getTypeId() == 43 || block.getRelative(BlockFace.NORTH).getTypeId() == 44 || block.getRelative(BlockFace.SOUTH).getTypeId() == 43 || block.getRelative(BlockFace.SOUTH).getTypeId() == 44 || block.getRelative(BlockFace.EAST).getTypeId() == 43 || block.getRelative(BlockFace.EAST).getTypeId() == 44 || block.getRelative(BlockFace.WEST).getTypeId() == 43 || block.getRelative(BlockFace.WEST).getTypeId() == 44)
+                    if(block.getRelative(BlockFace.NORTH).getTypeId() == 43 || block.getRelative(BlockFace.NORTH).getTypeId() == 44 || block.getRelative(BlockFace.SOUTH).getTypeId() == 43 || block.getRelative(BlockFace.SOUTH).getTypeId() == 44 || block.getRelative(BlockFace.EAST).getTypeId() == 43 || block.getRelative(BlockFace.EAST).getTypeId() == 44 || block.getRelative(BlockFace.WEST).getTypeId() == 43 || block.getRelative(BlockFace.WEST).getTypeId() == 44 || block.getRelative(BlockFace.SOUTH_EAST).getTypeId() == 43 || block.getRelative(BlockFace.SOUTH_EAST).getTypeId() == 44 || block.getRelative(BlockFace.SOUTH_WEST).getTypeId() == 43 || block.getRelative(BlockFace.SOUTH_WEST).getTypeId() == 44 || block.getRelative(BlockFace.NORTH_EAST).getTypeId() == 43 || block.getRelative(BlockFace.NORTH_EAST).getTypeId() == 44 || block.getRelative(BlockFace.NORTH_WEST).getTypeId() == 43 || block.getRelative(BlockFace.NORTH_WEST).getTypeId() == 44 )
                     {
                         return false;
                     }

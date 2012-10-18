@@ -63,9 +63,8 @@ public class CommentedConfiguration extends YamlConfiguration
         comments.put("Log to console:", "  # Should AntiCheat log to files?");
         comments.put("# Should AntiCheat log to files?", "  # 0 = off, 1 = log only when an event takes place, 2 = more detailed logs, 3 = most detailed logs");
         comments.put("File log level:", "  # Should AntiCheat display extra debug information when starting?");
-        comments.put("Verbose startup:", "  # If silent mode is on, players will not be stopped when they try to hack,");
-        comments.put("# If silent mode is on, players will not be stopped when they try to hack,", "  # and AntiCheat will do everything possible to keep them unaware of their rising hack level.");
-        comments.put("# and AntiCheat will do everything possible to keep them unaware of their rising hack level.", "  # However, alerts will still be sent to console and to admins online, and events will still take place.");
+        comments.put("Verbose startup:", "  # If silent mode is on, players will not be stopped when they try to hack, and AntiCheat will do everything possible to keep them unaware of their rising hack level.");
+        comments.put("# If silent mode is on, players will not be stopped when they try to hack, and AntiCheat will do everything possible to keep them unaware of their rising hack level.", "  # However, alerts will still be sent to console and to admins online, and events will still take place.");
         comments.put("Silent mode:", "  # Should ops be exempt from all checks?");
     }
 
