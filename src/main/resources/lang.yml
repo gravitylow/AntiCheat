@@ -13,10 +13,15 @@ warning:
   player_warning:
   - '[AntiCheat] Hacking is not permitted.'
   - '[AntiCheat] If you continue to hack, action will be taken.'
+spam:
+  warning: 'Stop spamming the server or you will be kicked!'
+  kick_reason: 'Kicked for spamming'
+  ban_reason: 'Banned for spamming'
+  kick_broadcast: '[AntiCheat] &player was kicked for spamming'
+  ban_broadcast: '[AntiCheat] &player was banned for spamming'
 ban:
   ban_reason: 'Banned by AntiCheat'
   ban_broadcast: '[AntiCheat] &player was banned for hacking.'
 kick:
   kick_reason: 'Kicked by AntiCheat'
-  kick_broadcast: '[AntiCheat] &player was kicked for hacking.'  
-    
+  kick_broadcast: '[AntiCheat] &player was kicked for hacking.'

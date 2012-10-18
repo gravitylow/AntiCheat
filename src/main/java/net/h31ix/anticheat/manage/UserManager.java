@@ -141,7 +141,7 @@ public class UserManager
             messageArray.set(i, message);
         }
         Utilities.alert(messageArray);
-        execute(user, "Medium");
+        execute(user, config.mediumEvent());
     }
 
     public void alertHigh(User user, CheckType type)
@@ -156,19 +156,18 @@ public class UserManager
             messageArray.set(i, message);
         }
         Utilities.alert(messageArray);
-        execute(user, "High");
+        execute(user, config.highEvent());
     }
 
     public void execute(User user, String event)
     {
-        final String result = config.getResult(event);
         final String name = user.getName();
-        if (result.startsWith("COMMAND["))
+        if (event.startsWith("COMMAND["))
         {
-            String command = result.replaceAll("COMMAND\\[", "").replaceAll("]", "").replaceAll("&player", name).replaceAll("&world", user.getPlayer().getWorld().getName());
+            String command = event.replaceAll("COMMAND\\[", "").replaceAll("]", "").replaceAll("&player", name).replaceAll("&world", user.getPlayer().getWorld().getName());
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
         }
-        else if (result.equalsIgnoreCase("KICK"))
+        else if (event.equalsIgnoreCase("KICK"))
         {
             user.getPlayer().kickPlayer(RED + lang.getKickReason());
             String msg = RED + lang.getKickBroadcast().replaceAll("&player", name);
@@ -177,7 +176,7 @@ public class UserManager
                 Bukkit.broadcastMessage(msg);
             }
         }
-        else if (result.equalsIgnoreCase("WARN"))
+        else if (event.equalsIgnoreCase("WARN"))
         {
             List<String> message = lang.getWarning();
             for (String string : message)
@@ -185,7 +184,7 @@ public class UserManager
                 user.getPlayer().sendMessage(RED + string);
             }
         }
-        else if (result.equalsIgnoreCase("BAN"))
+        else if (event.equalsIgnoreCase("BAN"))
         {
             user.getPlayer().setBanned(true);
             user.getPlayer().kickPlayer(RED + lang.getBanReason());

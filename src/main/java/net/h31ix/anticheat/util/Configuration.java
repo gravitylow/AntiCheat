@@ -54,6 +54,10 @@ public class Configuration
     private int medThreshold = 0;
     private int highThreshold = 0;
     private String updateFolder;
+    private String eventMed;
+    private String eventHigh;
+    private String chatActionKick;
+    private String chatActionBan;
     private static Language language;
     private List<String> exemptWorlds = new ArrayList<String>();
 
@@ -144,6 +148,26 @@ public class Configuration
         return highThreshold;
     }
 
+    public String mediumEvent()
+    {
+        return eventMed;
+    }
+
+    public String highEvent()
+    {
+        return eventHigh;
+    }
+
+    public String chatActionKick()
+    {
+        return chatActionKick;
+    }
+
+    public String chatActionBan()
+    {
+        return chatActionBan;
+    }
+
     public int getFileLogLevel()
     {
         return fileLogLevel;
@@ -171,13 +195,26 @@ public class Configuration
         verboseStartup = getBoolean ("System.Verbose startup", false);
         alertXRay = getBoolean("XRay.Alert when xray is found", false);
         fileLogLevel = getInt("System.File log level", 1);
-        chatSpam = getBoolean("System.Block chat spam", true);
-        commandSpam = getBoolean("System.Block command spam", false);
         silentMode = getBoolean("System.Silent mode", false);
         medThreshold = getInt("Events.Medium threshold", 20);
         highThreshold = getInt("Events.High threshold", 50);
         opExempt = getBoolean("System.Exempt op", false);
         trackCreativeXRay = getBoolean("XRay.Track creative", true);
+        eventMed = getString("Events.Level Medium", "WARN");
+        eventMed = getString("Events.Level High", "KICK");
+        chatActionKick = getString("Chat.Kick Action", "KICK");
+        chatActionBan = getString("Chat.Ban Action", "BAN");
+        chatSpam = getBoolean("Chat.Block chat spam", true);
+        commandSpam = getBoolean("Chat.Block command spam", false);
+        // Cleanup old values
+        if(config.getString("System.Block command spam") != null)
+        {
+            config.set("System.Block command spam", null);
+        }
+        if(config.getString("System.Block chat spam") != null)
+        {
+            config.set("System.Block chat spam", null);
+        }
 
         // Worlds
         List<String> list = new ArrayList<String>();
@@ -237,9 +274,17 @@ public class Configuration
         }
     }
 
-    public String getResult(String event)
+    private String getString(String entry, String d)
     {
-        return config.getString("Events.Level " + event);
+        if (config.getString(entry) == null)
+        {
+            config.set(entry, d);
+            return d;
+        }
+        else
+        {
+            return config.getString(entry);
+        }
     }
 
     public void setLog(boolean b)

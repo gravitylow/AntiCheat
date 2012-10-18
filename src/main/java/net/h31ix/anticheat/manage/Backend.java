@@ -23,9 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.h31ix.anticheat.util.Distance;
+import net.h31ix.anticheat.util.Language;
 import net.h31ix.anticheat.util.Magic;
 import net.h31ix.anticheat.util.Utilities;
 import net.h31ix.anticheat.util.yaml.CommentedConfiguration;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -84,11 +86,13 @@ public class Backend
 
     private Magic magic;
     private AnticheatManager micromanage = null;
+    private Language lang = null;
 
     public Backend(AnticheatManager instance)
     {
         magic = new Magic(instance.getConfiguration().getMagic(), instance.getConfiguration(), CommentedConfiguration.loadConfiguration(instance.getPlugin().getResource("magic.yml")));
         micromanage = instance;
+        lang = micromanage.getConfiguration().getLang();
     }
 
     public void garbageClean(Player player)
@@ -1122,7 +1126,7 @@ public class Backend
     {
         if (amount >= magic.CHAT_WARN_LEVEL)
         {
-            player.sendMessage(ChatColor.RED + "Stop flooding the server or you will be kicked!");
+            player.sendMessage(ChatColor.RED + lang.getChatWarning());
         }
         if (amount >= magic.CHAT_KICK_LEVEL)
         {
@@ -1139,16 +1143,30 @@ public class Backend
                 chatKicks.put(name, kick);
             }
 
-            if (kick <= magic.CHAT_BAN_LEVEL)
+            String event = kick <= magic.CHAT_BAN_LEVEL ? micromanage.getConfiguration().chatActionKick() : micromanage.getConfiguration().chatActionBan();
+            if (event.startsWith("COMMAND["))
             {
-                player.kickPlayer(ChatColor.RED + "Spamming, kick " + kick + "/"+magic.CHAT_BAN_LEVEL);
-                micromanage.getPlugin().getServer().broadcastMessage(ChatColor.RED + player.getName() + " was kicked for spamming.");
+                String command = event.replaceAll("COMMAND\\[", "").replaceAll("]", "").replaceAll("&player", name).replaceAll("&world", player.getWorld().getName());
+                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
             }
-            else
+            else if (event.equalsIgnoreCase("KICK"))
             {
-                player.kickPlayer(ChatColor.RED + "Banned for spamming.");
+                player.kickPlayer(ChatColor.RED+lang.getChatKickReason());
+                String msg = ChatColor.RED + lang.getChatKickBroadcast().replaceAll("&player", name);
+                if(!msg.equals(""))
+                {
+                    Bukkit.broadcastMessage(msg);
+                }
+            }
+            else if (event.equalsIgnoreCase("BAN"))
+            {
                 player.setBanned(true);
-                micromanage.getPlugin().getServer().broadcastMessage(ChatColor.RED + player.getName() + " was banned for spamming.");
+                player.kickPlayer(ChatColor.RED + lang.getChatBanReason());
+                String msg = ChatColor.RED + lang.getChatBanBroadcast().replaceAll("&player", name);
+                if(!msg.equals(""))
+                {
+                    Bukkit.broadcastMessage(msg);
+                }
             }
         }
     }
