@@ -91,6 +91,12 @@ public final class Utilities
         return FOOD.contains(m);
     }
 
+    public static boolean isSlab(Block block)
+    {
+        int id = block.getTypeId();
+        return id == 43 || id == 44 || id == 125 || id == 126;
+    }
+
     public static boolean isStair(Block block)
     {
         int id = block.getTypeId();
