@@ -158,7 +158,7 @@ public class PlayerListener extends EventListener
                 event.setCancelled(b);
                 if (b)
                 {
-                    player.sendMessage(ChatColor.RED + "Please do not spam.");
+                    player.sendMessage(ChatColor.RED+config.getLang().getChatWarning());
                 }
             }
         }

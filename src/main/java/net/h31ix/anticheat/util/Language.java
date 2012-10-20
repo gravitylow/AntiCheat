@@ -74,7 +74,7 @@ public class Language
         kickBroadcast = getString("kick.kick_broadcast", "[AntiCheat] &player was kicked for hacking.");
         chatWarning = getString("chat.warning", "Stop spamming the server or you will be kicked!");
         chatKickReason = getString("chat.kick_reason", "Kicked for spamming");
-        chatBanReason = getString("chat.kick_reason", "Banned for spamming");
+        chatBanReason = getString("chat.ban_reason", "Banned for spamming");
         chatKickBroadcast = getString("chat.kick_broadcast", "[AntiCheat] &player was kicked for spamming");
         chatBanBroadcast = getString("chat.ban_broadcast", "[AntiCheat] &player was banned for spamming");
         try

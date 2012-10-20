@@ -1124,10 +1124,6 @@ public class Backend
 
     private void checkChatLevel(Player player, int amount)
     {
-        if (amount >= magic.CHAT_WARN_LEVEL)
-        {
-            player.sendMessage(ChatColor.RED + lang.getChatWarning());
-        }
         if (amount >= magic.CHAT_KICK_LEVEL)
         {
             String name = player.getName();
@@ -1151,8 +1147,9 @@ public class Backend
             }
             else if (event.equalsIgnoreCase("KICK"))
             {
-                player.kickPlayer(ChatColor.RED+lang.getChatKickReason());
-                String msg = ChatColor.RED + lang.getChatKickBroadcast().replaceAll("&player", name);
+                String msg = kick <= magic.CHAT_BAN_LEVEL ? ChatColor.RED + lang.getChatKickReason() + " ("+kick+"/"+magic.CHAT_BAN_LEVEL+")" : ChatColor.RED + lang.getChatBanReason();
+                player.kickPlayer(msg);
+                msg = kick <= magic.CHAT_BAN_LEVEL ? ChatColor.RED + lang.getChatKickBroadcast() + " ("+kick+"/"+magic.CHAT_BAN_LEVEL+")" : ChatColor.RED + lang.getChatBanBroadcast();
                 if(!msg.equals(""))
                 {
                     Bukkit.broadcastMessage(msg);
