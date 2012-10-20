@@ -203,7 +203,7 @@ public class Configuration
         opExempt = getBoolean("System.Exempt op", false);
         trackCreativeXRay = getBoolean("XRay.Track creative", true);
         eventMed = getString("Events.Level Medium", "WARN");
-        eventMed = getString("Events.Level High", "KICK");
+        eventHigh = getString("Events.Level High", "KICK");
         chatActionKick = getString("Chat.Kick Action", "KICK");
         chatActionBan = getString("Chat.Ban Action", "BAN");
         chatSpam = getBoolean("Chat.Block chat spam", true);
