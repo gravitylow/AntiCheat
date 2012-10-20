@@ -18,7 +18,6 @@
 
 package net.h31ix.anticheat.util;
 
-import net.h31ix.anticheat.util.yaml.CommentedConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -307,10 +306,10 @@ public class Magic
     public final int SPEED_MAX;
 
     private FileConfiguration defaults;
-    private CommentedConfiguration magic;
+    private FileConfiguration magic;
     private Configuration config;
 
-    public Magic(CommentedConfiguration magic, Configuration config, FileConfiguration defaults)
+    public Magic(FileConfiguration magic, Configuration config, FileConfiguration defaults)
     {
          this.magic = magic;
          this.config = config;

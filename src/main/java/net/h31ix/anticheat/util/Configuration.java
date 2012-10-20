@@ -28,6 +28,8 @@ import net.h31ix.anticheat.manage.AnticheatManager;
 import net.h31ix.anticheat.util.yaml.CommentedConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Configuration
 {
@@ -37,9 +39,9 @@ public class Configuration
     private File langFile = null;
     private File magicFile = null;
     private CommentedConfiguration config;
-    private CommentedConfiguration level;
-    private CommentedConfiguration lang;
-    private CommentedConfiguration magic;
+    private FileConfiguration level;
+    private FileConfiguration lang;
+    private FileConfiguration magic;
     private boolean logConsole;
     private boolean logXRay;
     private boolean alertXRay;
@@ -182,10 +184,10 @@ public class Configuration
     {
         micromanage.getPlugin().checkConfigs();
         config = CommentedConfiguration.loadConfig(configFile);
-        level = CommentedConfiguration.loadConfig(levelFile);
-        lang = CommentedConfiguration.loadConfig(langFile);
-        magic = CommentedConfiguration.loadConfig(magicFile);
-        language = new Language(lang);
+        level = YamlConfiguration.loadConfiguration(levelFile);
+        lang = YamlConfiguration.loadConfiguration(langFile);
+        magic = YamlConfiguration.loadConfiguration(magicFile);
+        language = new Language(lang, langFile);
         updateFolder = Bukkit.getUpdateFolder();
 
         // Begin pulling values from config.
@@ -316,7 +318,7 @@ public class Configuration
         return levelFile;
     }
 
-    public CommentedConfiguration getMagic()
+    public FileConfiguration getMagic()
     {
         return magic;
     }
@@ -353,7 +355,7 @@ public class Configuration
         }
     }
 
-    public void saveMagic(CommentedConfiguration newMagic)
+    public void saveMagic(FileConfiguration newMagic)
     {
         try
         {

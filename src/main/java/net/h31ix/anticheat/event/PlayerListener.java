@@ -337,7 +337,7 @@ public class PlayerListener extends EventListener
                 event.setTo(from);
                 player.damage(2); // I added this in here so the player(s) would still receive damage.
             }
-            log("tried avoid fall damage.", player, CheckType.NOFALL);
+            log("tried to avoid fall damage.", player, CheckType.NOFALL);
         }
     }
 

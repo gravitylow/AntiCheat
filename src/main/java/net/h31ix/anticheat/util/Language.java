@@ -18,9 +18,13 @@
 
 package net.h31ix.anticheat.util;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -43,7 +47,7 @@ public class Language
     private static final ChatColor GRAY = ChatColor.GRAY;
     private FileConfiguration file;
 
-    public Language(FileConfiguration file)
+    public Language(FileConfiguration file, File f)
     {
         this.file = file;
         String [] temp = file.getList("alert.medium_alert").toArray(new String[file.getList("alert.medium_alert").size()]);
@@ -64,16 +68,23 @@ public class Language
         highAlert[highAlert.length-1] = GOLD + "-----------------------------------------------------";
 
         warning = file.getList("warning.player_warning").toArray(new String[file.getList("warning.player_warning").size()]);
-        banReason = file.getString("ban.ban_reason");
-        banBroadcast = file.getString("ban.ban_broadcast");
-        kickReason = file.getString("kick.kick_reason");
-        kickBroadcast = file.getString("kick.kick_broadcast");
-        // Following values were implemented later
+        banReason = getString("ban.ban_reason", "Banned by AntiCheat");
+        banBroadcast = getString("ban.ban_broadcast", "[AntiCheat] &player was banned for hacking.");
+        kickReason = getString("kick.kick_reason", "Kicked by AntiCheat");
+        kickBroadcast = getString("kick.kick_broadcast", "[AntiCheat] &player was kicked for hacking.");
         chatWarning = getString("chat.warning", "Stop spamming the server or you will be kicked!");
         chatKickReason = getString("chat.kick_reason", "Kicked for spamming");
         chatBanReason = getString("chat.kick_reason", "Banned for spamming");
         chatKickBroadcast = getString("chat.kick_broadcast", "[AntiCheat] &player was kicked for spamming");
-        chatBanBroadcast = getString("chat.kick_broadcast", "[AntiCheat] &player was banned for spamming");
+        chatBanBroadcast = getString("chat.ban_broadcast", "[AntiCheat] &player was banned for spamming");
+        try
+        {
+            file.save(f);
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(Language.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public List<String> getMediumAlert()
@@ -138,13 +149,16 @@ public class Language
 
     private String getString(String entry, String d)
     {
+        System.out.println("Tryng to get value "+entry);
         if (file.getString(entry) == null)
         {
+            System.out.println("Null, setting "+d);
             file.set(entry, d);
             return d;
         }
         else
         {
+            System.out.println("Not null, returning "+file.getString(entry));
             return file.getString(entry);
         }
     }
