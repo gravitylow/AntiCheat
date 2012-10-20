@@ -149,16 +149,13 @@ public class Language
 
     private String getString(String entry, String d)
     {
-        System.out.println("Tryng to get value "+entry);
         if (file.getString(entry) == null)
         {
-            System.out.println("Null, setting "+d);
             file.set(entry, d);
             return d;
         }
         else
         {
-            System.out.println("Not null, returning "+file.getString(entry));
             return file.getString(entry);
         }
     }
