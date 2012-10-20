@@ -203,7 +203,9 @@ public class CommandHandler implements CommandExecutor
                         for (Player p : cs.getServer().getOnlinePlayers())
                         {
                             if (!Permission.SYSTEM_SPY.get(p))
+                            {
                                 p.hidePlayer(sender);
+                            }
                         }
                         if(!sender.hasMetadata(SPY_METADATA)) // Maintain ORIGINAL location and other data
                         {
@@ -492,13 +494,13 @@ public class CommandHandler implements CommandExecutor
         int pages = (int)Math.ceil(((float)types.size())/6);
         int level = user.getLevel();
         String levelString = GREEN + "Low";
-        if (level >= config.medThreshold())
-        {
-            levelString = YELLOW + "Medium";
-        }
-        else if (level >= config.highThreshold())
+        if (level >= config.highThreshold())
         {
             levelString = RED + "High";
+        }
+        else if (level >= config.medThreshold())
+        {
+            levelString = YELLOW + "Medium";
         }
         if(page <= pages && page > 0)
         {
