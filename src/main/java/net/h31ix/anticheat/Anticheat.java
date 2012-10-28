@@ -59,7 +59,8 @@ public class Anticheat extends JavaPlugin
         eventList.add(new PlayerListener());
         eventList.add(new BlockListener());
         eventList.add(new EntityListener());
-        eventList.add(new VehicleListener());   
+        eventList.add(new VehicleListener());
+        eventList.add(new InventoryListener());
         // Order is important in some cases, don't screw with these unless needed, especially config
         setupConfig();  
         // Xray must come before events

@@ -304,6 +304,18 @@ public class Magic
      * Maximum times a player can fail the speed check before action is taken; Type=integer, +Leniency=Increase.
      */
     public final int SPEED_MAX;
+    /**
+     * Number of times a player can fail the inventory check before action is taken; Type=integer, +Leniency=Increase.
+     */
+    public final int INVENTORY_MAXVIOLATIONS;
+    /**
+     * Time player is forced to wait after inventory detection; Type=integer; +Leniency=Decrease.
+     */
+    public final int INVENTORY_MAXVIOLATIONTIME;
+    /**
+     * Time between inventory changes that triggers inventory violations; Type=integer; +Leniency=Decrease.
+     */
+    public final int INVENTORY_TIMEMAX;
 
     private FileConfiguration defaults;
     private FileConfiguration magic;
@@ -382,6 +394,9 @@ public class Magic
          XZ_SPEED_MAX_WATER = getDouble("XZ_SPEED_MAX_WATER");
          XZ_SPEED_MAX_WATER_SPRINT = getDouble("XZ_SPEED_MAX_WATER_SPRINT");
          SPEED_MAX = getInt("SPEED_MAX");
+         INVENTORY_MAXVIOLATIONS = getInt("INVENTORY_MAXVIOLATIONS");
+         INVENTORY_MAXVIOLATIONTIME = getInt("INVENTORY_MAXVIOLATIONTIME");
+         INVENTORY_TIMEMAX = getInt("INVENTORY_TIMEMAX");
     }
 
     private int getInt(String path)
