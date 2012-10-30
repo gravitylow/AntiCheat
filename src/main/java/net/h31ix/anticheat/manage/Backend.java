@@ -83,6 +83,9 @@ public class Backend
     private Map<String, Long> movingExempt = new HashMap<String, Long>();
     private Map<String, Long> blockTime = new HashMap<String, Long>();
     private Map<String, Integer> blocksDropped = new HashMap<String, Integer>();
+    private Map<String, Long> lastInventoryTime = new HashMap<String, Long>();
+    private Map<String, Long> inventoryTime = new HashMap<String, Long>();
+    private Map<String, Integer> inventoryChanges = new HashMap<String, Integer>();
 
     private Magic magic;
     private AnticheatManager micromanage = null;
@@ -880,6 +883,51 @@ public class Backend
                 return false;
             }
         }
+        return false;
+    }
+
+    public boolean checkInventoryClicks(Player player)
+    {
+        String name = player.getName();
+        long time = System.currentTimeMillis();
+        if (!inventoryTime.containsKey(name) || !inventoryChanges.containsKey(name))
+        {
+            inventoryTime.put(name, 0l);
+            if(!inventoryChanges.containsKey(name))
+            {
+                inventoryChanges.put(name, 0);
+            }
+        }
+        else if (inventoryChanges.containsKey(name) && inventoryChanges.get(name) > magic.INVENTORY_MAXVIOLATIONS)
+        {
+            long diff = System.currentTimeMillis() - lastInventoryTime.get(name);
+            if (inventoryTime.get(name) > 0 && diff < magic.INVENTORY_MAXVIOLATIONTIME)
+            {
+                inventoryTime.put(name, diff);
+                player.sendMessage(ChatColor.RED + "[AntiCheat] Inventory hack detected. Please wait 10 seconds before using inventories.");
+                return true;
+            } else if (inventoryTime.get(name) > 0 && diff > magic.INVENTORY_MAXVIOLATIONTIME)
+            {
+                inventoryChanges.put(name, 0);
+            }
+        }
+        else if (inventoryTime.containsKey(name))
+        {
+            long last = lastInventoryTime.get(name);
+            long thisTime = time - last;
+            if (thisTime < magic.INVENTORY_TIMEMAX)
+            {
+                inventoryChanges.put(name, inventoryChanges.get(name) + 1);
+                if(inventoryChanges.get(name) > magic.INVENTORY_MAXVIOLATIONS)
+                {
+                    inventoryTime.put(name, thisTime);
+                    player.sendMessage(ChatColor.RED + "[AntiCheat] Inventory hack detected. Please wait 10 seconds before using inventories.");
+                    return true;
+                }
+            }
+            inventoryTime.put(name, thisTime);
+        }
+        lastInventoryTime.put(name, time);
         return false;
     }
 
