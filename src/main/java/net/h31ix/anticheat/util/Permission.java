@@ -47,6 +47,7 @@ public enum Permission
     CHECK_FASTPROJECTILE,
     CHECK_ITEMSPAM,
     CHECK_VISUAL,
+    CHECK_FASTINVENTORY,
 
     /* System Nodes */
     SYSTEM_LOG,
