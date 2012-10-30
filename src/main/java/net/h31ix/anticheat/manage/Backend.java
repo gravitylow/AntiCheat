@@ -901,8 +901,6 @@ public class Backend
         else if (inventoryChanges.containsKey(name) && inventoryChanges.get(name) > magic.INVENTORY_MAXVIOLATIONS)
         {
             long diff = System.currentTimeMillis() - lastInventoryTime.get(name);
-            System.out.println("inventoryTime = " + inventoryTime.get(name));
-            System.out.println("diff = " + diff);
             if (inventoryTime.get(name) > 0 && diff < magic.INVENTORY_MAXVIOLATIONTIME)
             {
                 inventoryTime.put(name, diff);
