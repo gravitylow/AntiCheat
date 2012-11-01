@@ -45,7 +45,6 @@ public class CommandHandler implements CommandExecutor
     private static final ChatColor GREEN = ChatColor.GREEN;
     private static final ChatColor WHITE = ChatColor.WHITE;
     private static final ChatColor GRAY = ChatColor.GRAY;
-    private static final String SPY_METADATA = "ac-spydata";
     private List<String> high = new ArrayList<String>();
     private List<String> med = new ArrayList<String>();
     private List<String> low = new ArrayList<String>();
@@ -207,10 +206,10 @@ public class CommandHandler implements CommandExecutor
                                 p.hidePlayer(sender);
                             }
                         }
-                        if(!sender.hasMetadata(SPY_METADATA)) // Maintain ORIGINAL location and other data
+                        if(!sender.hasMetadata(Anticheat.SPY_METADATA)) // Maintain ORIGINAL location and other data
                         {
                             SpyState state = new SpyState(sender.getAllowFlight(), sender.isFlying(), sender.getLocation());
-                            sender.setMetadata(SPY_METADATA, new FixedMetadataValue(Anticheat.getPlugin(), state));
+                            sender.setMetadata(Anticheat.SPY_METADATA, new FixedMetadataValue(Anticheat.getPlugin(), state));
                         }
                         sender.setAllowFlight(true);
                         sender.setFlying(true);
@@ -229,13 +228,13 @@ public class CommandHandler implements CommandExecutor
                 }
                 else
                 {
-                    if (sender.hasMetadata(SPY_METADATA))
+                    if (sender.hasMetadata(Anticheat.SPY_METADATA))
                     {
-                        SpyState state = ((SpyState) sender.getMetadata(SPY_METADATA).get(0).value());
+                        SpyState state = ((SpyState) sender.getMetadata(Anticheat.SPY_METADATA).get(0).value());
                         sender.setAllowFlight(state.getAllowFlight());
                         sender.setFlying(state.getFlying());
                         sender.teleport(state.getLocation());
-                        sender.removeMetadata(SPY_METADATA, Anticheat.getPlugin());
+                        sender.removeMetadata(Anticheat.SPY_METADATA, Anticheat.getPlugin());
                         for (Player p : cs.getServer().getOnlinePlayers())
                         {
                             p.showPlayer(sender);

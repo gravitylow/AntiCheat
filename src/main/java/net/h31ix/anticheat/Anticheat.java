@@ -51,7 +51,8 @@ public class Anticheat extends JavaPlugin
     private static boolean verbose;
     private static Metrics metrics;
     private static final long XRAY_TIME = 1200;
-    
+    public static final String SPY_METADATA = "ac-spydata";
+
     @Override
     public void onEnable()
     {
@@ -62,7 +63,7 @@ public class Anticheat extends JavaPlugin
         eventList.add(new VehicleListener());
         eventList.add(new InventoryListener());
         // Order is important in some cases, don't screw with these unless needed, especially config
-        setupConfig();  
+        setupConfig();
         // Xray must come before events
         setupXray();
         setupEvents();
@@ -74,7 +75,7 @@ public class Anticheat extends JavaPlugin
         {
             getLogger().log(Level.INFO, "Finished loading.");
         }
-    }    
+    }
 
     @Override
     public void onDisable()
@@ -88,13 +89,13 @@ public class Anticheat extends JavaPlugin
         getServer().getScheduler().cancelAllTasks();
         cleanup();
     }
-    
-    private void save(InputStream in, File file) 
+
+    private void save(InputStream in, File file)
     {
         if (!file.exists())
-        {        
+        {
             file.getParentFile().mkdirs();
-            try 
+            try
             {
                 OutputStream out = new FileOutputStream(file);
                 byte[] buf = new byte[1024];
@@ -105,18 +106,18 @@ public class Anticheat extends JavaPlugin
                 }
                 out.close();
                 in.close();
-            } 
-            catch (Exception e) 
+            }
+            catch (Exception e)
             {
                 e.printStackTrace();
             }
             if (verbose)
             {
                 getLogger().log(Level.INFO, file.getName()+" created.");
-            }            
+            }
         }
     }
-    
+
     private void setupXray()
     {
         final XRayTracker xtracker = manager.getXRayTracker();
@@ -149,9 +150,9 @@ public class Anticheat extends JavaPlugin
                     getLogger().log(Level.INFO, "Scheduled the XRay checker.");
                 }
             }
-        }        
+        }
     }
-    
+
     private void setupEvents()
     {
         for (Listener listener : eventList)
@@ -161,18 +162,18 @@ public class Anticheat extends JavaPlugin
             {
                 getLogger().log(Level.INFO, "Registered events for ".concat(listener.toString().split("@")[0].split(".anticheat.")[1]));
             }
-        }        
+        }
     }
-    
+
     private void setupCommands()
     {
         getCommand("anticheat").setExecutor(new CommandHandler());
         if (verbose)
         {
             getLogger().log(Level.INFO, "Registered commands.");
-        }        
+        }
     }
-    
+
     private void setupUpdater()
     {
         if (config.autoUpdate())
@@ -180,16 +181,16 @@ public class Anticheat extends JavaPlugin
             if (verbose)
             {
                 getLogger().log(Level.INFO, "Checking for a new update...");
-            }            
+            }
             Updater updater = new Updater(this, "anticheat", this.getFile(), Updater.UpdateType.DEFAULT, false);
             update = updater.getResult() != Updater.UpdateResult.NO_UPDATE;
             if (verbose)
             {
                 getLogger().log(Level.INFO, "Update avaliable: "+update);
-            }             
-        }        
+            }
+        }
     }
-    
+
     private void setupMetrics()
     {
         try
@@ -234,9 +235,9 @@ public class Anticheat extends JavaPlugin
         }
         catch (IOException ex)
         {
-        }        
+        }
     }
-    
+
     private void setupConfig()
     {
         config = manager.getConfiguration();
@@ -245,9 +246,9 @@ public class Anticheat extends JavaPlugin
         if (verbose)
         {
             getLogger().log(Level.INFO, "Setup the config.");
-        }        
+        }
     }
-    
+
     private void restoreLevels()
     {
         for (Player player : getServer().getOnlinePlayers())
@@ -258,14 +259,14 @@ public class Anticheat extends JavaPlugin
             {
                 getLogger().log(Level.INFO, "Data for " + player.getName() + " re-applied from flatfile");
             }
-        }        
+        }
     }
 
     public void checkConfigs()
     {
         save(getResource("config.yml"), new File(getDataFolder() + "/config.yml"));
         save(getResource("lang.yml"), new File(getDataFolder() + "/lang.yml"));
-        save(getResource("magic.yml"), new File(getDataFolder() + "/magic.yml"));   
+        save(getResource("magic.yml"), new File(getDataFolder() + "/magic.yml"));
     }
 
     public static Anticheat getPlugin()
@@ -287,7 +288,7 @@ public class Anticheat extends JavaPlugin
     {
         return manager.getPlugin().getDescription().getVersion();
     }
-    
+
     private void cleanup()
     {
         eventList = null;

@@ -25,6 +25,7 @@ import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.User;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Distance;
+import net.h31ix.anticheat.util.Permission;
 import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -268,7 +269,7 @@ public class PlayerListener extends EventListener
         {
             player.sendMessage(section + "f " + section + "f " + section + "4 " + section + "0 " + section + "9 " + section + "6");
         }
-        backend.logJoin(event.getPlayer());
+        backend.logJoin(player);
         if (getUserManager().getUser(player.getName()) == null)
         {
             getUserManager().addUser(new User(player.getName()));
@@ -276,6 +277,16 @@ public class PlayerListener extends EventListener
         else
         {
             getUserManager().addUserFromFile(player.getName());
+        }
+        if(player.hasMetadata(Anticheat.SPY_METADATA))
+        {
+            for(Player p : player.getServer().getOnlinePlayers())
+            {
+                if (!Permission.SYSTEM_SPY.get(p))
+                {
+                    p.hidePlayer(player);
+                }
+            }
         }
     }
 
