@@ -88,19 +88,16 @@ public class EntityListener extends EventListener
         if (event.getEntity() instanceof Player)
         {
             Player player = (Player) event.getEntity();
-            if(player.getFoodLevel() < event.getFoodLevel()) // Make sure it's them actually gaining a food level
+            if(player.getFoodLevel() < event.getFoodLevel() && checkManager.willCheck(player, CheckType.FAST_EAT)) // Make sure it's them actually gaining a food level
             {
-                if (checkManager.willCheck(player, CheckType.FAST_EAT))
+                if (backend.justStartedEating(player))
                 {
-                    if (backend.justStartedEating(player))
-                    {
-                        event.setCancelled(!config.silentMode());
-                        log("tried to eat too fast.", player, CheckType.FAST_EAT);
-                    }
-                    else
-                    {
-                        decrease(player);
-                    }
+                    event.setCancelled(!config.silentMode());
+                    log("tried to eat too fast.", player, CheckType.FAST_EAT);
+                }
+                else
+                {
+                    decrease(player);
                 }
             }
         }
@@ -157,32 +154,23 @@ public class EntityListener extends EventListener
             if (e.getDamager() instanceof Player)
             {
                 Player player = (Player) e.getDamager();
-                if (checkManager.willCheck(player, CheckType.FORCEFIELD))
+                if (checkManager.willCheck(player, CheckType.FORCEFIELD) && backend.justSprinted(player))
                 {
-                    if (backend.justSprinted(player))
-                    {
-                        event.setCancelled(!config.silentMode());
-                        log("tried to sprint & damage too fast.", player, CheckType.FORCEFIELD);
-                        noHack = false;
-                    }
+                    event.setCancelled(!config.silentMode());
+                    log("tried to sprint & damage too fast.", player, CheckType.FORCEFIELD);
+                    noHack = false;
                 }
-                if (checkManager.willCheck(player, CheckType.NO_SWING))
+                if (checkManager.willCheck(player, CheckType.NO_SWING) && !backend.justAnimated(player))
                 {
-                    if (!backend.justAnimated(player))
-                    {
-                        event.setCancelled(!config.silentMode());
-                        log("tried to damage an entity without swinging their arm.", player, CheckType.NO_SWING);
-                        noHack = false;
-                    }
+                    event.setCancelled(!config.silentMode());
+                    log("tried to damage an entity without swinging their arm.", player, CheckType.NO_SWING);
+                    noHack = false;
                 }
                 if (checkManager.willCheck(player, CheckType.FORCEFIELD))
                 {
-                    if(!backend.checkSight(player, e.getEntity()))
-                    {
-                        event.setCancelled(!config.silentMode());
-                        log("tried to damage an entity that they couldn't see.", player, CheckType.FORCEFIELD);
-                        noHack = false;
-                    }
+                    event.setCancelled(!config.silentMode());
+                    log("tried to damage an entity that they couldn't see.", player, CheckType.FORCEFIELD);
+                    noHack = false;
                 }
                 if (noHack)
                 {

@@ -147,6 +147,7 @@ public class Backend
 
     public boolean checkFastBow(Player player, float force)
     {
+        // Ignore magic numbers here, they are minecrafty vanilla stuff.
         int ticks = (int)((((System.currentTimeMillis()-bowWindUp.get(player.getName()))*20)/1000)+3);
         bowWindUp.remove(player.getName());
         float f = (float) ticks / 20.0F;
@@ -285,14 +286,7 @@ public class Backend
             if(speed)
             {
                 int num = this.increment(player, speedViolation, magic.SPEED_MAX);
-                if(num >= magic.SPEED_MAX)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return num >= magic.SPEED_MAX;
             }
             else
             {
@@ -611,14 +605,7 @@ public class Backend
                 }
                 int violation = flightViolation.containsKey(name) ? flightViolation.get(name)+1 : 1;
                 increment(player, flightViolation, violation);
-                if(violation > magic.FLIGHT_LIMIT)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return violation > magic.FLIGHT_LIMIT;
             }
         }
         flightViolation.put(name, 0);
@@ -868,7 +855,6 @@ public class Backend
         if (lastMessage.get(name) == null)
         {
             logEvent(lastMessage, player, msg, magic.CHAT_REPEAT_MIN);
-            //lastMessage.put(name, msg);
         }
         else
         {

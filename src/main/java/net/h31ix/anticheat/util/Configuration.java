@@ -33,14 +33,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Configuration
 {
-    private AnticheatManager micromanage = null; //like a boss!
+    private AnticheatManager micromanage = null;
     private File configFile = null;
     private File levelFile = null;
     private File langFile = null;
     private File magicFile = null;
     private CommentedConfiguration config;
     private FileConfiguration level;
-    private FileConfiguration lang;
     private FileConfiguration magic;
     private boolean logConsole;
     private boolean logXRay;
@@ -185,9 +184,8 @@ public class Configuration
         micromanage.getPlugin().checkConfigs();
         config = CommentedConfiguration.loadConfig(configFile);
         level = YamlConfiguration.loadConfiguration(levelFile);
-        lang = YamlConfiguration.loadConfiguration(langFile);
         magic = YamlConfiguration.loadConfiguration(magicFile);
-        language = new Language(lang, langFile);
+        language = new Language(YamlConfiguration.loadConfiguration(langFile), langFile);
         updateFolder = Bukkit.getUpdateFolder();
 
         // Begin pulling values from config.

@@ -56,8 +56,6 @@ public class PastebinReport
         }
         catch (IOException e)
         {
-            // TODO Auto-generated catch block
-            //e.printStackTrace();
         }
         postReport();
     }
@@ -70,14 +68,16 @@ public class PastebinReport
     private void appendPermissionsTester(Player player)
     {
         if (player == null)
+        {
             return;
-        
+        }
+
         // alrighty then noobs.
         for(Permission node : Permission.values())
         {
             report.append(player.getName() + ": " + node.toString() + " " + node.get(player) + '\n');
         }
-        
+
     }
 
     private void createReport(Player player)

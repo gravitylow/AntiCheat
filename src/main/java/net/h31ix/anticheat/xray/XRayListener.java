@@ -41,12 +41,9 @@ public class XRayListener implements Listener
         if (config.logXRay())
         {
             Player p = event.getPlayer();
-            if(p.getGameMode() == GameMode.CREATIVE)
+            if(p.getGameMode() == GameMode.CREATIVE && !config.trackCreativeXRay())
             {
-                if(!config.trackCreativeXRay())
-                {
-                    return;
-                }
+                return;
             }
             String player = p.getName();
             if (checkManager.willCheck(p, CheckType.XRAY))

@@ -75,14 +75,11 @@ public class BlockListener extends EventListener
         boolean noHack = true;
         if (player != null)
         {
-            if (checkManager.willCheck(player, CheckType.NO_SWING))
+            if (checkManager.willCheck(player, CheckType.NO_SWING) && backend.checkSwing(player, block))
             {
-                if (backend.checkSwing(player, block))
-                {
-                    event.setCancelled(!config.silentMode());
-                    log("tried to break a block of " + block.getType().name() + " without swinging their arm.", player, CheckType.NO_SWING);
-                    noHack = false;
-                }
+                event.setCancelled(!config.silentMode());
+                log("tried to break a block of " + block.getType().name() + " without swinging their arm.", player, CheckType.NO_SWING);
+                noHack = false;
             }
             if (checkManager.willCheck(player, CheckType.LONG_REACH))
             {
@@ -94,14 +91,11 @@ public class BlockListener extends EventListener
                     noHack = false;
                 }
             }
-            if (checkManager.willCheck(player, CheckType.FAST_BREAK) && !backend.isInstantBreakExempt(player))
+            if (checkManager.willCheck(player, CheckType.FAST_BREAK) && !backend.isInstantBreakExempt(player) && backend.checkFastBreak(player, block))
             {
-                if (backend.checkFastBreak(player, block))
-                {
-                    event.setCancelled(!config.silentMode());
-                    log("tried to break a block of " + block.getType().name() + " too fast.", player, CheckType.FAST_BREAK);
-                    noHack = false;
-                }
+                event.setCancelled(!config.silentMode());
+                log("tried to break a block of " + block.getType().name() + " too fast.", player, CheckType.FAST_BREAK);
+                noHack = false;
             }
         }
         if (noHack)

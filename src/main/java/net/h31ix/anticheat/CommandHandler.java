@@ -37,9 +37,9 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 public class CommandHandler implements CommandExecutor
 {
-    private static final Configuration config = Anticheat.getManager().getConfiguration();
-    private static final UserManager userManager = Anticheat.getManager().getUserManager();
-    private static final XRayTracker xtracker = Anticheat.getManager().getXRayTracker();
+    private static final Configuration CONFIG = Anticheat.getManager().getConfiguration();
+    private static final UserManager USER_MANAGER = Anticheat.getManager().getUserManager();
+    private static final XRayTracker XRAY_TRACKER = Anticheat.getManager().getXRayTracker();
     private static final ChatColor RED = ChatColor.RED;
     private static final ChatColor YELLOW = ChatColor.YELLOW;
     private static final ChatColor GREEN = ChatColor.GREEN;
@@ -52,6 +52,7 @@ public class CommandHandler implements CommandExecutor
     private static final int MED_THRESHOLD = 20;
     private static final int HIGH_THRESHOLD = 50;
     private static final String PERMISSIONS_ERROR = RED + "Insufficient Permissions.";
+    private static final String MENU_END = "-----------------------------------------------------";
 
     public void handleLog(CommandSender cs, String[] args)
     {
@@ -59,9 +60,9 @@ public class CommandHandler implements CommandExecutor
         {
             if (args[1].equalsIgnoreCase("enable"))
             {
-                if (!config.logConsole())
+                if (!CONFIG.logConsole())
                 {
-                    config.setLog(true);
+                    CONFIG.setLog(true);
                     cs.sendMessage(GREEN + "Console logging enabled.");
                 }
                 else
@@ -71,9 +72,9 @@ public class CommandHandler implements CommandExecutor
             }
             else if (args[1].equalsIgnoreCase("disable"))
             {
-                if (config.logConsole())
+                if (CONFIG.logConsole())
                 {
-                    config.setLog(false);
+                    CONFIG.setLog(false);
                     cs.sendMessage(GREEN + "Console logging disabled.");
                 }
                 else
@@ -110,15 +111,15 @@ public class CommandHandler implements CommandExecutor
     {
         if (Permission.SYSTEM_XRAY.get(cs))
         {
-            if (config.logXRay())
+            if (CONFIG.logXRay())
             {
                 List<Player> list = SERVER.matchPlayer(args[1]);
                 if (list.size() == 1)
                 {
                     Player player = list.get(0);
-                    if (xtracker.sufficientData(player.getName()))
+                    if (XRAY_TRACKER.sufficientData(player.getName()))
                     {
-                        xtracker.sendStats(cs, player.getName());
+                        XRAY_TRACKER.sendStats(cs, player.getName());
                     }
                     else
                     {
@@ -130,9 +131,9 @@ public class CommandHandler implements CommandExecutor
                 {
                     cs.sendMessage(RED + "Multiple players found by name: " + WHITE + args[1] + RED + ".");
                 }
-                else if (xtracker.sufficientData(args[1]))
+                else if (XRAY_TRACKER.sufficientData(args[1]))
                 {
-                    xtracker.sendStats(cs, args[1]);
+                    XRAY_TRACKER.sendStats(cs, args[1]);
                 }
                 else
                 {
@@ -159,16 +160,16 @@ public class CommandHandler implements CommandExecutor
             if (list.size() == 1)
             {
                 Player player = list.get(0);
-                if (userManager.safeGetLevel(player.getName()) == 0)
+                if (USER_MANAGER.safeGetLevel(player.getName()) == 0)
                 {
                     cs.sendMessage(player.getName() + RED + " is already in Low Level!");
                 }
                 else
                 {
-                    userManager.safeReset(player.getName());
+                    USER_MANAGER.safeReset(player.getName());
                     cs.sendMessage(player.getName() + GREEN + " has been reset to Low Level.");
                 }
-                xtracker.reset(player.getName());
+                XRAY_TRACKER.reset(player.getName());
                 cs.sendMessage(player.getName() + GREEN + "'s XRay stats have been reset.");
             }
             else if (list.size() > 1)
@@ -274,7 +275,7 @@ public class CommandHandler implements CommandExecutor
             cs.sendMessage(base + GREEN + "help" + WHITE + " - access this page");
             cs.sendMessage(base + GREEN + "debug" + WHITE + " - post debug information");
             cs.sendMessage(base + GREEN + "update" + WHITE + " - check update status");
-            cs.sendMessage("-----------------------------------------------------");
+            cs.sendMessage(MENU_END);
         }
         else
         {
@@ -287,11 +288,11 @@ public class CommandHandler implements CommandExecutor
         if (Permission.SYSTEM_UPDATE.get(cs))
         {
             cs.sendMessage("Running " + GREEN + "AntiCheat " + WHITE + "v" + GREEN + Anticheat.getVersion());
-            cs.sendMessage("-----------------------------------------------------");
+            cs.sendMessage(MENU_END);
             if (!Anticheat.isUpdated())
             {
                 cs.sendMessage(GRAY + "There " + GREEN + "IS" + GRAY + " a newer version avaliable.");
-                if (config.autoUpdate())
+                if (CONFIG.autoUpdate())
                 {
                     cs.sendMessage(GRAY + "It will be installed automatically for you on next launch.");
                 }
@@ -417,7 +418,7 @@ public class CommandHandler implements CommandExecutor
                     cs.sendMessage(GRAY + player);
                 }
             }
-            cs.sendMessage("-----------------------------------------------------");
+            cs.sendMessage(MENU_END);
         }
         else
         {
@@ -426,7 +427,7 @@ public class CommandHandler implements CommandExecutor
                 cs.sendMessage("--------------------[" + GREEN + "REPORT[1/1]" + WHITE + "]---------------------");
                 cs.sendMessage(GRAY + "Group: " + color + group);
                 cs.sendMessage(GRAY + "There are no users in this group.");
-                cs.sendMessage("-----------------------------------------------------");
+                cs.sendMessage(MENU_END);
             }
             else
             {
@@ -493,11 +494,11 @@ public class CommandHandler implements CommandExecutor
         int pages = (int)Math.ceil(((float)types.size())/6);
         int level = user.getLevel();
         String levelString = GREEN + "Low";
-        if (level >= config.highThreshold())
+        if (level >= CONFIG.highThreshold())
         {
             levelString = RED + "High";
         }
-        else if (level >= config.medThreshold())
+        else if (level >= CONFIG.medThreshold())
         {
             levelString = YELLOW + "Medium";
         }
@@ -524,7 +525,7 @@ public class CommandHandler implements CommandExecutor
                     cs.sendMessage(GRAY + CheckType.getName(types.get(index)) + ": " + color + use);
                 }
             }
-            cs.sendMessage("-----------------------------------------------------");
+            cs.sendMessage(MENU_END);
         }
         else
         {
@@ -534,7 +535,7 @@ public class CommandHandler implements CommandExecutor
                 cs.sendMessage(GRAY + "Player: " + WHITE + name);
                 cs.sendMessage(GRAY + "Level: " + levelString);
                 cs.sendMessage(GRAY + "This user has not failed any checks.");
-                cs.sendMessage("-----------------------------------------------------");
+                cs.sendMessage(MENU_END);
             }
             else
             {
@@ -547,7 +548,7 @@ public class CommandHandler implements CommandExecutor
     {
         if (Permission.SYSTEM_RELOAD.get(cs))
         {
-            config.load();
+            CONFIG.load();
             cs.sendMessage(GREEN + "AntiCheat configuration reloaded.");
         }
         else
@@ -657,7 +658,7 @@ public class CommandHandler implements CommandExecutor
         low.clear();
         for (Player player : SERVER.getOnlinePlayers())
         {
-            int level = userManager.safeGetLevel(player.getName());
+            int level = USER_MANAGER.safeGetLevel(player.getName());
             if (level <= MED_THRESHOLD)
             {
                 low.add(player.getName());

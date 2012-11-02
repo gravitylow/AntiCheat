@@ -109,7 +109,7 @@ public class Anticheat extends JavaPlugin
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                getLogger().severe("Unable to save files. Is the directory writeable?");
             }
             if (verbose)
             {

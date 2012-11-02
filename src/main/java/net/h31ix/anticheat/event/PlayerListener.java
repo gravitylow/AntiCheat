@@ -93,13 +93,10 @@ public class PlayerListener extends EventListener
                 return;
             }
 
-            if (checkManager.willCheck(player, CheckType.FAST_PROJECTILE))
+            if (checkManager.willCheck(player, CheckType.FAST_PROJECTILE) && backend.checkProjectile(player))
             {
-                if (backend.checkProjectile(player))
-                {
-                    event.setCancelled(!config.silentMode());
-                    log("tried to fire projectiles too fast.", player, CheckType.FAST_PROJECTILE);
-                }
+                event.setCancelled(!config.silentMode());
+                log("tried to fire projectiles too fast.", player, CheckType.FAST_PROJECTILE);
             }
         }
     }
@@ -134,13 +131,10 @@ public class PlayerListener extends EventListener
         Player player = event.getPlayer();
         if (checkManager.willCheck(player, CheckType.FLY) && checkManager.willCheck(player, CheckType.ZOMBE_FLY)) //@h31ix: Change if necessary.  I'm not sure what perms should go here :3
         {
-            if (backend.justVelocity(player))
+            if (backend.justVelocity(player) && backend.extendVelocityTime(player))
             {
-                if (backend.extendVelocityTime(player))
-                {
-                    event.setCancelled(!config.silentMode());
-                    return; // don't log it lol.
-                }
+                event.setCancelled(!config.silentMode());
+                return; // don't log it lol.
             }
             backend.logVelocity(player);
         }
@@ -200,7 +194,6 @@ public class PlayerListener extends EventListener
     public void onPlayerInteract(PlayerInteractEvent event)
     {
         Player player = event.getPlayer();
-        //Block playerClick = player.getTargetBlock(Utilities.getNonSolid(), 5);
         PlayerInventory inv = player.getInventory();
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
         {
@@ -315,30 +308,27 @@ public class PlayerListener extends EventListener
             }
             log("tried to fly on y-axis", player, CheckType.FLY);
         }
-        if (checkManager.willCheck(player, CheckType.VCLIP) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY))
+        if (checkManager.willCheck(player, CheckType.VCLIP) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY) && event.getFrom().getY() > event.getTo().getY())
         {
-            if (event.getFrom().getY() > event.getTo().getY())
-            {
-                int result = backend.checkVClip(player, new Distance(event.getFrom(), event.getTo()));
+            int result = backend.checkVClip(player, new Distance(event.getFrom(), event.getTo()));
 
-                if (result > 0)
+            if (result > 0)
+            {
+                if (!config.silentMode())
                 {
-                    if (!config.silentMode())
+                    // You come back up, and you suddenly feel sick from trying to stick yourself through the blocks..
+                    Location newloc = new Location(player.getWorld(), event.getFrom().getX(), event.getFrom().getY() + result, event.getFrom().getZ());
+                    if (newloc.getBlock().getTypeId() == 0)
                     {
-                        // You come back up, and you suddenly feel sick from trying to stick yourself through the blocks..
-                        Location newloc = new Location(player.getWorld(), event.getFrom().getX(), event.getFrom().getY() + result, event.getFrom().getZ());
-                        if (newloc.getBlock().getTypeId() == 0)
-                        {
-                            event.setTo(newloc);
-                        }
-                        else
-                        {
-                            event.setTo(event.getFrom());
-                        }
-                        player.damage(3);
+                        event.setTo(newloc);
                     }
-                    log("tried to move down through a block.", player, CheckType.VCLIP);
+                    else
+                    {
+                        event.setTo(event.getFrom());
+                    }
+                    player.damage(3);
                 }
+                log("tried to move down through a block.", player, CheckType.VCLIP);
             }
         }
         if (checkManager.willCheck(player, CheckType.NOFALL) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && event.getFrom().getY() > event.getTo().getY() && backend.checkNoFall(player, y))
@@ -382,16 +372,13 @@ public class PlayerListener extends EventListener
                     }
                     log("tried to move too fast.", player, CheckType.SPEED);
                 }
-                if(event.getFrom().getX() != event.getTo().getX() || event.getFrom().getZ() != event.getTo().getZ())
+                if((event.getFrom().getX() != event.getTo().getX() || event.getFrom().getZ() != event.getTo().getZ()) && backend.checkTimer(player))
                 {
-                    if (backend.checkTimer(player))
+                    if (!config.silentMode())
                     {
-                        if (!config.silentMode())
-                        {
-                            event.setTo(from);
-                        }
-                        log("tried to move too fast.", player, CheckType.SPEED);
+                        event.setTo(from);
                     }
+                    log("tried to move too fast.", player, CheckType.SPEED);
                 }
             }
             if (checkManager.willCheck(player, CheckType.WATER_WALK) && backend.checkWaterWalk(player, x, z))
