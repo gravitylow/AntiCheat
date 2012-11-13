@@ -220,7 +220,7 @@ public class Backend
 
     public boolean checkYSpeed(Player player, double y)
     {
-        if (!player.isInsideVehicle() && y > magic.Y_SPEED_MAX && !isDoing(player, velocitized, magic.VELOCITY_TIME) && !player.hasPotionEffect(PotionEffectType.JUMP))
+        if (!player.isInsideVehicle() && !player.isSleeping() && y > magic.Y_SPEED_MAX && !isDoing(player, velocitized, magic.VELOCITY_TIME) && !player.hasPotionEffect(PotionEffectType.JUMP))
         {
             return true;
         }
@@ -230,7 +230,7 @@ public class Backend
     public boolean checkNoFall(Player player, double y)
     {
         String name = player.getName();
-        if (player.getGameMode() != GameMode.CREATIVE && player.getVehicle() == null && !isMovingExempt(player) && !justPlaced(player) && !Utilities.isInWater(player))
+        if (player.getGameMode() != GameMode.CREATIVE && !player.isInsideVehicle() && !player.isSleeping() && !isMovingExempt(player) && !justPlaced(player) && !Utilities.isInWater(player))
         {
             if (player.getFallDistance() == 0)
             {
