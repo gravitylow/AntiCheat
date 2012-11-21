@@ -132,7 +132,7 @@ public class PastebinReport
             conn.setDoOutput(true);
             OutputStream out = conn.getOutputStream();
 
-            out.write(("api_option=paste" + "&api_dev_key=" + URLEncoder.encode("c0616def494dcb5b7632304f8c52c0f1", "utf-8") + "&api_paste_code=" + URLEncoder.encode(report.toString(), "utf-8") + "&api_paste_private=" + URLEncoder.encode("0", "utf-8") + "&api_paste_name=" + URLEncoder.encode("", "utf-8") + "&api_paste_expire_date=" + URLEncoder.encode("1D", "utf-8") + "&api_paste_format=" + URLEncoder.encode("text", "utf-8") + "&api_user_key=" + URLEncoder.encode("", "utf-8")).getBytes());
+            out.write(("api_option=paste" + "&api_dev_key=" + URLEncoder.encode("c0616def494dcb5b7632304f8c52c0f1", "utf-8") + "&api_paste_code=" + URLEncoder.encode(report.toString(), "utf-8") + "&api_paste_private=" + URLEncoder.encode("1", "utf-8") + "&api_paste_name=" + URLEncoder.encode("", "utf-8") + "&api_paste_expire_date=" + URLEncoder.encode("1M", "utf-8") + "&api_paste_format=" + URLEncoder.encode("text", "utf-8") + "&api_user_key=" + URLEncoder.encode("", "utf-8")).getBytes());
             out.flush();
             out.close();
 
