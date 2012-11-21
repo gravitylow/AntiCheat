@@ -49,7 +49,7 @@ public class Backend
     private Map<String, Integer> ascensionCount = new HashMap<String, Integer>();
     private Map<String, String> oldMessage = new HashMap<String, String>();
     private Map<String, String> lastMessage = new HashMap<String, String>();
-    private Map<String, Integer> flightViolation = new HashMap<String, Integer>();
+    private Map<String, Double> blocksOverFlight = new HashMap<String, Double>();
     private Map<String, Integer> chatLevel = new HashMap<String, Integer>();
     private Map<String, Integer> chatKicks = new HashMap<String, Integer>();
     private Map<String, Integer> nofallViolation = new HashMap<String, Integer>();
@@ -123,7 +123,7 @@ public class Backend
         ascensionCount.remove(pN);
         oldMessage.remove(pN);
         lastMessage.remove(pN);
-        flightViolation.remove(pN);
+        blocksOverFlight.remove(pN);
         chatLevel.remove(pN);
         nofallViolation.remove(pN);
         fastBreakViolation.remove(pN);
@@ -341,9 +341,10 @@ public class Backend
         }
     }
 
-    public boolean checkWaterWalk(Player player, double x, double z)
+    public boolean checkWaterWalk(Player player, double x, double y, double z)
     {
         Block block = player.getLocation().getBlock();
+        
         if (player.getVehicle() == null && !player.isFlying())
         {
             if (block.isLiquid())
@@ -360,6 +361,10 @@ public class Backend
                                 b = true;
                             }
                             else if (x > magic.XZ_SPEED_MAX_WATER_SPRINT || z > magic.XZ_SPEED_MAX_WATER_SPRINT)
+                            {
+                                b = true;
+                            }
+                            else if (!Utilities.isFullyInWater(player.getLocation()) && Utilities.isHoveringOverWater(player.getLocation(), 1) && y == 0D && !block.getType().equals(Material.WATER_LILY))
                             {
                                 b = true;
                             }
@@ -410,6 +415,7 @@ public class Backend
                     else
                     {
                         waterAscensionViolation.put(player.getName(), v + 1);
+                        return true;
                     }
                 }
                 else
@@ -593,38 +599,61 @@ public class Backend
         String name = player.getName();
         double y1 = distance.fromY();
         double y2 = distance.toY();
-        if (!isMovingExempt(player) && !Utilities.isInWater(player) && !Utilities.canStand(player.getLocation().getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -1, 0).getBlock()) && Utilities.cantStandAt(player.getLocation().add(0, -2, 0).getBlock()))
+        //Check if the player is climbing up water.
+        /*   if (block.getRelative(BlockFace.NORTH).isLiquid() || block.getRelative(BlockFace.SOUTH).isLiquid() || block.getRelative(BlockFace.EAST).isLiquid() || block.getRelative(BlockFace.WEST).isLiquid())
+           {
+               if (y1 < y2)
+               {
+                   //Even if they are using a hacked client and flying next to water to abuse this, they can't be go past the speed limit so they might as well swim
+                   return distance.getYDifference() > magic.WATER_CLIMB_MAX;
+               }
+           } */
+
+        if (!isMovingExempt(player) && !Utilities.isHoveringOverWater(player.getLocation(), 1) && Utilities.cantStandAtExp(player.getLocation()))
         {
-            Block block = player.getLocation().getBlock();
-            //Check if the player is climbing up water.
-            if (block.getRelative(BlockFace.NORTH).isLiquid() || block.getRelative(BlockFace.SOUTH).isLiquid() || block.getRelative(BlockFace.EAST).isLiquid() || block.getRelative(BlockFace.WEST).isLiquid())
+            /* if (y1 == y2 || y1 < y2)
+             { 
+                 
+                 if (y1 == y2)
+                 {
+                     //Check if the player is on slabs or crouching on stairs
+                     if (Utilities.isSlab(block.getRelative(BlockFace.NORTH)) || Utilities.isSlab(block.getRelative(BlockFace.SOUTH)) || Utilities.isSlab(block.getRelative(BlockFace.EAST)) || Utilities.isSlab(block.getRelative(BlockFace.WEST)) || Utilities.isSlab(block.getRelative(BlockFace.NORTH_EAST)) || Utilities.isSlab(block.getRelative(BlockFace.SOUTH_EAST)) || Utilities.isSlab(block.getRelative(BlockFace.SOUTH_WEST)) || Utilities.isSlab(block.getRelative(BlockFace.NORTH_WEST)))
+                     {
+                         return false;
+                     }
+                     else if (player.isSneaking() && (Utilities.isStair(block.getRelative(BlockFace.NORTH)) || Utilities.isStair(block.getRelative(BlockFace.SOUTH)) || Utilities.isStair(block.getRelative(BlockFace.EAST)) || Utilities.isStair(block.getRelative(BlockFace.WEST)) || Utilities.isStair(block.getRelative(BlockFace.NORTH_EAST)) || Utilities.isStair(block.getRelative(BlockFace.SOUTH_EAST)) || Utilities.isStair(block.getRelative(BlockFace.SOUTH_WEST)) || Utilities.isStair(block.getRelative(BlockFace.NORTH_WEST))))
+                     {
+                         return false;
+                     }
+                 
+                 
+                 int violation = flightViolation.containsKey(name) ? flightViolation.get(name) + 1 : 1;
+                 increment(player, flightViolation, violation);
+                 return violation > magic.FLIGHT_LIMIT;
+             } */
+            
+            if (!blocksOverFlight.containsKey(name))
             {
-                if (y1 < y2)
-                {
-                    //Even if they are using a hacked client and flying next to water to abuse this, they can't be go past the speed limit so they might as well swim
-                    return distance.getYDifference() > magic.WATER_CLIMB_MAX;
-                }
+                blocksOverFlight.put(name, 0D);
             }
-            else if (y1 == y2 || y1 < y2)
+            
+            blocksOverFlight.put(name, (blocksOverFlight.get(name) + distance.getXDifference() + distance.getYDifference() + distance.getZDifference()));
+            
+            if (y1 > y2)
             {
-                if (y1 == y2)
-                {
-                    //Check if the player is on slabs or crouching on stairs
-                    if (Utilities.isSlab(block.getRelative(BlockFace.NORTH)) || Utilities.isSlab(block.getRelative(BlockFace.SOUTH)) || Utilities.isSlab(block.getRelative(BlockFace.EAST)) || Utilities.isSlab(block.getRelative(BlockFace.WEST)) || Utilities.isSlab(block.getRelative(BlockFace.NORTH_EAST)) || Utilities.isSlab(block.getRelative(BlockFace.SOUTH_EAST)) || Utilities.isSlab(block.getRelative(BlockFace.SOUTH_WEST)) || Utilities.isSlab(block.getRelative(BlockFace.NORTH_WEST)))
-                    {
-                        return false;
-                    }
-                    else if (player.isSneaking() && (Utilities.isStair(block.getRelative(BlockFace.NORTH)) || Utilities.isStair(block.getRelative(BlockFace.SOUTH)) || Utilities.isStair(block.getRelative(BlockFace.EAST)) || Utilities.isStair(block.getRelative(BlockFace.WEST)) || Utilities.isStair(block.getRelative(BlockFace.NORTH_EAST)) || Utilities.isStair(block.getRelative(BlockFace.SOUTH_EAST)) || Utilities.isStair(block.getRelative(BlockFace.SOUTH_WEST)) || Utilities.isStair(block.getRelative(BlockFace.NORTH_WEST))))
-                    {
-                        return false;
-                    }
-                }
-                int violation = flightViolation.containsKey(name) ? flightViolation.get(name) + 1 : 1;
-                increment(player, flightViolation, violation);
-                return violation > magic.FLIGHT_LIMIT;
+                blocksOverFlight.put(name, (blocksOverFlight.get(name) - distance.getYDifference()));
+            }
+
+            if (blocksOverFlight.get(name) > magic.FLIGHT_BLOCK_LIMIT && (y1 <= y2))
+            {
+                return true;
             }
         }
-        flightViolation.put(name, 0);
+        else
+        {
+            blocksOverFlight.put(name, 0D);
+        }
+
         return false;
     }
 
@@ -749,7 +778,7 @@ public class Backend
                 }
                 else if (fastBreaks.get(name) >= magic.FASTBREAK_LIMIT)
                 {
-                    if(!blockBreakHolder.containsKey(name) || !blockBreakHolder.get(name)) 
+                    if (!blockBreakHolder.containsKey(name) || !blockBreakHolder.get(name))
                     {
                         blockBreakHolder.put(name, true);
                     }
@@ -760,9 +789,6 @@ public class Backend
                     }
                 }
             }
-            
-            System.out.println(System.currentTimeMillis() - lastBlockBroken.get(name));
-            System.out.println(fastBreaks.get(name));
 
             lastBlockBroken.put(name, System.currentTimeMillis()); // always keep a log going.
         }
@@ -980,6 +1006,18 @@ public class Backend
         return isDoing(player, sprinted, magic.SPRINT_MIN);
     }
 
+    public boolean isHoveringOverWaterAfterViolation(Player player)
+    {
+        if (waterSpeedViolation.containsKey(player.getName()))
+        {
+            if (waterSpeedViolation.get(player.getName()) >= magic.WATER_SPEED_VIOLATION_MAX && Utilities.isHoveringOverWater(player.getLocation())) 
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void logBlockBreak(final Player player)
     {
         brokenBlock.put(player.getName(), System.currentTimeMillis());
@@ -1104,7 +1142,7 @@ public class Backend
 
         /* Data for fly/speed should be reset */
         nofallViolation.remove(player.getName());
-        flightViolation.remove(player.getName());
+        blocksOverFlight.remove(player.getName());
         yAxisViolations.remove(player.getName());
         yAxisLastViolation.remove(player.getName());
         lastYcoord.remove(player.getName());

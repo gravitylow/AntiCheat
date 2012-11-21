@@ -22,10 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 import net.h31ix.anticheat.Anticheat;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.util.NumberConversions;
 
 public final class Utilities
 {
@@ -65,6 +67,13 @@ public final class Utilities
     {
         return !canStand(block) && cantStandClose(block) && cantStandFar(block);
     }
+    
+    public static boolean cantStandAtExp(Location block) 
+    {
+        // This is a experimental check for checking whether you can't stand at or whatever.
+        Block nblock = new Location(block.getWorld(), fixXAxis(block.getX()), block.getY() - 0.01D, block.getBlockZ()).getBlock();
+        return cantStandAt(nblock);
+    }
 
     public static boolean cantStandClose(Block block)
     {
@@ -79,6 +88,52 @@ public final class Utilities
     public static boolean canStand(Block block)
     {
         return !(block.isLiquid() || block.getType() == Material.AIR);
+    }
+    
+    public static boolean isFullyInWater(Location player)
+    {
+        double touchedX = fixXAxis(player.getX());
+        
+        // Yes, this doesn't make sense, but it's supposed to fix some false positives in water walk.
+        // Think of it as 2 negatives = a positive :)
+        if(!(new Location(player.getWorld(), touchedX, player.getY(), player.getBlockZ()).getBlock()).isLiquid() && !(new Location(player.getWorld(), touchedX, Math.round(player.getY()), player.getBlockZ()).getBlock()).isLiquid())
+        {
+            return true;
+        }
+        
+        return (new Location(player.getWorld(), touchedX, player.getY(), player.getBlockZ()).getBlock()).isLiquid() && (new Location(player.getWorld(), touchedX, Math.round(player.getY()), player.getBlockZ()).getBlock()).isLiquid();
+    }
+    
+    public static double fixXAxis(double x)
+    {
+        /* Really really really useful function for those who are on the edges of blocks */
+        /* For Z axis, just use Math.round(xaxis); */
+        double touchedX = x;
+        double rem = touchedX - Math.round(touchedX) + 0.01D;
+        if (rem < 0.30D)
+        {
+            touchedX = NumberConversions.floor(x) - 1;
+        }
+        return touchedX;
+    }
+    
+    public static boolean isHoveringOverWater(Location player, int blocks)
+    {
+        for(int i = player.getBlockY(); i > player.getBlockY() - blocks; i--)
+        {
+            Block newloc = (new Location(player.getWorld(), player.getBlockX(), i, player.getBlockZ())).getBlock();
+            if(newloc.getTypeId() != 0 && newloc.isLiquid())
+                return true;
+            else if (newloc.getTypeId() != 0)
+                return false;
+        }
+        
+        return false;
+    }
+    
+    public static boolean isHoveringOverWater(Location player) 
+    {
+        return isHoveringOverWater(player, 25);
     }
 
     public static boolean isInstantBreak(Material m)
