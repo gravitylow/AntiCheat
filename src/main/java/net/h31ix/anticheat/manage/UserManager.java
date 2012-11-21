@@ -36,10 +36,10 @@ public class UserManager
     private static final ChatColor YELLOW = ChatColor.YELLOW;
     private static final ChatColor RED = ChatColor.RED;
 
-    public UserManager(Configuration config)
+    public UserManager(Configuration conf)
     {
-        this.config = config;
-        lang = config.getLang();
+        config = conf;
+        lang = conf.getLang();
     }
 
     public User getUser(String name)
