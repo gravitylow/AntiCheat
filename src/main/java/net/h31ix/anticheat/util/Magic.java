@@ -105,6 +105,10 @@ public class Magic
      */
     public final int FASTBREAK_TIMEMAX;
     /**
+     * Time to wait before checking block breaks in creative mode; Type=system, +Leniency=Increase.
+     */
+    public final int FASTBREAK_TIMEMAX_CREATIVE;
+    /**
      * Number of times fastbreak can be observed before taking action; Type=integer, +Leniency=Increase.
      */
     public final int FASTBREAK_MAXVIOLATIONS;
@@ -344,6 +348,7 @@ public class Magic
          DROP_CHECK = getInt("DROP_CHECK");
          FASTBREAK_LIMIT = getInt("FASTBREAK_LIMIT");
          FASTBREAK_TIMEMAX = getInt("FASTBREAK_TIMEMAX");
+         FASTBREAK_TIMEMAX_CREATIVE = getInt("FASTBREAK_TIMEMAX_CREATIVE");
          FASTBREAK_MAXVIOLATIONS = getInt("FASTBREAK_MAXVIOLATIONS");
          FASTBREAK_MAXVIOLATIONS_CREATIVE = getInt("FASTBREAK_MAXVIOLATIONS_CREATIVE");
          FASTBREAK_MAXVIOLATIONTIME = getInt("FASTBREAK_MAXVIOLATIONTIME");
