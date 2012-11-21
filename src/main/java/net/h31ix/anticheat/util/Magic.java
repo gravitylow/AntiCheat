@@ -161,6 +161,10 @@ public class Magic
      */
     public final int FLIGHT_LIMIT;
     /**
+     * How many blocks you can travel before action is taken; Type=integer, +Leniency=Increase.
+     */
+    public final double FLIGHT_BLOCK_LIMIT;
+    /**
      * Maximum speed that a player can climb a waterfall; Type=double, +Leniency=Increase.
      */
     public final double WATER_CLIMB_MAX;
@@ -362,6 +366,7 @@ public class Magic
          CHAT_KICK_LEVEL = getInt("CHAT_KICK_LEVEL");
          CHAT_BAN_LEVEL = getInt("CHAT_BAN_LEVEL");
          FLIGHT_LIMIT = getInt("FLIGHT_LIMIT");
+         FLIGHT_BLOCK_LIMIT = getDouble("FLIGHT_BLOCK_LIMIT");
          WATER_CLIMB_MAX = getDouble("WATER_CLIMB_MAX");
          Y_MAXVIOLATIONS = getInt("Y_MAXVIOLATIONS");
          Y_MAXVIOTIME = getInt("Y_MAXVIOTIME");
