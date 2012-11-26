@@ -20,7 +20,10 @@ package net.h31ix.anticheat.manage;
 
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.util.Configuration;
+import net.h31ix.anticheat.util.Utilities;
+
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class User
@@ -29,6 +32,7 @@ public class User
     private int level = 0;
     private int high;
     private int med;
+    private Location goodLocation;
     private boolean silentMode;
 
     public User(String name)
@@ -69,7 +73,7 @@ public class User
 
     public boolean increaseLevel(CheckType type)
     {
-        if(getPlayer().isOnline())
+        if(getPlayer() != null || getPlayer().isOnline())
         {
             if(silentMode && type.getUses(name) % 4 != 0)
             {
@@ -118,6 +122,36 @@ public class User
         {
             type.clearUse(name);
         }
+    }
+    
+    public Location getGoodLocation(Location e) 
+    {
+        if(goodLocation == null)
+        {
+            return e;
+        }
+        
+        return goodLocation;
+    }
+    
+    public boolean hasGoodLocation()
+    {
+        return goodLocation != null;
+    }
+    
+    public void setGoodLocation(Location e)
+    {
+        if(Utilities.cantStandAtExp(e))
+        {
+            return;
+        }
+        
+        if(e.getBlock().isLiquid() && !Utilities.isFullyInWater(e))
+        {
+            return;
+        }
+        
+        goodLocation = e;
     }
 
 }
