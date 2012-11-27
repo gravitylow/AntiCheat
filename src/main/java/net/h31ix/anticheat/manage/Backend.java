@@ -344,7 +344,7 @@ public class Backend
     public boolean checkWaterWalk(Player player, double x, double y, double z)
     {
         Block block = player.getLocation().getBlock();
-        
+
         if (player.getVehicle() == null && !player.isFlying())
         {
             if (block.isLiquid())
@@ -565,28 +565,8 @@ public class Backend
 
     public boolean checkSight(Player player, Entity entity)
     {
-        // Check to make sure the entity's head is not surrounded
-        Block head = entity.getWorld().getBlockAt((int) entity.getLocation().getX(), (int) (entity.getLocation().getY() + ((CraftEntity) entity).getHandle().getHeadHeight()), (int) entity.getLocation().getZ());
-        boolean solid = false;
-        //TODO: This sucks. See if it's possible to not have as many false-positives while still retaining most of the check.
-        for (int x = -2; x <= 2; x++)
-        {
-            for (int z = -2; z <= 2; z++)
-            {
-                for (int y = -1; y < 2; y++)
-                {
-                    if (head.getRelative(x, y, z).getTypeId() != 0)
-                    {
-                        if (net.minecraft.server.Block.byId[head.getRelative(x, y, z).getTypeId()].material.isSolid())
-                        {
-                            solid = true;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        return solid ? true : player.hasLineOfSight(entity);
+        // TODO: Internal method was screwed. Rewrite.
+        return true;
     }
 
     public boolean checkFlight(Player player, Distance distance)
@@ -612,8 +592,8 @@ public class Backend
         if (!isMovingExempt(player) && !Utilities.isHoveringOverWater(player.getLocation(), 1) && Utilities.cantStandAtExp(player.getLocation()))
         {
             /* if (y1 == y2 || y1 < y2)
-             { 
-                 
+             {
+
                  if (y1 == y2)
                  {
                      //Check if the player is on slabs or crouching on stairs
@@ -625,20 +605,20 @@ public class Backend
                      {
                          return false;
                      }
-                 
-                 
+
+
                  int violation = flightViolation.containsKey(name) ? flightViolation.get(name) + 1 : 1;
                  increment(player, flightViolation, violation);
                  return violation > magic.FLIGHT_LIMIT;
              } */
-            
+
             if (!blocksOverFlight.containsKey(name))
             {
                 blocksOverFlight.put(name, 0D);
             }
-            
+
             blocksOverFlight.put(name, (blocksOverFlight.get(name) + distance.getXDifference() + distance.getYDifference() + distance.getZDifference()));
-            
+
             if (y1 > y2)
             {
                 blocksOverFlight.put(name, (blocksOverFlight.get(name) - distance.getYDifference()));
@@ -1010,7 +990,7 @@ public class Backend
     {
         if (waterSpeedViolation.containsKey(player.getName()))
         {
-            if (waterSpeedViolation.get(player.getName()) >= magic.WATER_SPEED_VIOLATION_MAX && Utilities.isHoveringOverWater(player.getLocation())) 
+            if (waterSpeedViolation.get(player.getName()) >= magic.WATER_SPEED_VIOLATION_MAX && Utilities.isHoveringOverWater(player.getLocation()))
             {
                 return true;
             }

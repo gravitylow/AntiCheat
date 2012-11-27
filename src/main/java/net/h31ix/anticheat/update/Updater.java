@@ -37,11 +37,11 @@ import org.bukkit.plugin.Plugin;
 /**
  * Check dev.bukkit.org to find updates for a given plugin, and download the updates if needed.
  * <p>
- * <b>VERY, VERY IMPORTANT</b>: Because there are no standards for adding auto-update toggles in your plugin's config, this system provides NO CHECK WITH YOUR CONFIG to make sure the user has allowed auto-updating.
+ * <strong>VERY, VERY IMPORTANT</strong>: Because there are no standards for adding auto-update toggles in your plugin's config, this system provides NO CHECK WITH YOUR CONFIG to make sure the user has allowed auto-updating.
  * <br>
- * It is a <b>BUKKIT POLICY</b> that you include a boolean value in your config that prevents the auto-updater from running <b>AT ALL</b>.
+ * It is a <strong>BUKKIT POLICY</strong> that you include a boolean value in your config that prevents the auto-updater from running <strong>AT ALL</strong>.
  * <br>
- * If you fail to include this option in your config, your plugin will be <b>REJECTED</b> when you attempt to submit it to dev.bukkit.org.
+ * If you fail to include this option in your config, your plugin will be <strong>REJECTED</strong> when you attempt to submit it to dev.bukkit.org.
  * <p>
  * An example of a good configuration option would be something similar to 'auto-update: true' - if this value is set to false you may NOT run the auto-updater.
  * <br>

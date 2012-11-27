@@ -436,7 +436,7 @@ public class Metrics
         }
 
         /**
-         * Gets an <b>unmodifiable</b> set of the plotter objects in the graph
+         * Gets an <strong>unmodifiable</strong> set of the plotter objects in the graph
          * 
          * @return
          */
