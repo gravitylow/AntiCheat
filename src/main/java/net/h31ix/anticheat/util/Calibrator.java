@@ -158,7 +158,6 @@ public class Calibrator implements Listener
     private double getMaxDouble(double length)
     {
         int count = getDoubleCount();
-        System.out.println(count);
         if(count < 10)
         {
             doubles[count] = length;

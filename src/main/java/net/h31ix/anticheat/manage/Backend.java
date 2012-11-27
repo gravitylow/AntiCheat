@@ -1230,9 +1230,12 @@ public class Backend
             }
 
             String event = kick <= magic.CHAT_BAN_LEVEL ? micromanage.getConfiguration().chatActionKick() : micromanage.getConfiguration().chatActionBan();
+            // Set string variables
+            event = event.replaceAll("&player", name).replaceAll("&world", player.getWorld().getName());
+
             if (event.startsWith("COMMAND["))
             {
-                String command = event.replaceAll("COMMAND\\[", "").replaceAll("]", "").replaceAll("&player", name).replaceAll("&world", player.getWorld().getName());
+                String command = event.replaceAll("COMMAND\\[", "").replaceAll("]", "");
                 Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
             }
             else if (event.equalsIgnoreCase("KICK"))
@@ -1240,6 +1243,7 @@ public class Backend
                 String msg = kick <= magic.CHAT_BAN_LEVEL ? ChatColor.RED + lang.getChatKickReason() + " (" + kick + "/" + magic.CHAT_BAN_LEVEL + ")" : ChatColor.RED + lang.getChatBanReason();
                 player.kickPlayer(msg);
                 msg = kick <= magic.CHAT_BAN_LEVEL ? ChatColor.RED + lang.getChatKickBroadcast() + " (" + kick + "/" + magic.CHAT_BAN_LEVEL + ")" : ChatColor.RED + lang.getChatBanBroadcast();
+                msg = msg.replaceAll("&player", name);
                 if (!msg.equals(""))
                 {
                     Bukkit.broadcastMessage(msg);
@@ -1249,7 +1253,8 @@ public class Backend
             {
                 player.setBanned(true);
                 player.kickPlayer(ChatColor.RED + lang.getChatBanReason());
-                String msg = ChatColor.RED + lang.getChatBanBroadcast().replaceAll("&player", name);
+                String msg = ChatColor.RED + lang.getChatBanBroadcast();
+                msg = msg.replaceAll("&player", name);
                 if (!msg.equals(""))
                 {
                     Bukkit.broadcastMessage(msg);
