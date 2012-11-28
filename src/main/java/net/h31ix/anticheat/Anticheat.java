@@ -205,7 +205,7 @@ public class Anticheat extends JavaPlugin
                     @Override
                     public int getValue()
                     {
-                        return listener.getCheats(type);
+                        return EventListener.getCheats(type);
                     }
                 });
                 listener.resetCheck(type);

@@ -459,7 +459,7 @@ public class CommandHandler implements CommandExecutor
             }
             if (cont)
             {
-                List<CheckType> l = new ArrayList();
+                List<CheckType> l = new ArrayList<CheckType>();
                 for(CheckType type : CheckType.values())
                 {
                     if(type.getUses(user.getName()) > 0)
