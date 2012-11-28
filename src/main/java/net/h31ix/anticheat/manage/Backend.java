@@ -565,8 +565,30 @@ public class Backend
 
     public boolean checkSight(Player player, Entity entity)
     {
-        // TODO: Internal method was screwed. Rewrite.
-        return true;
+        // Check to make sure the entity's head is not surrounded
+        Block head = entity.getWorld().getBlockAt((int) entity.getLocation().getX(), (int) (entity.getLocation().getY() + ((CraftEntity) entity).getHandle().getHeadHeight()), (int) entity.getLocation().getZ());
+        boolean solid = false;
+        //TODO: This sucks. See if it's possible to not have as many false-positives while still retaining most of the check.
+        for (int x = -2; x <= 2; x++)
+        {
+            for (int z = -2; z <= 2; z++)
+            {
+                for (int y = -1; y < 2; y++)
+                {
+                    if (head.getRelative(x, y, z).getTypeId() != 0)
+                    {
+                        if (net.minecraft.server.Block.byId[head.getRelative(x, y, z).getTypeId()].material.isSolid())
+                        {
+                            solid = true;
+                            break;
+                        }
+
+                    }
+                }
+            }
+
+        }
+        return solid ? true : player.hasLineOfSight(entity);
     }
 
     public boolean checkFlight(Player player, Distance distance)

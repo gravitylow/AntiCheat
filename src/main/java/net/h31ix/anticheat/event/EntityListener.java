@@ -166,7 +166,7 @@ public class EntityListener extends EventListener
                     log("tried to damage an entity without swinging their arm.", player, CheckType.NO_SWING);
                     noHack = false;
                 }
-                if (checkManager.willCheck(player, CheckType.FORCEFIELD))
+                if (checkManager.willCheck(player, CheckType.FORCEFIELD) && !backend.checkSight(player, e.getEntity()))
                 {
                     event.setCancelled(!config.silentMode());
                     log("tried to damage an entity that they couldn't see.", player, CheckType.FORCEFIELD);
