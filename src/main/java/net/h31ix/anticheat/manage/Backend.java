@@ -1176,8 +1176,7 @@ public class Backend
         return isMovingExempt(player) || justVelocity(player);
     }
 
-    @SuppressWarnings("unchecked")
-    private void logEvent(@SuppressWarnings("rawtypes") final Map map, final Player player, final Object obj, long time)
+    private <E> void logEvent(final Map<String, E> map, final Player player, final E obj, long time)
     {
 
         map.put(player.getName(), obj);
