@@ -930,7 +930,7 @@ public class Backend
             else
             {
                 logEvent(oldMessage, player, lastMessage.get(name), magic.CHAT_REPEAT_MIN);
-                logEvent(oldMessage, player, msg, magic.CHAT_REPEAT_MIN);
+                logEvent(lastMessage, player, msg, magic.CHAT_REPEAT_MIN);
                 return false;
             }
         }
