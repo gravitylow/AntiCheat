@@ -899,7 +899,7 @@ public class Backend
         return false;
     }
 
-    public void logChat(Player player)
+    public void logChat(final Player player)
     {
         String name = player.getName();
         if (chatLevel.get(name) == null)
@@ -910,7 +910,17 @@ public class Backend
         {
             int amount = chatLevel.get(name) + 1;
             logEvent(chatLevel, player, amount, magic.CHAT_MIN);
-            checkChatLevel(player, amount);
+            if (checkChatLevel(player, amount))
+            {
+                micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        processChatSpammer(player);
+                    }
+                });
+            }
         }
     }
 
@@ -1233,9 +1243,14 @@ public class Backend
         }
     }
 
-    private void checkChatLevel(Player player, int amount)
+    private boolean checkChatLevel(Player player, int amount)
     {
-        if (amount >= magic.CHAT_KICK_LEVEL)
+        return amount >= magic.CHAT_KICK_LEVEL;
+    }
+
+    private void processChatSpammer(Player player)
+    {
+        if (player != null && player.isOnline())
         {
             String name = player.getName();
             int kick;
