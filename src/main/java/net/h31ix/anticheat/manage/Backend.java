@@ -34,9 +34,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -456,8 +456,8 @@ public class Backend
 
         for (int i = 0; i < (Math.round(distance.getYDifference())) + 1; i++)
         {
-            Location l = new Location(player.getWorld(), player.getLocation().getX(), to + i, player.getLocation().getZ());
-            if (l.getBlock().getTypeId() != 0 && net.minecraft.server.Block.byId[l.getBlock().getTypeId()].material.isSolid() && !l.getBlock().isLiquid())
+            Block block = new Location(player.getWorld(), player.getLocation().getX(), to + i, player.getLocation().getZ()).getBlock();
+            if (block.getTypeId() != 0 && block.getType().isSolid())
             {
                 bs = true;
             }
@@ -565,30 +565,35 @@ public class Backend
 
     public boolean checkSight(Player player, Entity entity)
     {
-        // Check to make sure the entity's head is not surrounded
-        Block head = entity.getWorld().getBlockAt((int) entity.getLocation().getX(), (int) (entity.getLocation().getY() + ((CraftEntity) entity).getHandle().getHeadHeight()), (int) entity.getLocation().getZ());
-        boolean solid = false;
-        //TODO: This sucks. See if it's possible to not have as many false-positives while still retaining most of the check.
-        for (int x = -2; x <= 2; x++)
+        if(entity instanceof LivingEntity)
         {
-            for (int z = -2; z <= 2; z++)
+            LivingEntity le = (LivingEntity)entity;
+            // Check to make sure the entity's head is not surrounded
+            Block head = le.getWorld().getBlockAt((int) le.getLocation().getX(), (int) (le.getLocation().getY() +le.getEyeHeight()), (int) le.getLocation().getZ());
+            boolean solid = false;
+            //TODO: This sucks. See if it's possible to not have as many false-positives while still retaining most of the check.
+            for (int x = -2; x <= 2; x++)
             {
-                for (int y = -1; y < 2; y++)
+                for (int z = -2; z <= 2; z++)
                 {
-                    if (head.getRelative(x, y, z).getTypeId() != 0)
+                    for (int y = -1; y < 2; y++)
                     {
-                        if (net.minecraft.server.Block.byId[head.getRelative(x, y, z).getTypeId()].material.isSolid())
+                        if (head.getRelative(x, y, z).getTypeId() != 0)
                         {
-                            solid = true;
-                            break;
-                        }
+                            if (head.getRelative(x, y, z).getType().isSolid())
+                            {
+                                solid = true;
+                                break;
+                            }
 
+                        }
                     }
                 }
-            }
 
+            }
+            return solid ? true : player.hasLineOfSight(le);
         }
-        return solid ? true : player.hasLineOfSight(entity);
+        return true;
     }
 
     public boolean checkFlight(Player player, Distance distance)
