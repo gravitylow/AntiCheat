@@ -8,7 +8,7 @@
     <repositories>
         <repository>
             <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/repositories/releases/</url>
+            <url>http://repo.bukkit.org/content/repositories/snapshots</url>
         </repository>
     </repositories>
     <build>
