@@ -43,7 +43,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.4.5-R0.3-SNAPSHOT</version>
+            <version>1.4.5-R0.3-20121210.013948-18</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
