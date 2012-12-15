@@ -125,6 +125,9 @@ permissions:
   anticheat.check.fastinventory:
     description: Allows players to use fastloot and similar inventory hacks
     default: false
+  anticheat.check.autotool:
+    description: Allows players to use autotool to switch tools quickly
+    default: false
   anticheat.check.exempt:
     description: Total exemption from checks
     default: false
@@ -154,3 +157,4 @@ permissions:
       anticheat.check.visual: true
       anticheat.check.vclip: true
       anticheat.check.fastinventory: true
+      anticheat.check.autotool: true
