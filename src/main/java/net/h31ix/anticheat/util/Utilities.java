@@ -67,8 +67,8 @@ public final class Utilities
     {
         return !canStand(block) && cantStandClose(block) && cantStandFar(block);
     }
-    
-    public static boolean cantStandAtExp(Location block) 
+
+    public static boolean cantStandAtExp(Location block)
     {
         // This is a experimental check for checking whether you can't stand at or whatever.
         Block nblock = new Location(block.getWorld(), fixXAxis(block.getX()), block.getY() - 0.01D, block.getBlockZ()).getBlock();
@@ -89,21 +89,21 @@ public final class Utilities
     {
         return !(block.isLiquid() || block.getType() == Material.AIR);
     }
-    
+
     public static boolean isFullyInWater(Location player)
     {
         double touchedX = fixXAxis(player.getX());
-        
+
         // Yes, this doesn't make sense, but it's supposed to fix some false positives in water walk.
         // Think of it as 2 negatives = a positive :)
         if(!(new Location(player.getWorld(), touchedX, player.getY(), player.getBlockZ()).getBlock()).isLiquid() && !(new Location(player.getWorld(), touchedX, Math.round(player.getY()), player.getBlockZ()).getBlock()).isLiquid())
         {
             return true;
         }
-        
+
         return (new Location(player.getWorld(), touchedX, player.getY(), player.getBlockZ()).getBlock()).isLiquid() && (new Location(player.getWorld(), touchedX, Math.round(player.getY()), player.getBlockZ()).getBlock()).isLiquid();
     }
-    
+
     public static double fixXAxis(double x)
     {
         /* Really really really useful function for those who are on the edges of blocks */
@@ -116,7 +116,7 @@ public final class Utilities
         }
         return touchedX;
     }
-    
+
     public static boolean isHoveringOverWater(Location player, int blocks)
     {
         for(int i = player.getBlockY(); i > player.getBlockY() - blocks; i--)
@@ -127,11 +127,11 @@ public final class Utilities
             else if (newloc.getTypeId() != 0)
                 return false;
         }
-        
+
         return false;
     }
-    
-    public static boolean isHoveringOverWater(Location player) 
+
+    public static boolean isHoveringOverWater(Location player)
     {
         return isHoveringOverWater(player, 25);
     }
@@ -207,6 +207,25 @@ public final class Utilities
         {
         }
         return x;
+    }
+
+    public static long getTime(Material m)
+    {
+        switch(m)
+        {
+            case WOOD_SPADE:
+                return 500;
+            case STONE_SPADE:
+                return 450;
+            case IRON_SPADE:
+                return 370;
+            case GOLD_SPADE:
+                return 200;
+            case DIAMOND_SPADE:
+                return 200;
+            default:
+                return 800;
+        }
     }
 
     static
