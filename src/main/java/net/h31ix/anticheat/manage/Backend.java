@@ -87,6 +87,7 @@ public class Backend
     private Map<String, Long> lastInventoryTime = new HashMap<String, Long>();
     private Map<String, Long> inventoryTime = new HashMap<String, Long>();
     private Map<String, Integer> inventoryChanges = new HashMap<String, Integer>();
+    private Map<String, Material> itemInHand = new HashMap<String, Material>();
 
     private Magic magic;
     private AnticheatManager micromanage = null;
@@ -1016,6 +1017,18 @@ public class Backend
         return (velocitized.containsKey(player.getName()) ? (System.currentTimeMillis() - velocitized.get(player.getName())) < magic.VELOCITY_CHECKTIME : false);
     }
 
+    public boolean justSwitchedTool(Player player)
+    {
+        if(itemInHand.containsKey(player.getName()))
+        {
+            return itemInHand.get(player.getName()) != player.getItemInHand().getType();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public boolean extendVelocityTime(final Player player)
     {
         if (velocitytrack.containsKey(player.getName()))
@@ -1057,6 +1070,7 @@ public class Backend
     {
         animated.put(player.getName(), System.currentTimeMillis());
         increment(player, blockPunches, magic.BLOCK_PUNCH_MIN);
+        itemInHand.put(player.getName(), player.getItemInHand().getType());
     }
 
     public void resetAnimation(final Player player)

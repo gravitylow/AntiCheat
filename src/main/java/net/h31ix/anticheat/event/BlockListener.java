@@ -41,9 +41,15 @@ public class BlockListener extends EventListener
     @EventHandler(priority = EventPriority.MONITOR)
     public void onBlockDamage(BlockDamageEvent event)
     {
+        Player player = event.getPlayer();
         if (event.getInstaBreak())
         {
-            backend.logInstantBreak(event.getPlayer());
+            backend.logInstantBreak(player);
+        }
+        if (checkManager.willCheck(player, CheckType.AUTOTOOL) && backend.justSwitchedTool(player))
+        {
+            event.setCancelled(!config.silentMode());
+            log("tried to switch their tool too fast.", player, CheckType.AUTOTOOL);
         }
     }
 
