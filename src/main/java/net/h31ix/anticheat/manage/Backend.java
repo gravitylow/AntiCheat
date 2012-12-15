@@ -284,7 +284,18 @@ public class Backend
         if (!isSpeedExempt(player) && player.getVehicle() == null)
         {
             boolean speed = false;
-            if (player.isFlying())
+            if(player.getLocation().getBlock().getType() == Material.SOUL_SAND)
+            {
+                if(player.isSprinting())
+                {
+                    speed = x > magic.XZ_SPEED_MAX_SOULSAND_SPRINT || z > magic.XZ_SPEED_MAX_SOULSAND_SPRINT;
+                }
+                else
+                {
+                    speed = x > magic.XZ_SPEED_MAX_SOULSAND || z > magic.XZ_SPEED_MAX_SOULSAND;
+                }
+            }
+            else if (player.isFlying())
             {
                 speed = x > magic.XZ_SPEED_MAX_FLY || z > magic.XZ_SPEED_MAX_FLY;
             }
@@ -748,7 +759,6 @@ public class Backend
             else
             {
                 long realTime = System.currentTimeMillis()-lastBlockBroken.get(name);
-                System.out.println(realTime);
                 if(realTime < expectedTime)
                 {
                     fastBreaks.put(name, fastBreaks.get(name) + 1);
