@@ -738,7 +738,7 @@ public class Backend
         String name = player.getName();
         if (!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES))
         {
-            long expectedTime = Utilities.getTime(player.getInventory().getItemInHand().getType());
+            long expectedTime = player.getGameMode() == GameMode.CREATIVE ? 45 : Utilities.getTime(player.getInventory().getItemInHand().getType());
             if(!fastBreaks.containsKey(name))
             {
                 fastBreaks.put(name, 0);
@@ -748,6 +748,7 @@ public class Backend
             else
             {
                 long realTime = System.currentTimeMillis()-lastBlockBroken.get(name);
+                System.out.println(realTime);
                 if(realTime < expectedTime)
                 {
                     fastBreaks.put(name, fastBreaks.get(name) + 1);
