@@ -332,6 +332,14 @@ public class Magic
      * Time between inventory changes that triggers inventory violations; Type=integer; +Leniency=Decrease.
      */
     public final int INVENTORY_TIMEMAX;
+    /**
+     * The number of steps we should wait before checking if the player has used timer cheating; Type=integer; +Leniency=Increase.
+     */
+    public final int TIMER_STEP_CHECK;
+    /**
+     * The minimum time it should have taken for the player to travel X steps; Type=system; +Leniency=Decrease.
+     */
+    public final long TIMER_TIMEMIN;
 
     private FileConfiguration defaults;
     private FileConfiguration magic;
@@ -339,84 +347,86 @@ public class Magic
 
     public Magic(FileConfiguration magic, Configuration config, FileConfiguration defaults)
     {
-         this.magic = magic;
-         this.config = config;
-         this.defaults = defaults;
+        this.magic = magic;
+        this.config = config;
+        this.defaults = defaults;
 
-         //
+        //
 
-         ENTERED_EXITED_TIME = getInt("ENTERED_EXITED_TIME");
-         SNEAK_TIME = getInt("SNEAK_TIME");
-         TELEPORT_TIME = getInt("TELEPORT_TIME");
-         EXIT_FLY_TIME = getInt("EXIT_FLY_TIME");
-         JOIN_TIME = getInt("JOIN_TIME");
-         INSTANT_BREAK_TIME = getInt("INSTANT_BREAK_TIME");
-         DAMAGE_TIME = getLong("DAMAGE_TIME");
-         KNOCKBACK_DAMAGE_TIME = getLong("KNOCKBACK_DAMAGE_TIME");
-         EXPLOSION_DAMAGE_TIME = getLong("EXPLOSION_DAMAGE_TIME");
-         PROJECTILE_TIME_MIN = getInt("PROJECTILE_TIME_MIN");
-         PROJECTILE_CHECK = getInt("PROJECTILE_CHECK");
-         DROP_TIME_MIN = getInt("DROP_TIME_MIN");
-         DROP_CHECK = getInt("DROP_CHECK");
-         FASTBREAK_LIMIT = getInt("FASTBREAK_LIMIT");
-         FASTBREAK_TIMEMAX = getInt("FASTBREAK_TIMEMAX");
-         FASTBREAK_TIMEMAX_CREATIVE = getInt("FASTBREAK_TIMEMAX_CREATIVE");
-         FASTBREAK_MAXVIOLATIONS = getInt("FASTBREAK_MAXVIOLATIONS");
-         FASTBREAK_MAXVIOLATIONS_CREATIVE = getInt("FASTBREAK_MAXVIOLATIONS_CREATIVE");
-         FASTBREAK_MAXVIOLATIONTIME = getInt("FASTBREAK_MAXVIOLATIONTIME");
-         FASTPLACE_ZEROLIMIT = getInt("FASTPLACE_ZEROLIMIT");
-         FASTPLACE_TIMEMAX = getInt("FASTPLACE_TIMEMAX");
-         FASTPLACE_MAXVIOLATIONS = getInt("FASTPLACE_MAXVIOLATIONS");
-         FASTPLACE_MAXVIOLATIONS_CREATIVE = getInt("FASTPLACE_MAXVIOLATIONS_CREATIVE");
-         FASTPLACE_MAXVIOLATIONTIME = getInt("FASTPLACE_MAXVIOLATIONTIME");
-         BLOCK_PUNCH_MIN = getInt("BLOCK_PUNCH_MIN");
-         CHAT_WARN_LEVEL = getInt("CHAT_WARN_LEVEL");
-         CHAT_KICK_LEVEL = getInt("CHAT_KICK_LEVEL");
-         CHAT_BAN_LEVEL = getInt("CHAT_BAN_LEVEL");
-         FLIGHT_LIMIT = getInt("FLIGHT_LIMIT");
-         FLIGHT_BLOCK_LIMIT = getDouble("FLIGHT_BLOCK_LIMIT");
-         WATER_CLIMB_MAX = getDouble("WATER_CLIMB_MAX");
-         Y_MAXVIOLATIONS = getInt("Y_MAXVIOLATIONS");
-         Y_MAXVIOTIME = getInt("Y_MAXVIOTIME");
-         VELOCITY_TIME = getInt("VELOCITY_TIME");
-         VELOCITY_SCHETIME = getLong("VELOCITY_SCHETIME");
-         VELOCITY_CHECKTIME = getLong("VELOCITY_CHECKTIME");
-         VELOCITY_PREVENT = getLong("VELOCITY_PREVENT");
-         VELOCITY_MAXTIMES = getInt("VELOCITY_MAXTIMES");
-         NOFALL_LIMIT = getInt("NOFALL_LIMIT");
-         ASCENSION_COUNT_MAX = getInt("ASCENSION_COUNT_MAX");
-         WATER_ASCENSION_VIOLATION_MAX = getInt("WATER_ASCENSION_VIOLATION_MAX");
-         WATER_SPEED_VIOLATION_MAX = getInt("WATER_SPEED_VIOLATION_MAX");
-         SPRINT_FOOD_MIN = getInt("SPRINT_FOOD_MIN");
-         ANIMATION_MIN = getInt("ANIMATION_MIN");
-         CHAT_MIN = getInt("CHAT_MIN");
-         CHAT_REPEAT_MIN = getInt("CHAT_REPEAT_MIN");
-         SPRINT_MIN = getDouble("SPRINT_MIN");
-         BLOCK_BREAK_MIN = getDouble("BLOCK_BREAK_MIN");
-         BLOCK_PLACE_MIN = getDouble("BLOCK_PLACE_MIN");
-         HEAL_TIME_MIN = getLong("HEAL_TIME_MIN");
-         EAT_TIME_MIN = getLong("EAT_TIME_MIN");
-         BOW_ERROR = getDouble("BOW_ERROR");
-         BLOCK_MAX_DISTANCE = getDouble("BLOCK_MAX_DISTANCE");
-         ENTITY_MAX_DISTANCE = getDouble("ENTITY_MAX_DISTANCE");
-         LADDER_Y_MAX = getDouble("LADDER_Y_MAX");
-         LADDER_Y_MIN = getDouble("LADDER_Y_MIN");
-         Y_SPEED_MAX = getDouble("Y_SPEED_MAX");
-         Y_MAXDIFF = getDouble("Y_MAXDIFF");
-         Y_TIME = getLong("Y_TIME");
-         XZ_SPEED_MAX = getDouble("XZ_SPEED_MAX");
-         XZ_SPEED_MAX_SPRINT = getDouble("XZ_SPEED_MAX_SPRINT");
-         XZ_SPEED_MAX_FLY = getDouble("XZ_SPEED_MAX_FLY");
-         XZ_SPEED_MAX_POTION = getDouble("XZ_SPEED_MAX_POTION");
-         XZ_SPEED_MAX_SNEAK = getDouble("XZ_SPEED_MAX_SNEAK");
-         XZ_SPEED_MAX_WATER = getDouble("XZ_SPEED_MAX_WATER");
-         XZ_SPEED_MAX_SOULSAND = getDouble("XZ_SPEED_MAX_SOULSAND");
-         XZ_SPEED_MAX_SOULSAND_SPRINT = getDouble("XZ_SPEED_MAX_SOULSAND_SPRINT");
-         XZ_SPEED_MAX_WATER_SPRINT = getDouble("XZ_SPEED_MAX_WATER_SPRINT");
-         SPEED_MAX = getInt("SPEED_MAX");
-         INVENTORY_MAXVIOLATIONS = getInt("INVENTORY_MAXVIOLATIONS");
-         INVENTORY_MAXVIOLATIONTIME = getInt("INVENTORY_MAXVIOLATIONTIME");
-         INVENTORY_TIMEMAX = getInt("INVENTORY_TIMEMAX");
+        ENTERED_EXITED_TIME = getInt("ENTERED_EXITED_TIME");
+        SNEAK_TIME = getInt("SNEAK_TIME");
+        TELEPORT_TIME = getInt("TELEPORT_TIME");
+        EXIT_FLY_TIME = getInt("EXIT_FLY_TIME");
+        JOIN_TIME = getInt("JOIN_TIME");
+        INSTANT_BREAK_TIME = getInt("INSTANT_BREAK_TIME");
+        DAMAGE_TIME = getLong("DAMAGE_TIME");
+        KNOCKBACK_DAMAGE_TIME = getLong("KNOCKBACK_DAMAGE_TIME");
+        EXPLOSION_DAMAGE_TIME = getLong("EXPLOSION_DAMAGE_TIME");
+        PROJECTILE_TIME_MIN = getInt("PROJECTILE_TIME_MIN");
+        PROJECTILE_CHECK = getInt("PROJECTILE_CHECK");
+        DROP_TIME_MIN = getInt("DROP_TIME_MIN");
+        DROP_CHECK = getInt("DROP_CHECK");
+        FASTBREAK_LIMIT = getInt("FASTBREAK_LIMIT");
+        FASTBREAK_TIMEMAX = getInt("FASTBREAK_TIMEMAX");
+        FASTBREAK_TIMEMAX_CREATIVE = getInt("FASTBREAK_TIMEMAX_CREATIVE");
+        FASTBREAK_MAXVIOLATIONS = getInt("FASTBREAK_MAXVIOLATIONS");
+        FASTBREAK_MAXVIOLATIONS_CREATIVE = getInt("FASTBREAK_MAXVIOLATIONS_CREATIVE");
+        FASTBREAK_MAXVIOLATIONTIME = getInt("FASTBREAK_MAXVIOLATIONTIME");
+        FASTPLACE_ZEROLIMIT = getInt("FASTPLACE_ZEROLIMIT");
+        FASTPLACE_TIMEMAX = getInt("FASTPLACE_TIMEMAX");
+        FASTPLACE_MAXVIOLATIONS = getInt("FASTPLACE_MAXVIOLATIONS");
+        FASTPLACE_MAXVIOLATIONS_CREATIVE = getInt("FASTPLACE_MAXVIOLATIONS_CREATIVE");
+        FASTPLACE_MAXVIOLATIONTIME = getInt("FASTPLACE_MAXVIOLATIONTIME");
+        BLOCK_PUNCH_MIN = getInt("BLOCK_PUNCH_MIN");
+        CHAT_WARN_LEVEL = getInt("CHAT_WARN_LEVEL");
+        CHAT_KICK_LEVEL = getInt("CHAT_KICK_LEVEL");
+        CHAT_BAN_LEVEL = getInt("CHAT_BAN_LEVEL");
+        FLIGHT_LIMIT = getInt("FLIGHT_LIMIT");
+        FLIGHT_BLOCK_LIMIT = getDouble("FLIGHT_BLOCK_LIMIT");
+        WATER_CLIMB_MAX = getDouble("WATER_CLIMB_MAX");
+        Y_MAXVIOLATIONS = getInt("Y_MAXVIOLATIONS");
+        Y_MAXVIOTIME = getInt("Y_MAXVIOTIME");
+        VELOCITY_TIME = getInt("VELOCITY_TIME");
+        VELOCITY_SCHETIME = getLong("VELOCITY_SCHETIME");
+        VELOCITY_CHECKTIME = getLong("VELOCITY_CHECKTIME");
+        VELOCITY_PREVENT = getLong("VELOCITY_PREVENT");
+        VELOCITY_MAXTIMES = getInt("VELOCITY_MAXTIMES");
+        NOFALL_LIMIT = getInt("NOFALL_LIMIT");
+        ASCENSION_COUNT_MAX = getInt("ASCENSION_COUNT_MAX");
+        WATER_ASCENSION_VIOLATION_MAX = getInt("WATER_ASCENSION_VIOLATION_MAX");
+        WATER_SPEED_VIOLATION_MAX = getInt("WATER_SPEED_VIOLATION_MAX");
+        SPRINT_FOOD_MIN = getInt("SPRINT_FOOD_MIN");
+        ANIMATION_MIN = getInt("ANIMATION_MIN");
+        CHAT_MIN = getInt("CHAT_MIN");
+        CHAT_REPEAT_MIN = getInt("CHAT_REPEAT_MIN");
+        SPRINT_MIN = getDouble("SPRINT_MIN");
+        BLOCK_BREAK_MIN = getDouble("BLOCK_BREAK_MIN");
+        BLOCK_PLACE_MIN = getDouble("BLOCK_PLACE_MIN");
+        HEAL_TIME_MIN = getLong("HEAL_TIME_MIN");
+        EAT_TIME_MIN = getLong("EAT_TIME_MIN");
+        BOW_ERROR = getDouble("BOW_ERROR");
+        BLOCK_MAX_DISTANCE = getDouble("BLOCK_MAX_DISTANCE");
+        ENTITY_MAX_DISTANCE = getDouble("ENTITY_MAX_DISTANCE");
+        LADDER_Y_MAX = getDouble("LADDER_Y_MAX");
+        LADDER_Y_MIN = getDouble("LADDER_Y_MIN");
+        Y_SPEED_MAX = getDouble("Y_SPEED_MAX");
+        Y_MAXDIFF = getDouble("Y_MAXDIFF");
+        Y_TIME = getLong("Y_TIME");
+        XZ_SPEED_MAX = getDouble("XZ_SPEED_MAX");
+        XZ_SPEED_MAX_SPRINT = getDouble("XZ_SPEED_MAX_SPRINT");
+        XZ_SPEED_MAX_FLY = getDouble("XZ_SPEED_MAX_FLY");
+        XZ_SPEED_MAX_POTION = getDouble("XZ_SPEED_MAX_POTION");
+        XZ_SPEED_MAX_SNEAK = getDouble("XZ_SPEED_MAX_SNEAK");
+        XZ_SPEED_MAX_WATER = getDouble("XZ_SPEED_MAX_WATER");
+        XZ_SPEED_MAX_SOULSAND = getDouble("XZ_SPEED_MAX_SOULSAND");
+        XZ_SPEED_MAX_SOULSAND_SPRINT = getDouble("XZ_SPEED_MAX_SOULSAND_SPRINT");
+        XZ_SPEED_MAX_WATER_SPRINT = getDouble("XZ_SPEED_MAX_WATER_SPRINT");
+        SPEED_MAX = getInt("SPEED_MAX");
+        INVENTORY_MAXVIOLATIONS = getInt("INVENTORY_MAXVIOLATIONS");
+        INVENTORY_MAXVIOLATIONTIME = getInt("INVENTORY_MAXVIOLATIONTIME");
+        INVENTORY_TIMEMAX = getInt("INVENTORY_TIMEMAX");
+        TIMER_STEP_CHECK = getInt("TIMER_STEP_CHECK");
+        TIMER_TIMEMIN = getLong("TIMER_TIMEMIN");
     }
 
     private int getInt(String path)

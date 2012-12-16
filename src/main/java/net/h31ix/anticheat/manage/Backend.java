@@ -88,6 +88,8 @@ public class Backend
     private Map<String, Long> inventoryTime = new HashMap<String, Long>();
     private Map<String, Integer> inventoryChanges = new HashMap<String, Integer>();
     private Map<String, Material> itemInHand = new HashMap<String, Material>();
+    private Map<String, Integer> steps = new HashMap<String, Integer>();
+    private Map<String, Long> stepTime = new HashMap<String, Long>();
 
     private Magic magic;
     private AnticheatManager micromanage = null;
@@ -556,27 +558,23 @@ public class Backend
 
     public boolean checkTimer(Player player)
     {
-        /*
-            String name = player.getName();
-            int step = 1;
-            if(steps.containsKey(name))
-            {
-                step = steps.get(name)+1;
-            }
-            if(step == 1)
-            {
-                lastTime.put(name,System.currentTimeMillis());
-            }
-            increment(player, steps, step);
-            if(step >= STEP_CHECK)
-            {
-                long time = System.currentTimeMillis()-lastTime.get(name);
-                steps.put(name, 0);
-                if(time < TIME_MIN)
-                {
-                    return true;
-                }
-            }*/
+        String name = player.getName();
+        int step = 1;
+        if(steps.containsKey(name))
+        {
+            step = steps.get(name)+1;
+        }
+        if(step == 1)
+        {
+            stepTime.put(name,System.currentTimeMillis());
+        }
+        increment(player, steps, step);
+        if(step == magic.TIMER_STEP_CHECK)
+        {
+            long time = System.currentTimeMillis()-stepTime.get(name);
+            steps.put(name, 0);
+            return time < magic.TIMER_TIMEMIN;
+        }
         return false;
     }
 
