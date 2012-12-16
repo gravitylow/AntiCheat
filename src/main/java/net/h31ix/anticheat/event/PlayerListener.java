@@ -292,7 +292,11 @@ public class PlayerListener extends EventListener
         Distance distance = new Distance(from, to);
         double y = distance.getYDifference();
         backend.logAscension(player, from.getY(), to.getY());
-
+        if (checkManager.willCheck(player, CheckType.SPEED) &&  backend.checkFreeze(player, from.getY(), to.getY()))
+        {
+            player.kickPlayer("Freezing client");
+            log("tried to freeze in mid-air.", player, CheckType.SPEED);
+        }        
         if (checkManager.willCheck(player, CheckType.SPRINT))
         {
             if (backend.checkSprintStill(player, from, to))

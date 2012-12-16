@@ -92,6 +92,7 @@ public class Backend
     private Map<String, Integer> steps = new HashMap<String, Integer>();
     private Map<String, Long> stepTime = new HashMap<String, Long>();
     private HashSet<Byte> transparent = new HashSet<Byte>();
+    private Map<String, Long> lastFallPacket = new HashMap<String, Long>();
 
     private Magic magic;
     private AnticheatManager micromanage = null;
@@ -165,6 +166,25 @@ public class Backend
         lastInventoryTime.remove(pN);
         inventoryTime.remove(pN);
         inventoryChanges.remove(pN);
+    }
+    
+    public boolean checkFreeze(Player player, double from, double to)
+    {
+        if((from-to) > 0)
+        {
+            boolean flag = false;
+            if(lastFallPacket.containsKey(player.getName()) && lastFallPacket.get(player.getName()) > 0)
+            {
+                flag = (System.currentTimeMillis()-lastFallPacket.get(player.getName())) > 1000;
+            }
+            lastFallPacket.put(player.getName(), System.currentTimeMillis());
+            return flag;
+        }
+        else
+        {
+            lastFallPacket.put(player.getName(), -1L);
+        }
+        return false;
     }
 
     public boolean checkFastBow(Player player, float force)
@@ -705,7 +725,7 @@ public class Backend
         }
         else
         {
-            isAscending.remove(player.getName());
+            isAscending.remove(name);
         }
     }
 
@@ -1193,7 +1213,7 @@ public class Backend
     public boolean isAscending(Player player)
     {
         return isAscending.contains(player.getName());
-    }
+    } 
 
     public boolean isSpeedExempt(Player player)
     {
