@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import net.h31ix.anticheat.util.Distance;
 import net.h31ix.anticheat.util.Language;
 import net.h31ix.anticheat.util.Magic;
@@ -42,7 +41,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
 public class Backend
 {
