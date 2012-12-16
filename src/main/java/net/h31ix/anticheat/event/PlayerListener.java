@@ -178,7 +178,7 @@ public class PlayerListener extends EventListener
         Player player = event.getPlayer();
         if (checkManager.willCheck(player, CheckType.SPRINT))
         {
-            if (backend.checkSprint(event))
+            if (backend.checkSprintHungry(event))
             {
                 event.setCancelled(!config.silentMode());
                 log("tried to sprint while hungry.", player, CheckType.SPRINT);
@@ -293,6 +293,14 @@ public class PlayerListener extends EventListener
         double y = distance.getYDifference();
         backend.logAscension(player, from.getY(), to.getY());
 
+        if (checkManager.willCheck(player, CheckType.SPRINT))
+        {
+            if (backend.checkSprintStill(player, from, to))
+            {
+                event.setCancelled(!config.silentMode());
+                log("tried to sprint while standing still.", player, CheckType.SPRINT);
+            }
+        }
         if (checkManager.willCheck(player, CheckType.FLY) && !player.isFlying() && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkFlight(player, distance))
         {
             if (!config.silentMode())

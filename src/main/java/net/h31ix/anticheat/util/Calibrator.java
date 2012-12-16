@@ -1,3 +1,5 @@
+// Not production code yet. Still experimental and needs a lot of work.
+
 package net.h31ix.anticheat.util;
 
 import org.bukkit.ChatColor;

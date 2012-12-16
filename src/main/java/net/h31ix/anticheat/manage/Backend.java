@@ -340,7 +340,7 @@ public class Backend
         }
     }
 
-    public boolean checkSprint(PlayerToggleSprintEvent event)
+    public boolean checkSprintHungry(PlayerToggleSprintEvent event)
     {
         Player player = event.getPlayer();
         if (event.isSprinting())
@@ -351,6 +351,11 @@ public class Backend
         {
             return false;
         }
+    }
+
+    public boolean checkSprintStill(Player player, Location from, Location to)
+    {
+        return player.isSprinting() && from.getX() == to.getX() && from.getZ() == to.getZ();
     }
 
     public boolean checkWaterWalk(Player player, double x, double y, double z)
