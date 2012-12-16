@@ -38,7 +38,7 @@ public class AnticheatAPI
 
     /**
      * Start running a certain check
-     * 
+     *
      * @param type
      *            Check to start watching for
      */
@@ -49,7 +49,7 @@ public class AnticheatAPI
 
     /**
      * Stop running a certain check
-     * 
+     *
      * @param type
      *            Check to stop watching for
      */
@@ -60,7 +60,7 @@ public class AnticheatAPI
 
     /**
      * Find out if a check is currently being watched for
-     * 
+     *
      * @param type
      *            Type to check
      * @return true if plugin is watching for this check
@@ -72,7 +72,7 @@ public class AnticheatAPI
 
     /**
      * Allow a player to skip a certain check
-     * 
+     *
      * @param player
      *            Player to stop watching
      * @param type
@@ -85,7 +85,7 @@ public class AnticheatAPI
 
     /**
      * Stop allowing a player to skip a certain check
-     * 
+     *
      * @param player
      *            Player to start watching
      * @param type
@@ -98,7 +98,7 @@ public class AnticheatAPI
 
     /**
      * Find out if a player is currently exempt from a certain check
-     * 
+     *
      * @param player
      *            Player to check
      * @param type
@@ -114,7 +114,7 @@ public class AnticheatAPI
      * Find out if a check will occur for a player. This checks if they are
      * being tracked, the check is active, the player isn't exempt from the
      * check, and the player doesn't have override permission.
-     * 
+     *
      * @param player
      *            Player to check
      * @param type
@@ -131,7 +131,7 @@ public class AnticheatAPI
 
     /**
      * Get a player's integer hack level
-     * 
+     *
      * @param player
      *            Player to check
      * @return player's hack level
@@ -140,11 +140,11 @@ public class AnticheatAPI
     {
         return umr.safeGetLevel(player.getName());
     }
-    
+
 
     /**
      * Set a player's hack level (Min = 0, Max = 50)
-     * 
+     *
      * @param player
      *            Player to set
      * @param level
@@ -159,7 +159,7 @@ public class AnticheatAPI
 
     /**
      * Find out if a player is detected as using xray hacks (on any ore)
-     * 
+     *
      * @param player
      *            Player to check
      * @return true if the player has any xray anomalies.
@@ -178,7 +178,7 @@ public class AnticheatAPI
 
     /**
      * Get access to all the other managers, advanced users ONLY
-     * 
+     *
      * @return the AntiCheat Manager
      */
     public static AnticheatManager getManager()

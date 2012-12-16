@@ -145,7 +145,7 @@ public class Metrics
      * Construct and create a Graph that can be used to separate specific
      * plotters to their own graphs on the metrics website. Plotters can be
      * added to the graph object returned.
-     * 
+     *
      * @param name
      * @return Graph object created. Will never return NULL under normal
      *         circumstances unless bad parameters are given
@@ -169,7 +169,7 @@ public class Metrics
 
     /**
      * Adds a custom data plotter to the default graph
-     * 
+     *
      * @param plotter
      */
     public void addCustomData(Plotter plotter)
@@ -338,7 +338,7 @@ public class Metrics
     /**
      * Check if mineshafter is present. If it is, we need to bypass it to send
      * POST requests
-     * 
+     *
      * @return
      */
     private boolean isMineshafterPresent()
@@ -362,7 +362,7 @@ public class Metrics
      * <code>
      * String httpData = encode("guid") + '=' + encode("1234") + encodeDataPair("authors") + "..";
      * </code>
-     * 
+     *
      * @param key
      * @param value
      * @return
@@ -374,7 +374,7 @@ public class Metrics
 
     /**
      * Encode text as UTF-8
-     * 
+     *
      * @param text
      * @return
      */
@@ -407,7 +407,7 @@ public class Metrics
 
         /**
          * Gets the graph's name
-         * 
+         *
          * @return
          */
         public String getName()
@@ -417,7 +417,7 @@ public class Metrics
 
         /**
          * Add a plotter to the graph, which will be used to plot entries
-         * 
+         *
          * @param plotter
          */
         public void addPlotter(Plotter plotter)
@@ -427,7 +427,7 @@ public class Metrics
 
         /**
          * Remove a plotter from the graph
-         * 
+         *
          * @param plotter
          */
         public void removePlotter(Plotter plotter)
@@ -437,7 +437,7 @@ public class Metrics
 
         /**
          * Gets an <strong>unmodifiable</strong> set of the plotter objects in the graph
-         * 
+         *
          * @return
          */
         public Set<Plotter> getPlotters()
@@ -486,7 +486,7 @@ public class Metrics
 
         /**
          * Construct a plotter with a specific plot name
-         * 
+         *
          * @param name
          */
         public Plotter(String name)
@@ -496,14 +496,14 @@ public class Metrics
 
         /**
          * Get the current value for the plotted point
-         * 
+         *
          * @return
          */
         public abstract int getValue();
 
         /**
          * Get the column name for the plotted point
-         * 
+         *
          * @return the plotted point's column name
          */
         public String getColumnName()
