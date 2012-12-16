@@ -20,8 +20,10 @@ package net.h31ix.anticheat.manage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.h31ix.anticheat.util.Distance;
 import net.h31ix.anticheat.util.Language;
 import net.h31ix.anticheat.util.Magic;
@@ -40,6 +42,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 public class Backend
 {
@@ -90,6 +93,7 @@ public class Backend
     private Map<String, Material> itemInHand = new HashMap<String, Material>();
     private Map<String, Integer> steps = new HashMap<String, Integer>();
     private Map<String, Long> stepTime = new HashMap<String, Long>();
+    private HashSet<Byte> transparent = new HashSet<Byte>();
 
     private Magic magic;
     private AnticheatManager micromanage = null;
@@ -100,6 +104,7 @@ public class Backend
         magic = new Magic(instance.getConfiguration().getMagic(), instance.getConfiguration(), CommentedConfiguration.loadConfiguration(instance.getPlugin().getResource("magic.yml")));
         micromanage = instance;
         lang = micromanage.getConfiguration().getLang();
+        transparent.add((byte)-1);
     }
 
     public void garbageClean(Player player)
@@ -606,7 +611,21 @@ public class Backend
                 }
 
             }
-            return solid ? true : player.hasLineOfSight(le);
+            if(solid)
+            {
+                return true;
+            }
+            // TODO: Needs proper testing
+            Location mobLocation = le.getEyeLocation();
+            for(Block block : player.getLineOfSight(transparent, 5))
+            {
+                if(Math.abs(block.getLocation().getX()-mobLocation.getX()) < 2.3 || Math.abs(block.getLocation().getZ()-mobLocation.getZ()) < 2.3)
+                {
+
+                    return true;
+                }
+            }
+            return false;
         }
         return true;
     }
@@ -1095,6 +1114,10 @@ public class Backend
 
     public boolean justAnimated(Player player)
     {
+        if(player.getItemInHand().containsEnchantment(Enchantment.DIG_SPEED))
+        {
+            return true;
+        }
         String name = player.getName();
         if (animated.containsKey(name))
         {

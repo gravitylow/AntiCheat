@@ -154,6 +154,7 @@ public class EntityListener extends EventListener
             if (e.getDamager() instanceof Player)
             {
                 Player player = (Player) e.getDamager();
+                backend.logDamage(player, 1);
                 if (checkManager.willCheck(player, CheckType.AUTOTOOL) && backend.justSwitchedTool(player))
                 {
                     event.setCancelled(!config.silentMode());

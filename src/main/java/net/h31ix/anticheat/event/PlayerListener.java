@@ -32,6 +32,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -395,7 +396,7 @@ public class PlayerListener extends EventListener
                     {
                         event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
                     }
-                    log("tried to move too fast.", player, CheckType.SPEED);
+                    log("tried to alter their timer.", player, CheckType.SPEED);
                     changed = true;
                 }
             }
