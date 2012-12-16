@@ -50,9 +50,13 @@ public class EventListener implements Listener
     {
         USAGE_LIST.put(type, getCheats(type) + 1);
         type.logUse(user.getName());
-        if (Anticheat.getManager().getConfiguration().getFileLogLevel() == 2 && type.getUses(user.getName()) % 10 == 0)
+        // Ignore plugins that are creating NPCs with no names (why the hell)
+        if(user.getName() != null)
         {
-            Anticheat.getManager().fileLog(user.getName() + " has triggered multiple " + type + " checks.");
+            if (Anticheat.getManager().getConfiguration().getFileLogLevel() == 2 && type.getUses(user.getName()) % 10 == 0)
+            {
+                Anticheat.getManager().fileLog(user.getName() + " has triggered multiple " + type + " checks.");
+            }
         }
     }
 
@@ -74,32 +78,40 @@ public class EventListener implements Listener
     private static void removeDecrease(User user)
     {
         int x = 0;
-        if (DECREASE_LIST.get(user.getName()) != null)
+        // Ignore plugins that are creating NPCs with no names
+        if(user.getName() != null)
         {
-            x = DECREASE_LIST.get(user.getName());
-            x -= 2;
-            if (x < 0)
+            if (DECREASE_LIST.get(user.getName()) != null)
             {
-                x = 0;
+                x = DECREASE_LIST.get(user.getName());
+                x -= 2;
+                if (x < 0)
+                {
+                    x = 0;
+                }
             }
+            DECREASE_LIST.put(user.getName(), x);
         }
-        DECREASE_LIST.put(user.getName(), x);
     }
 
     public static void decrease(Player player)
     {
         User user = getUserManager().getUser(player.getName());
-        int x = 0;
-        if (DECREASE_LIST.get(user.getName()) != null)
+        // Ignore plugins that are creating NPCs with no names
+        if(user.getName() != null)
         {
-            x = DECREASE_LIST.get(user.getName());
-        }
-        x += 1;
-        DECREASE_LIST.put(user.getName(), x);
-        if (x >= 10)
-        {
-            user.decreaseLevel();
-            DECREASE_LIST.put(user.getName(), 0);
+            int x = 0;
+            if (DECREASE_LIST.get(user.getName()) != null)
+            {
+                x = DECREASE_LIST.get(user.getName());
+            }
+            x += 1;
+            DECREASE_LIST.put(user.getName(), x);
+            if (x >= 10)
+            {
+                user.decreaseLevel();
+                DECREASE_LIST.put(user.getName(), 0);
+            }
         }
     }
 
