@@ -73,7 +73,7 @@ public class User
 
     public boolean increaseLevel(CheckType type)
     {
-        if(getPlayer() != null || getPlayer().isOnline())
+        if(getPlayer() != null && getPlayer().isOnline())
         {
             if(silentMode && type.getUses(name) % 4 != 0)
             {
@@ -123,34 +123,34 @@ public class User
             type.clearUse(name);
         }
     }
-    
-    public Location getGoodLocation(Location e) 
+
+    public Location getGoodLocation(Location e)
     {
         if(goodLocation == null)
         {
             return e;
         }
-        
+
         return goodLocation;
     }
-    
+
     public boolean hasGoodLocation()
     {
         return goodLocation != null;
     }
-    
+
     public void setGoodLocation(Location e)
     {
         if(Utilities.cantStandAtExp(e))
         {
             return;
         }
-        
+
         if(e.getBlock().isLiquid() && !Utilities.isFullyInWater(e))
         {
             return;
         }
-        
+
         goodLocation = e;
     }
 
