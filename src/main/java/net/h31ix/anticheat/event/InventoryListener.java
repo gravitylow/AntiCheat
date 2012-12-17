@@ -43,8 +43,12 @@ public class InventoryListener extends EventListener{
             {
                 if(backend.checkInventoryClicks(player))
                 {
-                    event.setCancelled(!config.silentMode());
-                    log("tried to use inventories too fast", player, CheckType.FAST_INVENTORY);
+                    if(!config.silentMode())
+                    {
+                        event.setCancelled(!config.silentMode());
+                        player.setHealth(0);
+                    }
+                    log("tried to use their inventory too fast", player, CheckType.FAST_INVENTORY);
                 }
                 else
                 {

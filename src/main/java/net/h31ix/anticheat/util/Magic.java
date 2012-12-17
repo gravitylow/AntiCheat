@@ -321,17 +321,13 @@ public class Magic
      */
     public final int SPEED_MAX;
     /**
-     * Number of times a player can fail the inventory check before action is taken; Type=integer, +Leniency=Increase.
+     * The number of clicks we should wait before checking if the player has used fast inventory; Type=integer; +Leniency=Increase.
      */
-    public final int INVENTORY_MAXVIOLATIONS;
+    public final int INVENTORY_CHECK;
     /**
-     * Time player is forced to wait after inventory detection; Type=integer; +Leniency=Decrease.
+     * The minimum time it should have taken for the player to click X times; Type=integer; +Leniency=Increase.
      */
-    public final int INVENTORY_MAXVIOLATIONTIME;
-    /**
-     * Time between inventory changes that triggers inventory violations; Type=integer; +Leniency=Decrease.
-     */
-    public final int INVENTORY_TIMEMAX;
+    public final long INVENTORY_TIMEMIN;
     /**
      * The number of steps we should wait before checking if the player has used timer cheating; Type=integer; +Leniency=Increase.
      */
@@ -422,9 +418,8 @@ public class Magic
         XZ_SPEED_MAX_SOULSAND_SPRINT = getDouble("XZ_SPEED_MAX_SOULSAND_SPRINT");
         XZ_SPEED_MAX_WATER_SPRINT = getDouble("XZ_SPEED_MAX_WATER_SPRINT");
         SPEED_MAX = getInt("SPEED_MAX");
-        INVENTORY_MAXVIOLATIONS = getInt("INVENTORY_MAXVIOLATIONS");
-        INVENTORY_MAXVIOLATIONTIME = getInt("INVENTORY_MAXVIOLATIONTIME");
-        INVENTORY_TIMEMAX = getInt("INVENTORY_TIMEMAX");
+        INVENTORY_CHECK = getInt("INVENTORY_CHECK");
+        INVENTORY_TIMEMIN = getInt("INVENTORY_TIMEMIN");
         TIMER_STEP_CHECK = getInt("TIMER_STEP_CHECK");
         TIMER_TIMEMIN = getLong("TIMER_TIMEMIN");
     }

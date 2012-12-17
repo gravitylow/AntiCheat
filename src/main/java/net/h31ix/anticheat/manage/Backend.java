@@ -87,7 +87,7 @@ public class Backend
     private Map<String, Integer> blocksDropped = new HashMap<String, Integer>();
     private Map<String, Long> lastInventoryTime = new HashMap<String, Long>();
     private Map<String, Long> inventoryTime = new HashMap<String, Long>();
-    private Map<String, Integer> inventoryChanges = new HashMap<String, Integer>();
+    private Map<String, Integer> inventoryClicks = new HashMap<String, Integer>();
     private Map<String, Material> itemInHand = new HashMap<String, Material>();
     private Map<String, Integer> steps = new HashMap<String, Integer>();
     private Map<String, Long> stepTime = new HashMap<String, Long>();
@@ -165,9 +165,9 @@ public class Backend
         blocksDropped.remove(pN);
         lastInventoryTime.remove(pN);
         inventoryTime.remove(pN);
-        inventoryChanges.remove(pN);
+        inventoryClicks.remove(pN);
     }
-    
+
     public boolean checkFreeze(Player player, double from, double to)
     {
         if((from-to) > 0)
@@ -967,46 +967,22 @@ public class Backend
     public boolean checkInventoryClicks(Player player)
     {
         String name = player.getName();
-        long time = System.currentTimeMillis();
-        if (!inventoryTime.containsKey(name) || !inventoryChanges.containsKey(name))
+        int clicks = 1;
+        if(inventoryClicks.containsKey(name))
         {
-            inventoryTime.put(name, 0l);
-            if (!inventoryChanges.containsKey(name))
-            {
-                inventoryChanges.put(name, 0);
-            }
+            clicks = inventoryClicks.get(name)+1;
         }
-        else if (inventoryChanges.containsKey(name) && inventoryChanges.get(name) > magic.INVENTORY_MAXVIOLATIONS)
+        inventoryClicks.put(name, clicks);
+        if(clicks == 1)
         {
-            long diff = System.currentTimeMillis() - lastInventoryTime.get(name);
-            if (inventoryTime.get(name) > 0 && diff < magic.INVENTORY_MAXVIOLATIONTIME)
-            {
-                inventoryTime.put(name, diff);
-                player.sendMessage(ChatColor.RED + "[AntiCheat] Inventory hack detected. Please wait 10 seconds before using inventories.");
-                return true;
-            }
-            else if (inventoryTime.get(name) > 0 && diff > magic.INVENTORY_MAXVIOLATIONTIME)
-            {
-                inventoryChanges.put(name, 0);
-            }
+            inventoryTime.put(name,System.currentTimeMillis());
         }
-        else if (inventoryTime.containsKey(name))
+        else if(clicks == magic.INVENTORY_CHECK)
         {
-            long last = lastInventoryTime.get(name);
-            long thisTime = time - last;
-            if (thisTime < magic.INVENTORY_TIMEMAX)
-            {
-                inventoryChanges.put(name, inventoryChanges.get(name) + 1);
-                if (inventoryChanges.get(name) > magic.INVENTORY_MAXVIOLATIONS)
-                {
-                    inventoryTime.put(name, thisTime);
-                    player.sendMessage(ChatColor.RED + "[AntiCheat] Inventory hack detected. Please wait 10 seconds before using inventories.");
-                    return true;
-                }
-            }
-            inventoryTime.put(name, thisTime);
+            long time = System.currentTimeMillis()-inventoryTime.get(name);
+            inventoryClicks.put(name, 0);
+            return time < magic.INVENTORY_TIMEMIN;
         }
-        lastInventoryTime.put(name, time);
         return false;
     }
 
@@ -1213,7 +1189,7 @@ public class Backend
     public boolean isAscending(Player player)
     {
         return isAscending.contains(player.getName());
-    } 
+    }
 
     public boolean isSpeedExempt(Player player)
     {
