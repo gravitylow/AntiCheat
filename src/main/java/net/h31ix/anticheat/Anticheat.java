@@ -38,6 +38,7 @@ import net.h31ix.anticheat.util.Utilities;
 import net.h31ix.anticheat.xray.XRayListener;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -71,6 +72,20 @@ public class Anticheat extends JavaPlugin
         setupUpdater();
         setupMetrics();
         restoreLevels();
+        // Test for compatibility for 1.4.5-R1.0
+        try
+        {
+            Material.AIR.isSolid();
+        }
+        catch(NoSuchMethodError error)
+        {
+            getLogger().severe("You are using an outdated version of CraftBukkit that does not contain the API required for AntiCheat to run properly.");
+            getLogger().severe("Please update to CraftBukkit 1.4.5-R1.0 or higher by visiting dl.bukkit.org and hitting the green download button.");
+            getLogger().severe("AntiCheat will now be disabled, and will not protect your server until it is updated.");
+            getPluginLoader().disablePlugin(this);
+            return;
+        }
+        // End test
         if (verbose)
         {
             getLogger().log(Level.INFO, "Finished loading.");

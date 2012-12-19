@@ -2,13 +2,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.h31ix.anticheat</groupId>
     <artifactId>AntiCheat</artifactId>
-    <version>1.4</version>
+    <version>1.5</version>
     <name>AntiCheat</name>
     <url>http://gravitydevelopment.net</url>
     <repositories>
         <repository>
             <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/repositories/snapshots</url>
+            <url>http://repo.bukkit.org/content/repositories/releases</url>
         </repository>
     </repositories>
     <build>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.4.5-R0.3-20121210.013948-18</version>
+            <version>1.4.5-R1.0</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
