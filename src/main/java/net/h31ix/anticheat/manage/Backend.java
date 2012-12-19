@@ -243,9 +243,6 @@ public class Backend
         }
         else
         {
-            if(x > y && x > z) System.out.println(Math.ceil(x));
-            if(y > x && y > z) System.out.println(Math.ceil(y));
-            if(z > y && z > x) System.out.println(Math.ceil(z));
             return (x >= magic.BLOCK_MAX_DISTANCE || y > magic.BLOCK_MAX_DISTANCE || z > magic.BLOCK_MAX_DISTANCE);
         }
     }
