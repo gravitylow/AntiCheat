@@ -294,9 +294,9 @@ public class PlayerListener extends EventListener
         backend.logAscension(player, from.getY(), to.getY());
         if (checkManager.willCheck(player, CheckType.SPEED) &&  backend.checkFreeze(player, from.getY(), to.getY()))
         {
-            player.kickPlayer("Freezing client");
             log("tried to freeze in mid-air.", player, CheckType.SPEED);
-        }        
+            player.kickPlayer("Freezing client");
+        }
         if (checkManager.willCheck(player, CheckType.SPRINT))
         {
             if (backend.checkSprintStill(player, from, to))
