@@ -171,7 +171,8 @@ public class Backend
 
     public boolean checkFreeze(Player player, double from, double to)
     {
-        if((from-to) > 0)
+        // TODO: Fix! This is causing false-positives
+        /*if((from-to) > 0)
         {
             boolean flag = false;
             if(lastFallPacket.containsKey(player.getName()) && lastFallPacket.get(player.getName()) > 0)
@@ -184,7 +185,7 @@ public class Backend
         else
         {
             lastFallPacket.put(player.getName(), -1L);
-        }
+        }*/
         return false;
     }
 
