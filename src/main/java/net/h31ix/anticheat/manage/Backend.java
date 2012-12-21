@@ -103,7 +103,7 @@ public class Backend
         magic = new Magic(instance.getConfiguration().getMagic(), instance.getConfiguration(), CommentedConfiguration.loadConfiguration(instance.getPlugin().getResource("magic.yml")));
         micromanage = instance;
         lang = micromanage.getConfiguration().getLang();
-        transparent.add((byte)-1);
+        transparent.add((byte) -1);
     }
 
     public void garbageClean(Player player)
@@ -311,9 +311,9 @@ public class Backend
         if (!isSpeedExempt(player) && player.getVehicle() == null)
         {
             boolean speed = false;
-            if(player.getLocation().getBlock().getType() == Material.SOUL_SAND)
+            if (player.getLocation().getBlock().getType() == Material.SOUL_SAND)
             {
-                if(player.isSprinting())
+                if (player.isSprinting())
                 {
                     speed = x > magic.XZ_SPEED_MAX_SOULSAND_SPRINT || z > magic.XZ_SPEED_MAX_SOULSAND_SPRINT;
                 }
@@ -585,18 +585,18 @@ public class Backend
     {
         String name = player.getName();
         int step = 1;
-        if(steps.containsKey(name))
+        if (steps.containsKey(name))
         {
-            step = steps.get(name)+1;
+            step = steps.get(name) + 1;
         }
-        if(step == 1)
+        if (step == 1)
         {
-            stepTime.put(name,System.currentTimeMillis());
+            stepTime.put(name, System.currentTimeMillis());
         }
         increment(player, steps, step);
-        if(step == magic.TIMER_STEP_CHECK)
+        if (step == magic.TIMER_STEP_CHECK)
         {
-            long time = System.currentTimeMillis()-stepTime.get(name);
+            long time = System.currentTimeMillis() - stepTime.get(name);
             steps.put(name, 0);
             return time < magic.TIMER_TIMEMIN;
         }
@@ -605,11 +605,11 @@ public class Backend
 
     public boolean checkSight(Player player, Entity entity)
     {
-        if(entity instanceof LivingEntity)
+        if (entity instanceof LivingEntity)
         {
-            LivingEntity le = (LivingEntity)entity;
+            LivingEntity le = (LivingEntity) entity;
             // Check to make sure the entity's head is not surrounded
-            Block head = le.getWorld().getBlockAt((int) le.getLocation().getX(), (int) (le.getLocation().getY() +le.getEyeHeight()), (int) le.getLocation().getZ());
+            Block head = le.getWorld().getBlockAt((int) le.getLocation().getX(), (int) (le.getLocation().getY() + le.getEyeHeight()), (int) le.getLocation().getZ());
             boolean solid = false;
             //TODO: This sucks. See if it's possible to not have as many false-positives while still retaining most of the check.
             for (int x = -2; x <= 2; x++)
@@ -631,15 +631,15 @@ public class Backend
                 }
 
             }
-            if(solid)
+            if (solid)
             {
                 return true;
             }
             // TODO: Needs proper testing
             Location mobLocation = le.getEyeLocation();
-            for(Block block : player.getLineOfSight(transparent, 5))
+            for (Block block : player.getLineOfSight(transparent, 5))
             {
-                if(Math.abs(block.getLocation().getX()-mobLocation.getX()) < 2.3 || Math.abs(block.getLocation().getZ()-mobLocation.getZ()) < 2.3)
+                if (Math.abs(block.getLocation().getX() - mobLocation.getX()) < 2.3 || Math.abs(block.getLocation().getZ() - mobLocation.getZ()) < 2.3)
                 {
 
                     return true;
@@ -792,7 +792,7 @@ public class Backend
         if (!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES))
         {
             long expectedTime = player.getGameMode() == GameMode.CREATIVE ? 45 : Utilities.getTime(player.getInventory().getItemInHand().getType());
-            if(!fastBreaks.containsKey(name))
+            if (!fastBreaks.containsKey(name))
             {
                 fastBreaks.put(name, 0);
                 lastBlockBroken.put(name, System.currentTimeMillis());
@@ -800,14 +800,14 @@ public class Backend
             }
             else
             {
-                long realTime = System.currentTimeMillis()-lastBlockBroken.get(name);
-                if(realTime < expectedTime)
+                long realTime = System.currentTimeMillis() - lastBlockBroken.get(name);
+                if (realTime < expectedTime)
                 {
                     fastBreaks.put(name, fastBreaks.get(name) + 1);
                 }
                 lastBlockBroken.put(name, System.currentTimeMillis());
 
-                if(fastBreaks.get(name) > violations)
+                if (fastBreaks.get(name) > violations)
                 {
                     return true;
                 }
@@ -970,18 +970,18 @@ public class Backend
     {
         String name = player.getName();
         int clicks = 1;
-        if(inventoryClicks.containsKey(name))
+        if (inventoryClicks.containsKey(name))
         {
-            clicks = inventoryClicks.get(name)+1;
+            clicks = inventoryClicks.get(name) + 1;
         }
         inventoryClicks.put(name, clicks);
-        if(clicks == 1)
+        if (clicks == 1)
         {
-            inventoryTime.put(name,System.currentTimeMillis());
+            inventoryTime.put(name, System.currentTimeMillis());
         }
-        else if(clicks == magic.INVENTORY_CHECK)
+        else if (clicks == magic.INVENTORY_CHECK)
         {
-            long time = System.currentTimeMillis()-inventoryTime.get(name);
+            long time = System.currentTimeMillis() - inventoryTime.get(name);
             inventoryClicks.put(name, 0);
             return time < magic.INVENTORY_TIMEMIN;
         }
@@ -1048,7 +1048,7 @@ public class Backend
 
     public boolean justSwitchedTool(Player player)
     {
-        if(itemInHand.containsKey(player.getName()))
+        if (itemInHand.containsKey(player.getName()))
         {
             return itemInHand.get(player.getName()) != player.getItemInHand().getType();
         }
@@ -1110,7 +1110,7 @@ public class Backend
 
     public boolean justAnimated(Player player)
     {
-        if(player.getItemInHand().containsEnchantment(Enchantment.DIG_SPEED))
+        if (player.getItemInHand().containsEnchantment(Enchantment.DIG_SPEED))
         {
             return true;
         }

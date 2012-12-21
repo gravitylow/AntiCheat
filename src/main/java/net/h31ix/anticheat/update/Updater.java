@@ -35,18 +35,24 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
 /**
- * Check dev.bukkit.org to find updates for a given plugin, and download the updates if needed.
+ * Check dev.bukkit.org to find updates for a given plugin, and download the
+ * updates if needed.
  * <p>
- * <strong>VERY, VERY IMPORTANT</strong>: Because there are no standards for adding auto-update toggles in your plugin's config, this system provides NO CHECK WITH YOUR CONFIG to make sure the user has allowed auto-updating.
- * <br>
- * It is a <strong>BUKKIT POLICY</strong> that you include a boolean value in your config that prevents the auto-updater from running <strong>AT ALL</strong>.
- * <br>
- * If you fail to include this option in your config, your plugin will be <strong>REJECTED</strong> when you attempt to submit it to dev.bukkit.org.
+ * <strong>VERY, VERY IMPORTANT</strong>: Because there are no standards for
+ * adding auto-update toggles in your plugin's config, this system provides NO
+ * CHECK WITH YOUR CONFIG to make sure the user has allowed auto-updating. <br>
+ * It is a <strong>BUKKIT POLICY</strong> that you include a boolean value in
+ * your config that prevents the auto-updater from running <strong>AT
+ * ALL</strong>. <br>
+ * If you fail to include this option in your config, your plugin will be
+ * <strong>REJECTED</strong> when you attempt to submit it to dev.bukkit.org.
  * <p>
- * An example of a good configuration option would be something similar to 'auto-update: true' - if this value is set to false you may NOT run the auto-updater.
- * <br>
- * If you are unsure about these rules, please read the plugin submission guidelines: http://goo.gl/8iU5l
- *
+ * An example of a good configuration option would be something similar to
+ * 'auto-update: true' - if this value is set to false you may NOT run the
+ * auto-updater. <br>
+ * If you are unsure about these rules, please read the plugin submission
+ * guidelines: http://goo.gl/8iU5l
+ * 
  * @author H31IX
  */
 
@@ -63,7 +69,7 @@ public class Updater
     private boolean announce; // Whether to announce file downloads
     private URL url; // Connecting to RSS
     private static final String DBOUrl = "http://dev.bukkit.org/server-mods/"; // Slugs will be appended to this to get to the project's RSS feed
-    private String [] noUpdateTag = {"-DEV","-PRE"}; // If the version number contains one of these, don't update.
+    private String[] noUpdateTag = { "-DEV", "-PRE" }; // If the version number contains one of these, don't update.
     private static final int BYTE_SIZE = 1024; // Used for downloading files
     private String updateFolder = YamlConfiguration.loadConfiguration(new File("bukkit.yml")).getString("settings.update-folder"); // The folder that downloads will be placed in
     private Updater.UpdateResult result = Updater.UpdateResult.SUCCESS; // Used for determining the outcome of the update process
@@ -74,38 +80,48 @@ public class Updater
     private static final String ITEM = "item";
 
     /**
-    * Gives the dev the result of the update process. Can be obtained by called getResult().
-    */
+     * Gives the dev the result of the update process. Can be obtained by called
+     * getResult().
+     */
     public enum UpdateResult
     {
         /**
-        * The updater found an update, and has readied it to be loaded the next time the server restarts/reloads.
-        */
+         * The updater found an update, and has readied it to be loaded the next
+         * time the server restarts/reloads.
+         */
         SUCCESS(1),
         /**
-        * The updater did not find an update, and nothing was downloaded.
-        */
+         * The updater did not find an update, and nothing was downloaded.
+         */
         NO_UPDATE(2),
         /**
-        * The updater found an update, but was unable to download it.
-        */
+         * The updater found an update, but was unable to download it.
+         */
         FAIL_DOWNLOAD(3),
         /**
-        * For some reason, the updater was unable to contact dev.bukkit.org to download the file.
-        */
+         * For some reason, the updater was unable to contact dev.bukkit.org to
+         * download the file.
+         */
         FAIL_DBO(4),
         /**
-        * When running the version check, the file on DBO did not contain the a version in the format 'vVersion' such as 'v1.0'.
-        */
+         * When running the version check, the file on DBO did not contain the a
+         * version in the format 'vVersion' such as 'v1.0'.
+         */
         FAIL_NOVERSION(5),
         /**
-        * The slug provided by the plugin running the updater was invalid and doesn't exist on DBO.
-        */
+         * The slug provided by the plugin running the updater was invalid and
+         * doesn't exist on DBO.
+         */
         FAIL_BADSLUG(6),
         /**
-        * The updater found an update, but because of the UpdateType being set to NO_DOWNLOAD, it wasn't downloaded.
-        */
-        UPDATE_AVAILABLE(7);
+         * The updater found an update, but because of the UpdateType being set
+         * to NO_DOWNLOAD, it wasn't downloaded.
+         */
+        UPDATE_AVAILABLE(7),
+        /**
+         * The update was unable to update due to a unknown exception thrown.
+         */
+        UNKNOWN_ERROR(8);
 
         private static final Map<Integer, Updater.UpdateResult> valueList = new HashMap<Integer, Updater.UpdateResult>();
         private final int value;
@@ -127,7 +143,7 @@ public class Updater
 
         static
         {
-            for(Updater.UpdateResult result : Updater.UpdateResult.values())
+            for (Updater.UpdateResult result : Updater.UpdateResult.values())
             {
                 valueList.put(result.value, result);
             }
@@ -135,21 +151,24 @@ public class Updater
     }
 
     /**
-    * Allows the dev to specify the type of update that will be run.
-    */
+     * Allows the dev to specify the type of update that will be run.
+     */
     public enum UpdateType
     {
         /**
-        * Run a version check, and then if the file is out of date, download the newest version.
-        */
+         * Run a version check, and then if the file is out of date, download
+         * the newest version.
+         */
         DEFAULT(1),
         /**
-        * Don't run a version check, just find the latest update and download it.
-        */
+         * Don't run a version check, just find the latest update and download
+         * it.
+         */
         NO_VERSION_CHECK(2),
         /**
-        * Get information about the version and the download size, but don't actually download anything.
-        */
+         * Get information about the version and the download size, but don't
+         * actually download anything.
+         */
         NO_DOWNLOAD(3);
 
         private static final Map<Integer, Updater.UpdateType> valueList = new HashMap<Integer, Updater.UpdateType>();
@@ -172,7 +191,7 @@ public class Updater
 
         static
         {
-            for(Updater.UpdateType result : Updater.UpdateType.values())
+            for (Updater.UpdateType result : Updater.UpdateType.values())
             {
                 valueList.put(result.value, result);
             }
@@ -181,17 +200,21 @@ public class Updater
 
     /**
      * Initialize the updater
-     *
+     * 
      * @param plugin
      *            The plugin that is checking for an update.
      * @param slug
-     *            The dev.bukkit.org slug of the project (http://dev.bukkit.org/server-mods/SLUG_IS_HERE)
+     *            The dev.bukkit.org slug of the project
+     *            (http://dev.bukkit.org/server-mods/SLUG_IS_HERE)
      * @param file
-     *            The file that the plugin is running from, get this by doing this.getFile() from within your main class.
+     *            The file that the plugin is running from, get this by doing
+     *            this.getFile() from within your main class.
      * @param type
-     *            Specify the type of update this will be. See {@link UpdateType}
+     *            Specify the type of update this will be. See
+     *            {@link UpdateType}
      * @param announce
-     *            True if the program should announce the progress of new updates in console
+     *            True if the program should announce the progress of new
+     *            updates in console
      */
     public Updater(Plugin plugin, String slug, File file, UpdateType type, boolean announce)
     {
@@ -202,6 +225,30 @@ public class Updater
         {
             // Obtain the results of the project's file feed
             url = new URL(DBOUrl + slug + "/files.rss");
+            if (url != null)
+            {
+                // Obtain the results of the project's file feed
+                readFeed();
+                if (versionCheck(versionTitle))
+                {
+                    String fileLink = getFile(versionLink);
+                    if (fileLink != null && type != UpdateType.NO_DOWNLOAD)
+                    {
+                        String name = file.getName();
+                        // If it's a zip file, it shouldn't be downloaded as the plugin's name
+                        if (fileLink.endsWith(".zip"))
+                        {
+                            String[] split = fileLink.split("/");
+                            name = split[split.length - 1];
+                        }
+                        saveFile(new File("plugins/" + updateFolder), name, fileLink);
+                    }
+                    else
+                    {
+                        result = UpdateResult.UPDATE_AVAILABLE;
+                    }
+                }
+            }
         }
         catch (MalformedURLException ex)
         {
@@ -210,28 +257,15 @@ public class Updater
             plugin.getLogger().warning("The project slug added ('" + slug + "') is invalid, and does not exist on dev.bukkit.org");
             result = Updater.UpdateResult.FAIL_BADSLUG; // Bad slug! Bad!
         }
-        if(url != null)
+        catch (RuntimeException ex)
         {
-            // Obtain the results of the project's file feed
-            readFeed();
-            if(versionCheck(versionTitle))
+            // Something went wrong with the updater and can't check for updates.
+            if (result == Updater.UpdateResult.SUCCESS)
             {
-                String fileLink = getFile(versionLink);
-                if(fileLink != null && type != UpdateType.NO_DOWNLOAD)
-                {
-                    String name = file.getName();
-                    // If it's a zip file, it shouldn't be downloaded as the plugin's name
-                    if(fileLink.endsWith(".zip"))
-                    {
-                        String [] split = fileLink.split("/");
-                        name = split[split.length-1];
-                    }
-                    saveFile(new File("plugins/" + updateFolder), name, fileLink);
-                }
-                else
-                {
-                    result = UpdateResult.UPDATE_AVAILABLE;
-                }
+                plugin.getLogger().warning("An error had occured and Auto Update was unable to check for updates");
+                plugin.getLogger().warning("Here is a stacktrace of what happened: ");
+                ex.printStackTrace();
+                result = Updater.UpdateResult.UNKNOWN_ERROR;
             }
         }
     }
@@ -245,7 +279,8 @@ public class Updater
     }
 
     /**
-     * Get the total bytes of the file (can only be used after running a version check or a normal run).
+     * Get the total bytes of the file (can only be used after running a version
+     * check or a normal run).
      */
     public long getFileSize()
     {
@@ -265,7 +300,7 @@ public class Updater
      */
     private void saveFile(File folder, String file, String u)
     {
-        if(!folder.exists())
+        if (!folder.exists())
         {
             folder.mkdir();
         }
@@ -281,34 +316,36 @@ public class Updater
 
             byte[] data = new byte[BYTE_SIZE];
             int count;
-            if(announce) plugin.getLogger().info("About to download a new update: " + versionTitle);
+            if (announce)
+                plugin.getLogger().info("About to download a new update: " + versionTitle);
             long downloaded = 0;
             while ((count = in.read(data, 0, BYTE_SIZE)) != -1)
             {
                 downloaded += count;
                 fout.write(data, 0, count);
                 int percent = (int) (downloaded * 100 / fileLength);
-                if(announce & (percent % 10 == 0))
+                if (announce & (percent % 10 == 0))
                 {
                     plugin.getLogger().info("Downloading update: " + percent + "% of " + fileLength + " bytes.");
                 }
             }
             //Just a quick check to make sure we didn't leave any files from last time...
-            for(File xFile : new File("plugins/" + updateFolder).listFiles())
+            for (File xFile : new File("plugins/" + updateFolder).listFiles())
             {
-                if(xFile.getName().endsWith(".zip"))
+                if (xFile.getName().endsWith(".zip"))
                 {
                     xFile.delete();
                 }
             }
             // Check to see if it's a zip file, if it is, unzip it.
             File dFile = new File(folder.getAbsolutePath() + "/" + file);
-            if(dFile.getName().endsWith(".zip"))
+            if (dFile.getName().endsWith(".zip"))
             {
                 // Unzip
                 unzip(dFile.getCanonicalPath());
             }
-            if(announce) plugin.getLogger().info("Finished updating.");
+            if (announce)
+                plugin.getLogger().info("Finished updating.");
         }
         catch (Exception ex)
         {
@@ -342,15 +379,15 @@ public class Updater
         try
         {
             File fSourceZip = new File(file);
-            String zipPath = file.substring(0, file.length()-4);
+            String zipPath = file.substring(0, file.length() - 4);
             ZipFile zipFile = new ZipFile(fSourceZip);
             Enumeration e = zipFile.entries();
-            while(e.hasMoreElements())
+            while (e.hasMoreElements())
             {
-                ZipEntry entry = (ZipEntry)e.nextElement();
-                File destinationFilePath = new File(zipPath,entry.getName());
+                ZipEntry entry = (ZipEntry) e.nextElement();
+                File destinationFilePath = new File(zipPath, entry.getName());
                 destinationFilePath.getParentFile().mkdirs();
-                if(entry.isDirectory())
+                if (entry.isDirectory())
                 {
                     continue;
                 }
@@ -361,7 +398,7 @@ public class Updater
                     byte buffer[] = new byte[BYTE_SIZE];
                     FileOutputStream fos = new FileOutputStream(destinationFilePath);
                     BufferedOutputStream bos = new BufferedOutputStream(fos, BYTE_SIZE);
-                    while((b = bis.read(buffer, 0, BYTE_SIZE)) != -1)
+                    while ((b = bis.read(buffer, 0, BYTE_SIZE)) != -1)
                     {
                         bos.write(buffer, 0, b);
                     }
@@ -369,7 +406,7 @@ public class Updater
                     bos.close();
                     bis.close();
                     String name = destinationFilePath.getName();
-                    if(name.endsWith(".jar") && pluginFile(name))
+                    if (name.endsWith(".jar") && pluginFile(name))
                     {
                         destinationFilePath.renameTo(new File("plugins/" + updateFolder + "/" + name));
                     }
@@ -381,26 +418,26 @@ public class Updater
             zipFile.close();
             zipFile = null;
             // Move any plugin data folders that were included to the right place, Bukkit won't do this for us.
-            for(File dFile : new File(zipPath).listFiles())
+            for (File dFile : new File(zipPath).listFiles())
             {
-                if(dFile.isDirectory())
+                if (dFile.isDirectory())
                 {
-                    if(pluginFile(dFile.getName()))
+                    if (pluginFile(dFile.getName()))
                     {
                         File oFile = new File("plugins/" + dFile.getName()); // Get current dir
-                        File [] contents = oFile.listFiles(); // List of existing files in the current dir
-                        for(File cFile : dFile.listFiles()) // Loop through all the files in the new dir
+                        File[] contents = oFile.listFiles(); // List of existing files in the current dir
+                        for (File cFile : dFile.listFiles()) // Loop through all the files in the new dir
                         {
                             boolean found = false;
-                            for(File xFile : contents) // Loop through contents to see if it exists
+                            for (File xFile : contents) // Loop through contents to see if it exists
                             {
-                                if(xFile.getName().equals(cFile.getName()))
+                                if (xFile.getName().equals(cFile.getName()))
                                 {
                                     found = true;
                                     break;
                                 }
                             }
-                            if(!found)
+                            if (!found)
                             {
                                 // Move the new file into the current dir
                                 cFile.renameTo(new File(oFile.getCanonicalFile() + "/" + cFile.getName()));
@@ -418,7 +455,7 @@ public class Updater
             new File(zipPath).delete();
             fSourceZip.delete();
         }
-        catch(IOException ex)
+        catch (IOException ex)
         {
             ex.printStackTrace();
             plugin.getLogger().warning("The auto-updater tried to unzip a new update file, but was unsuccessful.");
@@ -428,13 +465,14 @@ public class Updater
     }
 
     /**
-     * Check if the name of a jar is one of the plugins currently installed, used for extracting the correct files out of a zip.
+     * Check if the name of a jar is one of the plugins currently installed,
+     * used for extracting the correct files out of a zip.
      */
     public boolean pluginFile(String name)
     {
-        for(File file : new File("plugins").listFiles())
+        for (File file : new File("plugins").listFiles())
         {
-            if(file.getName().equals(name))
+            if (file.getName().equals(name))
             {
                 return true;
             }
@@ -458,11 +496,11 @@ public class Updater
 
             int counter = 0;
             String line;
-            while((line = buff.readLine()) != null)
+            while ((line = buff.readLine()) != null)
             {
                 counter++;
                 // Search for the download link
-                if(line.contains("<li class=\"user-action user-action-download\">"))
+                if (line.contains("<li class=\"user-action user-action-download\">"))
                 {
                     // Get the raw link
                     download = line.split("<a href=\"")[1].split("\">Download</a>")[0];
@@ -470,14 +508,14 @@ public class Updater
                 // Search for size
                 else if (line.contains("<dt>Size</dt>"))
                 {
-                    sizeLine = counter+1;
+                    sizeLine = counter + 1;
                 }
-                else if(counter == sizeLine)
+                else if (counter == sizeLine)
                 {
                     String size = line.replaceAll("<dd>", "").replaceAll("</dd>", "");
                     multiplier = size.contains("MiB") ? 1048576 : 1024;
                     size = size.replace(" KiB", "").replace(" MiB", "");
-                    totalSize = (long)(Double.parseDouble(size)*multiplier);
+                    totalSize = (long) (Double.parseDouble(size) * multiplier);
                 }
             }
             urlConn = null;
@@ -496,17 +534,18 @@ public class Updater
     }
 
     /**
-     * Check to see if the program should continue by evaluation whether the plugin is already updated, or shouldn't be updated
+     * Check to see if the program should continue by evaluation whether the
+     * plugin is already updated, or shouldn't be updated
      */
     private boolean versionCheck(String title)
     {
-        if(type != UpdateType.NO_VERSION_CHECK)
+        if (type != UpdateType.NO_VERSION_CHECK)
         {
             String version = plugin.getDescription().getVersion();
-            if(title.split("v").length == 2)
+            if (title.split("v").length == 2)
             {
                 String remoteVersion = title.split("v")[1].split(" ")[0]; // Get the newest file's version number
-                if(hasTag(version, remoteVersion) || version.equalsIgnoreCase(remoteVersion))
+                if (hasTag(version, remoteVersion) || version.equalsIgnoreCase(remoteVersion))
                 {
                     // We already have the latest version, or this build is tagged for no-update
                     result = Updater.UpdateResult.NO_UPDATE;
@@ -527,15 +566,16 @@ public class Updater
     }
 
     /**
-     * Evaluate whether the version number is marked showing that it should not be updated by this program
+     * Evaluate whether the version number is marked showing that it should not
+     * be updated by this program
      */
     private boolean hasTag(String version, String remoteVersion)
     {
-        for(String string : noUpdateTag)
+        for (String string : noUpdateTag)
         {
-            if(version.contains(string))
+            if (version.contains(string))
             {
-                if(version.replaceAll(string, "").equals(remoteVersion))
+                if (version.replaceAll(string, "").equals(remoteVersion))
                 {
                     // The build has a tag, but the version was upgraded to release so we should do an update anyway
                     return false;
@@ -552,7 +592,7 @@ public class Updater
     /**
      * Part of RSS Reader by Vogella, modified by H31IX for use with Bukkit
      */
-    @SuppressWarnings("null")
+    @SuppressWarnings({ "deprecation", "restriction" })
     private void readFeed()
     {
         try
@@ -614,7 +654,10 @@ public class Updater
         }
         catch (IOException e)
         {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            plugin.getLogger().warning("The auto-updater tried to contact dev.bukkit.org, but was unsuccessful.");
+            result = Updater.UpdateResult.FAIL_DBO;
+            return null;
         }
     }
 }

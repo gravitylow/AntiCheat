@@ -178,7 +178,7 @@ public class AnticheatAPI
 
     /**
      * Get access to all the other managers, advanced users ONLY
-     *
+     * 
      * @return the AntiCheat Manager
      */
     public static AnticheatManager getManager()
