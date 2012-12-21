@@ -382,7 +382,7 @@ public class Backend
 
     public boolean checkSprintStill(Player player, Location from, Location to)
     {
-        return player.isSprinting() && from.getX() == to.getX() && from.getZ() == to.getZ();
+        return !isMovingExempt(player) && player.isSprinting() && from.getX() == to.getX() && from.getZ() == to.getZ();
     }
 
     public boolean checkWaterWalk(Player player, double x, double y, double z)
