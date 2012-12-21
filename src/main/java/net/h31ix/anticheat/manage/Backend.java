@@ -787,31 +787,71 @@ public class Backend
 
     public boolean checkFastBreak(Player player, Block block)
     {
-        int violations = player.getGameMode() == GameMode.CREATIVE ? magic.FASTBREAK_MAXVIOLATIONS_CREATIVE : magic.FASTBREAK_MAXVIOLATIONS;
+        int violations = magic.FASTBREAK_MAXVIOLATIONS;
+        int timemax = magic.FASTBREAK_TIMEMAX;
+        if (player.getGameMode() == GameMode.CREATIVE)
+        {
+            violations = magic.FASTBREAK_MAXVIOLATIONS_CREATIVE;
+            timemax = magic.FASTBREAK_TIMEMAX_CREATIVE;
+        }
         String name = player.getName();
         if (!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES))
         {
-            long expectedTime = player.getGameMode() == GameMode.CREATIVE ? 45 : Utilities.getTime(player.getInventory().getItemInHand().getType());
-            if (!fastBreaks.containsKey(name))
+            if (!fastBreakViolation.containsKey(name))
             {
-                fastBreaks.put(name, 0);
-                lastBlockBroken.put(name, System.currentTimeMillis());
                 fastBreakViolation.put(name, 0);
             }
             else
             {
-                long realTime = System.currentTimeMillis() - lastBlockBroken.get(name);
-                if (realTime < expectedTime)
+                Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
+                if (fastBreakViolation.get(name) > violations && math < magic.FASTBREAK_MAXVIOLATIONTIME)
                 {
-                    fastBreaks.put(name, fastBreaks.get(name) + 1);
-                }
-                lastBlockBroken.put(name, System.currentTimeMillis());
-
-                if (fastBreaks.get(name) > violations)
-                {
+                    lastBlockBroken.put(name, System.currentTimeMillis());
+                    player.sendMessage(ChatColor.RED + "[AntiCheat] Fastbreaking detected. Please wait 10 seconds before breaking blocks.");
                     return true;
                 }
+                else if (fastBreakViolation.get(name) > 0 && math > magic.FASTBREAK_MAXVIOLATIONTIME)
+                {
+                    fastBreakViolation.put(name, 0);
+                }
             }
+            if (!fastBreaks.containsKey(name) || !lastBlockBroken.containsKey(name))
+            {
+                if (!lastBlockBroken.containsKey(name))
+                {
+                    lastBlockBroken.put(name, System.currentTimeMillis());
+                }
+                fastBreaks.put(name, 0);
+            }
+            else
+            {
+                Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
+                if (math < timemax && (math != 0L && player.getGameMode() != GameMode.CREATIVE))
+                {
+                    fastBreaks.put(name, fastBreaks.get(name) + 1);
+                    blockBreakHolder.put(name, false);
+                }
+                if (fastBreaks.get(name) >= magic.FASTBREAK_LIMIT && math < timemax)
+                {
+                    fastBreaks.put(name, 1);
+                    fastBreakViolation.put(name, fastBreakViolation.get(name) + 1);
+                    return true;
+                }
+                else if (fastBreaks.get(name) >= magic.FASTBREAK_LIMIT)
+                {
+                    if(!blockBreakHolder.containsKey(name) || !blockBreakHolder.get(name))
+                    {
+                        blockBreakHolder.put(name, true);
+                    }
+                    else
+                    {
+                        fastBreaks.put(name, fastBreaks.get(name) - 1);
+                        blockBreakHolder.put(name, false);
+                    }
+                }
+            }
+
+            lastBlockBroken.put(name, System.currentTimeMillis()); // always keep a log going.
         }
         return false;
     }
