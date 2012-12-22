@@ -93,7 +93,7 @@ public class Anticheat extends JavaPlugin {
 			config.saveLevel(user.getName(), user.getLevel());
 		}
 		config.saveLevels();
-		getServer().getScheduler().cancelAllTasks();
+		getServer().getScheduler().cancelTasks(this);
 		cleanup();
 	}
 	
