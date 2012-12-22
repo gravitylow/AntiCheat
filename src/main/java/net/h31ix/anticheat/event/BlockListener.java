@@ -37,11 +37,11 @@ public class BlockListener extends EventListener {
     private final Backend backend = getBackend();
     private final CheckManager checkManager = getCheckManager();
     private final Configuration config = Anticheat.getManager().getConfiguration();
-    
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void onBlockDamage(BlockDamageEvent event) {
         Player player = event.getPlayer();
-        if (event.getInstaBreak() && Utilities.isInstantBreak(event.getBlock().getType())) {
+        if (event.getInstaBreak() || Utilities.isInstantBreak(event.getBlock().getType())) {
             backend.logInstantBreak(player);
         }
         if (checkManager.willCheck(player, CheckType.AUTOTOOL) && backend.justSwitchedTool(player)) {
@@ -49,7 +49,7 @@ public class BlockListener extends EventListener {
             log("tried to switch their tool too fast.", player, CheckType.AUTOTOOL);
         }
     }
-    
+
     @EventHandler(ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         final Player player = event.getPlayer();
@@ -64,7 +64,7 @@ public class BlockListener extends EventListener {
             }
         }
     }
-    
+
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         final Player player = event.getPlayer();
