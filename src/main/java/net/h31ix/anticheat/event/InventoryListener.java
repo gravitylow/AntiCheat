@@ -27,34 +27,27 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-public class InventoryListener extends EventListener{
-
-    private final Backend backend = getBackend();
-    private final CheckManager checkManager = getCheckManager();
-    private final Configuration config = Anticheat.getManager().getConfiguration();
-
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent event)
-    {
-        if (event.getWhoClicked() instanceof Player)
-        {
-            Player player = (Player) event.getWhoClicked();
-            if(checkManager.willCheck(player, CheckType.FAST_INVENTORY))
-            {
-                if(backend.checkInventoryClicks(player))
-                {
-                    if(!config.silentMode())
-                    {
-                        event.setCancelled(!config.silentMode());
-                        player.setHealth(0);
-                    }
-                    log("tried to use their inventory too fast", player, CheckType.FAST_INVENTORY);
-                }
-                else
-                {
-                    decrease(player);
-                }
-            }
-        }
-    }
+public class InventoryListener extends EventListener {
+	
+	private final Backend backend = getBackend();
+	private final CheckManager checkManager = getCheckManager();
+	private final Configuration config = Anticheat.getManager().getConfiguration();
+	
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent event) {
+		if (event.getWhoClicked() instanceof Player) {
+			Player player = (Player) event.getWhoClicked();
+			if (checkManager.willCheck(player, CheckType.FAST_INVENTORY)) {
+				if (backend.checkInventoryClicks(player)) {
+					if (!config.silentMode()) {
+						event.setCancelled(!config.silentMode());
+						player.setHealth(0);
+					}
+					log("tried to use their inventory too fast", player, CheckType.FAST_INVENTORY);
+				} else {
+					decrease(player);
+				}
+			}
+		}
+	}
 }

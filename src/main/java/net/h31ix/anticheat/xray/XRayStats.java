@@ -20,81 +20,65 @@ package net.h31ix.anticheat.xray;
 
 import java.util.Map;
 
-public class XRayStats
-{
-    private static final int DIVISOR = 100;
-    private double t = 1;
-    private double d = 0;
-    private double g = 0;
-    private double i = 0;
-    private double l = 0;
-    private double r = 0;
-    private double o = 0;
-
-    public XRayStats(String player, Map<String, Integer> diamond, Map<String, Integer> gold, Map<String, Integer> iron, Map<String, Integer> lapis, Map<String, Integer> redstone, Map<String, Integer> other, Map<String, Integer> total)
-    {
-        if (total.get(player) != null)
-        {
-            t = total.get(player);
-        }
-        if (diamond.get(player) != null)
-        {
-            d = (diamond.get(player) / t) * DIVISOR;
-        }
-        if (gold.get(player) != null)
-        {
-            g = (gold.get(player) / t) * DIVISOR;
-        }
-        if (iron.get(player) != null)
-        {
-            i = (iron.get(player) / t) * DIVISOR;
-        }
-        if (lapis.get(player) != null)
-        {
-            l = (lapis.get(player) / t) * DIVISOR;
-        }
-        if (redstone.get(player) != null)
-        {
-            r = (redstone.get(player) / t) * DIVISOR;
-        }
-        if (other.get(player) != null)
-        {
-            o = (other.get(player) / t) * DIVISOR;
-        }
-    }
-
-    public double getTotal()
-    {
-        return t;
-    }
-
-    public double getDiamond()
-    {
-        return d;
-    }
-
-    public double getGold()
-    {
-        return g;
-    }
-
-    public double getIron()
-    {
-        return i;
-    }
-
-    public double getLapis()
-    {
-        return l;
-    }
-
-    public double getRedstone()
-    {
-        return r;
-    }
-
-    public double getOther()
-    {
-        return o;
-    }
+public class XRayStats {
+	private static final int DIVISOR = 100;
+	private double t = 1;
+	private double d = 0;
+	private double g = 0;
+	private double i = 0;
+	private double l = 0;
+	private double r = 0;
+	private double o = 0;
+	
+	public XRayStats(String player, Map<String, Integer> diamond, Map<String, Integer> gold, Map<String, Integer> iron, Map<String, Integer> lapis, Map<String, Integer> redstone, Map<String, Integer> other, Map<String, Integer> total) {
+		if (total.get(player) != null) {
+			t = total.get(player);
+		}
+		if (diamond.get(player) != null) {
+			d = (diamond.get(player) / t) * DIVISOR;
+		}
+		if (gold.get(player) != null) {
+			g = (gold.get(player) / t) * DIVISOR;
+		}
+		if (iron.get(player) != null) {
+			i = (iron.get(player) / t) * DIVISOR;
+		}
+		if (lapis.get(player) != null) {
+			l = (lapis.get(player) / t) * DIVISOR;
+		}
+		if (redstone.get(player) != null) {
+			r = (redstone.get(player) / t) * DIVISOR;
+		}
+		if (other.get(player) != null) {
+			o = (other.get(player) / t) * DIVISOR;
+		}
+	}
+	
+	public double getTotal() {
+		return t;
+	}
+	
+	public double getDiamond() {
+		return d;
+	}
+	
+	public double getGold() {
+		return g;
+	}
+	
+	public double getIron() {
+		return i;
+	}
+	
+	public double getLapis() {
+		return l;
+	}
+	
+	public double getRedstone() {
+		return r;
+	}
+	
+	public double getOther() {
+		return o;
+	}
 }

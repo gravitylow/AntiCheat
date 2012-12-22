@@ -24,15 +24,13 @@ import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
-public class FileFormatter extends Formatter
-{
-    private static final DateFormat FORMAT = new SimpleDateFormat("h:mm:ss");
-    private static final String LINE_SEP = System.getProperty("line.separator");
-
-    @Override
-    public String format(LogRecord record)
-    {
-        StringBuilder output = new StringBuilder().append("[").append(record.getLevel()).append('|').append(FORMAT.format(new Date(record.getMillis()))).append("]: ").append(record.getMessage()).append(' ').append(LINE_SEP);
-        return output.toString();
-    }
+public class FileFormatter extends Formatter {
+	private static final DateFormat FORMAT = new SimpleDateFormat("h:mm:ss");
+	private static final String LINE_SEP = System.getProperty("line.separator");
+	
+	@Override
+	public String format(LogRecord record) {
+		StringBuilder output = new StringBuilder().append("[").append(record.getLevel()).append('|').append(FORMAT.format(new Date(record.getMillis()))).append("]: ").append(record.getMessage()).append(' ').append(LINE_SEP);
+		return output.toString();
+	}
 }
