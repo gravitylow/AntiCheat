@@ -1019,6 +1019,10 @@ public class Backend
 
     public boolean checkInventoryClicks(Player player)
     {
+        if (player.getGameMode() == GameMode.CREATIVE)
+        {
+            return false;
+        }
         String name = player.getName();
         int clicks = 1;
         if (inventoryClicks.containsKey(name))
