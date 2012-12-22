@@ -169,7 +169,7 @@ public class Anticheat extends JavaPlugin {
 			Updater updater = new Updater(this, "anticheat", this.getFile(), Updater.UpdateType.DEFAULT, false);
 			update = updater.getResult() != Updater.UpdateResult.NO_UPDATE;
 			if (verbose) {
-				getLogger().log(Level.INFO, "Update avaliable: " + update);
+				getLogger().log(Level.INFO, "Update available: " + update);
 			}
 		}
 	}

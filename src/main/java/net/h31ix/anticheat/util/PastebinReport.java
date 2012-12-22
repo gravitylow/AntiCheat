@@ -67,7 +67,7 @@ public class PastebinReport {
     
     private void createReport(Player player) {
         report.append("------------ AntiCheat Report - " + format.format(date) + " ------------" + '\n');
-        report.append("Version: " + Anticheat.getVersion() + '\n');
+        report.append("Version: " + Anticheat.getVersion() + (Anticheat.isUpdated() ? "" : " (OUTDATED)") + '\n');
         report.append("CraftBukkit: " + Bukkit.getVersion() + '\n');
         report.append("Plugin Count: " + Bukkit.getPluginManager().getPlugins().length + '\n');
         appendSystemInfo();
@@ -89,6 +89,10 @@ public class PastebinReport {
         report.append("Total Memory: " + runtime.totalMemory() / 1024 / 1024 + "MB" + '\n');
         report.append("Server ID + Name: " + Bukkit.getServerId() + " - " + Bukkit.getName() + '\n');
         report.append("Players: " + Bukkit.getOnlinePlayers().length + "/" + Bukkit.getMaxPlayers() + '\n');
+    }
+    
+    private void eventHandlersDump() {
+        // TODO: Get a list of plugins hooking into AntiCheat events.
     }
     
     private void writeReport() throws IOException {
