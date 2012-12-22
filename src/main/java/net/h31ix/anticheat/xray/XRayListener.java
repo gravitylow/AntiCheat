@@ -30,35 +30,35 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 public class XRayListener implements Listener {
-	private XRayTracker tracker = Anticheat.getManager().getXRayTracker();
-	private Configuration config = Anticheat.getManager().getConfiguration();
-	private CheckManager checkManager = Anticheat.getManager().getCheckManager();
-	
-	@EventHandler
-	public void onBlockBreak(BlockBreakEvent event) {
-		if (config.logXRay()) {
-			Player p = event.getPlayer();
-			if (p.getGameMode() == GameMode.CREATIVE && !config.trackCreativeXRay()) { return; }
-			String player = p.getName();
-			if (checkManager.willCheck(p, CheckType.XRAY)) {
-				Material m = event.getBlock().getType();
-				if (m == Material.DIAMOND_ORE) {
-					tracker.addDiamond(player);
-				} else if (m == Material.IRON_ORE) {
-					tracker.addIron(player);
-				} else if (m == Material.GOLD_ORE) {
-					tracker.addGold(player);
-				} else if (m == Material.LAPIS_ORE) {
-					tracker.addLapis(player);
-				} else if (m == Material.REDSTONE_ORE) {
-					tracker.addRedstone(player);
-				} else if (m == Material.GOLD_ORE) {
-					tracker.addGold(player);
-				} else {
-					tracker.addBlock(player);
-				}
-				tracker.addTotal(player);
-			}
-		}
-	}
+    private XRayTracker tracker = Anticheat.getManager().getXRayTracker();
+    private Configuration config = Anticheat.getManager().getConfiguration();
+    private CheckManager checkManager = Anticheat.getManager().getCheckManager();
+    
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (config.logXRay()) {
+            Player p = event.getPlayer();
+            if (p.getGameMode() == GameMode.CREATIVE && !config.trackCreativeXRay()) { return; }
+            String player = p.getName();
+            if (checkManager.willCheck(p, CheckType.XRAY)) {
+                Material m = event.getBlock().getType();
+                if (m == Material.DIAMOND_ORE) {
+                    tracker.addDiamond(player);
+                } else if (m == Material.IRON_ORE) {
+                    tracker.addIron(player);
+                } else if (m == Material.GOLD_ORE) {
+                    tracker.addGold(player);
+                } else if (m == Material.LAPIS_ORE) {
+                    tracker.addLapis(player);
+                } else if (m == Material.REDSTONE_ORE) {
+                    tracker.addRedstone(player);
+                } else if (m == Material.GOLD_ORE) {
+                    tracker.addGold(player);
+                } else {
+                    tracker.addBlock(player);
+                }
+                tracker.addTotal(player);
+            }
+        }
+    }
 }

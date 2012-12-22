@@ -25,19 +25,19 @@ import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 
 public class VehicleListener extends EventListener {
-	private final Backend backend = getBackend();
-	
-	@EventHandler(ignoreCancelled = true)
-	public void onVehicleEnter(VehicleEnterEvent event) {
-		if (event.getEntered() instanceof Player) {
-			backend.logEnterExit((Player) event.getEntered());
-		}
-	}
-	
-	@EventHandler(ignoreCancelled = true)
-	public void onVehicleExit(VehicleExitEvent event) {
-		if (event.getExited() instanceof Player) {
-			backend.logEnterExit((Player) event.getExited());
-		}
-	}
+    private final Backend backend = getBackend();
+    
+    @EventHandler(ignoreCancelled = true)
+    public void onVehicleEnter(VehicleEnterEvent event) {
+        if (event.getEntered() instanceof Player) {
+            backend.logEnterExit((Player) event.getEntered());
+        }
+    }
+    
+    @EventHandler(ignoreCancelled = true)
+    public void onVehicleExit(VehicleExitEvent event) {
+        if (event.getExited() instanceof Player) {
+            backend.logEnterExit((Player) event.getExited());
+        }
+    }
 }

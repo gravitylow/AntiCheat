@@ -29,59 +29,59 @@ import org.bukkit.entity.Player;
  */
 
 public enum CheckType {
-	ZOMBE_FLY(Permission.CHECK_ZOMBE_FLY),
-	ZOMBE_NOCLIP(Permission.CHECK_ZOMBE_NOCLIP),
-	ZOMBE_CHEAT(Permission.CHECK_ZOMBE_CHEAT),
-	FLY(Permission.CHECK_FLY),
-	WATER_WALK(Permission.CHECK_WATERWALK),
-	NO_SWING(Permission.CHECK_NOSWING),
-	FAST_BREAK(Permission.CHECK_FASTBREAK),
-	FAST_PLACE(Permission.CHECK_FASTPLACE),
-	SPAM(Permission.CHECK_SPAM),
-	SPRINT(Permission.CHECK_SPRINT),
-	SNEAK(Permission.CHECK_SNEAK),
-	SPEED(Permission.CHECK_SPEED),
-	VCLIP(Permission.CHECK_VCLIP),
-	SPIDER(Permission.CHECK_SPIDER),
-	NOFALL(Permission.CHECK_NOFALL),
-	FAST_BOW(Permission.CHECK_FASTBOW),
-	FAST_EAT(Permission.CHECK_FASTEAT),
-	FAST_HEAL(Permission.CHECK_FASTHEAL),
-	FORCEFIELD(Permission.CHECK_FORCEFIELD),
-	XRAY(Permission.CHECK_XRAY),
-	LONG_REACH(Permission.CHECK_LONGREACH),
-	FAST_PROJECTILE(Permission.CHECK_FASTPROJECTILE),
-	ITEM_SPAM(Permission.CHECK_ITEMSPAM),
-	FAST_INVENTORY(Permission.CHECK_FASTINVENTORY),
-	AUTOTOOL(Permission.CHECK_AUTOTOOL);
-	
-	private final Permission permission;
-	private final Map<String, Integer> level = new HashMap<String, Integer>();
-	
-	private CheckType(Permission perm) {
-		this.permission = perm;
-	}
-	
-	public boolean checkPermission(Player player) {
-		return permission.get(player);
-	}
-	
-	public void logUse(String name) {
-		int amount = level.get(name) == null ? 1 : level.get(name) + 1;
-		level.put(name, amount);
-	}
-	
-	public void clearUse(String name) {
-		level.put(name, 0);
-	}
-	
-	public int getUses(String name) {
-		return level.get(name) != null ? level.get(name) : 0;
-	}
-	
-	public static String getName(CheckType type) {
-		char[] chars = type.toString().replaceAll("_", " ").toLowerCase().toCharArray();
-		chars[0] = Character.toUpperCase(chars[0]);
-		return new String(chars);
-	}
+    ZOMBE_FLY(Permission.CHECK_ZOMBE_FLY),
+    ZOMBE_NOCLIP(Permission.CHECK_ZOMBE_NOCLIP),
+    ZOMBE_CHEAT(Permission.CHECK_ZOMBE_CHEAT),
+    FLY(Permission.CHECK_FLY),
+    WATER_WALK(Permission.CHECK_WATERWALK),
+    NO_SWING(Permission.CHECK_NOSWING),
+    FAST_BREAK(Permission.CHECK_FASTBREAK),
+    FAST_PLACE(Permission.CHECK_FASTPLACE),
+    SPAM(Permission.CHECK_SPAM),
+    SPRINT(Permission.CHECK_SPRINT),
+    SNEAK(Permission.CHECK_SNEAK),
+    SPEED(Permission.CHECK_SPEED),
+    VCLIP(Permission.CHECK_VCLIP),
+    SPIDER(Permission.CHECK_SPIDER),
+    NOFALL(Permission.CHECK_NOFALL),
+    FAST_BOW(Permission.CHECK_FASTBOW),
+    FAST_EAT(Permission.CHECK_FASTEAT),
+    FAST_HEAL(Permission.CHECK_FASTHEAL),
+    FORCEFIELD(Permission.CHECK_FORCEFIELD),
+    XRAY(Permission.CHECK_XRAY),
+    LONG_REACH(Permission.CHECK_LONGREACH),
+    FAST_PROJECTILE(Permission.CHECK_FASTPROJECTILE),
+    ITEM_SPAM(Permission.CHECK_ITEMSPAM),
+    FAST_INVENTORY(Permission.CHECK_FASTINVENTORY),
+    AUTOTOOL(Permission.CHECK_AUTOTOOL);
+    
+    private final Permission permission;
+    private final Map<String, Integer> level = new HashMap<String, Integer>();
+    
+    private CheckType(Permission perm) {
+        this.permission = perm;
+    }
+    
+    public boolean checkPermission(Player player) {
+        return permission.get(player);
+    }
+    
+    public void logUse(String name) {
+        int amount = level.get(name) == null ? 1 : level.get(name) + 1;
+        level.put(name, amount);
+    }
+    
+    public void clearUse(String name) {
+        level.put(name, 0);
+    }
+    
+    public int getUses(String name) {
+        return level.get(name) != null ? level.get(name) : 0;
+    }
+    
+    public static String getName(CheckType type) {
+        char[] chars = type.toString().replaceAll("_", " ").toLowerCase().toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
+    }
 }

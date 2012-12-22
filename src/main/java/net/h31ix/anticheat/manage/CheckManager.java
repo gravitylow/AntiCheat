@@ -31,82 +31,82 @@ import org.bukkit.entity.Player;
  */
 
 public class CheckManager {
-	private AnticheatManager manager = null;
-	private static List<CheckType> checkIgnoreList = new ArrayList<CheckType>();
-	private static Map<String, List<CheckType>> exemptList = new HashMap<String, List<CheckType>>();
-	private static int disabled = 0;
-	private static int exempt = 0;
-	
-	public CheckManager(AnticheatManager instance) {
-		manager = instance;
-	}
-	
-	public void activateCheck(CheckType type) {
-		if (isActive(type)) {
-			manager.log("The " + type.toString() + " check was activated.");
-			checkIgnoreList.remove(type);
-		}
-	}
-	
-	public void deactivateCheck(CheckType type) {
-		if (!isActive(type)) {
-			manager.log("The " + type.toString() + " check was deactivated.");
-			checkIgnoreList.add(type);
-			disabled++;
-		}
-	}
-	
-	public boolean isActive(CheckType type) {
-		return !checkIgnoreList.contains(type);
-	}
-	
-	public void exemptPlayer(Player player, CheckType type) {
-		if (!isExempt(player, type)) {
-			if (!exemptList.containsKey(player.getName())) {
-				exemptList.put(player.getName(), new ArrayList<CheckType>());
-			}
-			manager.log(player.getName() + " was exempted from the " + type.toString() + " check.");
-			exemptList.get(player.getName()).add(type);
-			exempt++;
-		}
-	}
-	
-	public void unexemptPlayer(Player player, CheckType type) {
-		if (isExempt(player, type)) {
-			manager.log(player.getName() + " was re-added to the " + type.toString() + " check.");
-			exemptList.get(player.getName()).remove(type);
-		}
-	}
-	
-	public boolean isExempt(Player player, CheckType type) {
-		return exemptList.containsKey(player.getName()) ? exemptList.get(player.getName()).contains(type) : false;
-	}
-	
-	public boolean isOpExempt(Player player) {
-		return (this.manager.getConfiguration().opExempt() && player.isOp());
-	}
-	
-	public boolean willCheck(Player player, CheckType type) {
-		return isActive(type) && manager.getConfiguration().checkInWorld(player.getWorld()) && !isExempt(player, type) && !type.checkPermission(player) && isOnline(player) && !isOpExempt(player);
-	}
-	
-	public boolean isOnline(Player player) {
-		// Check if the player is on the user list, e.g. is not an NPC
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			if (p.getName().equals(player.getName())) { return true; }
-		}
-		return false;
-	}
-	
-	public int getExempt() {
-		int x = exempt;
-		exempt = 0;
-		return x;
-	}
-	
-	public int getDisabled() {
-		int x = disabled;
-		disabled = 0;
-		return x;
-	}
+    private AnticheatManager manager = null;
+    private static List<CheckType> checkIgnoreList = new ArrayList<CheckType>();
+    private static Map<String, List<CheckType>> exemptList = new HashMap<String, List<CheckType>>();
+    private static int disabled = 0;
+    private static int exempt = 0;
+    
+    public CheckManager(AnticheatManager instance) {
+        manager = instance;
+    }
+    
+    public void activateCheck(CheckType type) {
+        if (isActive(type)) {
+            manager.log("The " + type.toString() + " check was activated.");
+            checkIgnoreList.remove(type);
+        }
+    }
+    
+    public void deactivateCheck(CheckType type) {
+        if (!isActive(type)) {
+            manager.log("The " + type.toString() + " check was deactivated.");
+            checkIgnoreList.add(type);
+            disabled++;
+        }
+    }
+    
+    public boolean isActive(CheckType type) {
+        return !checkIgnoreList.contains(type);
+    }
+    
+    public void exemptPlayer(Player player, CheckType type) {
+        if (!isExempt(player, type)) {
+            if (!exemptList.containsKey(player.getName())) {
+                exemptList.put(player.getName(), new ArrayList<CheckType>());
+            }
+            manager.log(player.getName() + " was exempted from the " + type.toString() + " check.");
+            exemptList.get(player.getName()).add(type);
+            exempt++;
+        }
+    }
+    
+    public void unexemptPlayer(Player player, CheckType type) {
+        if (isExempt(player, type)) {
+            manager.log(player.getName() + " was re-added to the " + type.toString() + " check.");
+            exemptList.get(player.getName()).remove(type);
+        }
+    }
+    
+    public boolean isExempt(Player player, CheckType type) {
+        return exemptList.containsKey(player.getName()) ? exemptList.get(player.getName()).contains(type) : false;
+    }
+    
+    public boolean isOpExempt(Player player) {
+        return (this.manager.getConfiguration().opExempt() && player.isOp());
+    }
+    
+    public boolean willCheck(Player player, CheckType type) {
+        return isActive(type) && manager.getConfiguration().checkInWorld(player.getWorld()) && !isExempt(player, type) && !type.checkPermission(player) && isOnline(player) && !isOpExempt(player);
+    }
+    
+    public boolean isOnline(Player player) {
+        // Check if the player is on the user list, e.g. is not an NPC
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (p.getName().equals(player.getName())) { return true; }
+        }
+        return false;
+    }
+    
+    public int getExempt() {
+        int x = exempt;
+        exempt = 0;
+        return x;
+    }
+    
+    public int getDisabled() {
+        int x = disabled;
+        disabled = 0;
+        return x;
+    }
 }
