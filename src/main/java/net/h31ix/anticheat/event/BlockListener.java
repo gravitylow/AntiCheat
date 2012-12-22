@@ -48,6 +48,8 @@ public class BlockListener extends EventListener {
             event.setCancelled(!config.silentMode());
             log("tried to switch their tool too fast.", player, CheckType.AUTOTOOL);
         }
+        
+        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -63,6 +65,8 @@ public class BlockListener extends EventListener {
                 backend.logBlockPlace(player);
             }
         }
+        
+        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -20,6 +20,9 @@ package net.h31ix.anticheat.manage;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -31,6 +34,7 @@ import net.h31ix.anticheat.util.FileFormatter;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.RegisteredListener;
 
 /**
  * <p>
@@ -45,6 +49,8 @@ public class AnticheatManager {
     private CheckManager checkManager = null;
     private Backend backend = null;
     private final Logger fileLogger;
+    private static Map<String, RegisteredListener[]> eventchains = new ConcurrentHashMap<String, RegisteredListener[]>();
+    private static Map<String, Long> eventcache = new ConcurrentHashMap<String, Long>();
     private static List<String> logs = new CopyOnWriteArrayList<String>();
     private static Handler fileHandler;
     private static final int LOG_LEVEL_HIGH = 3;
@@ -102,6 +108,41 @@ public class AnticheatManager {
         }
         logs.clear();
         return log;
+    }
+    
+    public void addEvent(String e, RegisteredListener[] arr) {
+        if (!configuration.eventChains())
+            return;
+        if (!eventcache.containsKey(e) || eventcache.get(e) > 30000L) {
+            eventchains.put(e, arr);
+            eventcache.put(e, System.currentTimeMillis());
+        }
+    }
+    
+    public String getEventChainReport() {
+        String gen = "";
+        if (!configuration.eventChains())
+            return "Event Chains is disabled in the configuration, If @h31ix or @SuPaHsPii need this, please re enable it in the configuration.";
+        
+        for (Entry<String, RegisteredListener[]> e : eventchains.entrySet()) {
+            String toadd = "";
+            String ename = e.getKey();
+            
+            toadd += ename + ":" + '\n';
+            
+            RegisteredListener[] reg = e.getValue();
+            for(RegisteredListener plug : reg) {
+                String pluginname = plug.getPlugin().getName();
+                if (pluginname.equals("AntiCheat"))
+                    pluginname = "self";
+                
+                toadd += "- " + pluginname + '\n';
+            }
+            
+            gen += toadd + '\n';
+        }
+        
+        return gen;
     }
     
     public Anticheat getPlugin() {

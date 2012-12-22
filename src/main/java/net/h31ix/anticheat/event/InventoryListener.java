@@ -49,5 +49,7 @@ public class InventoryListener extends EventListener {
                 }
             }
         }
+        
+        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 }

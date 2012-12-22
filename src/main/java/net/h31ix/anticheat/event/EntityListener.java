@@ -51,6 +51,8 @@ public class EntityListener extends EventListener {
                 }
             }
         }
+        
+        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
     
     @EventHandler
@@ -67,6 +69,8 @@ public class EntityListener extends EventListener {
                 }
             }
         }
+        
+        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
     
     @EventHandler
@@ -83,6 +87,8 @@ public class EntityListener extends EventListener {
                 }
             }
         }
+        
+        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
     
     @EventHandler(ignoreCancelled = true)
@@ -148,5 +154,7 @@ public class EntityListener extends EventListener {
                 }
             }
         }
+        
+        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 }

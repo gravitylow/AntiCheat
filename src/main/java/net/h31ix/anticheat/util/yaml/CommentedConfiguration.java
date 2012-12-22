@@ -64,6 +64,7 @@ public class CommentedConfiguration extends YamlConfiguration {
         comments.put("Verbose startup:", "  # If silent mode is on, players will not be stopped when they try to hack, and AntiCheat will do everything possible to keep them unaware of their rising hack level.");
         comments.put("# If silent mode is on, players will not be stopped when they try to hack, and AntiCheat will do everything possible to keep them unaware of their rising hack level.", "  # However, alerts will still be sent to console and to admins online, and events will still take place.");
         comments.put("Silent mode:", "  # Should ops be exempt from all checks?");
+        comments.put("Exempt op:", " # Should AntiCheat track plugins in it's own registered events?");
     }
     
     @Override

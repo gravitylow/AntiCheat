@@ -41,3 +41,5 @@ System:
   Silent mode: false
   # Should ops be exempt from all checks?
   Exempt op: false
+  # Should AntiCheat track plugins in it's own registered events?
+  Event Chains: true

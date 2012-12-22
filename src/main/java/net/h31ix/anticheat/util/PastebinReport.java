@@ -77,6 +77,8 @@ public class PastebinReport {
         }
         report.append("------------Permission Tester------------" + '\n');
         appendPermissionsTester(player);
+        report.append("------------Event Chains------------" + '\n');
+        eventHandlersDump();
         report.append("-----------End Of Report------------");
     }
     
@@ -93,6 +95,7 @@ public class PastebinReport {
     
     private void eventHandlersDump() {
         // TODO: Get a list of plugins hooking into AntiCheat events.
+        report.append(Anticheat.getManager().getEventChainReport());
     }
     
     private void writeReport() throws IOException {

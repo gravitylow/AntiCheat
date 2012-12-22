@@ -50,6 +50,7 @@ public class Configuration {
     private boolean silentMode;
     private boolean opExempt;
     private boolean trackCreativeXRay;
+    private boolean eventChains;
     private int fileLogLevel = 0;
     private int medThreshold = 0;
     private int highThreshold = 0;
@@ -122,6 +123,10 @@ public class Configuration {
         return trackCreativeXRay;
     }
     
+    public boolean eventChains() {
+        return eventChains;
+    }
+    
     public int medThreshold() {
         return medThreshold;
     }
@@ -174,6 +179,7 @@ public class Configuration {
         highThreshold = getInt("Events.High threshold", 50);
         opExempt = getBoolean("System.Exempt op", false);
         trackCreativeXRay = getBoolean("XRay.Track creative", true);
+        eventChains = getBoolean("System.Event Chains", true);
         eventMed = getString("Events.Level Medium", "WARN");
         eventHigh = getString("Events.Level High", "KICK");
         chatActionKick = getString("Chat.Kick Action", "KICK");
