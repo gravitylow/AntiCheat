@@ -24,6 +24,8 @@ import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Distance;
+import net.h31ix.anticheat.util.Utilities;
+
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,7 +44,7 @@ public class BlockListener extends EventListener
     public void onBlockDamage(BlockDamageEvent event)
     {
         Player player = event.getPlayer();
-        if (event.getInstaBreak())
+        if (event.getInstaBreak() && Utilities.isInstantBreak(event.getBlock().getType()))
         {
             backend.logInstantBreak(player);
         }
@@ -81,6 +83,12 @@ public class BlockListener extends EventListener
         boolean noHack = true;
         if (player != null)
         {
+            if (checkManager.willCheck(player, CheckType.FAST_BREAK) && !backend.isInstantBreakExempt(player) && backend.checkFastBreak(player, block))
+            {
+                event.setCancelled(!config.silentMode());
+                log("tried to break a block of " + block.getType().name() + " too fast.", player, CheckType.FAST_BREAK);
+                noHack = false;
+            }
             if (checkManager.willCheck(player, CheckType.NO_SWING) && backend.checkSwing(player, block))
             {
                 event.setCancelled(!config.silentMode());
@@ -96,12 +104,6 @@ public class BlockListener extends EventListener
                     log("tried to break a block of " + block.getType().name() + " that was too far away.", player, CheckType.LONG_REACH);
                     noHack = false;
                 }
-            }
-            if (checkManager.willCheck(player, CheckType.FAST_BREAK) && !backend.isInstantBreakExempt(player) && backend.checkFastBreak(player, block))
-            {
-                event.setCancelled(!config.silentMode());
-                log("tried to break a block of " + block.getType().name() + " too fast.", player, CheckType.FAST_BREAK);
-                noHack = false;
             }
         }
         if (noHack)

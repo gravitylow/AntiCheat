@@ -26,7 +26,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.NumberConversions;
 
 public final class Utilities
@@ -34,6 +36,11 @@ public final class Utilities
     private static final List<Material> INSTANT_BREAK = new ArrayList<Material>();
     private static final List<Material> FOOD = new ArrayList<Material>();
     private static final List<Material> INTERACTABLE = new ArrayList<Material>();
+    private static final List<Material> AXES = new ArrayList<Material>();
+    private static final List<Material> PICKAXES = new ArrayList<Material>();
+    private static final List<Material> SHEARS = new ArrayList<Material>();
+    private static final List<Material> SHOVELS = new ArrayList<Material>();
+    private static final List<Material> ANY = new ArrayList<Material>();
 
     public static void alert(List<String> message)
     {
@@ -209,25 +216,22 @@ public final class Utilities
         return x;
     }
 
-    public static long getTime(Material m)
+    public static long calcSurvivalFastBreak(ItemStack tool, Material block)
     {
-        switch(m)
-        {
-            case WOOD_SPADE:
-                return 500;
-            case STONE_SPADE:
-                return 450;
-            case IRON_SPADE:
-                return 370;
-            case GOLD_SPADE:
-                return 200;
-            case DIAMOND_SPADE:
-                return 200;
-            default:
-                return 800;
-        }
+        double bhardness = BlockHardness.getBlockHardness(block);
+        double thardness = ToolHardness.getToolHardness(tool.getType());
+        
+        long result = (long) ((long) Math.round((bhardness * thardness) * 0.10 * 10000));
+        result += 150;
+        
+        if (result > 25000)
+            result = 25000;
+        else if (result < 0)
+            result = 0;
+        
+        return result;
     }
-
+    
     static
     {
         INSTANT_BREAK.add(Material.RED_MUSHROOM);
