@@ -236,7 +236,7 @@ public class Backend {
 
     public boolean checkNoFall(Player player, double y) {
         String name = player.getName();
-        if (player.getGameMode() != GameMode.CREATIVE && !player.isInsideVehicle() && !player.isSleeping() && !isMovingExempt(player) && !justPlaced(player) && !Utilities.isInWater(player)) {
+        if (player.getGameMode() != GameMode.CREATIVE && !player.isInsideVehicle() && !player.isSleeping() && !isMovingExempt(player) && !justPlaced(player) && !Utilities.isInWater(player) && !Utilities.isInWeb(player)) {
             if (player.getFallDistance() == 0) {
                 if (nofallViolation.get(name) == null) {
                     nofallViolation.put(name, 1);
