@@ -586,55 +586,6 @@ public class Backend {
 
     public boolean checkFastBreak(Player player, Block block) {
         int violations = magic.FASTBREAK_MAXVIOLATIONS;
-        int timemax = magic.FASTBREAK_TIMEMAX;
-        if (player.getGameMode() == GameMode.CREATIVE) {
-            violations = magic.FASTBREAK_MAXVIOLATIONS_CREATIVE;
-            timemax = magic.FASTBREAK_TIMEMAX_CREATIVE;
-        }
-        String name = player.getName();
-        if (!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !Utilities.isInstantBreak(block.getType()) && !isInstantBreakExempt(player) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES)) {
-            if (!fastBreakViolation.containsKey(name)) {
-                fastBreakViolation.put(name, 0);
-            } else {
-                Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
-                if (fastBreakViolation.get(name) > violations && math < magic.FASTBREAK_MAXVIOLATIONTIME) {
-                    lastBlockBroken.put(name, System.currentTimeMillis());
-                    player.sendMessage(ChatColor.RED + "[AntiCheat] Fastbreaking detected. Please wait 10 seconds before breaking blocks.");
-                    return true;
-                } else if (fastBreakViolation.get(name) > 0 && math > magic.FASTBREAK_MAXVIOLATIONTIME) {
-                    fastBreakViolation.put(name, 0);
-                }
-            }
-            if (!fastBreaks.containsKey(name) || !lastBlockBroken.containsKey(name)) {
-                if (!lastBlockBroken.containsKey(name)) {
-                    lastBlockBroken.put(name, System.currentTimeMillis());
-                }
-                fastBreaks.put(name, 0);
-            } else {
-                Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
-                if (math < timemax && (math != 0L && player.getGameMode() != GameMode.CREATIVE)) {
-                    fastBreaks.put(name, fastBreaks.get(name) + 1);
-                    blockBreakHolder.put(name, false);
-                }
-                if (fastBreaks.get(name) >= magic.FASTBREAK_LIMIT && math < timemax) {
-                    fastBreaks.put(name, 1);
-                    fastBreakViolation.put(name, fastBreakViolation.get(name) + 1);
-                    return true;
-                }
-                else if (fastBreaks.get(name) >= magic.FASTBREAK_LIMIT) {
-                    if(!blockBreakHolder.containsKey(name) || !blockBreakHolder.get(name)) {
-                        blockBreakHolder.put(name, true);
-                    } else {
-                        fastBreaks.put(name, fastBreaks.get(name) - 1);
-                        blockBreakHolder.put(name, false);
-                    }
-                }
-            }
-            lastBlockBroken.put(name, System.currentTimeMillis()); // always keep a log going.
-        }
-        return false;
-
-        /**int violations = magic.FASTBREAK_MAXVIOLATIONS;
         long timemax = Utilities.calcSurvivalFastBreak(player.getInventory().getItemInHand(), block.getType());
         if (player.getGameMode() == GameMode.CREATIVE) {
             violations = magic.FASTBREAK_MAXVIOLATIONS_CREATIVE;
@@ -688,7 +639,7 @@ public class Backend {
         }
 
         lastBlockBroken.put(name, System.currentTimeMillis()); // always keep a log going.
-        return false;*/
+        return false;
     }
 
     public boolean checkFastPlace(Player player) {
