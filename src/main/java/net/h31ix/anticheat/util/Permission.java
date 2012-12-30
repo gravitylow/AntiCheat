@@ -19,6 +19,7 @@
 package net.h31ix.anticheat.util;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public enum Permission {
     /* Check Nodes */
@@ -63,6 +64,12 @@ public enum Permission {
     
     public boolean get(CommandSender cs) {
         return cs.hasPermission(toString());
+    }
+    
+    // Now h31ix, I know this is redundant, but this may actually solve the issue.
+    // So please, just give it a try :P
+    public boolean get(Player p) {
+        return p.hasPermission(toString());
     }
     
     @Override
