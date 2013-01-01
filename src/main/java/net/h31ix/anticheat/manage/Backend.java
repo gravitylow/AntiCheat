@@ -91,18 +91,18 @@ public class Backend {
     private Map<String, Long> stepTime = new HashMap<String, Long>();
     private HashSet<Byte> transparent = new HashSet<Byte>();
     private Map<String, Long> lastFallPacket = new HashMap<String, Long>();
-
+    
     private Magic magic;
     private AnticheatManager micromanage = null;
     private Language lang = null;
-
+    
     public Backend(AnticheatManager instance) {
         magic = new Magic(instance.getConfiguration().getMagic(), instance.getConfiguration(), CommentedConfiguration.loadConfiguration(instance.getPlugin().getResource("magic.yml")));
         micromanage = instance;
         lang = micromanage.getConfiguration().getLang();
         transparent.add((byte) -1);
     }
-
+    
     public void garbageClean(Player player) {
         String pN = player.getName();
         User user = micromanage.getUserManager().getUser(pN);
@@ -162,7 +162,7 @@ public class Backend {
         inventoryClicks.remove(pN);
         lastFallPacket.remove(pN);
     }
-
+    
     public boolean checkFreeze(Player player, double from, double to) {
         // TODO: Fix! This is causing false-positives
         /*
@@ -171,7 +171,7 @@ public class Backend {
          */
         return false;
     }
-
+    
     public boolean checkFastBow(Player player, float force) {
         // Ignore magic numbers here, they are minecrafty vanilla stuff.
         int ticks = (int) ((((System.currentTimeMillis() - bowWindUp.get(player.getName())) * 20) / 1000) + 3);
@@ -181,7 +181,7 @@ public class Backend {
         f = f > 1.0F ? 1.0F : f;
         return Math.abs(force - f) > magic.BOW_ERROR;
     }
-
+    
     public boolean checkProjectile(Player player) {
         increment(player, projectilesShot, 10);
         if (!projectileTime.containsKey(player.getName())) {
@@ -195,7 +195,7 @@ public class Backend {
         }
         return false;
     }
-
+    
     public boolean checkFastDrop(Player player) {
         increment(player, blocksDropped, 10);
         if (!blockTime.containsKey(player.getName())) {
@@ -209,7 +209,7 @@ public class Backend {
         }
         return false;
     }
-
+    
     public boolean checkLongReachBlock(Player player, double x, double y, double z) {
         if (isInstantBreakExempt(player)) {
             return false;
@@ -217,21 +217,21 @@ public class Backend {
             return (x >= magic.BLOCK_MAX_DISTANCE || y > magic.BLOCK_MAX_DISTANCE || z > magic.BLOCK_MAX_DISTANCE);
         }
     }
-
+    
     public boolean checkLongReachDamage(double x, double y, double z) {
         return x >= magic.ENTITY_MAX_DISTANCE || y > magic.ENTITY_MAX_DISTANCE || z > magic.ENTITY_MAX_DISTANCE;
     }
-
+    
     public boolean checkSpider(Player player, double y) {
         if (y <= magic.LADDER_Y_MAX && y >= magic.LADDER_Y_MIN && !Utilities.isClimbableBlock(player.getLocation().getBlock())) { return true; }
         return false;
     }
-
+    
     public boolean checkYSpeed(Player player, double y) {
         if (!player.isInsideVehicle() && !player.isSleeping() && y > magic.Y_SPEED_MAX && !isDoing(player, velocitized, magic.VELOCITY_TIME) && !player.hasPotionEffect(PotionEffectType.JUMP)) { return true; }
         return false;
     }
-
+    
     public boolean checkNoFall(Player player, double y) {
         String name = player.getName();
         if (player.getGameMode() != GameMode.CREATIVE && !player.isInsideVehicle() && !player.isSleeping() && !isMovingExempt(player) && !justPlaced(player) && !Utilities.isInWater(player) && !Utilities.isInWeb(player)) {
@@ -241,7 +241,7 @@ public class Backend {
                 } else {
                     nofallViolation.put(name, nofallViolation.get(player.getName()) + 1);
                 }
-
+                
                 if (nofallViolation.get(name) >= magic.NOFALL_LIMIT) {
                     nofallViolation.put(player.getName(), 1);
                     return true;
@@ -255,7 +255,7 @@ public class Backend {
         }
         return false;
     }
-
+    
     public boolean checkXZSpeed(Player player, double x, double z) {
         if (!isSpeedExempt(player) && player.getVehicle() == null) {
             boolean speed = false;
@@ -285,7 +285,7 @@ public class Backend {
             return false;
         }
     }
-
+    
     public boolean checkSneak(Player player, double x, double z) {
         if (player.isSneaking() && !player.isFlying() && !isMovingExempt(player)) {
             return x > magic.XZ_SPEED_MAX_SNEAK || z > magic.XZ_SPEED_MAX_SNEAK;
@@ -293,7 +293,7 @@ public class Backend {
             return false;
         }
     }
-
+    
     public boolean checkSprintHungry(PlayerToggleSprintEvent event) {
         Player player = event.getPlayer();
         if (event.isSprinting()) {
@@ -302,14 +302,14 @@ public class Backend {
             return false;
         }
     }
-
+    
     public boolean checkSprintStill(Player player, Location from, Location to) {
         return !isMovingExempt(player) && player.isSprinting() && from.getX() == to.getX() && from.getZ() == to.getZ();
     }
-
+    
     public boolean checkWaterWalk(Player player, double x, double y, double z) {
         Block block = player.getLocation().getBlock();
-
+        
         if (player.getVehicle() == null && !player.isFlying()) {
             if (block.isLiquid()) {
                 if (isInWater.contains(player.getName())) {
@@ -365,19 +365,19 @@ public class Backend {
         }
         return false;
     }
-
+    
     // The first check in Anticheat with a integer as a result :O!
-
+    
     public int checkVClip(Player player, Distance distance) {
         double from = Math.round(distance.fromY());
         double to = Math.round(distance.toY());
-
+        
         boolean bs = false;
-
+        
         if (player.isInsideVehicle()) { return 0; }
         if (from == to || from < to) { return 0; }
         if (Math.round(distance.getYDifference()) < 2) { return 0; }
-
+        
         for (int i = 0; i < (Math.round(distance.getYDifference())) + 1; i++) {
             Block block = new Location(player.getWorld(), player.getLocation().getX(), to + i, player.getLocation().getZ()).getBlock();
             if (block.getTypeId() != 0 && block.getType().isSolid()) {
@@ -385,10 +385,10 @@ public class Backend {
             }
             if (bs) { return (int) from + 3; }
         }
-
+        
         return 0;
     }
-
+    
     public boolean checkYAxis(Player player, Distance distance) {
         if (distance.getYDifference() > 400 || distance.getYDifference() < 0) { return false; }
         if (!isMovingExempt(player) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && !Utilities.isClimbableBlock(player.getLocation().add(0, -1, 0).getBlock()) && !player.isInsideVehicle() && !Utilities.isInWater(player)) {
@@ -403,12 +403,14 @@ public class Backend {
             } else {
                 if (y1 > lastYcoord.get(name) && yAxisViolations.get(name) > magic.Y_MAXVIOLATIONS && (System.currentTimeMillis() - yAxisLastViolation.get(name)) < magic.Y_MAXVIOTIME) {
                     Location g = player.getLocation();
-                    g.setY(lastYcoord.get(name));
-                    player.sendMessage(ChatColor.RED + "[AntiCheat] Fly hacking on the y-axis detected.  Please wait 5 seconds to prevent getting damage.");
                     yAxisViolations.put(name, yAxisViolations.get(name) + 1);
                     yAxisLastViolation.put(name, System.currentTimeMillis());
-                    if (g.getBlock().getTypeId() == 0) {
-                        player.teleport(g);
+                    if (!micromanage.getConfiguration().silentMode()) {
+                        g.setY(lastYcoord.get(name));
+                        player.sendMessage(ChatColor.RED + "[AntiCheat] Fly hacking on the y-axis detected.  Please wait 5 seconds to prevent getting damage.");
+                        if (g.getBlock().getTypeId() == 0) {
+                            player.teleport(g);
+                        }
                     }
                     return true;
                 } else {
@@ -419,11 +421,13 @@ public class Backend {
                 }
                 if ((y1 - lastYcoord.get(name)) > magic.Y_MAXDIFF && (System.currentTimeMillis() - lastYtime.get(name)) < magic.Y_TIME) {
                     Location g = player.getLocation();
-                    g.setY(lastYcoord.get(name));
                     yAxisViolations.put(name, yAxisViolations.get(name) + 1);
                     yAxisLastViolation.put(name, System.currentTimeMillis());
-                    if (g.getBlock().getTypeId() == 0) {
-                        player.teleport(g);
+                    if (!micromanage.getConfiguration().silentMode()) {
+                        g.setY(lastYcoord.get(name));
+                        if (g.getBlock().getTypeId() == 0) {
+                            player.teleport(g);
+                        }
                     }
                     return true;
                 } else {
@@ -437,7 +441,7 @@ public class Backend {
         // Fix Y axis spam
         return false;
     }
-
+    
     public boolean checkTimer(Player player) {
         String name = player.getName();
         int step = 1;
@@ -455,7 +459,7 @@ public class Backend {
         }
         return false;
     }
-
+    
     public boolean checkSight(Player player, Entity entity) {
         if (entity instanceof LivingEntity) {
             LivingEntity le = (LivingEntity) entity;
@@ -471,25 +475,25 @@ public class Backend {
                                 solid = true;
                                 break;
                             }
-
+                            
                         }
                     }
                 }
-
+                
             }
             if (solid) { return true; }
             // TODO: Needs proper testing
             Location mobLocation = le.getEyeLocation();
             for (Block block : player.getLineOfSight(transparent, 5)) {
                 if (Math.abs(block.getLocation().getX() - mobLocation.getX()) < 2.3 || Math.abs(block.getLocation().getZ() - mobLocation.getZ()) < 2.3) {
-
+                
                 return true; }
             }
             return false;
         }
         return true;
     }
-
+    
     public boolean checkFlight(Player player, Distance distance) {
         if (distance.getYDifference() > 400) {
             // This was a teleport, so we don't care about it.
@@ -503,39 +507,39 @@ public class Backend {
          * if (block.getRelative(BlockFace.NORTH).isLiquid() || block.getRelative(BlockFace.SOUTH).isLiquid() || block.getRelative(BlockFace.EAST).isLiquid() || block.getRelative(BlockFace.WEST).isLiquid()) { if (y1 < y2) { //Even if they are using a hacked client and flying next to water to abuse
          * this, they can't be go past the speed limit so they might as well swim return distance.getYDifference() > magic.WATER_CLIMB_MAX; } }
          */
-
+        
         if (!isMovingExempt(player) && !Utilities.isHoveringOverWater(player.getLocation(), 1) && Utilities.cantStandAtExp(player.getLocation())) {
             /*
              * if (y1 == y2 || y1 < y2) {
-             *
+             * 
              * if (y1 == y2) { //Check if the player is on slabs or crouching on stairs if (Utilities.isSlab(block.getRelative(BlockFace.NORTH)) || Utilities.isSlab(block.getRelative(BlockFace.SOUTH)) || Utilities.isSlab(block.getRelative(BlockFace.EAST)) ||
              * Utilities.isSlab(block.getRelative(BlockFace.WEST)) || Utilities.isSlab(block.getRelative(BlockFace.NORTH_EAST)) || Utilities.isSlab(block.getRelative(BlockFace.SOUTH_EAST)) || Utilities.isSlab(block.getRelative(BlockFace.SOUTH_WEST)) ||
              * Utilities.isSlab(block.getRelative(BlockFace.NORTH_WEST))) { return false; } else if (player.isSneaking() && (Utilities.isStair(block.getRelative(BlockFace.NORTH)) || Utilities.isStair(block.getRelative(BlockFace.SOUTH)) || Utilities.isStair(block.getRelative(BlockFace.EAST)) ||
              * Utilities.isStair(block.getRelative(BlockFace.WEST)) || Utilities.isStair(block.getRelative(BlockFace.NORTH_EAST)) || Utilities.isStair(block.getRelative(BlockFace.SOUTH_EAST)) || Utilities.isStair(block.getRelative(BlockFace.SOUTH_WEST)) ||
              * Utilities.isStair(block.getRelative(BlockFace.NORTH_WEST)))) { return false; }
-             *
-             *
+             * 
+             * 
              * int violation = flightViolation.containsKey(name) ? flightViolation.get(name) + 1 : 1; increment(player, flightViolation, violation); return violation > magic.FLIGHT_LIMIT; }
              */
-
+            
             if (!blocksOverFlight.containsKey(name)) {
                 blocksOverFlight.put(name, 0D);
             }
-
+            
             blocksOverFlight.put(name, (blocksOverFlight.get(name) + distance.getXDifference() + distance.getYDifference() + distance.getZDifference()));
-
+            
             if (y1 > y2) {
                 blocksOverFlight.put(name, (blocksOverFlight.get(name) - distance.getYDifference()));
             }
-
+            
             if (blocksOverFlight.get(name) > magic.FLIGHT_BLOCK_LIMIT && (y1 <= y2)) { return true; }
         } else {
             blocksOverFlight.put(name, 0D);
         }
-
+        
         return false;
     }
-
+    
     public void logAscension(Player player, double y1, double y2) {
         String name = player.getName();
         if (y1 < y2 && !isAscending.contains(name)) {
@@ -544,7 +548,7 @@ public class Backend {
             isAscending.remove(name);
         }
     }
-
+    
     public boolean checkAscension(Player player, double y1, double y2) {
         int max = magic.ASCENSION_COUNT_MAX;
         if (player.hasPotionEffect(PotionEffectType.JUMP)) {
@@ -564,7 +568,7 @@ public class Backend {
         }
         return false;
     }
-
+    
     public boolean checkSwing(Player player, Block block) {
         String name = player.getName();
         if (!isInstantBreakExempt(player)) {
@@ -581,7 +585,7 @@ public class Backend {
         }
         return !justAnimated(player); // TODO: best way to implement other option?
     }
-
+    
     public boolean checkFastBreak(Player player, Block block) {
         int violations = magic.FASTBREAK_MAXVIOLATIONS;
         long timemax = Utilities.calcSurvivalFastBreak(player.getInventory().getItemInHand(), block.getType());
@@ -596,7 +600,7 @@ public class Backend {
             Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
             if (fastBreakViolation.get(name) > violations && math < magic.FASTBREAK_MAXVIOLATIONTIME) {
                 lastBlockBroken.put(name, System.currentTimeMillis());
-                player.sendMessage(ChatColor.RED + "[AntiCheat] Fastbreaking detected. Please wait 10 seconds before breaking blocks.");
+                if (!micromanage.getConfiguration().silentMode()) player.sendMessage(ChatColor.RED + "[AntiCheat] Fastbreaking detected. Please wait 10 seconds before breaking blocks.");
                 return true;
             } else if (fastBreakViolation.get(name) > 0 && math > magic.FASTBREAK_MAXVIOLATIONTIME) {
                 fastBreakViolation.put(name, 0);
@@ -635,11 +639,11 @@ public class Backend {
                 }
             }
         }
-
+        
         lastBlockBroken.put(name, System.currentTimeMillis()); // always keep a log going.
         return false;
     }
-
+    
     public boolean checkFastPlace(Player player) {
         int violations = magic.FASTPLACE_MAXVIOLATIONS;
         if (player.getGameMode() == GameMode.CREATIVE) {
@@ -648,7 +652,7 @@ public class Backend {
         long time = System.currentTimeMillis();
         String name = player.getName();
         if (!lastBlockPlaceTime.containsKey(name) || !fastPlaceViolation.containsKey(name)) {
-            lastBlockPlaceTime.put(name, Long.parseLong("0"));
+            lastBlockPlaceTime.put(name, 0L);
             if (!fastPlaceViolation.containsKey(name)) {
                 fastPlaceViolation.put(name, 0);
             }
@@ -656,7 +660,7 @@ public class Backend {
             Long math = System.currentTimeMillis() - lastBlockPlaced.get(name);
             if (lastBlockPlaced.get(name) > 0 && math < magic.FASTPLACE_MAXVIOLATIONTIME) {
                 lastBlockPlaced.put(name, time);
-                player.sendMessage(ChatColor.RED + "[AntiCheat] Fastplacing detected. Please wait 10 seconds before placing blocks.");
+                if (!micromanage.getConfiguration().silentMode()) player.sendMessage(ChatColor.RED + "[AntiCheat] Fastplacing detected. Please wait 10 seconds before placing blocks.");
                 return true;
             } else if (lastBlockPlaced.get(name) > 0 && math > magic.FASTPLACE_MAXVIOLATIONTIME) {
                 fastPlaceViolation.put(name, 0);
@@ -678,15 +682,15 @@ public class Backend {
         lastBlockPlaced.put(name, time);
         return false;
     }
-
+    
     public void logBowWindUp(Player player) {
         bowWindUp.put(player.getName(), System.currentTimeMillis());
     }
-
+    
     public void logEatingStart(Player player) {
         startEat.put(player.getName(), System.currentTimeMillis());
     }
-
+    
     public boolean justStartedEating(Player player) {
         if (startEat.containsKey(player.getName())) // Otherwise it was modified by a plugin, don't worry about it.
         {
@@ -696,11 +700,11 @@ public class Backend {
         }
         return false;
     }
-
+    
     public void logHeal(Player player) {
         lastHeal.put(player.getName(), System.currentTimeMillis());
     }
-
+    
     public boolean justHealed(Player player) {
         if (lastHeal.containsKey(player.getName())) // Otherwise it was modified by a plugin, don't worry about it.
         {
@@ -710,7 +714,7 @@ public class Backend {
         }
         return false;
     }
-
+    
     public void logChat(final Player player) {
         String name = player.getName();
         if (chatLevel.get(name) == null) {
@@ -728,7 +732,7 @@ public class Backend {
             }
         }
     }
-
+    
     public boolean checkSpam(Player player, String msg) {
         String name = player.getName();
         if (lastMessage.get(name) == null) {
@@ -744,7 +748,7 @@ public class Backend {
         }
         return false;
     }
-
+    
     public boolean checkInventoryClicks(Player player) {
         if (player.getGameMode() == GameMode.CREATIVE) { return false; }
         String name = player.getName();
@@ -762,51 +766,51 @@ public class Backend {
         }
         return false;
     }
-
+    
     public void clearChatLevel(Player player) {
         chatLevel.remove(player.getName());
     }
-
+    
     public void logInstantBreak(final Player player) {
         instantBreakExempt.put(player.getName(), System.currentTimeMillis());
     }
-
+    
     public boolean isInstantBreakExempt(Player player) {
         return isDoing(player, instantBreakExempt, magic.INSTANT_BREAK_TIME);
     }
-
+    
     public void logSprint(final Player player) {
         sprinted.put(player.getName(), System.currentTimeMillis());
     }
-
+    
     public boolean justSprinted(Player player) {
         return isDoing(player, sprinted, magic.SPRINT_MIN);
     }
-
+    
     public boolean isHoveringOverWaterAfterViolation(Player player) {
         if (waterSpeedViolation.containsKey(player.getName())) {
             if (waterSpeedViolation.get(player.getName()) >= magic.WATER_SPEED_VIOLATION_MAX && Utilities.isHoveringOverWater(player.getLocation())) { return true; }
         }
         return false;
     }
-
+    
     public void logBlockBreak(final Player player) {
         brokenBlock.put(player.getName(), System.currentTimeMillis());
         resetAnimation(player);
     }
-
+    
     public boolean justBroke(Player player) {
         return isDoing(player, brokenBlock, magic.BLOCK_BREAK_MIN);
     }
-
+    
     public void logVelocity(final Player player) {
         velocitized.put(player.getName(), System.currentTimeMillis());
     }
-
+    
     public boolean justVelocity(Player player) {
         return (velocitized.containsKey(player.getName()) ? (System.currentTimeMillis() - velocitized.get(player.getName())) < magic.VELOCITY_CHECKTIME : false);
     }
-
+    
     public boolean justSwitchedTool(Player player) {
         if (itemInHand.containsKey(player.getName())) {
             return itemInHand.get(player.getName()) != player.getItemInHand().getType();
@@ -814,7 +818,7 @@ public class Backend {
             return false;
         }
     }
-
+    
     public boolean extendVelocityTime(final Player player) {
         if (velocitytrack.containsKey(player.getName())) {
             velocitytrack.put(player.getName(), velocitytrack.get(player.getName()) + 1);
@@ -831,29 +835,29 @@ public class Backend {
         } else {
             velocitytrack.put(player.getName(), 0);
         }
-
+        
         return false;
     }
-
+    
     public void logBlockPlace(final Player player) {
         placedBlock.put(player.getName(), System.currentTimeMillis());
     }
-
+    
     public boolean justPlaced(Player player) {
         return isDoing(player, placedBlock, magic.BLOCK_PLACE_MIN);
     }
-
+    
     public void logAnimation(final Player player) {
         animated.put(player.getName(), System.currentTimeMillis());
         increment(player, blockPunches, magic.BLOCK_PUNCH_MIN);
         itemInHand.put(player.getName(), player.getItemInHand().getType());
     }
-
+    
     public void resetAnimation(final Player player) {
         animated.remove(player.getName());
         blockPunches.put(player.getName(), 0);
     }
-
+    
     public boolean justAnimated(Player player) {
         if (player.getItemInHand().containsEnchantment(Enchantment.DIG_SPEED)) { return true; }
         String name = player.getName();
@@ -865,7 +869,7 @@ public class Backend {
             return false;
         }
     }
-
+    
     public void logDamage(final Player player, int type) {
         long time;
         switch (type) {
@@ -881,23 +885,23 @@ public class Backend {
             default:
                 time = magic.DAMAGE_TIME;
                 break;
-
+        
         }
         movingExempt.put(player.getName(), System.currentTimeMillis() + time);
         // Only map in which termination time is calculated beforehand.
     }
-
+    
     public void logEnterExit(final Player player) {
         movingExempt.put(player.getName(), System.currentTimeMillis() + magic.ENTERED_EXITED_TIME);
     }
-
+    
     public void logToggleSneak(final Player player) {
         movingExempt.put(player.getName(), System.currentTimeMillis() + magic.SNEAK_TIME);
     }
-
+    
     public void logTeleport(final Player player) {
         movingExempt.put(player.getName(), System.currentTimeMillis() + magic.TELEPORT_TIME);
-
+        
         /* Data for fly/speed should be reset */
         nofallViolation.remove(player.getName());
         blocksOverFlight.remove(player.getName());
@@ -906,29 +910,29 @@ public class Backend {
         lastYcoord.remove(player.getName());
         lastYtime.remove(player.getName());
     }
-
+    
     public void logExitFly(final Player player) {
         movingExempt.put(player.getName(), System.currentTimeMillis() + magic.EXIT_FLY_TIME);
     }
-
+    
     public void logJoin(final Player player) {
         movingExempt.put(player.getName(), System.currentTimeMillis() + magic.JOIN_TIME);
     }
-
+    
     public boolean isMovingExempt(Player player) {
         return isDoing(player, movingExempt, -1);
     }
-
+    
     public boolean isAscending(Player player) {
         return isAscending.contains(player.getName());
     }
-
+    
     public boolean isSpeedExempt(Player player) {
         return isMovingExempt(player) || justVelocity(player);
     }
-
+    
     private <E> void logEvent(final Map<String, E> map, final Player player, final E obj, long time) {
-
+        
         map.put(player.getName(), obj);
         micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable() {
             @Override
@@ -941,7 +945,7 @@ public class Backend {
             }
         }, time);
     }
-
+    
     private boolean isDoing(Player player, Map<String, Long> map, double max) {
         if (map.containsKey(player.getName())) {
             if (max != -1) {
@@ -964,11 +968,11 @@ public class Backend {
             return false;
         }
     }
-
+    
     private boolean checkChatLevel(Player player, int amount) {
         return amount >= magic.CHAT_KICK_LEVEL;
     }
-
+    
     private void processChatSpammer(Player player) {
         if (player != null && player.isOnline()) {
             String name = player.getName();
@@ -980,11 +984,11 @@ public class Backend {
                 kick = chatKicks.get(name) + 1;
                 chatKicks.put(name, kick);
             }
-
+            
             String event = kick <= magic.CHAT_BAN_LEVEL ? micromanage.getConfiguration().chatActionKick() : micromanage.getConfiguration().chatActionBan();
             // Set string variables
             event = event.replaceAll("&player", name).replaceAll("&world", player.getWorld().getName());
-
+            
             if (event.startsWith("COMMAND[")) {
                 String command = event.replaceAll("COMMAND\\[", "").replaceAll("]", "");
                 Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
@@ -1007,7 +1011,7 @@ public class Backend {
             }
         }
     }
-
+    
     public int increment(Player player, Map<String, Integer> map, int num) {
         String name = player.getName();
         if (map.get(name) == null) {
