@@ -305,4 +305,8 @@ public class Configuration {
             Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public String getMainConfigurationDump() {
+        return config.saveToString();
+    }
 }

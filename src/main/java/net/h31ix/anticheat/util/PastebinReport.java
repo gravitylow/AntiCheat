@@ -51,6 +51,21 @@ public class PastebinReport {
         postReport();
     }
     
+    public PastebinReport(CommandSender cs, Player tp) {
+        Player player = null;
+        if (tp == null) {
+            cs.sendMessage(ChatColor.RED + "We were unable to detect the target player when making this report.  Skipping permstester");
+        } else {
+            player = tp;
+        }
+        
+        createReport(player);
+        try {
+            writeReport();
+        } catch (IOException e) {}
+        postReport();
+    }
+    
     public String getURL() {
         return url;
     }
@@ -62,8 +77,14 @@ public class PastebinReport {
         for (Permission node : Permission.values()) {
             report.append(player.getName() + ": " + node.toString() + " " + node.get(player) + '\n');
         }
-        
     }
+    /* Not working at the moment.
+    private void dumpConfiguration() {
+        report.append("------------Main Configuration (differences only)-----------" + '\n');
+        report.append(writeDifferencesByLine(Anticheat.getManager().getConfiguration().getMainConfigurationDump(), getDataFromURL("https://raw.github.com/h31ix/AntiCheat/master/src/main/resources/config.yml")));
+        report.append("------------Magic Configuration (differences only)-----------" + '\n');
+        report.append(writeDifferencesByLine(Anticheat.getManager().getConfiguration().getMagic().saveToString(), getDataFromURL("https://raw.github.com/h31ix/AntiCheat/master/src/main/resources/magic.yml")));
+    } */
     
     private void createReport(Player player) {
         report.append("------------ AntiCheat Report - " + format.format(date) + " ------------" + '\n');
@@ -77,6 +98,7 @@ public class PastebinReport {
         }
         report.append("------------Permission Tester------------" + '\n');
         appendPermissionsTester(player);
+        //dumpConfiguration();
         report.append("------------Event Chains------------" + '\n');
         eventHandlersDump();
         report.append("-----------End Of Report------------");
@@ -146,6 +168,82 @@ public class PastebinReport {
         } catch (Exception e) {
             url = "Failed to post.  Check report.txt";
         }
+    }
+    
+    private static String getDataFromURL(String url) {
+        try {
+            URL urls = new URL(url);
+            HttpURLConnection conn = (HttpURLConnection) urls.openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+            conn.setRequestMethod("GET");
+            conn.setInstanceFollowRedirects(false);
+            conn.setDoOutput(true);
+            OutputStream out = conn.getOutputStream();
+            
+            out.flush();
+            out.close();
+            
+            if (conn.getResponseCode() == 200) {
+                InputStream receive = conn.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(receive));
+                String line;
+                StringBuffer response = new StringBuffer();
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                    response.append("\n");
+                }
+                reader.close();
+                
+                String result = response.toString().trim();
+                System.out.println(result);
+                url = result;
+            } else {
+                url = "Failed to get";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            url = "Failed to get";
+        }
+        
+        return url;
+    }
+    
+    private static String writeDifferencesByLine(String one, String two) {
+        String diff = "";
+        String[] diff1 = one.split("\n");
+        String[] diff2 = two.split("\n");
+        int i = 0;
+        while (true) {
+            if (i >= diff1.length) {
+                for(int g = i; g < diff2.length; g++) {
+                    diff += diff2[g] + " (End of File)" + '\n';
+                }
+                break;
+            } else if (i >= diff2.length) {
+                for(int g = i; g < diff1.length; g++) {
+                    diff += diff1[g] + " (End of File)" + '\n';
+                }
+                break;
+            }
+            
+            String d1 = diff1[i];
+            String d2 = diff2[i];
+            
+            if (d1.startsWith("#") || d2.startsWith("#"))
+            {
+                i++;
+                continue;
+            }
+            
+            if(!d1.equalsIgnoreCase(d2)) {
+                diff += d1 + " (" + d2 + ")" + '\n';
+            }
+            
+            i++;
+        }
+        
+        return two;
     }
     
 }

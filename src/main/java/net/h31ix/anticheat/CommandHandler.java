@@ -87,6 +87,16 @@ public class CommandHandler implements CommandExecutor {
         }
     }
     
+    public void handleDebug(CommandSender cs, Player tp) {
+        if (Permission.SYSTEM_REPORT.get(cs)) {
+            PastebinReport report = new PastebinReport(cs, tp);
+            cs.sendMessage(GREEN + "Debug information posted to: " + WHITE + report.getURL());
+            cs.sendMessage(GREEN + "Please include this link when making bug reports.");
+        } else {
+            cs.sendMessage(PERMISSIONS_ERROR);
+        }
+    }
+    
     public void handleXRay(CommandSender cs, String[] args) {
         if (Permission.SYSTEM_XRAY.get(cs)) {
             if (CONFIG.logXRay()) {
@@ -411,6 +421,8 @@ public class CommandHandler implements CommandExecutor {
                 handleLog(cs, args);
             } else if (args[0].equalsIgnoreCase("xray")) {
                 handleXRay(cs, args);
+            } else if (args[0].equalsIgnoreCase("debug")) {
+                handleDebug(cs, Bukkit.getPlayer(args[1]));
             } else if (args[0].equalsIgnoreCase("reset")) {
                 handleReset(cs, args);
             } else if (args[0].equalsIgnoreCase("spy")) {
