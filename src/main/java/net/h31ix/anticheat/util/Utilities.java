@@ -26,8 +26,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.NumberConversions;
 
 public final class Utilities {
@@ -182,9 +184,14 @@ public final class Utilities {
     public static long calcSurvivalFastBreak(ItemStack tool, Material block) {
         double bhardness = BlockHardness.getBlockHardness(block);
         double thardness = ToolHardness.getToolHardness(tool.getType());
+        long enchantlvl = (long) tool.getEnchantmentLevel(Enchantment.DIG_SPEED);
         
         long result = (long) ((long) Math.round((bhardness * thardness) * 0.10 * 10000));
+        
         result += 150;
+        
+        if (enchantlvl > 0)
+            result /= enchantlvl * enchantlvl + 1L;
         
         if (result > 25000)
             result = 25000;

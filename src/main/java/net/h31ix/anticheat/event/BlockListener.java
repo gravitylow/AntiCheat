@@ -75,7 +75,7 @@ public class BlockListener extends EventListener {
         final Block block = event.getBlock();
         boolean noHack = true;
         if (player != null) {
-            if (checkManager.willCheck(player, CheckType.FAST_BREAK) && !backend.isInstantBreakExempt(player) && backend.checkFastBreak(player, block)) {
+            if (checkManager.willCheck(player, CheckType.FAST_BREAK) && backend.checkFastBreak(player, block)) {
                 event.setCancelled(!config.silentMode());
                 log("tried to break a block of " + block.getType().name() + " too fast.", player, CheckType.FAST_BREAK);
                 noHack = false;
