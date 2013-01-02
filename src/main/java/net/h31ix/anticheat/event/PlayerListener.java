@@ -355,11 +355,11 @@ public class PlayerListener extends EventListener {
                     changed = true;
                 }
                 if ((event.getFrom().getX() != event.getTo().getX() || event.getFrom().getZ() != event.getTo().getZ()) && backend.checkTimer(player)) {
-                    if (!config.silentMode()) {
+                    /*if (!config.silentMode()) {
                         event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
                     }
                     log("tried to alter their timer.", player, CheckType.SPEED);
-                    changed = true;
+                    changed = true;*/
                 }
             }
             if (checkManager.willCheck(player, CheckType.WATER_WALK) && backend.checkWaterWalk(player, x, y, z)) {
