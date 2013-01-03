@@ -63,6 +63,7 @@ public class Backend {
     private Map<String, Boolean> blockBreakHolder = new HashMap<String, Boolean>();
     private Map<String, Long> lastBlockBroken = new HashMap<String, Long>();
     private Map<String, Integer> fastPlaceViolation = new HashMap<String, Integer>();
+    private Map<String, Integer> lastZeroHitPlace = new HashMap<String, Integer>();
     private Map<String, Long> lastBlockPlaced = new HashMap<String, Long>();
     private Map<String, Long> lastBlockPlaceTime = new HashMap<String, Long>();
     private Map<String, Integer> blockPunches = new HashMap<String, Integer>();
@@ -137,6 +138,7 @@ public class Backend {
         blockBreakHolder.remove(pN);
         lastBlockBroken.remove(pN);
         fastPlaceViolation.remove(pN);
+        lastZeroHitPlace.remove(pN);
         lastBlockPlaced.remove(pN);
         lastBlockPlaceTime.remove(pN);
         blockPunches.remove(pN);
@@ -669,14 +671,23 @@ public class Backend {
             long last = lastBlockPlaced.get(name);
             long lastTime = lastBlockPlaceTime.get(name);
             long thisTime = time - last;
-            
-            if (thisTime < magic.FASTPLACE_TIMEMAX || lastTime < magic.FASTPLACE_TIMEMAX) {
+            boolean nocheck = thisTime < 1 || lastTime < 1;
+            if (!lastZeroHitPlace.containsKey(name)) {
+                lastZeroHitPlace.put(name, 0);
+            }
+            if (nocheck) {
+                if (!lastZeroHitPlace.containsKey(name)) {
+                    lastZeroHitPlace.put(name, 1);
+                } else {
+                    lastZeroHitPlace.put(name, lastZeroHitPlace.get(name) + 1);
+                }
+            }
+            if (thisTime < magic.FASTPLACE_TIMEMAX && lastTime < magic.FASTPLACE_TIMEMAX && nocheck && lastZeroHitPlace.get(name) > magic.FASTPLACE_ZEROLIMIT) {
                 lastBlockPlaceTime.put(name, (time - last));
                 lastBlockPlaced.put(name, time);
                 fastPlaceViolation.put(name, fastPlaceViolation.get(name) + 1);
                 return true;
             }
-            
             lastBlockPlaceTime.put(name, (time - last));
         }
         lastBlockPlaced.put(name, time);
