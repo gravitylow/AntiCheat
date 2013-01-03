@@ -49,7 +49,7 @@ public class VehicleListener extends EventListener {
     
     
     @EventHandler(ignoreCancelled = true)
-    public void onVehicleExit(VehicleDestroyEvent event) {
+    public void onVehicleDestroy(VehicleDestroyEvent event) {
         if (event.getVehicle().getPassenger() != null &&  event.getVehicle().getPassenger() instanceof Player) {
             backend.logEnterExit((Player) event.getVehicle().getPassenger());
         }
