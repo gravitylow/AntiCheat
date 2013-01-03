@@ -22,6 +22,7 @@ import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.manage.Backend;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 
@@ -45,4 +46,14 @@ public class VehicleListener extends EventListener {
         
         Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
+    
+    
+    @EventHandler(ignoreCancelled = true)
+    public void onVehicleExit(VehicleDestroyEvent event) {
+        if (event.getVehicle().getPassenger() != null &&  event.getVehicle().getPassenger() instanceof Player) {
+            backend.logEnterExit((Player) event.getVehicle().getPassenger());
+        }
+        
+        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+    }     
 }
