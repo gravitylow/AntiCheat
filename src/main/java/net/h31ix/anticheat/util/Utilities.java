@@ -182,6 +182,9 @@ public final class Utilities {
     }
     
     public static long calcSurvivalFastBreak(ItemStack tool, Material block) {
+        if(isInstantBreak(block) || (tool.getType() == Material.SHEARS && block.getId() == Material.LEAVES.getId())) {
+            return 0;
+        }
         double bhardness = BlockHardness.getBlockHardness(block);
         double thardness = ToolHardness.getToolHardness(tool.getType());
         long enchantlvl = (long) tool.getEnchantmentLevel(Enchantment.DIG_SPEED);

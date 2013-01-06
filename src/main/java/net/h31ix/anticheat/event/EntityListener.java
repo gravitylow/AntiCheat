@@ -139,7 +139,7 @@ public class EntityListener extends EventListener {
                     log("tried to sprint & damage too fast.", player, CheckType.FORCEFIELD);
                     noHack = false;
                 }
-                if (checkManager.willCheck(player, CheckType.NO_SWING) && !backend.justAnimated(player)) {
+                if (checkManager.willCheck(player, CheckType.NO_SWING) && !backend.justAnimated(player, event.getEntity())) {
                     event.setCancelled(!config.silentMode());
                     log("tried to damage an entity without swinging their arm.", player, CheckType.NO_SWING);
                     noHack = false;

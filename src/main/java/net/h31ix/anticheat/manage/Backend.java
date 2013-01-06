@@ -583,7 +583,7 @@ public class Backend {
                 }
             }
         }
-        return !justAnimated(player); // TODO: best way to implement other option?
+        return !justAnimated(player, block); // TODO: best way to implement other option?
     }
     
     public boolean checkFastBreak(Player player, Block block) {
@@ -858,8 +858,18 @@ public class Backend {
         blockPunches.put(player.getName(), 0);
     }
     
-    public boolean justAnimated(Player player) {
-        if (player.getItemInHand().containsEnchantment(Enchantment.DIG_SPEED)) { return true; }
+    public boolean justAnimated(Player player, Block block) {
+        if (player.getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) || (player.getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES)) { 
+            return true; 
+        }
+        return justAnimated(player);
+    }
+    
+    public boolean justAnimated(Player player, Entity e) {
+        return justAnimated(player);
+    }
+    
+    private boolean justAnimated(Player player) {
         String name = player.getName();
         if (animated.containsKey(name)) {
             long time = System.currentTimeMillis() - animated.get(name);
@@ -867,7 +877,7 @@ public class Backend {
             return time < magic.ANIMATION_MIN;
         } else {
             return false;
-        }
+        }        
     }
     
     public void logDamage(final Player player, int type) {
