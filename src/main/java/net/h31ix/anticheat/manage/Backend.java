@@ -1055,8 +1055,9 @@ public class Backend {
             event = event.replaceAll("&player", name).replaceAll("&world", player.getWorld().getName());
             
             if (event.startsWith("COMMAND[")) {
-                String command = event.replaceAll("COMMAND\\[", "").replaceAll("]", "");
-                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+                for(String cmd : Utilities.getCommands(event)) {
+                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd);
+                }
             } else if (event.equalsIgnoreCase("KICK")) {
                 String msg = kick <= magic.CHAT_BAN_LEVEL ? ChatColor.RED + lang.getChatKickReason() + " (" + kick + "/" + magic.CHAT_BAN_LEVEL + ")" : ChatColor.RED + lang.getChatBanReason();
                 player.kickPlayer(msg);

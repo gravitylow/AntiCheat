@@ -211,6 +211,10 @@ public final class Utilities {
         return false;
     }    
     
+    public static String [] getCommands(String command) {
+        return command.replaceAll("COMMAND\\[", "").replaceAll("]", "").split(";");
+    }
+    
     static {
         INSTANT_BREAK.add(Material.RED_MUSHROOM);
         INSTANT_BREAK.add(Material.RED_ROSE);

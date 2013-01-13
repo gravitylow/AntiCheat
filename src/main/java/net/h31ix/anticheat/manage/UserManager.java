@@ -132,8 +132,9 @@ public class UserManager {
     public void execute(User user, String event) {
         final String name = user.getName();
         if (event.startsWith("COMMAND[")) {
-            String command = event.replaceAll("COMMAND\\[", "").replaceAll("]", "").replaceAll("&player", name).replaceAll("&world", user.getPlayer().getWorld().getName());
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+            for(String cmd : Utilities.getCommands(event)) {
+                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd);
+            }
         } else if (event.equalsIgnoreCase("KICK")) {
             user.getPlayer().kickPlayer(RED + lang.getKickReason());
             String msg = RED + lang.getKickBroadcast().replaceAll("&player", name);
