@@ -23,6 +23,7 @@ import net.h31ix.anticheat.manage.Backend;
 import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.User;
+import net.h31ix.anticheat.util.CheckResult;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Distance;
 import net.h31ix.anticheat.util.Permission;
@@ -52,9 +53,11 @@ public class PlayerListener extends EventListener {
         Player player = event.getPlayer();
         if (checkManager.willCheck(player, CheckType.SPAM) && config.commandSpam()) {
             backend.logChat(player);
-            if (backend.checkSpam(player, event.getMessage())) {
+            CheckResult result = backend.checkSpam(player, event.getMessage());
+            if (result.failed()) {
                 event.setCancelled(!config.silentMode());
                 player.sendMessage(ChatColor.RED + "Please do not spam.");
+                log(result.getMessage(), player, CheckType.SPAM);
             }
         }
         
@@ -86,9 +89,12 @@ public class PlayerListener extends EventListener {
             
             if (event.getEntity() instanceof Arrow) { return; }
             
-            if (checkManager.willCheck(player, CheckType.FAST_PROJECTILE) && backend.checkProjectile(player)) {
-                event.setCancelled(!config.silentMode());
-                log("tried to fire projectiles too fast.", player, CheckType.FAST_PROJECTILE);
+            if (checkManager.willCheck(player, CheckType.FAST_PROJECTILE)) {
+                CheckResult result = backend.checkProjectile(player);
+                if(result.failed()) {
+                    event.setCancelled(!config.silentMode());
+                    log(result.getMessage(), player, CheckType.FAST_PROJECTILE);                    
+                }
             }
         }
         
@@ -140,12 +146,14 @@ public class PlayerListener extends EventListener {
         Player player = event.getPlayer();
         if (checkManager.willCheck(player, CheckType.SPAM) && config.chatSpam()) {
             backend.logChat(player);
-            if (backend.checkSpam(player, event.getMessage())) {
+            CheckResult result = backend.checkSpam(player, event.getMessage());
+            if (result.failed()) {
                 boolean b = !config.silentMode();
                 event.setCancelled(b);
                 if (b) {
                     player.sendMessage(ChatColor.RED + config.getLang().getChatWarning());
                 }
+                log(result.getMessage(), player, CheckType.SPAM);
             }
         }
         
@@ -171,9 +179,10 @@ public class PlayerListener extends EventListener {
     public void onPlayerToggleSprint(PlayerToggleSprintEvent event) {
         Player player = event.getPlayer();
         if (checkManager.willCheck(player, CheckType.SPRINT)) {
-            if (backend.checkSprintHungry(event)) {
+            CheckResult result = backend.checkSprintHungry(event);
+            if (result.failed()) {
                 event.setCancelled(!config.silentMode());
-                log("tried to sprint while hungry.", player, CheckType.SPRINT);
+                log(result.getMessage(), player, CheckType.SPRINT);
             } else {
                 decrease(player);
             }
@@ -207,8 +216,12 @@ public class PlayerListener extends EventListener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        if (checkManager.willCheck(player, CheckType.ITEM_SPAM) && backend.checkFastDrop(player)) {
-            event.setCancelled(!config.silentMode());
+        if (checkManager.willCheck(player, CheckType.ITEM_SPAM)) {
+            CheckResult result = backend.checkFastDrop(player);
+            if(result.failed()) {
+                event.setCancelled(!config.silentMode());
+                log(result.getMessage(), player, CheckType.ITEM_SPAM);
+            }
         }
         
         Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
@@ -274,27 +287,41 @@ public class PlayerListener extends EventListener {
         Distance distance = new Distance(from, to);
         double y = distance.getYDifference();
         backend.logAscension(player, from.getY(), to.getY());
-        if (checkManager.willCheck(player, CheckType.SPEED) && backend.checkFreeze(player, from.getY(), to.getY())) {
-            log("tried to freeze in mid-air.", player, CheckType.SPEED);
-            player.kickPlayer("Freezing client");
+        if (checkManager.willCheck(player, CheckType.SPEED)) {
+            CheckResult result = backend.checkFreeze(player, from.getY(), to.getY());
+            if(result.failed()) {
+                log(result.getMessage(), player, CheckType.SPEED);
+                if(!config.silentMode()) {
+                    player.kickPlayer("Freezing client");
+                }
+            }
         }
         if (checkManager.willCheck(player, CheckType.SPRINT)) {
-            if (backend.checkSprintStill(player, from, to)) {
+            CheckResult result = backend.checkSprintStill(player, from, to);
+            if (result.failed()) {
                 event.setCancelled(!config.silentMode());
-                log("tried to sprint while standing still.", player, CheckType.SPRINT);
+                log(result.getMessage(), player, CheckType.SPRINT);
             }
         }
-        if (checkManager.willCheck(player, CheckType.FLY) && !player.isFlying() && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && backend.checkFlight(player, distance)) {
-            if (!config.silentMode()) {
-                event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
+        if (checkManager.willCheck(player, CheckType.FLY) && !player.isFlying() && checkManager.willCheck(player, CheckType.ZOMBE_FLY)) {
+            CheckResult result = backend.checkFlight(player, distance);
+            if(result.failed()) {
+                if (!config.silentMode()) {
+                    event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
+                }
+                log(result.getMessage(), player, CheckType.FLY);                
             }
-            log("tried to fly.", player, CheckType.FLY);
         }
-        if (checkManager.willCheck(player, CheckType.FLY) && !player.isFlying() && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && (backend.checkYAxis(player, distance) || backend.checkAscension(player, from.getY(), to.getY()))) {
-            if (!config.silentMode()) {
-                event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
+        if (checkManager.willCheck(player, CheckType.FLY) && !player.isFlying() && checkManager.willCheck(player, CheckType.ZOMBE_FLY)) {
+            CheckResult result1 = backend.checkYAxis(player, distance);
+            CheckResult result2 = backend.checkAscension(player, from.getY(), to.getY());
+            String log = result1.failed() ? result1.getMessage() : result2.failed() ? result2.getMessage() : "";
+            if(!log.equals("")) {
+                if (!config.silentMode()) {
+                    event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
+                }
+                log(log, player, CheckType.FLY);                
             }
-            log("tried to fly on y-axis", player, CheckType.FLY);
         }
         if (checkManager.willCheck(player, CheckType.VCLIP) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY) && event.getFrom().getY() > event.getTo().getY()) {
             int result = backend.checkVClip(player, new Distance(event.getFrom(), event.getTo()));
@@ -316,12 +343,15 @@ public class PlayerListener extends EventListener {
                 log("tried to move down through a block.", player, CheckType.VCLIP);
             }
         }
-        if (checkManager.willCheck(player, CheckType.NOFALL) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && event.getFrom().getY() > event.getTo().getY() && backend.checkNoFall(player, y)) {
-            if (!config.silentMode()) {
-                event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
-                player.damage(2); // I added this in here so the player(s) would still receive damage.
+        if (checkManager.willCheck(player, CheckType.NOFALL) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && event.getFrom().getY() > event.getTo().getY()) {
+            CheckResult result = backend.checkNoFall(player, y);
+            if(result.failed()) {
+                if (!config.silentMode()) {
+                    event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
+                    player.damage(1); // I added this in here so the player would still receive damage.
+                }
+                log(result.getMessage(), player, CheckType.NOFALL);                
             }
-            log("tried to avoid fall damage.", player, CheckType.NOFALL);
         }
 
         Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
@@ -340,49 +370,65 @@ public class PlayerListener extends EventListener {
             double y = distance.getYDifference();
             double z = distance.getZDifference();
             if (checkManager.willCheck(player, CheckType.SPEED) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY)) {
-                if (event.getFrom().getY() < event.getTo().getY() && backend.checkYSpeed(player, y)) {
+                if (event.getFrom().getY() < event.getTo().getY()) {
+                    CheckResult result = backend.checkYSpeed(player, y);
+                    if(result.failed()) {
+                        if (!config.silentMode()) {
+                            event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
+                        }
+                        log(result.getMessage(), player, CheckType.SPEED);
+                        changed = true;
+                    }
+                }
+                CheckResult result = backend.checkXZSpeed(player, x, z);
+                if (result.failed()) {
                     if (!config.silentMode()) {
                         event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
                     }
-                    log("tried to ascend too fast.", player, CheckType.SPEED);
+                    log(result.getMessage(), player, CheckType.SPEED);
                     changed = true;
                 }
-                if (backend.checkXZSpeed(player, x, z)) {
+                if ((event.getFrom().getX() != event.getTo().getX() || event.getFrom().getZ() != event.getTo().getZ())) {
+                    result = backend.checkTimer(player);
+                    if(result.failed()) {
+                        /*if (!config.silentMode()) {
+                            event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
+                        }
+                        log("tried to alter their timer.", player, CheckType.SPEED);
+                        changed = true;*/
+                    }
+                }
+            }
+            if (checkManager.willCheck(player, CheckType.WATER_WALK)) {
+                CheckResult result = backend.checkWaterWalk(player, x, y, z);
+                if(result.failed()) {
+                    if (!config.silentMode()) {
+                        player.teleport(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(player.getLocation().add(0, -1, 0)));
+                    }
+                    log(result.getMessage(), player, CheckType.WATER_WALK);
+                    changed = true;
+                }
+            }
+            if (checkManager.willCheck(player, CheckType.SNEAK)) {
+                CheckResult result = backend.checkSneak(player, x, z);
+                if(result.failed()) {
+                    if (!config.silentMode()) {
+                        event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
+                        player.setSneaking(false);
+                    }
+                    log(result.getMessage(), player, CheckType.SNEAK);
+                    changed = true;                    
+                }
+            }
+            if (checkManager.willCheck(player, CheckType.SPIDER)) {
+                CheckResult result = backend.checkSpider(player, y);
+                if(result.failed()) {
                     if (!config.silentMode()) {
                         event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
                     }
-                    log("tried to move too fast.", player, CheckType.SPEED);
+                    log(result.getMessage(), player, CheckType.SPIDER);
                     changed = true;
                 }
-                if ((event.getFrom().getX() != event.getTo().getX() || event.getFrom().getZ() != event.getTo().getZ()) && backend.checkTimer(player)) {
-                    /*if (!config.silentMode()) {
-                        event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
-                    }
-                    log("tried to alter their timer.", player, CheckType.SPEED);
-                    changed = true;*/
-                }
-            }
-            if (checkManager.willCheck(player, CheckType.WATER_WALK) && backend.checkWaterWalk(player, x, y, z)) {
-                if (!config.silentMode()) {
-                    player.teleport(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(player.getLocation().add(0, -1, 0)));
-                }
-                log("tried to walk on water.", player, CheckType.WATER_WALK);
-                changed = true;
-            }
-            if (checkManager.willCheck(player, CheckType.SNEAK) && backend.checkSneak(player, x, z)) {
-                if (!config.silentMode()) {
-                    event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
-                    player.setSneaking(false);
-                }
-                log("tried to sneak too fast.", player, CheckType.SNEAK);
-                changed = true;
-            }
-            if (checkManager.willCheck(player, CheckType.SPIDER) && backend.checkSpider(player, y)) {
-                if (!config.silentMode()) {
-                    event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
-                }
-                log("tried to climb a wall.", player, CheckType.SPIDER);
-                changed = true;
             }
             
             if (!changed) {

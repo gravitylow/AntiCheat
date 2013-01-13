@@ -22,6 +22,7 @@ import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.manage.Backend;
 import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
+import net.h31ix.anticheat.util.CheckResult;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Distance;
 import org.bukkit.enchantments.Enchantment;
@@ -43,9 +44,10 @@ public class EntityListener extends EventListener {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
             if (checkManager.willCheck(player, CheckType.FAST_BOW)) {
-                if (backend.checkFastBow(player, event.getForce())) {
+                CheckResult result = backend.checkFastBow(player, event.getForce());
+                if (result.failed()) {
                     event.setCancelled(!config.silentMode());
-                    log("tried to fire a bow too fast.", player, CheckType.FAST_BOW);
+                    log(result.getMessage(), player, CheckType.FAST_BOW);
                 } else {
                     decrease(player);
                 }
@@ -112,9 +114,10 @@ public class EntityListener extends EventListener {
                     backend.logDamage(player, value);
                     if (checkManager.willCheck(p, CheckType.LONG_REACH)) {
                         Distance distance = new Distance(player.getLocation(), p.getLocation());
-                        if (backend.checkLongReachDamage(distance.getXDifference(), distance.getYDifference(), distance.getZDifference())) {
+                        CheckResult result = backend.checkLongReachDamage(player, distance.getXDifference(), distance.getYDifference(), distance.getZDifference());
+                        if (result.failed()) {
                             event.setCancelled(!config.silentMode());
-                            log("tried to damage a player too far away from them.", p, CheckType.LONG_REACH);
+                            log(result.getMessage(), p, CheckType.LONG_REACH);
                             noHack = false;
                         }
                     }
@@ -144,10 +147,13 @@ public class EntityListener extends EventListener {
                     log("tried to damage an entity without swinging their arm.", player, CheckType.NO_SWING);
                     noHack = false;
                 }
-                if (checkManager.willCheck(player, CheckType.FORCEFIELD) && !backend.checkSight(player, e.getEntity())) {
-                    event.setCancelled(!config.silentMode());
-                    log("tried to damage an entity that they couldn't see.", player, CheckType.FORCEFIELD);
-                    noHack = false;
+                if (checkManager.willCheck(player, CheckType.FORCEFIELD)) {
+                    CheckResult result = backend.checkSight(player, e.getEntity());
+                    if(result.failed()) {
+                        event.setCancelled(!config.silentMode());
+                        log(result.getMessage(), player, CheckType.FORCEFIELD);
+                        noHack = false;
+                    }
                 }
                 if (noHack) {
                     decrease(player);

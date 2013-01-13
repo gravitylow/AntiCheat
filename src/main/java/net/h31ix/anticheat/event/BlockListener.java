@@ -22,6 +22,7 @@ import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.manage.Backend;
 import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
+import net.h31ix.anticheat.util.CheckResult;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Distance;
 import net.h31ix.anticheat.util.Utilities;
@@ -57,9 +58,10 @@ public class BlockListener extends EventListener {
         final Player player = event.getPlayer();
         Block block = event.getBlock();
         if (player != null && checkManager.willCheck(player, CheckType.FAST_PLACE)) {
-            if (backend.checkFastPlace(player)) {
+            CheckResult result = backend.checkFastPlace(player);
+            if (result.failed()) {
                 event.setCancelled(!config.silentMode());
-                log("tried to place a block of " + block.getType().name() + " too fast.", player, CheckType.FAST_PLACE);
+                log(result.getMessage(), player, CheckType.FAST_PLACE);
             } else {
                 decrease(player);
                 backend.logBlockPlace(player);
@@ -75,21 +77,29 @@ public class BlockListener extends EventListener {
         final Block block = event.getBlock();
         boolean noHack = true;
         if (player != null) {
-            if (checkManager.willCheck(player, CheckType.FAST_BREAK) && backend.checkFastBreak(player, block)) {
-                event.setCancelled(!config.silentMode());
-                log("tried to break a block of " + block.getType().name() + " too fast.", player, CheckType.FAST_BREAK);
-                noHack = false;
+            CheckResult result;
+            if (checkManager.willCheck(player, CheckType.FAST_BREAK)) {
+                result = backend.checkFastBreak(player, block);
+                if(result.failed()) {
+                    event.setCancelled(!config.silentMode());
+                    log(result.getMessage(), player, CheckType.FAST_BREAK);
+                    noHack = false;
+                }
             }
-            if (checkManager.willCheck(player, CheckType.NO_SWING) && backend.checkSwing(player, block)) {
-                event.setCancelled(!config.silentMode());
-                log("tried to break a block of " + block.getType().name() + " without swinging their arm.", player, CheckType.NO_SWING);
-                noHack = false;
+            if (checkManager.willCheck(player, CheckType.NO_SWING)) {
+                result = backend.checkSwing(player, block);
+                if(result.failed()) {
+                    event.setCancelled(!config.silentMode());
+                    log(result.getMessage(), player, CheckType.NO_SWING);
+                    noHack = false;
+                }
             }
             if (checkManager.willCheck(player, CheckType.LONG_REACH)) {
                 Distance distance = new Distance(player.getLocation(), block.getLocation());
-                if (backend.checkLongReachBlock(player, distance.getXDifference(), distance.getYDifference(), distance.getZDifference())) {
+                result = backend.checkLongReachBlock(player, distance.getXDifference(), distance.getYDifference(), distance.getZDifference());
+                if (result.failed()) {
                     event.setCancelled(!config.silentMode());
-                    log("tried to break a block of " + block.getType().name() + " that was too far away.", player, CheckType.LONG_REACH);
+                    log(result.getMessage(), player, CheckType.LONG_REACH);
                     noHack = false;
                 }
             }

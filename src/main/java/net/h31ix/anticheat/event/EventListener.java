@@ -37,7 +37,7 @@ public class EventListener implements Listener {
 	public static void log(String message, Player player, CheckType type) {
 		User user = getUserManager().getUser(player.getName());
 		if (user.increaseLevel(type)) {
-			Anticheat.getManager().log(user.getName() + " " + message);
+			Anticheat.getManager().log(message);
 		}
 		removeDecrease(user);
 		logCheat(type, user);

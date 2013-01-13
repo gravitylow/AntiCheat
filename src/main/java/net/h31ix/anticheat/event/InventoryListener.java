@@ -22,6 +22,7 @@ import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.manage.Backend;
 import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
+import net.h31ix.anticheat.util.CheckResult;
 import net.h31ix.anticheat.util.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,12 +39,14 @@ public class InventoryListener extends EventListener {
         if (event.getWhoClicked() instanceof Player) {
             Player player = (Player) event.getWhoClicked();
             if (checkManager.willCheck(player, CheckType.FAST_INVENTORY)) {
-                if (backend.checkInventoryClicks(player)) {
+                CheckResult result = backend.checkInventoryClicks(player);
+                if (result.failed()) {
                     if (!config.silentMode()) {
                         event.setCancelled(!config.silentMode());
                         player.damage(9999);
+                        // TODO: Return items
                     }
-                    log("tried to use their inventory too fast", player, CheckType.FAST_INVENTORY);
+                    log(result.getMessage(), player, CheckType.FAST_INVENTORY);
                 } else {
                     decrease(player);
                 }
