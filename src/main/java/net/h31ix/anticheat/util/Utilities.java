@@ -203,6 +203,14 @@ public final class Utilities {
         return result;
     }
     
+    public static boolean blockIsnt(Block block, Material[] materials) {
+        Material type = block.getType();
+        for(Material m : materials) {
+            if(m == type) return false;
+        }
+        return false;
+    }    
+    
     static {
         INSTANT_BREAK.add(Material.RED_MUSHROOM);
         INSTANT_BREAK.add(Material.RED_ROSE);
