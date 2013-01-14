@@ -312,7 +312,7 @@ public class Backend {
             if (speed) {
                 int num = this.increment(player, speedViolation, magic.SPEED_MAX);
                 if(num >= magic.SPEED_MAX) {
-                    return new CheckResult(Result.FAILED, player.getName()+"'s speed was too high "+reason+num+"times in a row (max="+magic.SPEED_MAX+")");
+                    return new CheckResult(Result.FAILED, player.getName()+"'s speed was too high "+reason+num+" times in a row (max="+magic.SPEED_MAX+")");
                 } else {
                     return PASS;
                 }
@@ -400,7 +400,7 @@ public class Backend {
                     } else {
                         waterAscensionViolation.put(player.getName(), v + 1);
                     }
-                    return new CheckResult(Result.FAILED, player.getName()+" stood on water "+v+" times (can't stand on "+block.getType()+" or "+block.getRelative(BlockFace.DOWN).getType()+"");
+                    return new CheckResult(Result.FAILED, player.getName()+" stood on water "+v+" times (can't stand on "+block.getType()+" or "+block.getRelative(BlockFace.DOWN).getType()+")");
                 } else {
                     waterAscensionViolation.put(player.getName(), 1);
                 }
