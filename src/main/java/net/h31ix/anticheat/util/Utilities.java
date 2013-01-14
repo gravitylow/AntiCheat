@@ -240,6 +240,7 @@ public final class Utilities {
         INTERACTABLE.add(Material.STONE_BUTTON);
         INTERACTABLE.add(Material.LEVER);
         INTERACTABLE.add(Material.CHEST);
+        INTERACTABLE.add(Material.POTATO);
         FOOD.add(Material.COOKED_BEEF);
         FOOD.add(Material.COOKED_CHICKEN);
         FOOD.add(Material.COOKED_FISH);
@@ -256,5 +257,6 @@ public final class Utilities {
         FOOD.add(Material.BREAD);
         FOOD.add(Material.SPIDER_EYE);
         FOOD.add(Material.ROTTEN_FLESH);
+        FOOD.add(Material.POTATO_ITEM);
     }
 }
