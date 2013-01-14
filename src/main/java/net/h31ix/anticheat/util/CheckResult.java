@@ -8,6 +8,12 @@ public class CheckResult {
     
     private Result result;
     private String message;
+    private int data;
+    
+    public CheckResult(Result result, String message, int data) {
+        this(result, message);
+        this.data = data;
+    }
     
     public CheckResult(Result result, String message) {
         this(result);
@@ -29,5 +35,9 @@ public class CheckResult {
     public Result getResult() {
         return result;
     }
+    
+    public int getData() {
+        return data;
+    }    
     
 }

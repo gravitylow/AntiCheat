@@ -62,9 +62,10 @@ public class EntityListener extends EventListener {
         if (event.getEntity() instanceof Player && event.getRegainReason() == RegainReason.SATIATED) {
             Player player = (Player) event.getEntity();
             if (checkManager.willCheck(player, CheckType.FAST_HEAL)) {
-                if (backend.justHealed(player)) {
+                CheckResult result = backend.checkFastHeal(player);
+                if (result.failed()) {
                     event.setCancelled(!config.silentMode());
-                    log("tried to heal too fast.", player, CheckType.FAST_HEAL);
+                    log(result.getMessage(), player, CheckType.FAST_HEAL);
                 } else {
                     decrease(player);
                     backend.logHeal(player);
@@ -81,9 +82,10 @@ public class EntityListener extends EventListener {
             Player player = (Player) event.getEntity();
             if (player.getFoodLevel() < event.getFoodLevel() && checkManager.willCheck(player, CheckType.FAST_EAT)) // Make sure it's them actually gaining a food level
             {
-                if (backend.justStartedEating(player)) {
+                CheckResult result = backend.checkFastEat(player);
+                if (result.failed()) {
                     event.setCancelled(!config.silentMode());
-                    log("tried to eat too fast.", player, CheckType.FAST_EAT);
+                    log(result.getMessage(), player, CheckType.FAST_EAT);
                 } else {
                     decrease(player);
                 }
@@ -132,20 +134,29 @@ public class EntityListener extends EventListener {
             if (e.getDamager() instanceof Player) {
                 Player player = (Player) e.getDamager();
                 backend.logDamage(player, 1);
-                if (checkManager.willCheck(player, CheckType.AUTOTOOL) && backend.justSwitchedTool(player)) {
-                    event.setCancelled(!config.silentMode());
-                    log("tried to switch their tool too fast.", player, CheckType.AUTOTOOL);
-                    noHack = false;
+                if (checkManager.willCheck(player, CheckType.AUTOTOOL)) {
+                    CheckResult result = backend.checkAutoTool(player);
+                    if(result.failed()) {
+                        event.setCancelled(!config.silentMode());
+                        log(result.getMessage(), player, CheckType.AUTOTOOL);
+                        noHack = false;                        
+                    }
                 }
-                if (checkManager.willCheck(player, CheckType.FORCEFIELD) && backend.justSprinted(player)) {
-                    event.setCancelled(!config.silentMode());
-                    log("tried to sprint & damage too fast.", player, CheckType.FORCEFIELD);
-                    noHack = false;
+                if (checkManager.willCheck(player, CheckType.FORCEFIELD)) {
+                    CheckResult result = backend.checkSprintDamage(player);
+                    if(result.failed()) {
+                        event.setCancelled(!config.silentMode());
+                        log(result.getMessage(), player, CheckType.FORCEFIELD);
+                        noHack = false;
+                    }
                 }
-                if (checkManager.willCheck(player, CheckType.NO_SWING) && !backend.justAnimated(player, event.getEntity())) {
-                    event.setCancelled(!config.silentMode());
-                    log("tried to damage an entity without swinging their arm.", player, CheckType.NO_SWING);
-                    noHack = false;
+                if (checkManager.willCheck(player, CheckType.NO_SWING)) {
+                    CheckResult result = backend.checkAnimation(player, event.getEntity());
+                    if(result.failed()) {                    
+                        event.setCancelled(!config.silentMode());
+                        log(result.getMessage(), player, CheckType.NO_SWING);
+                        noHack = false;
+                    }
                 }
                 if (checkManager.willCheck(player, CheckType.FORCEFIELD)) {
                     CheckResult result = backend.checkSight(player, e.getEntity());

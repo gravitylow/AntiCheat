@@ -45,9 +45,12 @@ public class BlockListener extends EventListener {
         if (event.getInstaBreak() || Utilities.isInstantBreak(event.getBlock().getType())) {
             backend.logInstantBreak(player);
         }
-        if (checkManager.willCheck(player, CheckType.AUTOTOOL) && backend.justSwitchedTool(player)) {
-            event.setCancelled(!config.silentMode());
-            log("tried to switch their tool too fast.", player, CheckType.AUTOTOOL);
+        if (checkManager.willCheck(player, CheckType.AUTOTOOL)) {
+            CheckResult result = backend.checkAutoTool(player);
+            if(result.failed()) {
+                event.setCancelled(!config.silentMode());
+                log(result.getMessage(), player, CheckType.AUTOTOOL);                
+            }
         }
         
         Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());

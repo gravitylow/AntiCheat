@@ -412,27 +412,22 @@ public class Backend {
         return PASS;
     }
     
-    // The first check in Anticheat with a integer as a result :O!
-    
-    public int checkVClip(Player player, Distance distance) {
+    public CheckResult checkVClip(Player player, Distance distance) {
         double from = Math.round(distance.fromY());
         double to = Math.round(distance.toY());
         
-        boolean bs = false;
-        
-        if (player.isInsideVehicle()) { return 0; }
-        if (from == to || from < to) { return 0; }
-        if (Math.round(distance.getYDifference()) < 2) { return 0; }
+        if (player.isInsideVehicle() || (from == to || from < to) || Math.round(distance.getYDifference()) < 2) { 
+            return PASS;
+        }
         
         for (int i = 0; i < (Math.round(distance.getYDifference())) + 1; i++) {
             Block block = new Location(player.getWorld(), player.getLocation().getX(), to + i, player.getLocation().getZ()).getBlock();
             if (block.getTypeId() != 0 && block.getType().isSolid()) {
-                bs = true;
+                return new CheckResult(Result.FAILED, player.getName()+" tried to move through a solid block", (int)from + 3);
             }
-            if (bs) { return (int) from + 3; }
         }
         
-        return 0;
+        return PASS;
     }
     
     public CheckResult checkYAxis(Player player, Distance distance) {
@@ -739,28 +734,8 @@ public class Backend {
         startEat.put(player.getName(), System.currentTimeMillis());
     }
     
-    public boolean justStartedEating(Player player) {
-        if (startEat.containsKey(player.getName())) // Otherwise it was modified by a plugin, don't worry about it.
-        {
-            long l = startEat.get(player.getName());
-            startEat.remove(player.getName());
-            return (System.currentTimeMillis() - l) < magic.EAT_TIME_MIN;
-        }
-        return false;
-    }
-    
     public void logHeal(Player player) {
         lastHeal.put(player.getName(), System.currentTimeMillis());
-    }
-    
-    public boolean justHealed(Player player) {
-        if (lastHeal.containsKey(player.getName())) // Otherwise it was modified by a plugin, don't worry about it.
-        {
-            long l = lastHeal.get(player.getName());
-            lastHeal.remove(player.getName());
-            return (System.currentTimeMillis() - l) < magic.HEAL_TIME_MIN;
-        }
-        return false;
     }
     
     public void logChat(final Player player) {
@@ -819,6 +794,54 @@ public class Backend {
         return PASS;
     }
     
+    public CheckResult checkAutoTool(Player player) {
+        if (itemInHand.containsKey(player.getName()) && itemInHand.get(player.getName()) != player.getItemInHand().getType()) {
+            return new CheckResult(Result.FAILED, player.getName()+" switched tools too fast (had "+itemInHand.get(player.getName())+", has "+player.getItemInHand().getType());
+        } else {
+            return PASS;
+        }
+    }    
+    
+    public CheckResult checkSprintDamage(Player player) {
+        if(isDoing(player, sprinted, magic.SPRINT_MIN)) {
+            return new CheckResult(Result.FAILED, player.getName()+" sprinted and damaged an entity too fast (min sprint="+magic.SPRINT_MIN+" ms)");
+        } else {
+            return PASS;
+        }
+    }
+    
+    public CheckResult checkAnimation(Player player, Entity e) {
+        if(!justAnimated(player)) {
+            return new CheckResult(Result.FAILED, player.getName()+" didn't animate before damaging a "+e.getType());
+        } else {
+            return PASS;
+        }        
+    }
+    
+    public CheckResult checkFastHeal(Player player) {
+        if (lastHeal.containsKey(player.getName())) // Otherwise it was modified by a plugin, don't worry about it.
+        {
+            long l = lastHeal.get(player.getName());
+            lastHeal.remove(player.getName());
+            if((System.currentTimeMillis() - l) < magic.HEAL_TIME_MIN) {
+                return new CheckResult(Result.FAILED, player.getName()+" healed too quickly (time="+(System.currentTimeMillis() - l)+" ms, min="+magic.HEAL_TIME_MIN+" ms)");
+            }
+        }
+        return PASS;     
+    }    
+    
+    public CheckResult checkFastEat(Player player) {
+        if (startEat.containsKey(player.getName())) // Otherwise it was modified by a plugin, don't worry about it.
+        {
+            long l = startEat.get(player.getName());
+            startEat.remove(player.getName());
+            if((System.currentTimeMillis() - l) < magic.EAT_TIME_MIN) {
+                return new CheckResult(Result.FAILED, player.getName()+" ate too quickly (time="+(System.currentTimeMillis() - l)+" ms, min="+magic.EAT_TIME_MIN+" ms)");
+            }
+        }
+        return PASS;     
+    }     
+    
     public void clearChatLevel(Player player) {
         chatLevel.remove(player.getName());
     }
@@ -833,10 +856,6 @@ public class Backend {
     
     public void logSprint(final Player player) {
         sprinted.put(player.getName(), System.currentTimeMillis());
-    }
-    
-    public boolean justSprinted(Player player) {
-        return isDoing(player, sprinted, magic.SPRINT_MIN);
     }
     
     public boolean isHoveringOverWaterAfterViolation(Player player) {
@@ -861,14 +880,6 @@ public class Backend {
     
     public boolean justVelocity(Player player) {
         return (velocitized.containsKey(player.getName()) ? (System.currentTimeMillis() - velocitized.get(player.getName())) < magic.VELOCITY_CHECKTIME : false);
-    }
-    
-    public boolean justSwitchedTool(Player player) {
-        if (itemInHand.containsKey(player.getName())) {
-            return itemInHand.get(player.getName()) != player.getItemInHand().getType();
-        } else {
-            return false;
-        }
     }
     
     public boolean extendVelocityTime(final Player player) {

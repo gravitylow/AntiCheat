@@ -324,15 +324,12 @@ public class PlayerListener extends EventListener {
             }
         }
         if (checkManager.willCheck(player, CheckType.VCLIP) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY) && event.getFrom().getY() > event.getTo().getY()) {
-            int result = backend.checkVClip(player, new Distance(event.getFrom(), event.getTo()));
+            CheckResult result = backend.checkVClip(player, new Distance(event.getFrom(), event.getTo()));
             
-            if (result > 0) {
+            if (result.failed()) {
                 if (!config.silentMode()) {
-                    // You come back up, and you suddenly feel sick from trying to stick yourself through the blocks..
-                    Location newloc = new Location(player.getWorld(), event.getFrom().getX(), event.getFrom().getY() + result, event.getFrom().getZ());
-                    if (result > 3) {
-                        result = 3; // prevents players from using AC as a way to teleport to sky islands.
-                    }
+                    int data = result.getData() > 3 ? 3 : result.getData();                    
+                    Location newloc = new Location(player.getWorld(), event.getFrom().getX(), event.getFrom().getY() + data, event.getFrom().getZ());
                     if (newloc.getBlock().getTypeId() == 0) {
                         event.setTo(newloc);
                     } else {
@@ -340,7 +337,7 @@ public class PlayerListener extends EventListener {
                     }
                     player.damage(3);
                 }
-                log("tried to move down through a block.", player, CheckType.VCLIP);
+                log(result.getMessage(), player, CheckType.VCLIP);
             }
         }
         if (checkManager.willCheck(player, CheckType.NOFALL) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && event.getFrom().getY() > event.getTo().getY()) {
