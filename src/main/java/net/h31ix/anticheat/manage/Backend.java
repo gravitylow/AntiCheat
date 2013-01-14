@@ -656,27 +656,29 @@ public class Backend {
             }
         } else {
             Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
-            if (math < timemax && (math != 0L)) {
-                if (fastBreakViolation.containsKey(name) && fastBreakViolation.get(name) > 0) {
-                    fastBreakViolation.put(name, fastBreakViolation.get(name) + 1);
-                } else {
-                    fastBreaks.put(name, fastBreaks.get(name) + 1);
-                }
-                blockBreakHolder.put(name, false);
-            }
-            if (fastBreaks.get(name) >= magic.FASTBREAK_LIMIT && math < timemax) {
-                fastBreaks.put(name, 0);
-                fastBreakViolation.put(name, fastBreakViolation.get(name) + 1);
-                return new CheckResult(Result.FAILED, player.getName()+" tried to break "+fastBreaks.get(name)+" blocks in "+math+" ms (max="+magic.FASTBREAK_LIMIT+" in "+timemax+" ms)");
-            } else if (fastBreaks.get(name) >= magic.FASTBREAK_LIMIT || fastBreakViolation.get(name) > 0) {
-                if (!blockBreakHolder.containsKey(name) || !blockBreakHolder.get(name)) {
-                    blockBreakHolder.put(name, true);
-                } else {
-                    fastBreaks.put(name, fastBreaks.get(name) - 1);
-                    if (fastBreakViolation.get(name) > 0) {
-                        fastBreakViolation.put(name, fastBreakViolation.get(name) - 1);
+            if((math != 0L && timemax != 0L)) {
+                if (math < timemax) {
+                    if (fastBreakViolation.containsKey(name) && fastBreakViolation.get(name) > 0) {
+                        fastBreakViolation.put(name, fastBreakViolation.get(name) + 1);
+                    } else {
+                        fastBreaks.put(name, fastBreaks.get(name) + 1);
                     }
                     blockBreakHolder.put(name, false);
+                }
+                if (fastBreaks.get(name) >= magic.FASTBREAK_LIMIT && math < timemax) {
+                    fastBreaks.put(name, 0);
+                    fastBreakViolation.put(name, fastBreakViolation.get(name) + 1);
+                    return new CheckResult(Result.FAILED, player.getName()+" tried to break "+fastBreaks.get(name)+" blocks in "+math+" ms (max="+magic.FASTBREAK_LIMIT+" in "+timemax+" ms)");
+                } else if (fastBreaks.get(name) >= magic.FASTBREAK_LIMIT || fastBreakViolation.get(name) > 0) {
+                    if (!blockBreakHolder.containsKey(name) || !blockBreakHolder.get(name)) {
+                        blockBreakHolder.put(name, true);
+                    } else {
+                        fastBreaks.put(name, fastBreaks.get(name) - 1);
+                        if (fastBreakViolation.get(name) > 0) {
+                            fastBreakViolation.put(name, fastBreakViolation.get(name) - 1);
+                        }
+                        blockBreakHolder.put(name, false);
+                    }
                 }
             }
         }
@@ -686,10 +688,7 @@ public class Backend {
     }
     
     public CheckResult checkFastPlace(Player player) {
-        int violations = magic.FASTPLACE_MAXVIOLATIONS;
-        if (player.getGameMode() == GameMode.CREATIVE) {
-            violations = magic.FASTPLACE_MAXVIOLATIONS_CREATIVE;
-        }
+        int violations = player.getGameMode() == GameMode.CREATIVE ? magic.FASTPLACE_MAXVIOLATIONS_CREATIVE : magic.FASTPLACE_MAXVIOLATIONS;
         long time = System.currentTimeMillis();
         String name = player.getName();
         if (!lastBlockPlaceTime.containsKey(name) || !fastPlaceViolation.containsKey(name)) {
@@ -712,14 +711,13 @@ public class Backend {
             long last = lastBlockPlaced.get(name);
             long lastTime = lastBlockPlaceTime.get(name);
             long thisTime = time - last;
-            
-            if (thisTime < magic.FASTPLACE_TIMEMAX || lastTime < magic.FASTPLACE_TIMEMAX) {
+
+            if (lastTime != 0 && thisTime < magic.FASTPLACE_TIMEMIN) {
                 lastBlockPlaceTime.put(name, (time - last));
                 lastBlockPlaced.put(name, time);
                 fastPlaceViolation.put(name, fastPlaceViolation.get(name) + 1);
-                return new CheckResult(Result.FAILED, player.getName()+" tried to place a block "+thisTime+" ms after the last one (min="+magic.FASTPLACE_TIMEMAX+" ms)");
+                return new CheckResult(Result.FAILED, player.getName()+" tried to place a block "+thisTime+" ms after the last one (min="+magic.FASTPLACE_TIMEMIN+" ms)");
             }
-            
             lastBlockPlaceTime.put(name, (time - last));
         }
         lastBlockPlaced.put(name, time);

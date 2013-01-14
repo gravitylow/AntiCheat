@@ -118,9 +118,9 @@ public class Magic {
      */
     public final int FASTPLACE_ZEROLIMIT;
     /**
-     * Time to wait before checking block places; Type=system, +Leniency=Increase.
+     * Minimum time in between block places; Type=system, +Leniency=Decrease.
      */
-    public final int FASTPLACE_TIMEMAX;
+    public final int FASTPLACE_TIMEMIN;
     /**
      * Number of times fastplace can be observed before taking action; Type=integer, +Leniency=Increase.
      */
@@ -361,7 +361,7 @@ public class Magic {
         FASTBREAK_MAXVIOLATIONS_CREATIVE = getInt("FASTBREAK_MAXVIOLATIONS_CREATIVE");
         FASTBREAK_MAXVIOLATIONTIME = getInt("FASTBREAK_MAXVIOLATIONTIME");
         FASTPLACE_ZEROLIMIT = getInt("FASTPLACE_ZEROLIMIT");
-        FASTPLACE_TIMEMAX = getInt("FASTPLACE_TIMEMAX");
+        FASTPLACE_TIMEMIN = getInt("FASTPLACE_TIMEMIN");
         FASTPLACE_MAXVIOLATIONS = getInt("FASTPLACE_MAXVIOLATIONS");
         FASTPLACE_MAXVIOLATIONS_CREATIVE = getInt("FASTPLACE_MAXVIOLATIONS_CREATIVE");
         FASTPLACE_MAXVIOLATIONTIME = getInt("FASTPLACE_MAXVIOLATIONTIME");
