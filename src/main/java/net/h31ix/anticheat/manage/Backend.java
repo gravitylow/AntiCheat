@@ -287,32 +287,32 @@ public class Backend {
     
     public CheckResult checkXZSpeed(Player player, double x, double z) {
         if (!isSpeedExempt(player) && player.getVehicle() == null) {
-            boolean speed = false;
             String reason = "";
+            double max = magic.XZ_SPEED_MAX;
             if (player.getLocation().getBlock().getType() == Material.SOUL_SAND) {
                 if (player.isSprinting()) {
                     reason = "on soulsand while sprinting ";
-                    speed = x > magic.XZ_SPEED_MAX_SOULSAND_SPRINT || z > magic.XZ_SPEED_MAX_SOULSAND_SPRINT;
+                    max = magic.XZ_SPEED_MAX_SOULSAND_SPRINT;
                 } else {
                     reason = "on soulsand ";
-                    speed = x > magic.XZ_SPEED_MAX_SOULSAND || z > magic.XZ_SPEED_MAX_SOULSAND;
+                    max = magic.XZ_SPEED_MAX_SOULSAND;
                 }
             } else if (player.isFlying()) {
                 reason = "while flying ";
-                speed = x > magic.XZ_SPEED_MAX_FLY || z > magic.XZ_SPEED_MAX_FLY;
+                max = magic.XZ_SPEED_MAX_FLY;
             } else if (player.hasPotionEffect(PotionEffectType.SPEED)) {
                 reason = "with speed potion ";
-                speed = x > magic.XZ_SPEED_MAX_POTION || z > magic.XZ_SPEED_MAX_POTION;
+                max = magic.XZ_SPEED_MAX_POTION;
             } else if (player.isSprinting()) {
                 reason = "while sprinting ";
-                speed = x > magic.XZ_SPEED_MAX_SPRINT || z > magic.XZ_SPEED_MAX_SPRINT;
+                max = magic.XZ_SPEED_MAX_SPRINT;
             } else {
-                speed = x > magic.XZ_SPEED_MAX || z > magic.XZ_SPEED_MAX;
+                max = magic.XZ_SPEED_MAX;
             }
-            if (speed) {
+            if (x > max || z > max) {
                 int num = this.increment(player, speedViolation, magic.SPEED_MAX);
                 if(num >= magic.SPEED_MAX) {
-                    return new CheckResult(Result.FAILED, player.getName()+"'s speed was too high "+reason+num+" times in a row (max="+magic.SPEED_MAX+")");
+                    return new CheckResult(Result.FAILED, player.getName()+"'s speed was too high "+reason+num+" times in a row (max="+magic.SPEED_MAX+", speed="+(x > z ? x : z)+", max speed="+max+")");
                 } else {
                     return PASS;
                 }
