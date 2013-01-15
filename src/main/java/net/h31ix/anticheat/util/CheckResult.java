@@ -3,7 +3,7 @@ package net.h31ix.anticheat.util;
 public class CheckResult {
     
     public enum Result {
-        PASSED,FAILED;
+        PASSED,FAILED
     }
     
     private Result result;

@@ -138,8 +138,7 @@ public class AnticheatAPI {
      */
     public static boolean isXrayer(Player player) {
         String name = player.getName();
-        if (xtracker.sufficientData(name) && xtracker.hasAbnormal(name)) { return true; }
-        return false;
+        return xtracker.sufficientData(name) && xtracker.hasAbnormal(name);
     }
     
     // Advanced Users Only API.
