@@ -329,6 +329,10 @@ public class Magic {
      * The minimum time it should have taken for the player to travel X steps; Type=system; +Leniency=Decrease.
      */
     public final long TIMER_TIMEMIN;
+    /**
+     * Minimum travel distance for move to be considered a teleport and subsequently be ignored; Type=int; +Leniency=Increase.
+     */
+    public final long TELEPORT_MIN;
     
     private FileConfiguration defaults;
     private FileConfiguration magic;
@@ -414,6 +418,7 @@ public class Magic {
         INVENTORY_TIMEMIN = getInt("INVENTORY_TIMEMIN");
         TIMER_STEP_CHECK = getInt("TIMER_STEP_CHECK");
         TIMER_TIMEMIN = getLong("TIMER_TIMEMIN");
+        TELEPORT_MIN = getLong("TELEPORT_MIN");
     }
     
     private int getInt(String path) {

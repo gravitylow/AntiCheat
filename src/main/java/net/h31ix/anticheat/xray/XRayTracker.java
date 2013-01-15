@@ -136,7 +136,7 @@ public class XRayTracker {
         float p = (float) Math.pow(POWER, 1);
         number *= p;
         float tmp = Math.round(number);
-        return (float) tmp / p;
+        return tmp / p;
     }
     
     public void reset(String player) {

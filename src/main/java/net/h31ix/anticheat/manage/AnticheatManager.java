@@ -122,7 +122,7 @@ public class AnticheatManager {
     public String getEventChainReport() {
         String gen = "";
         if (!configuration.eventChains())
-            return "Event Chains is disabled in the configuration, If @h31ix or @SuPaHsPii need this, please re enable it in the configuration.";
+            return "Event Chains is disabled by the configuration.";
         
         for (Entry<String, RegisteredListener[]> e : eventchains.entrySet()) {
             String toadd = "";

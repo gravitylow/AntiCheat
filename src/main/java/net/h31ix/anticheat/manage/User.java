@@ -107,14 +107,10 @@ public class User {
         return goodLocation;
     }
     
-    public boolean hasGoodLocation() {
-        return goodLocation != null;
-    }
-    
     public void setGoodLocation(Location e) {
-        if (Utilities.cantStandAtExp(e)) { return; }
-        
-        if (e.getBlock().isLiquid() && !Utilities.isFullyInWater(e)) { return; }
+        if (Utilities.cantStandAtExp(e) || (e.getBlock().isLiquid() && !Utilities.isFullyInWater(e))) {
+            return;
+        }
         
         goodLocation = e;
     }

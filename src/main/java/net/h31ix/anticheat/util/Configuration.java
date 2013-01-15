@@ -258,18 +258,6 @@ public class Configuration {
         }
     }
     
-    public List<String> getWorldsExempt() {
-        return exemptWorlds;
-    }
-    
-    public File getConfigFile() {
-        return configFile;
-    }
-    
-    public File getLevelFile() {
-        return levelFile;
-    }
-    
     public FileConfiguration getMagic() {
         return magic;
     }
@@ -304,9 +292,5 @@ public class Configuration {
         } catch (IOException ex) {
             Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-    
-    public String getMainConfigurationDump() {
-        return config.saveToString();
     }
 }

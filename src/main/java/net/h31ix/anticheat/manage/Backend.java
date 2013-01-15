@@ -306,8 +306,6 @@ public class Backend {
             } else if (player.isSprinting()) {
                 reason = "while sprinting ";
                 max = magic.XZ_SPEED_MAX_SPRINT;
-            } else {
-                max = magic.XZ_SPEED_MAX;
             }
             if (x > max || z > max) {
                 int num = this.increment(player, speedViolation, magic.SPEED_MAX);
@@ -431,7 +429,7 @@ public class Backend {
     }
     
     public CheckResult checkYAxis(Player player, Distance distance) {
-        if (distance.getYDifference() > 400 || distance.getYDifference() < 0) { 
+        if (distance.getYDifference() > magic.TELEPORT_MIN || distance.getYDifference() < 0) {
             return PASS; 
         }
         if (!isMovingExempt(player) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && !Utilities.isClimbableBlock(player.getLocation().add(0, -1, 0).getBlock()) && !player.isInsideVehicle() && !Utilities.isInWater(player)) {
@@ -542,7 +540,7 @@ public class Backend {
     }
     
     public CheckResult checkFlight(Player player, Distance distance) {
-        if (distance.getYDifference() > 400) {
+        if (distance.getYDifference() > magic.TELEPORT_MIN) {
             // This was a teleport, so we don't care about it.
             return PASS;
         }
@@ -923,10 +921,6 @@ public class Backend {
         if (player.getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) || (player.getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES)) { 
             return true; 
         }
-        return justAnimated(player);
-    }
-    
-    public boolean justAnimated(Player player, Entity e) {
         return justAnimated(player);
     }
     
