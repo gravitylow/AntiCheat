@@ -240,7 +240,7 @@ public final class Utilities {
         INSTANT_BREAK.add(Material.POTATO);
         INSTANT_BREAK.add(Material.CARROT);
 
-        INSTANT_BREAK.add(Material.STONE_BUTTON);
+        INTERACTABLE.add(Material.STONE_BUTTON);
         INTERACTABLE.add(Material.LEVER);
         INTERACTABLE.add(Material.CHEST);
 
