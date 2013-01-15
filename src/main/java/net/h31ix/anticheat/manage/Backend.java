@@ -664,9 +664,10 @@ public class Backend {
                     blockBreakHolder.put(name, false);
                 }
                 if (fastBreaks.get(name) >= magic.FASTBREAK_LIMIT && math < timemax) {
+                    int i = fastBreaks.get(name);
                     fastBreaks.put(name, 0);
                     fastBreakViolation.put(name, fastBreakViolation.get(name) + 1);
-                    return new CheckResult(Result.FAILED, player.getName()+" tried to break "+fastBreaks.get(name)+" blocks in "+math+" ms (max="+magic.FASTBREAK_LIMIT+" in "+timemax+" ms)");
+                    return new CheckResult(Result.FAILED, player.getName()+" tried to break "+i+" blocks in "+math+" ms (max="+magic.FASTBREAK_LIMIT+" in "+timemax+" ms)");
                 } else if (fastBreaks.get(name) >= magic.FASTBREAK_LIMIT || fastBreakViolation.get(name) > 0) {
                     if (!blockBreakHolder.containsKey(name) || !blockBreakHolder.get(name)) {
                         blockBreakHolder.put(name, true);
@@ -918,7 +919,7 @@ public class Backend {
     }
     
     public boolean justAnimated(Player player, Block block) {
-        if (player.getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) || (player.getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES)) { 
+        if (player.getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) || (Utilities.isInstantBreak(block.getType()) || (player.getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES))) {
             return true; 
         }
         return justAnimated(player);

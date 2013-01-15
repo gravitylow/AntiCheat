@@ -237,10 +237,13 @@ public final class Utilities {
         INSTANT_BREAK.add(Material.CROPS);
         INSTANT_BREAK.add(Material.SNOW);
         INSTANT_BREAK.add(Material.TNT);
-        INTERACTABLE.add(Material.STONE_BUTTON);
+        INSTANT_BREAK.add(Material.POTATO);
+        INSTANT_BREAK.add(Material.CARROT);
+
+        INSTANT_BREAK.add(Material.STONE_BUTTON);
         INTERACTABLE.add(Material.LEVER);
         INTERACTABLE.add(Material.CHEST);
-        INTERACTABLE.add(Material.POTATO);
+
         FOOD.add(Material.COOKED_BEEF);
         FOOD.add(Material.COOKED_CHICKEN);
         FOOD.add(Material.COOKED_FISH);
