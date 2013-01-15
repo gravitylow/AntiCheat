@@ -625,7 +625,7 @@ public class Backend {
     
     public CheckResult checkFastBreak(Player player, Block block) {
         int violations = magic.FASTBREAK_MAXVIOLATIONS;
-        long timemax = Utilities.calcSurvivalFastBreak(player.getInventory().getItemInHand(), block.getType());
+        long timemax = isInstantBreakExempt(player) ? 0 : Utilities.calcSurvivalFastBreak(player.getInventory().getItemInHand(), block.getType());
         if (player.getGameMode() == GameMode.CREATIVE) {
             violations = magic.FASTBREAK_MAXVIOLATIONS_CREATIVE;
             timemax = magic.FASTBREAK_TIMEMAX_CREATIVE;
