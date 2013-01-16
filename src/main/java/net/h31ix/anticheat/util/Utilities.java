@@ -189,7 +189,7 @@ public final class Utilities {
         double thardness = ToolHardness.getToolHardness(tool.getType());
         long enchantlvl = (long) tool.getEnchantmentLevel(Enchantment.DIG_SPEED);
         
-        long result = (long) ((long) Math.round((bhardness * thardness) * 0.10 * 10000));
+        long result = Math.round((bhardness * thardness) * 0.10 * 10000);
         
         result += 150;
         

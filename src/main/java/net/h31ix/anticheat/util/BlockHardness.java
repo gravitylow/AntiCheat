@@ -130,7 +130,42 @@ public enum BlockHardness {
     EMERALD_BLOCK(Material.EMERALD_BLOCK, 5.00D),
     FLOWER_POT(Material.FLOWER_POT, 0.00D),
     WOOD_BUTTON(Material.WOOD_BUTTON, 0.50D),
-    ANVIL(Material.ANVIL, 5.00D);
+    ANVIL(Material.ANVIL, 5.00D),
+    HUGE_MUSHROOM_1(Material.HUGE_MUSHROOM_1, 0.20D),
+    HUGE_MUSHROOM_2(Material.HUGE_MUSHROOM_2, 0.20D),
+    BED_BLOCK(Material.BED_BLOCK, 0.20D),
+    POWERED_RAIL(Material.POWERED_RAIL, 0.70D),
+    WOOD_STAIRS(Material.WOOD_STAIRS, 2.00D),
+    COBBLESTONE_STAIRS(Material.COBBLESTONE_STAIRS, 2.00D),
+    BRICK_STAIRS(Material.BRICK_STAIRS, 2.00D),
+    SMOOTH_STAIRS(Material.SMOOTH_STAIRS, 2.00D),
+    NETHER_BRICK_STAIRS(Material.NETHER_BRICK_STAIRS, 2.00D),
+    SANDSTONE_STAIRS(Material.SANDSTONE_STAIRS, 2.00D),
+    SPRUCE_WOOD_STAIRS(Material.SPRUCE_WOOD_STAIRS, 2.00D),
+    BIRCH_WOOD_STAIRS(Material.BIRCH_WOOD_STAIRS, 2.00D),
+    JUNGLE_WOOD_STAIRS(Material.JUNGLE_WOOD_STAIRS, 2.00D),
+    COMMAND(Material.COMMAND, 0.00D),
+    BEACON(Material.BEACON, 3.00D),
+    COBBLE_WALL(Material.COBBLE_WALL, 2.00D),
+    CROPS(Material.CROPS, 0.00D),
+    CARROT(Material.CARROT, 0.00D),
+    POTATO(Material.POTATO, 0.00D),
+    SKULL(Material.SKULL, 1.00D),
+    NETHER_WARTS(Material.NETHER_WARTS, 0.00D),
+    SIGN_POST(Material.SIGN_POST, 1.00D),
+    WALL_SIGN(Material.WALL_SIGN, 1.00D),
+    PUMPKIN(Material.PUMPKIN, 1.00D),
+    JACK_O_LANTERN(Material.JACK_O_LANTERN, 1.00D),
+    DIODE_BLOCK_ON(Material.DIODE_BLOCK_ON, 0.00D),
+    DIODE_BLOCK_OFF(Material.DIODE_BLOCK_OFF, 0.00D),
+    MELON_BLOCK(Material.MELON_BLOCK, 1.00D),
+    ENDER_STONE(Material.ENDER_STONE, 3.00D),
+    TRIPWIRE(Material.TRIPWIRE, 0.00D),
+    TRIPWIRE_HOOK(Material.TRIPWIRE_HOOK, 0.00D),
+    PISTON_BASE(Material.PISTON_BASE, 0.70D),
+    PISTON_EXTENSION(Material.PISTON_EXTENSION, 0.70D),
+    PISTON_MOVING_PIECE(Material.PISTON_MOVING_PIECE, 0.70D),
+    PISTON_STICKY_BASE(Material.PISTON_STICKY_BASE, 0.70D);
     
     Material mat;
     double hardness;
@@ -141,10 +176,18 @@ public enum BlockHardness {
     }
     
     public static double getBlockHardness(Material m) {
+        BlockHardness h = getHardness(m);
+        return h == null ? 1.0D : h.hardness;
+    }
+
+    public static boolean hasBlockHardness(Material m) {
+        return getHardness(m) != null;
+    }
+
+    public static BlockHardness getHardness(Material m) {
         for (BlockHardness e : BlockHardness.values()) {
-            if (e.mat.equals(m)) return e.hardness;
+            if (e.mat.equals(m)) return e;
         }
-        
-        return 1.0D;
+        return null;
     }
 }

@@ -497,7 +497,7 @@ public class Backend {
             long time = System.currentTimeMillis() - stepTime.get(name);
             steps.put(name, 0);
             if(time < magic.TIMER_TIMEMIN) {
-                return new CheckResult(Result.FAILED, player.getName()+" tried to alter their timer, took "+step+" steps in "+time+" ms (min = "+magic.TIMER_TIMEMIN+")");
+                return new CheckResult(Result.FAILED, player.getName()+" tried to alter their timer, took "+step+" steps in "+time+" ms (min = "+magic.TIMER_TIMEMIN+" ms)");
             }
         }
         return PASS;
