@@ -123,7 +123,7 @@ public class Anticheat extends JavaPlugin {
 		if (config.logXRay()) {
 			eventList.add(new XRayListener());
 			if (config.alertXRay()) {
-				getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+				getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
 					@Override
 					public void run() {
 						for (Player player : getServer().getOnlinePlayers()) {
