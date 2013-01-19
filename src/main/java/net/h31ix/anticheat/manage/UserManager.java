@@ -131,6 +131,8 @@ public class UserManager {
     
     public void execute(User user, String event) {
         final String name = user.getName();
+        event = event.replaceAll("&player", name).replaceAll("&world", user.getPlayer().getWorld().getName());
+
         if (event.startsWith("COMMAND[")) {
             for(String cmd : Utilities.getCommands(event)) {
                 Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd);
