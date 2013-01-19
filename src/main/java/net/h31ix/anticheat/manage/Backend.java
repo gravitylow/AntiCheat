@@ -324,7 +324,7 @@ public class Backend {
     }
     
     public CheckResult checkSneak(Player player, double x, double z) {
-        if (player.isSneaking() && !player.isFlying() && !isMovingExempt(player)) {
+        if (player.isSneaking() && !player.isFlying() && !isMovingExempt(player) && !player.isInsideVehicle()) {
             double i = x > magic.XZ_SPEED_MAX_SNEAK ? x : z > magic.XZ_SPEED_MAX_SNEAK ? z : -1;
             if(i != -1) {
                 return new CheckResult(Result.FAILED, player.getName()+" was sneaking too fast (speed="+i+", max="+magic.XZ_SPEED_MAX_SNEAK+")");
@@ -635,12 +635,13 @@ public class Backend {
             fastBreakViolation.put(name, 0);
         } else {
             Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
-            if (fastBreakViolation.get(name) > violations && math < magic.FASTBREAK_MAXVIOLATIONTIME) {
+            int i = fastBreakViolation.get(name);
+            if (i > violations && math < magic.FASTBREAK_MAXVIOLATIONTIME) {
                 lastBlockBroken.put(name, System.currentTimeMillis());
                 if (!micromanage.getConfiguration().silentMode()) {
                     player.sendMessage(ChatColor.RED + "[AntiCheat] Fastbreaking detected. Please wait 10 seconds before breaking blocks.");
                 }
-                return new CheckResult(Result.FAILED, player.getName()+" broke blocks too fast "+fastBreakViolation.get(name)+" times in a row (max="+violations+")");
+                return new CheckResult(Result.FAILED, player.getName()+" broke blocks too fast "+i+" times in a row (max="+violations+")");
             } else if (fastBreakViolation.get(name) > 0 && math > magic.FASTBREAK_MAXVIOLATIONTIME) {
                 fastBreakViolation.put(name, 0);
             }
