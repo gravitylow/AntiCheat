@@ -460,7 +460,8 @@ public class Backend {
                         yAxisLastViolation.put(name, 0L);
                     }
                 }
-                if ((y1 - lastYcoord.get(name)) > magic.Y_MAXDIFF && (System.currentTimeMillis() - lastYtime.get(name)) < magic.Y_TIME) {
+                long i = System.currentTimeMillis() - lastYtime.get(name);
+                if ((y1 - lastYcoord.get(name)) > magic.Y_MAXDIFF && i < magic.Y_TIME) {
                     Location g = player.getLocation();
                     yAxisViolations.put(name, yAxisViolations.get(name) + 1);
                     yAxisLastViolation.put(name, System.currentTimeMillis());
@@ -470,7 +471,7 @@ public class Backend {
                             player.teleport(g);
                         }
                     }
-                    return new CheckResult(Result.FAILED, player.getName()+" tried to fly on y-axis in "+(System.currentTimeMillis() - lastYtime.get(name))+" ms (min ="+magic.Y_TIME+")");
+                    return new CheckResult(Result.FAILED, player.getName()+" tried to fly on y-axis in "+i+" ms (min ="+magic.Y_TIME+")");
                 } else {
                     if ((y1 - lastYcoord.get(name)) > magic.Y_MAXDIFF + 1 || (System.currentTimeMillis() - lastYtime.get(name)) > magic.Y_TIME) {
                         lastYtime.put(name, System.currentTimeMillis());
