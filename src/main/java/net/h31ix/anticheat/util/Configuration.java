@@ -61,6 +61,7 @@ public class Configuration {
     private String chatActionBan;
     private static Language language;
     private List<String> exemptWorlds = new ArrayList<String>();
+    private Magic magicInstance;
     
     public Configuration(AnticheatManager instance) {
         micromanage = instance;
@@ -219,6 +220,10 @@ public class Configuration {
         exemptWorlds = config.getStringList("Disable in");
         // End pulling values from config
         save();
+        magicInstance = new Magic(getMagic(), this, CommentedConfiguration.loadConfiguration(micromanage.getPlugin().getResource("magic.yml")));
+        if(micromanage.getBackend() != null) { // If this is first run, backend may not be setup yet
+            micromanage.getBackend().updateMagic(magicInstance);
+        }
     }
     
     private boolean getBoolean(String entry, boolean d) {
@@ -292,5 +297,9 @@ public class Configuration {
         } catch (IOException ex) {
             Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public Magic getMagicInstance() {
+        return magicInstance;
     }
 }

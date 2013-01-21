@@ -24,6 +24,11 @@ import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class User {
     private final String name;
@@ -32,6 +37,7 @@ public class User {
     private int med;
     private Location goodLocation;
     private boolean silentMode;
+    private List<ItemStack> inventorySnapshot = null;
     
     public User(String name) {
         this.name = name;
@@ -114,5 +120,26 @@ public class User {
         
         goodLocation = e;
     }
-    
+
+    public void setSnapshot(ItemStack[] is) {
+        inventorySnapshot = new ArrayList<ItemStack>();
+        for(int i=0;i<is.length;i++) {
+            if(is[i] != null) {
+                inventorySnapshot.add(is[i].clone());
+            }
+        }
+    }
+
+    public void removeSnapshot() {
+        inventorySnapshot = null;
+    }
+
+    public void restore(Inventory inventory) {
+        inventory.clear();
+        for(ItemStack is : inventorySnapshot) {
+            if(is != null) {
+                inventory.addItem(is);
+            }
+        }
+    }
 }

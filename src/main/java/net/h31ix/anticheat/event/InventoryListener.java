@@ -27,6 +27,9 @@ import net.h31ix.anticheat.util.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class InventoryListener extends EventListener {
     
@@ -42,9 +45,9 @@ public class InventoryListener extends EventListener {
                 CheckResult result = backend.checkInventoryClicks(player);
                 if (result.failed()) {
                     if (!config.silentMode()) {
-                        event.setCancelled(!config.silentMode());
-                        player.damage(9999);
-                        // TODO: Return items
+                        getUserManager().getUser(player.getName()).restore(event.getInventory());
+                        player.getInventory().clear();
+                        player.damage(99999);
                     }
                     log(result.getMessage(), player, CheckType.FAST_INVENTORY);
                 } else {
@@ -54,5 +57,15 @@ public class InventoryListener extends EventListener {
         }
         
         Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+    }
+
+    @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        getUserManager().getUser(event.getPlayer().getName()).setSnapshot(event.getInventory().getContents());
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        getUserManager().getUser(event.getPlayer().getName()).removeSnapshot();
     }
 }

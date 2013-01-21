@@ -100,10 +100,14 @@ public class Backend {
     private static final CheckResult PASS = new CheckResult(Result.PASSED);
     
     public Backend(AnticheatManager instance) {
-        magic = new Magic(instance.getConfiguration().getMagic(), instance.getConfiguration(), CommentedConfiguration.loadConfiguration(instance.getPlugin().getResource("magic.yml")));
+        magic = instance.getConfiguration().getMagicInstance();
         micromanage = instance;
         lang = micromanage.getConfiguration().getLang();
         transparent.add((byte) -1);
+    }
+
+    public void updateMagic(Magic magic) {
+        this.magic = magic;
     }
     
     public void garbageClean(Player player) {
@@ -795,7 +799,7 @@ public class Backend {
     
     public CheckResult checkAutoTool(Player player) {
         if (itemInHand.containsKey(player.getName()) && itemInHand.get(player.getName()) != player.getItemInHand().getType()) {
-            return new CheckResult(Result.FAILED, player.getName()+" switched tools too fast (had "+itemInHand.get(player.getName())+", has "+player.getItemInHand().getType());
+            return new CheckResult(Result.FAILED, player.getName()+" switched tools too fast (had "+itemInHand.get(player.getName())+", has "+player.getItemInHand().getType()+")");
         } else {
             return PASS;
         }
