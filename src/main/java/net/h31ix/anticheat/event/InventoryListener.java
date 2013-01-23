@@ -29,6 +29,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryListener extends EventListener {
@@ -61,7 +62,9 @@ public class InventoryListener extends EventListener {
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
-        getUserManager().getUser(event.getPlayer().getName()).setSnapshot(event.getInventory().getContents());
+        if(event.getInventory().getType() != InventoryType.BEACON) {
+            getUserManager().getUser(event.getPlayer().getName()).setSnapshot(event.getInventory().getContents());
+        }
     }
 
     @EventHandler

@@ -135,10 +135,12 @@ public class User {
     }
 
     public void restore(Inventory inventory) {
-        inventory.clear();
-        for(ItemStack is : inventorySnapshot) {
-            if(is != null) {
-                inventory.addItem(is);
+        if(inventorySnapshot != null) {
+            inventory.clear();
+            for(ItemStack is : inventorySnapshot) {
+                if(is != null) {
+                    inventory.addItem(is);
+                }
             }
         }
     }
