@@ -39,7 +39,8 @@ public class User {
     private List<ItemStack> inventorySnapshot = null;
     private Configuration config = Anticheat.getManager().getConfiguration();
     private List<Level> levels = new ArrayList<Level>();
-    
+    private int toX, toY, toZ;
+
     public User(String name) {
         this.name = name;
         getConfigInfo();
@@ -144,5 +145,15 @@ public class User {
                 }
             }
         }
+    }
+
+    public void setTo(double x, double y, double z) {
+        toX = (int)x;
+        toY = (int)y;
+        toZ = (int)z;
+    }
+
+    public boolean checkTo(double x, double y, double z) {
+        return (int)x == toX && (int)y == toY && (int)z == toZ;
     }
 }

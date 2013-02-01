@@ -284,9 +284,15 @@ public class PlayerListener extends EventListener {
         Player player = event.getPlayer();
         Location from = event.getFrom();
         Location to = event.getTo();
+
         Distance distance = new Distance(from, to);
         double y = distance.getYDifference();
+
         backend.logAscension(player, from.getY(), to.getY());
+
+        User user = Anticheat.getManager().getUserManager().getUser(player.getName());
+        user.setTo(to.getX(), to.getY(), to.getZ());
+
         if (checkManager.willCheck(player, CheckType.SPEED)) {
             CheckResult result = backend.checkFreeze(player, from.getY(), to.getY());
             if(result.failed()) {
@@ -310,17 +316,6 @@ public class PlayerListener extends EventListener {
                     event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
                 }
                 log(result.getMessage(), player, CheckType.FLY);                
-            }
-        }
-        if (checkManager.willCheck(player, CheckType.FLY) && !player.isFlying() && checkManager.willCheck(player, CheckType.ZOMBE_FLY)) {
-            CheckResult result1 = backend.checkYAxis(player, distance);
-            CheckResult result2 = backend.checkAscension(player, from.getY(), to.getY());
-            String log = result1.failed() ? result1.getMessage() : result2.failed() ? result2.getMessage() : "";
-            if(!log.equals("")) {
-                if (!config.silentMode()) {
-                    event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
-                }
-                log(log, player, CheckType.FLY);                
             }
         }
         if (checkManager.willCheck(player, CheckType.VCLIP) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY) && event.getFrom().getY() > event.getTo().getY()) {
@@ -434,5 +429,33 @@ public class PlayerListener extends EventListener {
         }
         
         Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void checkFly(PlayerMoveEvent event) {
+        // Check flight on highest to make sure other plugins have a chance to change the values first.
+        Player player = event.getPlayer();
+        User user = Anticheat.getManager().getUserManager().getUser(player.getName());
+        Location from = event.getFrom();
+        Location to = event.getTo();
+
+        if(!user.checkTo(to.getX(), to.getY(), to.getZ())) {
+            // The to value has been modified by another plugin
+            return;
+        }
+
+        Distance distance = new Distance(from, to);
+
+        if (checkManager.willCheck(player, CheckType.FLY) && !player.isFlying() && checkManager.willCheck(player, CheckType.ZOMBE_FLY)) {
+            CheckResult result1 = backend.checkYAxis(player, distance);
+            CheckResult result2 = backend.checkAscension(player, from.getY(), to.getY());
+            String log = result1.failed() ? result1.getMessage() : result2.failed() ? result2.getMessage() : "";
+            if(!log.equals("")) {
+                if (!config.silentMode()) {
+                    event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
+                }
+                log(log, player, CheckType.FLY);
+            }
+        }
     }
 }
