@@ -80,8 +80,6 @@ public class Configuration {
             events.save(eventsFile);
             level.save(levelFile);
             magic.save(magicFile);
-            System.out.println("Saved");
-            System.out.println(config.get("Events.Level Medium"));
         } catch (IOException ex) {
             Logger.getLogger(Configuration.class.getName()).severe(ex.getMessage());
         }
@@ -168,9 +166,7 @@ public class Configuration {
         int medValue = config.getString("Events.Medium threshold") != null ? config.getInt("Events.Medium threshold") : -1;
         int highValue = config.getString("Events.High threshold") != null ? config.getInt("Events.High threshold") : -1;
 
-        System.out.println("Set event null");
         config.set("Events", null);
-        System.out.println(config.get("Events.Level Medium"));
         Level mediumLevel = new Level("Medium", medValue != -1 ? medValue : 20, ChatColor.YELLOW);
         Level highLevel = new Level("High", highValue != -1 ? highValue : 50, ChatColor.RED);
         Level customLevel = new Level("Custom", -1, ChatColor.GREEN);
