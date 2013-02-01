@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Language;
+import net.h31ix.anticheat.util.Level;
 import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -103,57 +104,46 @@ public class UserManager {
         }
     }
     
-    public void alertMed(User user, CheckType type) {
-        List<String> messageArray = lang.getMediumAlert();
+    public void alert(User user, Level level, CheckType type) {
+        List<String> messageArray = lang.getAlert();
         for (int i = 0; i < messageArray.size(); i++) {
             String message = messageArray.get(i);
             message = message.replaceAll("&player", GOLD + user.getName() + GRAY);
             message = message.replaceAll("&check", GOLD + CheckType.getName(type) + GRAY);
-            message = message.replaceAll("medium", YELLOW + "medium" + GRAY);
+            message = message.replaceAll("&level", level.getColor() + level.getName() + GRAY);
             messageArray.set(i, message);
         }
         Utilities.alert(messageArray);
-        execute(user, config.mediumEvent());
+        execute(user, level.getActions(), type);
     }
     
-    public void alertHigh(User user, CheckType type) {
-        List<String> messageArray = lang.getHighAlert();
-        for (int i = 0; i < messageArray.size(); i++) {
-            String message = messageArray.get(i);
-            message = message.replaceAll("&player", GOLD + user.getName() + GRAY);
-            message = message.replaceAll("&check", GOLD + CheckType.getName(type) + GRAY);
-            message = message.replaceAll("high", RED + "high" + GRAY);
-            messageArray.set(i, message);
-        }
-        Utilities.alert(messageArray);
-        execute(user, config.highEvent());
-    }
-    
-    public void execute(User user, String event) {
+    public void execute(User user, List<String> actions, CheckType type) {
         final String name = user.getName();
-        event = event.replaceAll("&player", name).replaceAll("&world", user.getPlayer().getWorld().getName());
+        for(String event : actions) {
+            event = event.replaceAll("&player", name).replaceAll("&world", user.getPlayer().getWorld().getName()).replaceAll("&check", type.name());
 
-        if (event.startsWith("COMMAND[")) {
-            for(String cmd : Utilities.getCommands(event)) {
-                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd);
-            }
-        } else if (event.equalsIgnoreCase("KICK")) {
-            user.getPlayer().kickPlayer(RED + lang.getKickReason());
-            String msg = RED + lang.getKickBroadcast().replaceAll("&player", name);
-            if (!msg.equals("")) {
-                Bukkit.broadcastMessage(msg);
-            }
-        } else if (event.equalsIgnoreCase("WARN")) {
-            List<String> message = lang.getWarning();
-            for (String string : message) {
-                user.getPlayer().sendMessage(RED + string);
-            }
-        } else if (event.equalsIgnoreCase("BAN")) {
-            user.getPlayer().setBanned(true);
-            user.getPlayer().kickPlayer(RED + lang.getBanReason());
-            String msg = RED + lang.getBanBroadcast().replaceAll("&player", name);
-            if (!msg.equals("")) {
-                Bukkit.broadcastMessage(msg);
+            if (event.startsWith("COMMAND[")) {
+                for(String cmd : Utilities.getCommands(event)) {
+                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd);
+                }
+            } else if (event.equalsIgnoreCase("KICK")) {
+                user.getPlayer().kickPlayer(RED + lang.getKickReason());
+                String msg = RED + lang.getKickBroadcast().replaceAll("&player", name);
+                if (!msg.equals("")) {
+                    Bukkit.broadcastMessage(msg);
+                }
+            } else if (event.equalsIgnoreCase("WARN")) {
+                List<String> message = lang.getWarning();
+                for (String string : message) {
+                    user.getPlayer().sendMessage(RED + string);
+                }
+            } else if (event.equalsIgnoreCase("BAN")) {
+                user.getPlayer().setBanned(true);
+                user.getPlayer().kickPlayer(RED + lang.getBanReason());
+                String msg = RED + lang.getBanBroadcast().replaceAll("&player", name);
+                if (!msg.equals("")) {
+                    Bukkit.broadcastMessage(msg);
+                }
             }
         }
     }

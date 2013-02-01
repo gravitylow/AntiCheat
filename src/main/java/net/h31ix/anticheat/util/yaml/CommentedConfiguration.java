@@ -50,12 +50,6 @@ public class CommentedConfiguration extends YamlConfiguration {
         comments.put("Chat:", "  # Should AntiCheat block players spamming messages in chat?");
         comments.put("Block chat spam:", "  # Should AntiCheat block players spamming commands in chat?");
         comments.put("Block command spam:", "  # Valid actions = NONE,KICK,BAN,COMMAND[command]");
-        comments.put("Ban Action:", "# Events occur when a player's hack level changes. You may configure reactions to these events here.");
-        comments.put("# Events occur when a player's hack level changes. You may configure reactions to these events here.", "# Valid events = NONE,WARN,KICK,BAN,COMMAND[command]");
-        comments.put("# Valid events = NONE,WARN,KICK,BAN,COMMAND[command]", "# Use commands like so: COMMAND[ban &player 30] or COMMAND[kick &player hacking] or COMMAND[jail &player 10]");
-        comments.put("# Use commands like so: COMMAND[ban &player 30] or COMMAND[kick &player hacking] or COMMAND[jail &player 10]", "# &player will be replaced with player's name, and &world will be replaced with the player's world");
-        comments.put("Level High:", "  # How many warnings should the player get before entering medium?");
-        comments.put("Medium threshold:", "  # How many warnings should the player get before entering high?");
         comments.put("System:", "  # Turning auto-update off is a _BAD_ idea. You will no longer be protected by the latest hacks/cheats if you do so, and will have to update manually.");
         comments.put("# Turning auto-update off is a _BAD_ idea. You will no longer be protected by the latest hacks/cheats if you do so, and will have to update manually.", "  # Should AntiCheat log ALL failed checks to console?");
         comments.put("Log to console:", "  # Should AntiCheat log to files?");

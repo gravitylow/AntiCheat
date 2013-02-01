@@ -20,6 +20,7 @@ package net.h31ix.anticheat.manage;
 
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.util.Configuration;
+import net.h31ix.anticheat.util.Level;
 import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -33,11 +34,11 @@ import java.util.List;
 public class User {
     private final String name;
     private int level = 0;
-    private int high;
-    private int med;
     private Location goodLocation;
     private boolean silentMode;
     private List<ItemStack> inventorySnapshot = null;
+    private Configuration config = Anticheat.getManager().getConfiguration();
+    private List<Level> levels = new ArrayList<Level>();
     
     public User(String name) {
         this.name = name;
@@ -51,10 +52,9 @@ public class User {
     }
     
     private void getConfigInfo() {
-        Configuration config = Anticheat.getManager().getConfiguration();
+        config = Anticheat.getManager().getConfiguration();
         silentMode = config.silentMode();
-        med = config.medThreshold();
-        high = config.highThreshold();
+        levels = config.getLevels();
     }
     
     public String getName() {
@@ -76,12 +76,13 @@ public class User {
                 return false;
             } else {
                 level++;
-                if (level == med) {
-                    Anticheat.getManager().getUserManager().alertMed(this, type);
-                } else if (level == high) {
-                    Anticheat.getManager().getUserManager().alertHigh(this, type);
-                    // Prevent the player from going over the high limit
-                    level = high - 10;
+                for(Level l : levels) {
+                    if(l.getValue() == level) {
+                        Anticheat.getManager().getUserManager().alert(this, l, type);
+                        if(l.getValue() == config.getHighestLevel()) {
+                            level = l.getValue() - 10;
+                        }
+                    }
                 }
                 return true;
             }
@@ -95,7 +96,7 @@ public class User {
     }
     
     public void setLevel(int level) {
-        if (level > 0 && level <= high) {
+        if (level > 0 && level <= config.getHighestLevel()) {
             this.level = level;
         }
     }

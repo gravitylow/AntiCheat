@@ -29,9 +29,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Language {
-    private static String[] medAlert = null;
-    private static String[] highAlert = null;
-    private static String[] warning = null;
+    private static List<String> alert = null;
+    private static List<String> warning = null;
     private static String banReason = null;
     private static String banBroadcast = null;
     private static String kickReason = null;
@@ -45,25 +44,31 @@ public class Language {
     private static final ChatColor GOLD = ChatColor.GOLD;
     private static final ChatColor GRAY = ChatColor.GRAY;
     private FileConfiguration file;
+    private File f;
     
     public Language(FileConfiguration file, File f) {
         this.file = file;
-        String[] temp = file.getList("alert.medium_alert").toArray(new String[file.getList("alert.medium_alert").size()]);
-        medAlert = new String[temp.length + 2];
-        medAlert[0] = GOLD + "----------------------[" + GRAY + "AntiCheat" + GOLD + "]----------------------";
-        for (int i = 0; i < temp.length; i++) {
-            medAlert[i + 1] = GRAY + temp[i];
+        this.f = f;
+
+        // Begin medium_alert / high_alert -> alert swap
+        List<String> list = file.getStringList("alert.medium_alert");
+        if(list != null && list.size() > 0) {
+            list.set(1, "&player has just entered the &level hack level.");
+            file.set("alert", null);
+            file.set("alert", list);
+            save();
         }
-        medAlert[medAlert.length - 1] = GOLD + "-----------------------------------------------------";
-        temp = file.getList("alert.high_alert").toArray(new String[file.getList("alert.high_alert").size()]);
-        highAlert = new String[temp.length + 2];
-        highAlert[0] = GOLD + "----------------------[" + GRAY + "AntiCheat" + GOLD + "]----------------------";
-        for (int i = 0; i < temp.length; i++) {
-            highAlert[i + 1] = GRAY + temp[i];
+        // End swap
+
+        List<String> temp = file.getStringList("alert");
+        alert = new ArrayList<String>();
+        alert.add(GOLD + "----------------------[" + GRAY + "AntiCheat" + GOLD + "]----------------------");
+        for (int i = 0; i < temp.size(); i++) {
+            alert.add(GRAY + temp.get(i));
         }
-        highAlert[highAlert.length - 1] = GOLD + "-----------------------------------------------------";
+        alert.add(GOLD + "-----------------------------------------------------");
         
-        warning = file.getList("warning.player_warning").toArray(new String[file.getList("warning.player_warning").size()]);
+        warning = file.getStringList("warning.player_warning");
         banReason = getString("ban.ban_reason", "Banned by AntiCheat");
         banBroadcast = getString("ban.ban_broadcast", "[AntiCheat] &player was banned for hacking.");
         kickReason = getString("kick.kick_reason", "Kicked by AntiCheat");
@@ -73,6 +78,10 @@ public class Language {
         chatBanReason = getString("chat.ban_reason", "Banned for spamming");
         chatKickBroadcast = getString("chat.kick_broadcast", "[AntiCheat] &player was kicked for spamming");
         chatBanBroadcast = getString("chat.ban_broadcast", "[AntiCheat] &player was banned for spamming");
+        save();
+    }
+
+    private void save() {
         try {
             file.save(f);
         } catch (IOException ex) {
@@ -80,16 +89,12 @@ public class Language {
         }
     }
     
-    public List<String> getMediumAlert() {
-        return new ArrayList<String>(Arrays.asList(medAlert));
-    }
-    
-    public List<String> getHighAlert() {
-        return new ArrayList<String>(Arrays.asList(highAlert));
+    public List<String> getAlert() {
+        return alert;
     }
     
     public List<String> getWarning() {
-        return new ArrayList<String>(Arrays.asList(warning));
+        return warning;
     }
     
     public String getBanReason() {

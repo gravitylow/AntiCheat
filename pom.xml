@@ -35,6 +35,7 @@
                     <include>config.yml</include>
                     <include>lang.yml</include>
                     <include>magic.yml</include>
+                    <include>events.yml</include>
                 </includes>
             </resource>
         </resources>

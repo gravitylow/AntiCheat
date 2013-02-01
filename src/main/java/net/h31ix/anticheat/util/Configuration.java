@@ -22,11 +22,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.manage.AnticheatManager;
 import net.h31ix.anticheat.util.yaml.CommentedConfiguration;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -37,9 +39,11 @@ public class Configuration {
     private File levelFile = null;
     private File langFile = null;
     private File magicFile = null;
+    private File eventsFile = null;
     private CommentedConfiguration config;
     private FileConfiguration level;
     private FileConfiguration magic;
+    private FileConfiguration events;
     private boolean logConsole;
     private boolean logXRay;
     private boolean alertXRay;
@@ -52,16 +56,14 @@ public class Configuration {
     private boolean trackCreativeXRay;
     private boolean eventChains;
     private int fileLogLevel = 0;
-    private int medThreshold = 0;
-    private int highThreshold = 0;
     private String updateFolder;
-    private String eventMed;
-    private String eventHigh;
     private String chatActionKick;
     private String chatActionBan;
     private static Language language;
     private List<String> exemptWorlds = new ArrayList<String>();
+    private List<Level> levels = new ArrayList<Level>();
     private Magic magicInstance;
+    private int highestLevel;
     
     public Configuration(AnticheatManager instance) {
         micromanage = instance;
@@ -69,14 +71,19 @@ public class Configuration {
         levelFile = new File(micromanage.getPlugin().getDataFolder() + "/data/level.yml");
         langFile = new File(micromanage.getPlugin().getDataFolder() + "/lang.yml");
         magicFile = new File(micromanage.getPlugin().getDataFolder() + "/magic.yml");
-        load();
+        eventsFile = new File(micromanage.getPlugin().getDataFolder() + "/events.yml");
     }
     
     private void save() {
         try {
             config.save(configFile);
+            events.save(eventsFile);
+            level.save(levelFile);
+            magic.save(magicFile);
+            System.out.println("Saved");
+            System.out.println(config.get("Events.Level Medium"));
         } catch (IOException ex) {
-            Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Configuration.class.getName()).severe(ex.getMessage());
         }
     }
     
@@ -128,22 +135,6 @@ public class Configuration {
         return eventChains;
     }
     
-    public int medThreshold() {
-        return medThreshold;
-    }
-    
-    public int highThreshold() {
-        return highThreshold;
-    }
-    
-    public String mediumEvent() {
-        return eventMed;
-    }
-    
-    public String highEvent() {
-        return eventHigh;
-    }
-    
     public String chatActionKick() {
         return chatActionKick;
     }
@@ -159,12 +150,86 @@ public class Configuration {
     public Language getLang() {
         return language;
     }
+
+    public List<Level> getLevels() {
+        return levels;
+    }
+
+    public int getHighestLevel() {
+        return highestLevel = -99;
+    }
+
+    public void updateEvents() {
+        // Update the old event system to events.yml
+        CommentedConfiguration config = CommentedConfiguration.loadConfig(configFile);
+        events = YamlConfiguration.loadConfiguration(Anticheat.getPlugin().getResource("events.yml"));
+        String medium = config.getString("Events.Level Medium");
+        String high = config.getString("Events.Level High");
+        int medValue = config.getString("Events.Medium threshold") != null ? config.getInt("Events.Medium threshold") : -1;
+        int highValue = config.getString("Events.High threshold") != null ? config.getInt("Events.High threshold") : -1;
+
+        System.out.println("Set event null");
+        config.set("Events", null);
+        System.out.println(config.get("Events.Level Medium"));
+        Level mediumLevel = new Level("Medium", medValue != -1 ? medValue : 20, ChatColor.YELLOW);
+        Level highLevel = new Level("High", highValue != -1 ? highValue : 50, ChatColor.RED);
+        Level customLevel = new Level("Custom", -1, ChatColor.GREEN);
+        mediumLevel.addAction(medium != null ? medium : "WARN");
+        highLevel.addAction(high != null ? high : "KICK");
+        customLevel.addAction("COMMAND[ban &player;say hello world]");
+
+        levels.add(mediumLevel);
+        levels.add(highLevel);
+        levels.add(customLevel);
+
+        writeEvents();
+    }
+
+    private void writeEvents() {
+        List<String> list = new ArrayList<String>();
+        List<String> list2 = new ArrayList<String>();
+        for(Level level : levels) {
+            list.add(level.toString());
+            for(String string : level.getActions()) {
+                list2.add(level.getName()+": "+string);
+            }
+        }
+        events.set("levels", list);
+        events.set("actions", list2);
+        save();
+    }
+
+    private void readEvents() {
+        levels = new ArrayList<Level>();
+        for(String string : events.getStringList("levels")) {
+            Level level = Level.load(string);
+            levels.add(level);
+            highestLevel = level.getValue() > highestLevel ? level.getValue() : highestLevel;
+        }
+        for(String string : events.getStringList("actions")) {
+            String name;
+            String action;
+            try {
+                name = string.split(": ")[0];
+                action = string.split(": ")[1];
+            } catch (Exception ex) {
+                Anticheat.getPlugin().getLogger().warning("Couldn't load action '"+string+"' from config. Improper formatting used.");
+                break;
+            }
+            for(Level level : levels) {
+                if(level.getName().equalsIgnoreCase(name)) {
+                    level.addAction(action);
+                }
+            }
+        }
+    }
     
     public final void load() {
-        micromanage.getPlugin().checkConfigs();
+        boolean secondLoad = config != null;
         config = CommentedConfiguration.loadConfig(configFile);
         level = YamlConfiguration.loadConfiguration(levelFile);
         magic = YamlConfiguration.loadConfiguration(magicFile);
+        events = YamlConfiguration.loadConfiguration(eventsFile);
         language = new Language(YamlConfiguration.loadConfiguration(langFile), langFile);
         updateFolder = Bukkit.getUpdateFolder();
         
@@ -176,13 +241,9 @@ public class Configuration {
         alertXRay = getBoolean("XRay.Alert when xray is found", false);
         fileLogLevel = getInt("System.File log level", 1);
         silentMode = getBoolean("System.Silent mode", false);
-        medThreshold = getInt("Events.Medium threshold", 20);
-        highThreshold = getInt("Events.High threshold", 50);
         opExempt = getBoolean("System.Exempt op", false);
         trackCreativeXRay = getBoolean("XRay.Track creative", true);
         eventChains = getBoolean("System.Event Chains", true);
-        eventMed = getString("Events.Level Medium", "WARN");
-        eventHigh = getString("Events.Level High", "KICK");
         chatActionKick = getString("Chat.Kick Action", "KICK");
         chatActionBan = getString("Chat.Ban Action", "BAN");
         chatSpam = getBoolean("Chat.Block chat spam", true);
@@ -218,6 +279,10 @@ public class Configuration {
         }
         
         exemptWorlds = config.getStringList("Disable in");
+
+        if(secondLoad) {
+            readEvents();
+        }
         // End pulling values from config
         save();
         magicInstance = new Magic(getMagic(), this, CommentedConfiguration.loadConfiguration(micromanage.getPlugin().getResource("magic.yml")));
@@ -259,7 +324,7 @@ public class Configuration {
         try {
             config.save(configFile);
         } catch (IOException ex) {
-            Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Configuration.class.getName()).severe(ex.toString());
         }
     }
     
@@ -287,7 +352,7 @@ public class Configuration {
         try {
             level.save(levelFile);
         } catch (IOException ex) {
-            Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Configuration.class.getName()).severe(ex.toString());
         }
     }
     
@@ -295,7 +360,7 @@ public class Configuration {
         try {
             newMagic.save(magicFile);
         } catch (IOException ex) {
-            Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Configuration.class.getName()).severe(ex.toString());
         }
     }
 

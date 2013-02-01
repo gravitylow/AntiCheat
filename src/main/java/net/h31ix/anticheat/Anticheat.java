@@ -97,7 +97,7 @@ public class Anticheat extends JavaPlugin {
 		cleanup();
 	}
 	
-	private void save(InputStream in, File file) {
+	private boolean save(InputStream in, File file) {
 		if (!file.exists()) {
 			file.getParentFile().mkdirs();
 			try {
@@ -115,7 +115,9 @@ public class Anticheat extends JavaPlugin {
 			if (verbose) {
 				getLogger().log(Level.INFO, file.getName() + " created.");
 			}
+            return true;
 		}
+        return false;
 	}
 	
 	private void setupXray() {
@@ -210,6 +212,7 @@ public class Anticheat extends JavaPlugin {
 	
 	private void setupConfig() {
 		config = manager.getConfiguration();
+        config.load();
 		checkConfigs();
 		verbose = config.verboseStartup();
 		if (verbose) {
@@ -231,6 +234,9 @@ public class Anticheat extends JavaPlugin {
 		save(getResource("config.yml"), new File(getDataFolder() + "/config.yml"));
 		save(getResource("lang.yml"), new File(getDataFolder() + "/lang.yml"));
 		save(getResource("magic.yml"), new File(getDataFolder() + "/magic.yml"));
+        if(!save(getResource("events.yml"), new File(getDataFolder() + "/events.yml"))) {
+            config.updateEvents();
+        }
 	}
 	
 	public static Anticheat getPlugin() {

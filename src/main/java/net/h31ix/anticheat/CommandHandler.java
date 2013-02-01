@@ -359,12 +359,11 @@ public class CommandHandler implements CommandExecutor {
     public void sendPlayerReport(CommandSender cs, List<CheckType> types, User user, int page) {
         String name = user.getName();
         int pages = (int) Math.ceil(((float) types.size()) / 6);
-        int level = user.getLevel();
-        String levelString = GREEN + "Low";
-        if (level >= CONFIG.highThreshold()) {
-            levelString = RED + "High";
-        } else if (level >= CONFIG.medThreshold()) {
-            levelString = YELLOW + "Medium";
+        String levelString = ChatColor.GREEN+"Low";
+        for(Level level : CONFIG.getLevels()) {
+            if(level.getValue() == user.getLevel()) {
+                levelString = level.getColor()+level.getName();
+            }
         }
         if (page <= pages && page > 0) {
             cs.sendMessage("--------------------[" + GREEN + "REPORT[" + page + "/" + pages + "]" + WHITE + "]---------------------");
@@ -410,11 +409,13 @@ public class CommandHandler implements CommandExecutor {
     public boolean onCommand(CommandSender cs, Command cmd, String alias, String[] args) {
         if (args.length == 3) {
             if (args[0].equalsIgnoreCase("report")) {
-                if (args[1].equalsIgnoreCase("low") || args[1].equalsIgnoreCase("medium") || args[1].equalsIgnoreCase("high")) {
-                    handleReport(cs, args);
-                } else {
-                    handlePlayerReport(cs, args);
+                for(Level level : CONFIG.getLevels()) {
+                    if(args[1].equalsIgnoreCase(level.getName())) {
+                        handleReport(cs, args);
+                        return true;
+                    }
                 }
+                handlePlayerReport(cs, args);
             }
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("log")) {
