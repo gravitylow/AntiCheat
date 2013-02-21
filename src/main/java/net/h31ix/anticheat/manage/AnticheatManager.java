@@ -42,12 +42,12 @@ import org.bukkit.plugin.RegisteredListener;
  */
 
 public class AnticheatManager {
-    private Anticheat plugin = null;
-    private Configuration configuration;
-    private XRayTracker xrayTracker = null;
-    private UserManager userManager = null;
-    private CheckManager checkManager = null;
-    private Backend backend = null;
+    private static Anticheat plugin = null;
+    private static Configuration configuration;
+    private static XRayTracker xrayTracker = null;
+    private static UserManager userManager = null;
+    private static CheckManager checkManager = null;
+    private static Backend backend = null;
     private final Logger fileLogger;
     private static Map<String, RegisteredListener[]> eventchains = new ConcurrentHashMap<String, RegisteredListener[]>();
     private static Map<String, Long> eventcache = new ConcurrentHashMap<String, Long>();
