@@ -15,16 +15,19 @@ Developer stuff:
 -------
 API Usage: http://dev.bukkit.org/server-mods/anticheat/pages/api-documentation/
 
+JavaDocs: https://gravitydevelopment.net/docs/anticheat/
+
 Bug Reporting/Support/Questions
 ------------
 
-Feel free to leave a DETAILED comment describing the problem, the steps you take to re-create the problem, the result you got, and the result you EXPECTED to get on my BukkitDev page (see below). If you do that I'll be sure to reply back and take a look at the bug.
-I'm also around a lot in IRC. Feel free to join me in #anticheat on irc.esper.net and ping me to report a game-breaking bug, or just to ask questions, get support, etc.
+Issues should be filed by hitting the [issues](https://github.com/h31ix/AntiCheat/issues?state=open) tab above. Please make sure you search your issue before opening a new ticket.
+
+All opened tickets that are bug reports require a debug log that includes logs of the issue in question. To obtain this, type `/anticheat debug` on your server. Note that for the debug output to contain valid information and help us diagnose your issue, you need to issue this command AFTER the issue occurs at least once and BEFORE you reload or restart it. 
 
 Resources
 -------
 BukkitDev --- http://dev.bukkit.org/server-mods/anticheat/
 
-Jenkins (Downloads) --- http://ci.h31ix.net/job/AntiCheat/
+Jenkins (Downloads) --- http://ci.gravitydevelopment.net/job/AntiCheat/
 
-Latest version download: http://bukget.org/api/plugin/anticheat/latest/download
+Latest version download: http://api.bukget.org/2/bukkit/plugin/anticheat/latest/download
