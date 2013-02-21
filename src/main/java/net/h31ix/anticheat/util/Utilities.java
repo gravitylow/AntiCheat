@@ -19,7 +19,10 @@
 package net.h31ix.anticheat.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import net.h31ix.anticheat.Anticheat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -42,6 +45,7 @@ public final class Utilities {
     private static final List<Material> SHEARS = new ArrayList<Material>();
     private static final List<Material> SHOVELS = new ArrayList<Material>();
     private static final List<Material> ANY = new ArrayList<Material>();
+    private static final Map<Material, Material> COMBO = new HashMap<Material, Material>();
     
     public static void alert(List<String> message) {
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -205,8 +209,21 @@ public final class Utilities {
         } else if (result < 0) {
             result = 0;
         }
+
+        if(isQuickCombo(tool, block)) {
+            result = result/2;
+        }
         
         return result;
+    }
+
+    private static boolean isQuickCombo(ItemStack tool, Material block) {
+        for(Material t : COMBO.keySet()) {
+            if(tool.getType() == t && COMBO.get(t) == block) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public static boolean blockIsnt(Block block, Material[] materials) {
@@ -278,5 +295,11 @@ public final class Utilities {
         FOOD.add(Material.SPIDER_EYE);
         FOOD.add(Material.ROTTEN_FLESH);
         FOOD.add(Material.POTATO_ITEM);
+
+        COMBO.put(Material.SHEARS, Material.WOOL);
+        COMBO.put(Material.IRON_SWORD, Material.WEB);
+        COMBO.put(Material.DIAMOND_SWORD, Material.WEB);
+        COMBO.put(Material.STONE_SWORD, Material.WEB);
+        COMBO.put(Material.WOOD_SWORD, Material.WEB);
     }
 }
