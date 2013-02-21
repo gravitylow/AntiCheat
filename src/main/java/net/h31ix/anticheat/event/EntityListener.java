@@ -34,7 +34,6 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
-import org.bukkit.potion.PotionEffectType;
 
 public class EntityListener extends EventListener {
     private final Backend backend = getBackend();
@@ -101,7 +100,6 @@ public class EntityListener extends EventListener {
     public void onEntityDamage(EntityDamageEvent event) {
         boolean noHack = true;
         if (event instanceof EntityDamageByEntityEvent) {
-            System.out.println("ENTITY DAMAGE BY ENTITY");
             EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
             if (event.getEntity() instanceof Player) {
                 Player player = (Player) event.getEntity();
