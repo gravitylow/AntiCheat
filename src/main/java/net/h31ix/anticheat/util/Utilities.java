@@ -31,6 +31,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.NumberConversions;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
+
 public final class Utilities {
     private static final List<Material> INSTANT_BREAK = new ArrayList<Material>();
     private static final List<Material> FOOD = new ArrayList<Material>();
@@ -219,6 +221,15 @@ public final class Utilities {
     
     public static String [] getCommands(String command) {
         return command.replaceAll("COMMAND\\[", "").replaceAll("]", "").split(";");
+    }
+
+    public static boolean hasArmorEnchantment(Player player, Enchantment e) {
+        for(ItemStack is : player.getInventory().getArmorContents()) {
+            if(is != null && is.containsEnchantment(e)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     static {

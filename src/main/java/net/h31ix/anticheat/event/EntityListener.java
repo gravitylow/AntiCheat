@@ -25,6 +25,7 @@ import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.util.CheckResult;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Distance;
+import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creeper;
@@ -33,6 +34,7 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
+import org.bukkit.potion.PotionEffectType;
 
 public class EntityListener extends EventListener {
     private final Backend backend = getBackend();
@@ -99,6 +101,7 @@ public class EntityListener extends EventListener {
     public void onEntityDamage(EntityDamageEvent event) {
         boolean noHack = true;
         if (event instanceof EntityDamageByEntityEvent) {
+            System.out.println("ENTITY DAMAGE BY ENTITY");
             EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
             if (event.getEntity() instanceof Player) {
                 Player player = (Player) event.getEntity();
@@ -108,6 +111,9 @@ public class EntityListener extends EventListener {
                     if (arrow.getShooter() instanceof Player && event.getEntity() == arrow.getShooter()) {
                         event.setCancelled(true);
                     }
+                }
+                if (Utilities.hasArmorEnchantment(player, Enchantment.THORNS)) {
+                    backend.logAnimation(player);
                 }
                 if (e.getDamager() instanceof Player) {
                     Player p = (Player) e.getDamager();
