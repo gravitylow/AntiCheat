@@ -29,7 +29,6 @@ import net.h31ix.anticheat.util.Distance;
 import net.h31ix.anticheat.util.Language;
 import net.h31ix.anticheat.util.Magic;
 import net.h31ix.anticheat.util.Utilities;
-import net.h31ix.anticheat.util.yaml.CommentedConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;

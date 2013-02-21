@@ -20,7 +20,6 @@ package net.h31ix.anticheat;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.h31ix.anticheat.util.Calibrator;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.User;
 import net.h31ix.anticheat.manage.UserManager;

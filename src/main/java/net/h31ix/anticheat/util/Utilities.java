@@ -29,7 +29,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.NumberConversions;
 
 public final class Utilities {
@@ -108,9 +107,11 @@ public final class Utilities {
     public static boolean isHoveringOverWater(Location player, int blocks) {
         for (int i = player.getBlockY(); i > player.getBlockY() - blocks; i--) {
             Block newloc = (new Location(player.getWorld(), player.getBlockX(), i, player.getBlockZ())).getBlock();
-            if (newloc.getTypeId() != 0 && newloc.isLiquid())
+            if (newloc.getTypeId() != 0 && newloc.isLiquid()) {
                 return true;
-            else if (newloc.getTypeId() != 0) return false;
+            } else if (newloc.getTypeId() != 0) {
+                return false;
+            }
         }
         
         return false;
@@ -193,12 +194,15 @@ public final class Utilities {
         
         result += 150;
         
-        if (enchantlvl > 0)
+        if (enchantlvl > 0) {
             result /= enchantlvl * enchantlvl + 1L;
+        }
         
-        if (result > 25000)
+        if (result > 25000) {
             result = 25000;
-        else if (result < 0) result = 0;
+        } else if (result < 0) {
+            result = 0;
+        }
         
         return result;
     }
@@ -206,7 +210,9 @@ public final class Utilities {
     public static boolean blockIsnt(Block block, Material[] materials) {
         Material type = block.getType();
         for(Material m : materials) {
-            if(m == type) return false;
+            if(m == type) {
+                return false;
+            }
         }
         return false;
     }    

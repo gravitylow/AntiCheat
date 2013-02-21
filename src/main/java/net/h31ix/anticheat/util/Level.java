@@ -18,11 +18,10 @@
 
 package net.h31ix.anticheat.util;
 
-import net.h31ix.anticheat.Anticheat;
-import org.bukkit.ChatColor;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.h31ix.anticheat.Anticheat;
+import org.bukkit.ChatColor;
 
 public class Level {
 

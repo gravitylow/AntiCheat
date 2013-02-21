@@ -186,7 +186,9 @@ public enum BlockHardness {
 
     public static BlockHardness getHardness(Material m) {
         for (BlockHardness e : BlockHardness.values()) {
-            if (e.mat.equals(m)) return e;
+            if (e.mat.equals(m)) {
+                return e;
+            }
         }
         return null;
     }

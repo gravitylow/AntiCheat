@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.manage.AnticheatManager;
 import net.h31ix.anticheat.util.yaml.CommentedConfiguration;
