@@ -50,7 +50,7 @@ public class XRayListener implements Listener {
                     tracker.addGold(player);
                 } else if (m == Material.LAPIS_ORE) {
                     tracker.addLapis(player);
-                } else if (m == Material.REDSTONE_ORE) {
+                } else if (m == Material.REDSTONE_ORE || m == Material.GLOWING_REDSTONE_ORE) {
                     tracker.addRedstone(player);
                 } else if (m == Material.GOLD_ORE) {
                     tracker.addGold(player);
