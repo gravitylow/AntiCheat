@@ -383,11 +383,11 @@ public class PlayerListener extends EventListener {
                 if ((event.getFrom().getX() != event.getTo().getX() || event.getFrom().getZ() != event.getTo().getZ())) {
                     result = backend.checkTimer(player);
                     if(result.failed()) {
-                        /*if (!config.silentMode()) {
+                        if (!config.silentMode()) {
                             event.setTo(Anticheat.getManager().getUserManager().getUser(player.getName()).getGoodLocation(from.clone()));
                         }
                         log("tried to alter their timer.", player, CheckType.SPEED);
-                        changed = true;*/
+                        changed = true;
                     }
                 }
             }
