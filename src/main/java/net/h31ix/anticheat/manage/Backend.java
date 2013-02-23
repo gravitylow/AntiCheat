@@ -364,11 +364,11 @@ public class Backend {
                     if (isInWaterCache.contains(player.getName())) {
                         if (player.getNearbyEntities(1, 1, 1).isEmpty()) {
                             boolean b = false;
-                            if (!Utilities.sprintFly(player) && x > magic.XZ_SPEED_MAX_WATER || z > magic.XZ_SPEED_MAX_WATER) {
-                                b = true;
-                            } else if (x > magic.XZ_SPEED_MAX_WATER_SPRINT || z > magic.XZ_SPEED_MAX_WATER_SPRINT) {
-                                b = true;
-                            } else if (!Utilities.isFullyInWater(player.getLocation()) && Utilities.isHoveringOverWater(player.getLocation(), 1) && y == 0D && !block.getType().equals(Material.WATER_LILY)) {
+                            if (!Utilities.sprintFly(player)) {
+                                b = x > magic.XZ_SPEED_MAX_WATER || z > magic.XZ_SPEED_MAX_WATER;
+                            } else {
+                                b = x > magic.XZ_SPEED_MAX_WATER_SPRINT || z > magic.XZ_SPEED_MAX_WATER_SPRINT;
+                            } if (!b && !Utilities.isFullyInWater(player.getLocation()) && Utilities.isHoveringOverWater(player.getLocation(), 1) && y == 0D && !block.getType().equals(Material.WATER_LILY)) {
                                 b = true;
                             }
                             if (b) {
@@ -376,7 +376,7 @@ public class Backend {
                                     int v = waterSpeedViolation.get(player.getName());
                                     if (v >= magic.WATER_SPEED_VIOLATION_MAX) {
                                         waterSpeedViolation.put(player.getName(), 0);
-                                        return PASS;
+                                        return new CheckResult(Result.FAILED, player.getName()+" stood on water "+v+" times (can't stand on "+block.getType()+" or "+block.getRelative(BlockFace.DOWN).getType()+")");
                                     } else {
                                         waterSpeedViolation.put(player.getName(), v + 1);
                                     }
