@@ -50,24 +50,35 @@ public class Language {
         this.f = f;
 
         // Begin medium_alert / high_alert -> alert swap
+        // We're doing it this way to preserve *most* changes the user might have made to the alert
         List<String> list = file.getStringList("alert.medium_alert");
         if(list != null && list.size() > 0) {
-            list.set(1, "&player has just entered the &level hack level.");
-            file.set("alert", null);
+            list.set(0, "&player has just entered the &level hack level.");
+            file.set("alert.medium_alert", null);
+            file.set("alert.high_alert", null);
             file.set("alert", list);
             save();
         }
         // End swap
 
-        List<String> temp = file.getStringList("alert");
+        List<String> defAlert = new ArrayList<String>();
+        defAlert.add("&player has just entered the &level hack level.");
+        defAlert.add("&player's last failed check was: &check.");
+        defAlert.add("Type '/anticheat report &player' for more information.");
+
+        List<String> temp = getStringList("alert", defAlert);
         alert = new ArrayList<String>();
         alert.add(GOLD + "----------------------[" + GRAY + "AntiCheat" + GOLD + "]----------------------");
         for (int i = 0; i < temp.size(); i++) {
             alert.add(GRAY + temp.get(i));
         }
         alert.add(GOLD + "-----------------------------------------------------");
-        
-        warning = file.getStringList("warning.player_warning");
+
+        List<String> defWarning = new ArrayList<String>();
+        defWarning.add("[AntiCheat] Hacking is not permitted.");
+        defWarning.add("[AntiCheat] If you continue to hack, action will be taken.");
+
+        warning = getStringList("warning.player_warning", defWarning);
         banReason = getString("ban.ban_reason", "Banned by AntiCheat");
         banBroadcast = getString("ban.ban_broadcast", "[AntiCheat] &player was banned for hacking.");
         kickReason = getString("kick.kick_reason", "Kicked by AntiCheat");
@@ -77,6 +88,7 @@ public class Language {
         chatBanReason = getString("chat.ban_reason", "Banned for spamming");
         chatKickBroadcast = getString("chat.kick_broadcast", "[AntiCheat] &player was kicked for spamming");
         chatBanBroadcast = getString("chat.ban_broadcast", "[AntiCheat] &player was banned for spamming");
+
         save();
     }
 
@@ -138,6 +150,15 @@ public class Language {
             return d;
         } else {
             return file.getString(entry);
+        }
+    }
+
+    private List<String> getStringList(String entry, List<String> d) {
+        if (file.getString(entry) == null) {
+            file.set(entry, d);
+            return d;
+        } else {
+            return file.getStringList(entry);
         }
     }
 }

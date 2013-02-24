@@ -30,7 +30,6 @@ import org.bukkit.ChatColor;
 public class UserManager {
     private List<User> users = new ArrayList<User>();
     private static Configuration config;
-    private static Language lang;
     private static final ChatColor GRAY = ChatColor.GRAY;
     private static final ChatColor GOLD = ChatColor.GOLD;
     private static final ChatColor YELLOW = ChatColor.YELLOW;
@@ -38,7 +37,6 @@ public class UserManager {
     
     public UserManager(Configuration conf) {
         config = conf;
-        lang = conf.getLang();
     }
     
     public User getUser(String name) {
@@ -105,7 +103,7 @@ public class UserManager {
     }
     
     public void alert(User user, Level level, CheckType type) {
-        List<String> messageArray = lang.getAlert();
+        List<String> messageArray = config.getLang().getAlert();
         for (int i = 0; i < messageArray.size(); i++) {
             String message = messageArray.get(i);
             message = message.replaceAll("&player", GOLD + user.getName() + GRAY);
@@ -127,20 +125,20 @@ public class UserManager {
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd);
                 }
             } else if (event.equalsIgnoreCase("KICK")) {
-                user.getPlayer().kickPlayer(RED + lang.getKickReason());
-                String msg = RED + lang.getKickBroadcast().replaceAll("&player", name);
+                user.getPlayer().kickPlayer(RED + config.getLang().getKickReason());
+                String msg = RED + config.getLang().getKickBroadcast().replaceAll("&player", name);
                 if (!msg.equals("")) {
                     Bukkit.broadcastMessage(msg);
                 }
             } else if (event.equalsIgnoreCase("WARN")) {
-                List<String> message = lang.getWarning();
+                List<String> message = config.getLang().getWarning();
                 for (String string : message) {
                     user.getPlayer().sendMessage(RED + string);
                 }
             } else if (event.equalsIgnoreCase("BAN")) {
                 user.getPlayer().setBanned(true);
-                user.getPlayer().kickPlayer(RED + lang.getBanReason());
-                String msg = RED + lang.getBanBroadcast().replaceAll("&player", name);
+                user.getPlayer().kickPlayer(RED + config.getLang().getBanReason());
+                String msg = RED + config.getLang().getBanBroadcast().replaceAll("&player", name);
                 if (!msg.equals("")) {
                     Bukkit.broadcastMessage(msg);
                 }
