@@ -22,6 +22,7 @@ import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Level;
 import net.h31ix.anticheat.util.Utilities;
+import net.h31ix.anticheat.util.rule.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -77,6 +78,8 @@ public class User {
                 return false;
             } else {
                 level++;
+
+                // Check levels
                 for(Level l : levels) {
                     if(l.getValue() == level) {
                         Anticheat.getManager().getUserManager().alert(this, l, type);
@@ -84,6 +87,11 @@ public class User {
                             level = l.getValue() - 10;
                         }
                     }
+                }
+
+                // Execute rules
+                for(Rule rule : config.getRules()) {
+                    rule.check(this, type);
                 }
                 return true;
             }

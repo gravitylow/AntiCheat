@@ -110,7 +110,7 @@ public class Anticheat extends JavaPlugin {
                     out.close();
                     in.close();
                 } catch (Exception e) {
-                    getLogger().severe("Unable to save files. Is the directory writeable?");
+                    getLogger().severe("Unable to save files. Is the directory writable?");
                 }
                 if (verbose) {
                     getLogger().log(Level.INFO, file.getName() + " created.");
@@ -213,8 +213,8 @@ public class Anticheat extends JavaPlugin {
 	
 	private void setupConfig() {
             config = manager.getConfiguration();
-            config.load();
             checkConfigs();
+            config.load();
             verbose = config.verboseStartup();
             if (verbose) {
                 getLogger().log(Level.INFO, "Setup the config.");
@@ -235,8 +235,8 @@ public class Anticheat extends JavaPlugin {
             save(getResource("config.yml"), new File(getDataFolder() + "/config.yml"));
             save(getResource("lang.yml"), new File(getDataFolder() + "/lang.yml"));
             save(getResource("magic.yml"), new File(getDataFolder() + "/magic.yml"));
-            if(!save(getResource("events.yml"), new File(getDataFolder() + "/events.yml"))) {
-                config.updateEvents();
+            if(save(getResource("events.yml"), new File(getDataFolder() + "/events.yml"))) {
+                config.setUpdateEvents();
             }
 	}
 	

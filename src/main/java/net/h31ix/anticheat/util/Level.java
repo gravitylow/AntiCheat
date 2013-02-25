@@ -80,7 +80,7 @@ public class Level {
 
     public static Level load(String string) {
         try {
-            string = string.trim();
+            string = Utilities.removeWhitespace(string);
             String name = string.split(":")[0];
             int level = Integer.parseInt(string.split(":")[1]);
             if(string.split(":").length == 3) {
@@ -90,8 +90,8 @@ public class Level {
                 return new Level(name, level);
             }
         } catch (Exception ex) {
-            Anticheat.getPlugin().getLogger().warning("An event was intialized with an invalid string: '"+string+"'");
-            Anticheat.getPlugin().getLogger().warning("The proper format is: 'name: threshold, color' such as 'high: 50, RED'");
+            Anticheat.getPlugin().getLogger().warning("An event was initialized with an invalid string: '"+string+"'");
+            Anticheat.getPlugin().getLogger().warning("The proper format is: 'name: threshold : color' such as 'High : 50 : RED'");
             Anticheat.getPlugin().getLogger().warning("This event will NOT run. ("+ex.getMessage()+")");
             return null;
         }

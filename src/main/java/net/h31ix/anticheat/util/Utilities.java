@@ -406,6 +406,16 @@ public final class Utilities {
     }
 
     /**
+     * Remove all whitespace from the given string to ready it for parsing
+     *
+     * @param string the string to parse
+     * @return string with whitespace removed
+     */
+    public static String removeWhitespace(String string) {
+        return string.replaceAll(" ", "");
+    }
+
+    /**
      * Determine if a player has the given enchantment on their armor
      *
      * @param player player to check

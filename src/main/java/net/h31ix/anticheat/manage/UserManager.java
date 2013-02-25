@@ -142,6 +142,8 @@ public class UserManager {
                 if (!msg.equals("")) {
                     Bukkit.broadcastMessage(msg);
                 }
+            } else if (event.equalsIgnoreCase("RESET")) {
+                user.resetLevel();
             }
         }
     }

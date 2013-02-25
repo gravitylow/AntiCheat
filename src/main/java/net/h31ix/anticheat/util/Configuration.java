@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.manage.AnticheatManager;
+import net.h31ix.anticheat.util.rule.Rule;
 import net.h31ix.anticheat.util.yaml.CommentedConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -61,8 +62,10 @@ public class Configuration {
     private static Language language;
     private List<String> exemptWorlds = new ArrayList<String>();
     private List<Level> levels = new ArrayList<Level>();
+    private List<Rule> rules = new ArrayList<Rule>();
     private Magic magicInstance;
     private int highestLevel;
+    private boolean updateEvents = false;
     
     public Configuration(AnticheatManager instance) {
         micromanage = instance;
@@ -153,7 +156,16 @@ public class Configuration {
     }
 
     public int getHighestLevel() {
+        // TODO: setup
         return highestLevel = -99;
+    }
+
+    public List<Rule> getRules() {
+        return rules;
+    }
+
+    public void setUpdateEvents() {
+        updateEvents = true;
     }
 
     public void updateEvents() {
@@ -178,6 +190,7 @@ public class Configuration {
         levels.add(customLevel);
 
         writeEvents();
+        updateEvents = false;
     }
 
     private void writeEvents() {
@@ -198,6 +211,10 @@ public class Configuration {
         levels = new ArrayList<Level>();
         for(String string : events.getStringList("levels")) {
             Level level = Level.load(string);
+            if(level == null) {
+                continue;
+            }
+
             levels.add(level);
             highestLevel = level.getValue() > highestLevel ? level.getValue() : highestLevel;
         }
@@ -217,10 +234,31 @@ public class Configuration {
                 }
             }
         }
+
+        rules = new ArrayList<Rule>();
+        List<String> tempRules = events.getStringList("rules");
+        for(int i=0;i<tempRules.size();i++) {
+            String string = tempRules.get(i);
+
+            // Old default. Isn't valid anymore.
+            if (string.equals("Check:SPIDER > 0 ? Level=20 : none")) {
+                tempRules.set(i, "Check_SPIDER < 0 ? Player.KICK : null");
+                events.set("rules", tempRules);
+                continue;
+            } else if (string.equals("Check_SPIDER < 0 ? Player.KICK : null")) {
+                // New default rule, won't ever run so we shouldn't load it; only used as example
+                continue;
+            }
+            Rule rule = Rule.load(string);
+            if(rule != null) {
+                rules.add(rule);
+            } else {
+                Anticheat.getPlugin().getLogger().warning("Couldn't load rule '"+string+"' from config. Improper formatting used.");
+            }
+        }
     }
     
     public final void load() {
-        boolean secondLoad = config != null;
         config = CommentedConfiguration.loadConfig(configFile);
         level = YamlConfiguration.loadConfiguration(levelFile);
         magic = YamlConfiguration.loadConfiguration(magicFile);
@@ -275,10 +313,13 @@ public class Configuration {
         
         exemptWorlds = config.getStringList("Disable in");
 
-        if(secondLoad) {
-            readEvents();
+        if(updateEvents) {
+            updateEvents();
         }
+
+        readEvents();
         // End pulling values from config
+
         save();
         magicInstance = new Magic(getMagic(), this, CommentedConfiguration.loadConfiguration(micromanage.getPlugin().getResource("magic.yml")));
         if(micromanage.getBackend() != null) { // If this is first run, backend may not be setup yet

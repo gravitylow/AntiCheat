@@ -9,5 +9,5 @@ actions:
     - 'High: KICK'
     - 'Custom: COMMAND[ban &player;say hello world]'
 rules:
-    # if spider check is over 0, set level to 20. otherwise, do nothing
-    - 'Check:SPIDER > 0 ? Level=20 : none'
+    # if spider check is less than 0, set level to 20. otherwise, do nothing
+    - 'Check_SPIDER < 0 ? Player.KICK : null'
