@@ -430,6 +430,18 @@ public final class Utilities {
         }
         return false;
     }
+
+    /**
+     * Create a list with the given string for execution
+     *
+     * @param string the string to parse
+     * @return ArrayList with string
+     */
+    public static ArrayList<String> stringToList(String string) {
+        ArrayList<String> i = new ArrayList<String>();
+        i.add(string);
+        return i;
+    }
     
     static {
         // START INSTANT BREAK MATERIALS

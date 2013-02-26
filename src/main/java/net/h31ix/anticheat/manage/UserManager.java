@@ -114,8 +114,11 @@ public class UserManager {
         Utilities.alert(messageArray);
         execute(user, level.getActions(), type);
     }
-    
     public void execute(User user, List<String> actions, CheckType type) {
+        execute(user, actions, type, config.getLang().getKickReason(), config.getLang().getWarning(), config.getLang().getBanReason());
+    }
+
+    public void execute(User user, List<String> actions, CheckType type, String kickReason, List<String> warning, String banReason) {
         final String name = user.getName();
         for(String event : actions) {
             event = event.replaceAll("&player", name).replaceAll("&world", user.getPlayer().getWorld().getName()).replaceAll("&check", type.name());
@@ -125,19 +128,19 @@ public class UserManager {
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd);
                 }
             } else if (event.equalsIgnoreCase("KICK")) {
-                user.getPlayer().kickPlayer(RED + config.getLang().getKickReason());
+                user.getPlayer().kickPlayer(RED + kickReason);
                 String msg = RED + config.getLang().getKickBroadcast().replaceAll("&player", name);
                 if (!msg.equals("")) {
                     Bukkit.broadcastMessage(msg);
                 }
             } else if (event.equalsIgnoreCase("WARN")) {
-                List<String> message = config.getLang().getWarning();
+                List<String> message = warning;
                 for (String string : message) {
                     user.getPlayer().sendMessage(RED + string);
                 }
             } else if (event.equalsIgnoreCase("BAN")) {
                 user.getPlayer().setBanned(true);
-                user.getPlayer().kickPlayer(RED + config.getLang().getBanReason());
+                user.getPlayer().kickPlayer(RED + banReason);
                 String msg = RED + config.getLang().getBanBroadcast().replaceAll("&player", name);
                 if (!msg.equals("")) {
                     Bukkit.broadcastMessage(msg);

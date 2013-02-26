@@ -29,8 +29,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.SynchronousQueue;
 
 public class User {
     private final String name;
@@ -41,6 +41,8 @@ public class User {
     private Configuration config = Anticheat.getManager().getConfiguration();
     private List<Level> levels = new ArrayList<Level>();
     private int toX, toY, toZ;
+    private String [] messages = new String[2];
+    private Long [] messageTimes = new Long[2];
 
     public User(String name) {
         this.name = name;
@@ -163,5 +165,30 @@ public class User {
 
     public boolean checkTo(double x, double y, double z) {
         return (int)x == toX && (int)y == toY && (int)z == toZ;
+    }
+
+    public void addMessage(String message) {
+        messages[1] = messages[0];
+        messages[0] = message;
+
+        messageTimes[1] = messageTimes[0];
+        messageTimes[0] = System.currentTimeMillis();
+    }
+
+    public String getMessage(int index) {
+        return messages[index];
+    }
+
+    public Long getMessageTime(int index) {
+        return messageTimes[index];
+    }
+
+    public void clearMessages() {
+        messages = new String[2];
+        messageTimes = new Long[2];
+    }
+
+    public Long getLastMessageTime() {
+        return getMessageTime(0) == null ? -1 : getMessageTime(0);
     }
 }

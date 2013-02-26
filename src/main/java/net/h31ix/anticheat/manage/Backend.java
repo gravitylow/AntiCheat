@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
 import net.h31ix.anticheat.util.CheckResult;
 import net.h31ix.anticheat.util.CheckResult.Result;
 import net.h31ix.anticheat.util.Distance;
@@ -48,8 +49,6 @@ public class Backend {
     private List<String> isInWaterCache = new ArrayList<String>();
     private List<String> isAscending = new ArrayList<String>();
     private Map<String, Integer> ascensionCount = new HashMap<String, Integer>();
-    private Map<String, String> oldMessage = new HashMap<String, String>();
-    private Map<String, String> lastMessage = new HashMap<String, String>();
     private Map<String, Double> blocksOverFlight = new HashMap<String, Double>();
     private Map<String, Integer> chatLevel = new HashMap<String, Integer>();
     private Map<String, Integer> chatKicks = new HashMap<String, Integer>();
@@ -94,14 +93,14 @@ public class Backend {
     private Map<String, Long> lastFallPacket = new HashMap<String, Long>();
     
     private Magic magic;
-    private AnticheatManager micromanage = null;
+    private AnticheatManager manager = null;
     private Language lang = null;
     private static final CheckResult PASS = new CheckResult(Result.PASSED);
     
     public Backend(AnticheatManager instance) {
         magic = instance.getConfiguration().getMagicInstance();
-        micromanage = instance;
-        lang = micromanage.getConfiguration().getLang();
+        manager = instance;
+        lang = manager.getConfiguration().getLang();
         transparent.add((byte) -1);
     }
 
@@ -111,9 +110,9 @@ public class Backend {
     
     public void garbageClean(Player player) {
         String pN = player.getName();
-        User user = micromanage.getUserManager().getUser(pN);
+        User user = manager.getUserManager().getUser(pN);
         if (user != null) {
-            micromanage.getUserManager().remove(user);
+            manager.getUserManager().remove(user);
         }
         blocksDropped.remove(pN);
         blockTime.remove(pN);
@@ -129,8 +128,6 @@ public class Backend {
         instantBreakExempt.remove(pN);
         isAscending.remove(pN);
         ascensionCount.remove(pN);
-        oldMessage.remove(pN);
-        lastMessage.remove(pN);
         blocksOverFlight.remove(pN);
         chatLevel.remove(pN);
         nofallViolation.remove(pN);
@@ -449,7 +446,7 @@ public class Backend {
                     Location g = player.getLocation();
                     yAxisViolations.put(name, yAxisViolations.get(name) + 1);
                     yAxisLastViolation.put(name, System.currentTimeMillis());
-                    if (!micromanage.getConfiguration().silentMode()) {
+                    if (!manager.getConfiguration().silentMode()) {
                         g.setY(lastYcoord.get(name));
                         player.sendMessage(ChatColor.RED + "[AntiCheat] Fly hacking on the y-axis detected.  Please wait 5 seconds to prevent getting damage.");
                         if (g.getBlock().getTypeId() == 0) {
@@ -468,7 +465,7 @@ public class Backend {
                     Location g = player.getLocation();
                     yAxisViolations.put(name, yAxisViolations.get(name) + 1);
                     yAxisLastViolation.put(name, System.currentTimeMillis());
-                    if (!micromanage.getConfiguration().silentMode()) {
+                    if (!manager.getConfiguration().silentMode()) {
                         g.setY(lastYcoord.get(name));
                         if (g.getBlock().getTypeId() == 0) {
                             player.teleport(g);
@@ -642,7 +639,7 @@ public class Backend {
             int i = fastBreakViolation.get(name);
             if (i > violations && math < magic.FASTBREAK_MAXVIOLATIONTIME) {
                 lastBlockBroken.put(name, System.currentTimeMillis());
-                if (!micromanage.getConfiguration().silentMode()) {
+                if (!manager.getConfiguration().silentMode()) {
                     player.sendMessage(ChatColor.RED + "[AntiCheat] Fastbreaking detected. Please wait 10 seconds before breaking blocks.");
                 }
                 return new CheckResult(Result.FAILED, player.getName()+" broke blocks too fast "+i+" times in a row (max="+violations+")");
@@ -704,7 +701,7 @@ public class Backend {
             Long math = System.currentTimeMillis() - lastBlockPlaced.get(name);
             if (lastBlockPlaced.get(name) > 0 && math < magic.FASTPLACE_MAXVIOLATIONTIME) {
                 lastBlockPlaced.put(name, time);
-                if (!micromanage.getConfiguration().silentMode()) {
+                if (!manager.getConfiguration().silentMode()) {
                     player.sendMessage(ChatColor.RED + "[AntiCheat] Fastplacing detected. Please wait 10 seconds before placing blocks.");
                 }
                 return new CheckResult(Result.FAILED, player.getName()+" placed blocks too fast "+fastBreakViolation.get(name)+" times in a row (max="+violations+")");
@@ -740,37 +737,29 @@ public class Backend {
         lastHeal.put(player.getName(), System.currentTimeMillis());
     }
     
-    public void logChat(final Player player) {
-        String name = player.getName();
-        if (chatLevel.get(name) == null) {
-            logEvent(chatLevel, player, 1, magic.CHAT_MIN);
-        } else {
-            int amount = chatLevel.get(name) + 1;
-            logEvent(chatLevel, player, amount, magic.CHAT_MIN);
-            if (checkChatLevel(player, amount).failed()) {
-                micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable() {
-                    @Override
-                    public void run() {
-                        processChatSpammer(player);
-                    }
-                });
-            }
-        }
-    }
-    
     public CheckResult checkSpam(Player player, String msg) {
         String name = player.getName();
-        if (lastMessage.get(name) == null) {
-            logEvent(lastMessage, player, msg, magic.CHAT_REPEAT_MIN);
-        } else {
-            if (oldMessage.get(name) != null && lastMessage.get(name).equals(msg) && oldMessage.get(name).equals(msg)) {
-                return new CheckResult(Result.FAILED, player.getName()+" sent the same message 3 times in a row ");
+        User user = manager.getUserManager().getUser(name);
+        if(user.getLastMessageTime() != -1)
+        System.out.println("Time: "+(System.currentTimeMillis() - user.getLastMessageTime()));
+
+        for(int i=0;i<2;i++) {
+            String m = user.getMessage(i);
+            if(m == null) {
+                break;
+            }
+            Long l = user.getMessageTime(i);
+
+            if(System.currentTimeMillis() - l > magic.CHAT_REPEAT_MIN * 1000) {
+                user.clearMessages();
+                break;
+            } else if((m.equalsIgnoreCase(msg) && i == 1) || System.currentTimeMillis() - user.getLastMessageTime() < magic.CHAT_MIN) {
+                return new CheckResult(Result.FAILED, lang.getChatWarning());
             } else {
-                logEvent(oldMessage, player, lastMessage.get(name), magic.CHAT_REPEAT_MIN);
-                logEvent(lastMessage, player, msg, magic.CHAT_REPEAT_MIN);
-                return PASS;
+                break;
             }
         }
+        user.addMessage(msg);
         return PASS;
     }
     
@@ -889,7 +878,7 @@ public class Backend {
             velocitytrack.put(player.getName(), velocitytrack.get(player.getName()) + 1);
             if (velocitytrack.get(player.getName()) > magic.VELOCITY_MAXTIMES) {
                 velocitized.put(player.getName(), System.currentTimeMillis() + magic.VELOCITY_PREVENT);
-                micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable() {
+                manager.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(manager.getPlugin(), new Runnable() {
                     @Override
                     public void run() {
                         velocitytrack.put(player.getName(), 0);
@@ -1002,21 +991,6 @@ public class Backend {
         return isMovingExempt(player) || justVelocity(player);
     }
     
-    private <E> void logEvent(final Map<String, E> map, final Player player, final E obj, long time) {
-        
-        map.put(player.getName(), obj);
-        micromanage.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(micromanage.getPlugin(), new Runnable() {
-            @Override
-            public void run() {
-                if (map.get(player.getName()) == obj) {
-                    map.remove(player.getName());
-                } else {
-                    // Don't remove this, for some reason it's fixing chat bugs.
-                }
-            }
-        }, time);
-    }
-    
     private boolean isDoing(Player player, Map<String, Long> map, double max) {
         if (map.containsKey(player.getName())) {
             if (max != -1) {
@@ -1040,53 +1014,27 @@ public class Backend {
         }
     }
     
-    private CheckResult checkChatLevel(Player player, int amount) {
-        if(amount >= magic.CHAT_KICK_LEVEL) {
-            return new CheckResult(Result.FAILED, player.getName()+" chatted "+amount+" times too quickly (max="+magic.CHAT_KICK_LEVEL+")");
-        }
-        return PASS;
-    }
-    
-    private void processChatSpammer(Player player) {
-        if (player != null && player.isOnline()) {
-            String name = player.getName();
-            int kick;
-            if (chatKicks.get(name) == null || chatKicks.get(name) == 0) {
-                kick = 1;
-                chatKicks.put(name, kick);
-            } else {
-                kick = chatKicks.get(name) + 1;
-                chatKicks.put(name, kick);
+    public void processChatSpammer(Player player) {
+        if(chatLevel.get(player.getName()) != null && chatLevel.get(player.getName()) >= magic.CHAT_KICK_LEVEL) {
+            if (player != null && player.isOnline()) {
+                String name = player.getName();
+                int kick;
+                if (chatKicks.get(name) == null || chatKicks.get(name) == 0) {
+                    kick = 1;
+                    chatKicks.put(name, kick);
+                } else {
+                    kick = chatKicks.get(name) + 1;
+                    chatKicks.put(name, kick);
+                }
+
+                String event = kick <= magic.CHAT_BAN_LEVEL ? manager.getConfiguration().chatActionKick() : manager.getConfiguration().chatActionBan();
+                manager.getUserManager().execute(manager.getUserManager().getUser(player.getName()), Utilities.stringToList(event), CheckType.SPAM, lang.getChatKickReason() + "(" + kick + "/3)", Utilities.stringToList(lang.getChatWarning()), lang.getChatBanReason());
             }
-            
-            String event = kick <= magic.CHAT_BAN_LEVEL ? micromanage.getConfiguration().chatActionKick() : micromanage.getConfiguration().chatActionBan();
-            // Set string variables
-            event = event.replaceAll("&player", name).replaceAll("&world", player.getWorld().getName());
-            
-            if (event.startsWith("COMMAND[")) {
-                for(String cmd : Utilities.getCommands(event)) {
-                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd);
-                }
-            } else if (event.equalsIgnoreCase("KICK")) {
-                String msg = kick <= magic.CHAT_BAN_LEVEL ? ChatColor.RED + lang.getChatKickReason() + " (" + kick + "/" + magic.CHAT_BAN_LEVEL + ")" : ChatColor.RED + lang.getChatBanReason();
-                player.kickPlayer(msg);
-                msg = kick <= magic.CHAT_BAN_LEVEL ? ChatColor.RED + lang.getChatKickBroadcast() + " (" + kick + "/" + magic.CHAT_BAN_LEVEL + ")" : ChatColor.RED + lang.getChatBanBroadcast();
-                msg = msg.replaceAll("&player", name);
-                if (!msg.equals("")) {
-                    Bukkit.broadcastMessage(msg);
-                }
-            } else if (event.equalsIgnoreCase("BAN")) {
-                player.setBanned(true);
-                player.kickPlayer(ChatColor.RED + lang.getChatBanReason());
-                String msg = ChatColor.RED + lang.getChatBanBroadcast();
-                msg = msg.replaceAll("&player", name);
-                if (!msg.equals("")) {
-                    Bukkit.broadcastMessage(msg);
-                }
-            }
+        } else {
+            increment(player, chatLevel, magic.CHAT_KICK_LEVEL);
         }
     }
-    
+
     public int increment(Player player, Map<String, Integer> map, int num) {
         String name = player.getName();
         if (map.get(name) == null) {

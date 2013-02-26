@@ -74,6 +74,9 @@ public class Configuration {
         langFile = new File(micromanage.getPlugin().getDataFolder() + "/lang.yml");
         magicFile = new File(micromanage.getPlugin().getDataFolder() + "/magic.yml");
         eventsFile = new File(micromanage.getPlugin().getDataFolder() + "/events.yml");
+
+        //
+        language = new Language(YamlConfiguration.loadConfiguration(langFile), langFile);
     }
     
     private void save() {

@@ -8,7 +8,7 @@ warning:
   player_warning:
   - '[AntiCheat] Hacking is not permitted.'
   - '[AntiCheat] If you continue to hack, action will be taken.'
-spam:
+chat:
   warning: 'Stop spamming the server or you will be kicked!'
   kick_reason: 'Kicked for spamming'
   ban_reason: 'Banned for spamming'

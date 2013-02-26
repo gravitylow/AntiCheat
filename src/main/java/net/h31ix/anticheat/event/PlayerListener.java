@@ -52,11 +52,10 @@ public class PlayerListener extends EventListener {
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if (checkManager.willCheck(player, CheckType.SPAM) && config.commandSpam()) {
-            backend.logChat(player);
             CheckResult result = backend.checkSpam(player, event.getMessage());
             if (result.failed()) {
                 event.setCancelled(!config.silentMode());
-                player.sendMessage(ChatColor.RED + "Please do not spam.");
+                backend.processChatSpammer(player);
                 log(result.getMessage(), player, CheckType.SPAM);
             }
         }
@@ -145,15 +144,11 @@ public class PlayerListener extends EventListener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         if (checkManager.willCheck(player, CheckType.SPAM) && config.chatSpam()) {
-            backend.logChat(player);
             CheckResult result = backend.checkSpam(player, event.getMessage());
             if (result.failed()) {
-                boolean b = !config.silentMode();
-                event.setCancelled(b);
-                if (b) {
-                    player.sendMessage(ChatColor.RED + config.getLang().getChatWarning());
-                }
-                log(result.getMessage(), player, CheckType.SPAM);
+                event.setCancelled(!config.silentMode());
+                player.sendMessage(ChatColor.RED + result.getMessage());
+                backend.processChatSpammer(player);
             }
         }
         
