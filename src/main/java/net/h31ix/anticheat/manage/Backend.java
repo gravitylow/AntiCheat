@@ -741,7 +741,6 @@ public class Backend {
         String name = player.getName();
         User user = manager.getUserManager().getUser(name);
         if(user.getLastMessageTime() != -1)
-        System.out.println("Time: "+(System.currentTimeMillis() - user.getLastMessageTime()));
 
         for(int i=0;i<2;i++) {
             String m = user.getMessage(i);
