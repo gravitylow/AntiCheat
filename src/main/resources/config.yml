@@ -15,17 +15,6 @@ Chat:
   # Valid actions = NONE,KICK,BAN,COMMAND[command]
   Kick Action: KICK
   Ban Action: BAN
-# Events occur when a player's hack level changes. You may configure reactions to these events here.
-# Valid events = NONE,WARN,KICK,BAN,COMMAND[command]
-# Use commands like so: COMMAND[ban &player 30] or COMMAND[kick &player hacking] or COMMAND[jail &player 10]
-# &player will be replaced with player's name, and &world will be replaced with the player's world
-Events:
-  Level Medium: WARN
-  Level High: KICK
-  # How many warnings should the player get before entering medium?
-  Medium threshold: 20
-  # How many warnings should the player get before entering high?
-  High threshold: 50
 System:
   # Turning auto-update off is a _BAD_ idea. You will no longer be protected by the latest hacks/cheats if you do so, and will have to update manually.
   Auto update: true
