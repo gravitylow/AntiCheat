@@ -156,7 +156,6 @@ public class Rule {
             text = text.split("\\.")[1];
             List<String> action = new ArrayList<String>();
             action.add(text);
-            System.out.println("Executed from rule");
             Anticheat.getManager().getUserManager().execute(user, action, type);
         }
     }
