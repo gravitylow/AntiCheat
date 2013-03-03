@@ -341,20 +341,10 @@ public class PlayerListener extends EventListener {
             }
         }
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
-    }
-    
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void checkSpeed(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-        Location from = event.getFrom();
-        Location to = event.getTo();
         boolean changed = false;
-        
+
         if (event.getTo() != event.getFrom()) {
-            Distance distance = new Distance(from, to);
             double x = distance.getXDifference();
-            double y = distance.getYDifference();
             double z = distance.getZDifference();
             if (checkManager.willCheck(player, CheckType.SPEED) && checkManager.willCheck(player, CheckType.ZOMBE_FLY) && checkManager.willCheck(player, CheckType.FLY)) {
                 if (event.getFrom().getY() < event.getTo().getY()) {
@@ -404,7 +394,7 @@ public class PlayerListener extends EventListener {
                         player.setSneaking(false);
                     }
                     log(result.getMessage(), player, CheckType.SNEAK);
-                    changed = true;                    
+                    changed = true;
                 }
             }
             if (checkManager.willCheck(player, CheckType.SPIDER)) {
@@ -417,12 +407,12 @@ public class PlayerListener extends EventListener {
                     changed = true;
                 }
             }
-            
+
             if (!changed) {
                 Anticheat.getManager().getUserManager().getUser(player.getName()).setGoodLocation(event.getFrom());
             }
         }
-        
+
         Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
