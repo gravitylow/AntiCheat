@@ -1,7 +1,9 @@
 AntiCheat
 =============
 
-Stop hackers and cheaters in their tracks!
+AntiCheat helps server admins easily identify and block malicious users by monitoring and analyzing the behaviour of their players.
+
+[![Build Status](https://travis-ci.org/h31ix/AntiCheat.png?branch=master)](https://travis-ci.org/h31ix/AntiCheat)
 
 Usage
 -------
@@ -11,7 +13,7 @@ http://dev.bukkit.org/server-mods/anticheat/pages/configuration/
 
 http://dev.bukkit.org/server-mods/anticheat/pages/permissions/
 
-Developer stuff:
+Developer Resources
 -------
 API Usage: http://dev.bukkit.org/server-mods/anticheat/pages/api-documentation/
 
@@ -28,6 +30,23 @@ Resources
 -------
 BukkitDev --- http://dev.bukkit.org/server-mods/anticheat/
 
-Jenkins (Downloads) --- http://ci.gravitydevelopment.net/job/AntiCheat/
+Development Builds --- http://ci.gravitydevelopment.net/job/AntiCheat/
 
-Latest version download: http://api.bukget.org/2/bukkit/plugin/anticheat/latest/download
+Latest release download: http://api.bukget.org/2/bukkit/plugin/anticheat/latest/download
+
+Latest dev download: http://ci.h31ix.net/job/AntiCheat/lastSuccessfulBuild/artifact/target/AntiCheat.jar
+
+Compiling
+-------
+
+AntiCheat builds on Java JDK 1.6 and uses [Maven 3](http://maven.apache.org/download.cgi) to manage dependencies.
+
+To download the source code, first make sure [Git](http://git-scm.com/) is installed, then use
+	git clone git@github.com:h31ix/AntiCheat.git
+
+The source code will be downloaded into a new directory 'AntiCheat'. 
+
+Make any changes you desire and then, to compile AntiCheat, ensure you are inside the AntiCheat directory (cd AntiCheat) and use
+	mvn clean install
+
+If all is successful, AntiCheat.jar will be compiled to the 'target' folder and will be ready for use. If you encounter a problem or error, please google search it first and, if you are unable to find an answer, ask a developer.
