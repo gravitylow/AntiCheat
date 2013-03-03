@@ -19,33 +19,25 @@
 package net.h31ix.anticheat.event;
 
 import net.h31ix.anticheat.Anticheat;
-import net.h31ix.anticheat.manage.Backend;
-import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.util.CheckResult;
-import net.h31ix.anticheat.util.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.ItemStack;
 
 public class InventoryListener extends EventListener {
-    
-    private final Backend backend = getBackend();
-    private final CheckManager checkManager = getCheckManager();
-    private final Configuration config = Anticheat.getManager().getConfiguration();
     
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player) {
             Player player = (Player) event.getWhoClicked();
-            if (checkManager.willCheck(player, CheckType.FAST_INVENTORY)) {
-                CheckResult result = backend.checkInventoryClicks(player);
+            if (getCheckManager().willCheck(player, CheckType.FAST_INVENTORY)) {
+                CheckResult result = getBackend().checkInventoryClicks(player);
                 if (result.failed()) {
-                    if (!config.silentMode()) {
+                    if (!silentMode()) {
                         getUserManager().getUser(player.getName()).restore(event.getInventory());
                         player.getInventory().clear();
                         player.damage(99999);

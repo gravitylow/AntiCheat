@@ -21,30 +21,39 @@ package net.h31ix.anticheat.util;
 import org.bukkit.Location;
 
 public class Distance {
-    private final Location l1, l2;
+    private double l1Y = 0;
+    private double l2Y = 0;
+
+    private double XDiff;
+    private double YDiff;
+    private double ZDiff;
     
     public Distance(Location from, Location to) {
-        l1 = to;
-        l2 = from;
+        l1Y = to.getY();
+        l2Y = from.getY();
+
+        XDiff = Math.abs(to.getX() - from.getX());
+        ZDiff = Math.abs(to.getZ() - from.getZ());
+        YDiff = Math.abs(l1Y - l2Y);
     }
     
     public double fromY() {
-        return l2.getY();
+        return l2Y;
     }
     
     public double toY() {
-        return l1.getY();
+        return l1Y;
     }
     
     public double getXDifference() {
-        return Math.abs(l1.getX() - l2.getX());
+        return XDiff;
     }
     
     public double getZDifference() {
-        return Math.abs(l1.getZ() - l2.getZ());
+        return ZDiff;
     }
     
     public double getYDifference() {
-        return Math.abs(l1.getY() - l2.getY());
+        return YDiff;
     }
 }

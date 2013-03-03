@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.manage.*;
+import net.h31ix.anticheat.util.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
@@ -33,6 +34,7 @@ public class EventListener implements Listener {
     private static final Backend BACKEND = Anticheat.getManager().getBackend();
     private static final Anticheat PLUGIN = Anticheat.getManager().getPlugin();
     private static final UserManager USER_MANAGER = Anticheat.getManager().getUserManager();
+    private static final Configuration CONFIG = Anticheat.getManager().getConfiguration();
 
     public static void log(String message, Player player, CheckType type) {
         User user = getUserManager().getUser(player.getName());
@@ -119,5 +121,13 @@ public class EventListener implements Listener {
 
     public static Anticheat getPlugin() {
         return PLUGIN;
+    }
+
+    public static Configuration getConfig() {
+        return CONFIG;
+    }
+
+    public static boolean silentMode() {
+        return CONFIG.silentMode();
     }
 }

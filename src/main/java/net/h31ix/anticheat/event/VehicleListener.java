@@ -19,7 +19,6 @@
 package net.h31ix.anticheat.event;
 
 import net.h31ix.anticheat.Anticheat;
-import net.h31ix.anticheat.manage.Backend;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
@@ -27,12 +26,11 @@ import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 
 public class VehicleListener extends EventListener {
-    private final Backend backend = getBackend();
     
     @EventHandler(ignoreCancelled = true)
     public void onVehicleEnter(VehicleEnterEvent event) {
         if (event.getEntered() instanceof Player) {
-            backend.logEnterExit((Player) event.getEntered());
+            getBackend().logEnterExit((Player) event.getEntered());
         }
         
         Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
@@ -41,7 +39,7 @@ public class VehicleListener extends EventListener {
     @EventHandler(ignoreCancelled = true)
     public void onVehicleExit(VehicleExitEvent event) {
         if (event.getExited() instanceof Player) {
-            backend.logEnterExit((Player) event.getExited());
+            getBackend().logEnterExit((Player) event.getExited());
         }
         
         Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
@@ -51,7 +49,7 @@ public class VehicleListener extends EventListener {
     @EventHandler(ignoreCancelled = true)
     public void onVehicleDestroy(VehicleDestroyEvent event) {
         if (event.getVehicle().getPassenger() != null &&  event.getVehicle().getPassenger() instanceof Player) {
-            backend.logEnterExit((Player) event.getVehicle().getPassenger());
+            getBackend().logEnterExit((Player) event.getVehicle().getPassenger());
         }
         
         Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
