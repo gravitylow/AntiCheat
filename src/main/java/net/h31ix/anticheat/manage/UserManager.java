@@ -102,10 +102,11 @@ public class UserManager {
     }
     
     public void alert(User user, Level level, CheckType type) {
+        final String name = user.getName();
         List<String> messageArray = config.getLang().getAlert();
         for (int i = 0; i < messageArray.size(); i++) {
             String message = messageArray.get(i);
-            message = message.replaceAll("&player", GOLD + user.getName() + GRAY);
+            message = message.replaceAll("&player", GOLD + name + GRAY);
             message = message.replaceAll("&check", GOLD + CheckType.getName(type) + GRAY);
             message = message.replaceAll("&level", level.getColor() + level.getName() + GRAY);
             messageArray.set(i, message);
