@@ -259,7 +259,7 @@ public class PlayerListener extends EventListener {
         } else {
             getUserManager().addUserFromFile(player.getName());
         }
-        if (player.hasMetadata(Anticheat.SPY_METADATA)) {
+        if (player.hasMetadata(Utilities.SPY_METADATA)) {
             for (Player p : player.getServer().getOnlinePlayers()) {
                 if (!Permission.SYSTEM_SPY.get(p)) {
                     p.hidePlayer(player);

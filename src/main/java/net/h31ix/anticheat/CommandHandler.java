@@ -160,10 +160,10 @@ public class CommandHandler implements CommandExecutor {
                                 p.hidePlayer(sender);
                             }
                         }
-                        if (!sender.hasMetadata(Anticheat.SPY_METADATA)) // Maintain ORIGINAL location and other data
+                        if (!sender.hasMetadata(Utilities.SPY_METADATA)) // Maintain ORIGINAL location and other data
                         {
                             SpyState state = new SpyState(sender.getAllowFlight(), sender.isFlying(), sender.getLocation());
-                            sender.setMetadata(Anticheat.SPY_METADATA, new FixedMetadataValue(Anticheat.getPlugin(), state));
+                            sender.setMetadata(Utilities.SPY_METADATA, new FixedMetadataValue(Anticheat.getPlugin(), state));
                         }
                         sender.setAllowFlight(true);
                         sender.setFlying(true);
@@ -176,12 +176,12 @@ public class CommandHandler implements CommandExecutor {
                         cs.sendMessage(RED + "Player: " + WHITE + args[1] + RED + " not found.");
                     }
                 } else {
-                    if (sender.hasMetadata(Anticheat.SPY_METADATA)) {
-                        SpyState state = ((SpyState) sender.getMetadata(Anticheat.SPY_METADATA).get(0).value());
+                    if (sender.hasMetadata(Utilities.SPY_METADATA)) {
+                        SpyState state = ((SpyState) sender.getMetadata(Utilities.SPY_METADATA).get(0).value());
                         sender.setAllowFlight(state.getAllowFlight());
                         sender.setFlying(state.getFlying());
                         sender.teleport(state.getLocation());
-                        sender.removeMetadata(Anticheat.SPY_METADATA, Anticheat.getPlugin());
+                        sender.removeMetadata(Utilities.SPY_METADATA, Anticheat.getPlugin());
                         for (Player p : cs.getServer().getOnlinePlayers()) {
                             p.showPlayer(sender);
                         }

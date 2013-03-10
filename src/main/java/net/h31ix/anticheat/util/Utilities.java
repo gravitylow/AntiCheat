@@ -44,6 +44,7 @@ public final class Utilities {
     private static final List<Material> SHOVELS = new ArrayList<Material>();
     private static final List<Material> ANY = new ArrayList<Material>();
     private static final Map<Material, Material> COMBO = new HashMap<Material, Material>();
+    public static final String SPY_METADATA = "ac-spydata";
 
     /**
      * Send a hack level alert to players and console

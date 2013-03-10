@@ -44,17 +44,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Anticheat extends JavaPlugin {
-	private static AnticheatManager manager;
-	private static List<Listener> eventList = new ArrayList<Listener>();
-	private static boolean update = false;
-	private static Configuration config;
-	private static boolean verbose;
-	private static Metrics metrics;
-	private static final long XRAY_TIME = 1200;
-	public static final String SPY_METADATA = "ac-spydata";
-	
-	@Override
-	public void onEnable() {
+
+    private static AnticheatManager manager;
+    private static List<Listener> eventList = new ArrayList<Listener>();
+    private static boolean update = false;
+    private static Configuration config;
+    private static boolean verbose;
+    private static Metrics metrics;
+    private static final long XRAY_TIME = 1200;
+
+    @Override
+    public void onEnable() {
             manager = new AnticheatManager(this, getLogger());
             eventList.add(new PlayerListener());
             eventList.add(new BlockListener());
@@ -84,10 +84,10 @@ public class Anticheat extends JavaPlugin {
             if (verbose) {
                 getLogger().log(Level.INFO, "Finished loading.");
             }
-	}
-	
-	@Override
-	public void onDisable() {
+    }
+
+    @Override
+    public void onDisable() {
             AnticheatManager.close();
             for (User user : manager.getUserManager().getUsers()) {
                 config.saveLevel(user.getName(), user.getLevel());
@@ -95,9 +95,9 @@ public class Anticheat extends JavaPlugin {
             config.saveLevels();
             getServer().getScheduler().cancelTasks(this);
             cleanup();
-	}
-	
-	private boolean save(InputStream in, File file) {
+    }
+
+    private boolean save(InputStream in, File file) {
             if (!file.exists()) {
                 file.getParentFile().mkdirs();
                 try {
@@ -118,9 +118,9 @@ public class Anticheat extends JavaPlugin {
                 return true;
             }
             return false;
-	}
-	
-	private void setupXray() {
+    }
+
+    private void setupXray() {
             final XRayTracker xtracker = manager.getXRayTracker();
             if (config.logXRay()) {
                 eventList.add(new XRayListener());
@@ -146,25 +146,25 @@ public class Anticheat extends JavaPlugin {
                     }
                 }
             }
-	}
-	
-	private void setupEvents() {
+    }
+
+    private void setupEvents() {
             for (Listener listener : eventList) {
                 getServer().getPluginManager().registerEvents(listener, this);
                 if (verbose) {
                     getLogger().log(Level.INFO, "Registered events for ".concat(listener.toString().split("@")[0].split(".anticheat.")[1]));
                 }
             }
-	}
-	
-	private void setupCommands() {
+    }
+
+    private void setupCommands() {
             getCommand("anticheat").setExecutor(new CommandHandler());
             if (verbose) {
                 getLogger().log(Level.INFO, "Registered commands.");
             }
-	}
-	
-	private void setupUpdater() {
+    }
+
+    private void setupUpdater() {
             if (config.autoUpdate()) {
                 if (verbose) {
                     getLogger().log(Level.INFO, "Checking for a new update...");
@@ -175,9 +175,9 @@ public class Anticheat extends JavaPlugin {
                     getLogger().log(Level.INFO, "Update available: " + update);
                 }
             }
-	}
-	
-	private void setupMetrics() {
+    }
+
+    private void setupMetrics() {
             try {
                 metrics = new Metrics(this);
                 final EventListener listener = new EventListener();
@@ -209,9 +209,9 @@ public class Anticheat extends JavaPlugin {
                     getLogger().log(Level.INFO, "Metrics started.");
                 }
             } catch (IOException ex) {}
-	}
-	
-	private void setupConfig() {
+    }
+
+    private void setupConfig() {
             config = manager.getConfiguration();
             checkConfigs();
             config.load();
@@ -219,9 +219,9 @@ public class Anticheat extends JavaPlugin {
             if (verbose) {
                 getLogger().log(Level.INFO, "Setup the config.");
             }
-	}
-	
-	private void restoreLevels() {
+    }
+
+    private void restoreLevels() {
             for (Player player : getServer().getOnlinePlayers()) {
                 String name = player.getName();
                 manager.getUserManager().addUser(new User(player.getName(), config.getLevel(name)));
@@ -229,37 +229,37 @@ public class Anticheat extends JavaPlugin {
                     getLogger().log(Level.INFO, "Data for " + player.getName() + " re-applied from flatfile");
                 }
             }
-	}
-	
-	public void checkConfigs() {
+    }
+
+    public void checkConfigs() {
             save(getResource("config.yml"), new File(getDataFolder() + "/config.yml"));
             save(getResource("lang.yml"), new File(getDataFolder() + "/lang.yml"));
             save(getResource("magic.yml"), new File(getDataFolder() + "/magic.yml"));
             if(save(getResource("events.yml"), new File(getDataFolder() + "/events.yml"))) {
                 config.setUpdateEvents();
             }
-	}
-	
-	public static Anticheat getPlugin() {
+    }
+
+    public static Anticheat getPlugin() {
             return manager.getPlugin();
-	}
-	
-	public static AnticheatManager getManager() {
+    }
+
+    public static AnticheatManager getManager() {
             return manager;
-	}
-	
-	public static boolean isUpdated() {
+    }
+
+    public static boolean isUpdated() {
             return !update;
-	}
-	
-	public static String getVersion() {
+    }
+
+    public static String getVersion() {
             return manager.getPlugin().getDescription().getVersion();
-	}
-	
-	private void cleanup() {
+    }
+
+    private void cleanup() {
             eventList = null;
             manager = null;
             config = null;
             metrics = null;
-	}
+    }
 }
