@@ -60,16 +60,26 @@ public enum Permission {
     SYSTEM_REPORT,
     SYSTEM_ALERT,
     SYSTEM_CALIBRATE,
+    SYSTEM_DEBUG,
     SYSTEM_RELOAD;
+
+    private static final String PERMISSION_ALL = "anticheat.*";
     
     public boolean get(CommandSender cs) {
-        return cs.hasPermission(toString());
+        return cs.hasPermission(toString()) || cs.hasPermission(getBase()) || cs.hasPermission(PERMISSION_ALL);
     }
-    
-    // Now h31ix, I know this is redundant, but this may actually solve the issue.
-    // So please, just give it a try :P
-    public boolean get(Player p) {
-        return p.hasPermission(toString());
+
+    public String getBase() {
+        return "anticheat." + this.name().toLowerCase().split("_")[0] + ".*";
+    }
+
+    public String whichPermission(CommandSender cs) {
+        for(String s : new String[]{toString(), getBase(), PERMISSION_ALL}) {
+            if(cs.hasPermission(s)) {
+                return s;
+            }
+        }
+        return null;
     }
     
     @Override

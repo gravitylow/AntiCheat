@@ -53,7 +53,7 @@ public class CommandHandler implements CommandExecutor {
     private static final String MENU_END = "-----------------------------------------------------";
     
     public void handleLog(CommandSender cs, String[] args) {
-        if (Permission.SYSTEM_LOG.get(cs)) {
+        if (hasPermission(cs, Permission.SYSTEM_LOG)) {
             if (args[1].equalsIgnoreCase("enable")) {
                 if (!CONFIG.logConsole()) {
                     CONFIG.setLog(true);
@@ -71,33 +71,29 @@ public class CommandHandler implements CommandExecutor {
             } else {
                 cs.sendMessage(RED + "Usage: /anticheat log [enable/disable]");
             }
-        } else {
-            cs.sendMessage(PERMISSIONS_ERROR);
         }
     }
     
     public void handleDebug(CommandSender cs) {
-        if (Permission.SYSTEM_REPORT.get(cs)) {
+        if (hasPermission(cs, Permission.SYSTEM_DEBUG)) {
+            cs.sendMessage(GRAY + "Please wait while I collect some data...");
             PastebinReport report = new PastebinReport(cs);
             cs.sendMessage(GREEN + "Debug information posted to: " + WHITE + report.getURL());
             cs.sendMessage(GREEN + "Please include this link when making bug reports.");
-        } else {
-            cs.sendMessage(PERMISSIONS_ERROR);
         }
     }
     
     public void handleDebug(CommandSender cs, Player tp) {
-        if (Permission.SYSTEM_REPORT.get(cs)) {
+        if (hasPermission(cs, Permission.SYSTEM_REPORT)) {
+            cs.sendMessage(GRAY + "Please wait while I collect some data...");
             PastebinReport report = new PastebinReport(cs, tp);
             cs.sendMessage(GREEN + "Debug information posted to: " + WHITE + report.getURL());
             cs.sendMessage(GREEN + "Please include this link when making bug reports.");
-        } else {
-            cs.sendMessage(PERMISSIONS_ERROR);
         }
     }
     
     public void handleXRay(CommandSender cs, String[] args) {
-        if (Permission.SYSTEM_XRAY.get(cs)) {
+        if (hasPermission(cs, Permission.SYSTEM_XRAY)) {
             if (CONFIG.logXRay()) {
                 List<Player> list = SERVER.matchPlayer(args[1]);
                 if (list.size() == 1) {
@@ -119,13 +115,11 @@ public class CommandHandler implements CommandExecutor {
             } else {
                 cs.sendMessage(RED + "XRay logging is off in the config.");
             }
-        } else {
-            cs.sendMessage(PERMISSIONS_ERROR);
         }
     }
     
     public void handleReset(CommandSender cs, String[] args) {
-        if (Permission.SYSTEM_RESET.get(cs)) {
+        if (hasPermission(cs, Permission.SYSTEM_RESET)) {
             List<Player> list = SERVER.matchPlayer(args[1]);
             if (list.size() == 1) {
                 Player player = list.get(0);
@@ -142,14 +136,12 @@ public class CommandHandler implements CommandExecutor {
             } else {
                 cs.sendMessage(RED + "Player: " + WHITE + args[1] + RED + " not found.");
             }
-        } else {
-            cs.sendMessage(PERMISSIONS_ERROR);
         }
     }
     
     public void handleSpy(CommandSender cs, String[] args) {
         if (cs instanceof Player) {
-            if (Permission.SYSTEM_SPY.get(cs)) {
+            if (hasPermission(cs, Permission.SYSTEM_SPY)) {
                 Player sender = (Player) cs;
                 if (!args[1].equalsIgnoreCase("off")) {
                     List<Player> list = SERVER.matchPlayer(args[1]);
@@ -190,8 +182,6 @@ public class CommandHandler implements CommandExecutor {
                         sender.sendMessage(RED + "You were not spying.");
                     }
                 }
-            } else {
-                cs.sendMessage(PERMISSIONS_ERROR);
             }
         } else {
             cs.sendMessage(RED + "Sorry, but you can't spy on a player from the console.");
@@ -199,27 +189,32 @@ public class CommandHandler implements CommandExecutor {
     }
     
     public void handleHelp(CommandSender cs) {
-        if (Permission.SYSTEM_HELP.get(cs)) {
+        if (hasPermission(cs, Permission.SYSTEM_HELP)) {
             String base = "/AntiCheat ";
+            String [] lines = {
+                    "log [Enable/Disable]" + WHITE + " - toggle logging",
+                    "report [low/medium/high]" + WHITE + " - show users in groups",
+                    "report [user]" + WHITE + " - get a player's cheat report",
+                    "reload" + WHITE + " - reload AntiCheat configuration",
+                    "reset [user]" + WHITE + " - reset user's hack level",
+                    "xray [user]" + WHITE + " - check user's xray levels",
+                    "spy [user]" + WHITE + " - spy on a user in secret",
+                    "help" + WHITE + " - access this page",
+                    "debug" + WHITE + " - post debug information",
+                    "update" + WHITE + " - check update status",
+            };
+
             cs.sendMessage("----------------------[" + GREEN + "AntiCheat" + WHITE + "]----------------------");
-            cs.sendMessage(base + GREEN + "log [Enable/Disable]" + WHITE + " - toggle logging");
-            cs.sendMessage(base + GREEN + "report [low/medium/high]" + WHITE + " - show users in groups");
-            cs.sendMessage(base + GREEN + "report [user]" + WHITE + " - get a player's cheat report");
-            cs.sendMessage(base + GREEN + "reload" + WHITE + " - reload AntiCheat configuration");
-            cs.sendMessage(base + GREEN + "reset [user]" + WHITE + " - reset user's hack level");
-            cs.sendMessage(base + GREEN + "xray [user]" + WHITE + " - check user's xray levels");
-            cs.sendMessage(base + GREEN + "spy [user]" + WHITE + " - spy on a user in secret");
-            cs.sendMessage(base + GREEN + "help" + WHITE + " - access this page");
-            cs.sendMessage(base + GREEN + "debug" + WHITE + " - post debug information");
-            cs.sendMessage(base + GREEN + "update" + WHITE + " - check update status");
+            for(String s : lines) {
+                cs.sendMessage(base + GREEN + s);
+            }
             cs.sendMessage(MENU_END);
-        } else {
-            cs.sendMessage(PERMISSIONS_ERROR);
+
         }
     }
     
     public void handleUpdate(CommandSender cs) {
-        if (Permission.SYSTEM_UPDATE.get(cs)) {
+        if (hasPermission(cs, Permission.SYSTEM_UPDATE)) {
             cs.sendMessage("Running " + GREEN + "AntiCheat " + WHITE + "v" + GREEN + Anticheat.getVersion());
             cs.sendMessage(MENU_END);
             if (!Anticheat.isUpdated()) {
@@ -233,27 +228,21 @@ public class CommandHandler implements CommandExecutor {
             } else {
                 cs.sendMessage(GRAY + "AntiCheat is " + GREEN + "UP TO DATE!");
             }
-        } else {
-            cs.sendMessage(PERMISSIONS_ERROR);
         }
     }
     
     public void handleCalibrate(CommandSender cs) {
         if (cs instanceof Player) {
-            if (Permission.SYSTEM_CALIBRATE.get(cs)) {
+            if (hasPermission(cs, Permission.SYSTEM_CALIBRATE)) {
                 Calibrator c = new Calibrator((Player) cs);
                 SERVER.getPluginManager().registerEvents(c, Anticheat.getPlugin());
                 c.calibrate();
-            } else {
-                cs.sendMessage(PERMISSIONS_ERROR);
             }
-        } else {
-            cs.sendMessage(RED + "Sorry, but you cannot calibrate from console.");
         }
     }
     
     public void handleReport(CommandSender cs, String[] args) {
-        if (Permission.SYSTEM_REPORT.get(cs)) {
+        if (hasPermission(cs, Permission.SYSTEM_REPORT)) {
             getPlayers();
             if (args.length > 1) {
                 String group = args[1];
@@ -281,8 +270,6 @@ public class CommandHandler implements CommandExecutor {
                     }
                 }
             }
-        } else {
-            cs.sendMessage(PERMISSIONS_ERROR);
         }
     }
     
@@ -322,7 +309,7 @@ public class CommandHandler implements CommandExecutor {
     }
     
     public void handlePlayerReport(CommandSender cs, String[] args) {
-        if (Permission.SYSTEM_REPORT.get(cs)) {
+        if (hasPermission(cs, Permission.SYSTEM_REPORT)) {
             User user = Anticheat.getManager().getUserManager().getUser(args[1]);
             boolean cont = false;
             if (user == null) {
@@ -350,8 +337,6 @@ public class CommandHandler implements CommandExecutor {
                     cs.sendMessage(RED + "Not a valid page number: " + WHITE + args[2]);
                 }
             }
-        } else {
-            cs.sendMessage(PERMISSIONS_ERROR);
         }
     }
     
@@ -396,11 +381,9 @@ public class CommandHandler implements CommandExecutor {
     }
     
     public void handleReload(CommandSender cs) {
-        if (Permission.SYSTEM_RELOAD.get(cs)) {
+        if (hasPermission(cs, Permission.SYSTEM_RELOAD)) {
             CONFIG.load();
             cs.sendMessage(GREEN + "AntiCheat configuration reloaded.");
-        } else {
-            cs.sendMessage(PERMISSIONS_ERROR);
         }
     }
     
@@ -460,7 +443,7 @@ public class CommandHandler implements CommandExecutor {
                 cs.sendMessage(RED + "Unrecognized command.");
             }
         } else {
-            cs.sendMessage(RED + "Unrecognized command. Try " + ChatColor.WHITE + "/anticheat help");
+            handleHelp(cs); // Handle no args as alias of help
         }
         return true;
     }
@@ -478,6 +461,15 @@ public class CommandHandler implements CommandExecutor {
             } else {
                 high.add(player.getName());
             }
+        }
+    }
+
+    public boolean hasPermission(CommandSender cs, Permission perm) {
+        if(perm.get(cs)) {
+            return true;
+        } else {
+            cs.sendMessage(PERMISSIONS_ERROR + " (" + WHITE + perm.toString() + RED + ")");
+            return false;
         }
     }
 }

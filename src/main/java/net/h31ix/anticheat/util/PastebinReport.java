@@ -75,7 +75,11 @@ public class PastebinReport {
         
         // alrighty then noobs.
         for (Permission node : Permission.values()) {
-            report.append(player.getName() + ": " + node.toString() + " " + node.get(player) + '\n');
+            report.append(player.getName() + ": " + node.toString() + " " + node.get(player));
+            if(node.get(player) && !node.whichPermission(player).equals(node.toString())) {
+                report.append(" (Applied by " + node.whichPermission(player) +")");
+            }
+            report.append('\n');
         }
     }
     /* Not working at the moment.
@@ -112,6 +116,7 @@ public class PastebinReport {
         report.append("Max Memory: " + runtime.maxMemory() / 1024 / 1024 + "MB" + '\n');
         report.append("Total Memory: " + runtime.totalMemory() / 1024 / 1024 + "MB" + '\n');
         report.append("Server ID + Name: " + Bukkit.getServerId() + " - " + Bukkit.getName() + '\n');
+        report.append("Online Mode: " + String.valueOf(Bukkit.getOnlineMode()).toUpperCase() + '\n');
         report.append("Players: " + Bukkit.getOnlinePlayers().length + "/" + Bukkit.getMaxPlayers() + '\n');
     }
     
