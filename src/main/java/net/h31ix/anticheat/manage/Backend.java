@@ -225,6 +225,7 @@ public class Backend {
             return new CheckResult(Result.PASSED);
         } else {
             String string = player.getName()+" reached too far for a block";
+            System.out.println(x);
             double i = x >= magic.BLOCK_MAX_DISTANCE ? x : y > magic.BLOCK_MAX_DISTANCE ? y : z > magic.BLOCK_MAX_DISTANCE ? z : -1;
             if(i != -1) {
                 return new CheckResult(Result.FAILED, string+" (distance="+i+", max="+magic.BLOCK_MAX_DISTANCE+")");

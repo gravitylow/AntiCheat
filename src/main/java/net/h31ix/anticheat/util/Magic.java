@@ -250,9 +250,17 @@ public class Magic {
      */
     public final double BLOCK_MAX_DISTANCE;
     /**
+     * Minimum distance a player can break a block from in creative mode; Type=double, +Leniency=Increase.
+     */
+    public final double BLOCK_MAX_DISTANCE_CREATIVE;
+    /**
      * Minimum distance a player can damage an entity from; Type=double, +Leniency=Increase.
      */
     public final double ENTITY_MAX_DISTANCE;
+    /**
+     * Minimum distance a player can damage an entity from in creative mode; Type=double, +Leniency=Increase.
+     */
+    public final double ENTITY_MAX_DISTANCE_CREATIVE;
     /**
      * Maximum speed a player on a ladder can travel; Type=double, +Leniency=Increase.
      */
@@ -398,7 +406,9 @@ public class Magic {
         EAT_TIME_MIN = getLong("EAT_TIME_MIN");
         BOW_ERROR = getDouble("BOW_ERROR");
         BLOCK_MAX_DISTANCE = getDouble("BLOCK_MAX_DISTANCE");
+        BLOCK_MAX_DISTANCE_CREATIVE = getDouble("BLOCK_MAX_DISTANCE_CREATIVE");
         ENTITY_MAX_DISTANCE = getDouble("ENTITY_MAX_DISTANCE");
+        ENTITY_MAX_DISTANCE_CREATIVE = getDouble("ENTITY_MAX_DISTANCE_CREATIVE");
         LADDER_Y_MAX = getDouble("LADDER_Y_MAX");
         LADDER_Y_MIN = getDouble("LADDER_Y_MIN");
         Y_SPEED_MAX = getDouble("Y_SPEED_MAX");
