@@ -33,9 +33,11 @@ public class UserManager {
     private static final ChatColor GOLD = ChatColor.GOLD;
     private static final ChatColor YELLOW = ChatColor.YELLOW;
     private static final ChatColor RED = ChatColor.RED;
+    private static List<String> alert;
     
     public UserManager(Configuration conf) {
         config = conf;
+        alert = config.getLang().getAlert();
     }
     
     public User getUser(String name) {
@@ -102,14 +104,13 @@ public class UserManager {
     }
     
     public void alert(User user, Level level, CheckType type) {
-        final String name = user.getName();
-        List<String> messageArray = config.getLang().getAlert();
-        for (int i = 0; i < messageArray.size(); i++) {
-            String message = messageArray.get(i);
-            message = message.replaceAll("&player", GOLD + name + GRAY);
+        ArrayList<String> messageArray = new ArrayList<String>();
+        for (int i = 0; i < alert.size(); i++) {
+            String message = alert.get(i);
+            message = message.replaceAll("&player", GOLD + user.getName() + GRAY);
             message = message.replaceAll("&check", GOLD + CheckType.getName(type) + GRAY);
             message = message.replaceAll("&level", level.getColor() + level.getName() + GRAY);
-            messageArray.set(i, message);
+            messageArray.add(message);
         }
         Utilities.alert(messageArray);
         execute(user, level.getActions(), type);

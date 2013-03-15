@@ -208,8 +208,6 @@ public class CommandHandler implements CommandExecutor {
             for(String s : lines) {
                 cs.sendMessage(base + GREEN + s);
             }
-            cs.sendMessage(MENU_END);
-
         }
     }
     
