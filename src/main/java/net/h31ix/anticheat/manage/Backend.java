@@ -739,8 +739,7 @@ public class Backend {
     public CheckResult checkSpam(Player player, String msg) {
         String name = player.getName();
         User user = manager.getUserManager().getUser(name);
-        if(user.getLastMessageTime() != -1)
-
+        if(user.getLastMessageTime() != -1) {
             for(int i=0;i<2;i++) {
                 String m = user.getMessage(i);
                 if(m == null) {
@@ -751,12 +750,13 @@ public class Backend {
                 if(System.currentTimeMillis() - l > magic.CHAT_REPEAT_MIN * 1000) {
                     user.clearMessages();
                     break;
-                } else if((m.equalsIgnoreCase(msg) && i == 1) || System.currentTimeMillis() - user.getLastMessageTime() < magic.CHAT_MIN) {
+                } else if((m.equalsIgnoreCase(msg) && i == 1) || System.currentTimeMillis() - user.getLastMessageTime() < magic.CHAT_MIN * 2) {
                     return new CheckResult(Result.FAILED, lang.getChatWarning());
                 } else {
-                    break;
+                    continue;
                 }
             }
+        }
         user.addMessage(msg);
         return PASS;
     }
