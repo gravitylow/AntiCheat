@@ -752,8 +752,6 @@ public class Backend {
                     break;
                 } else if((m.equalsIgnoreCase(msg) && i == 1) || System.currentTimeMillis() - user.getLastMessageTime() < magic.CHAT_MIN * 2) {
                     return new CheckResult(Result.FAILED, lang.getChatWarning());
-                } else {
-                    continue;
                 }
             }
         }
