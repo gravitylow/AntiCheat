@@ -747,7 +747,7 @@ public class Backend {
                 }
                 Long l = user.getMessageTime(i);
 
-                if(System.currentTimeMillis() - l > magic.CHAT_REPEAT_MIN * 1000) {
+                if(System.currentTimeMillis() - l > magic.CHAT_REPEAT_MIN * 100) {
                     user.clearMessages();
                     break;
                 } else if((m.equalsIgnoreCase(msg) && i == 1) || System.currentTimeMillis() - user.getLastMessageTime() < magic.CHAT_MIN * 2) {
