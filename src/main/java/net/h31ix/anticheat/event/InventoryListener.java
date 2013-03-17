@@ -36,7 +36,6 @@ public class InventoryListener extends EventListener {
             Player player = (Player) event.getWhoClicked();
             if (getCheckManager().willCheck(player, CheckType.FAST_INVENTORY)) {
                 CheckResult result = getBackend().checkInventoryClicks(player);
-                System.out.println("Result :"+result.getResult());
                 if (result.failed()) {
                     if (!silentMode()) {
                         getUserManager().getUser(player.getName()).restore(event.getInventory());
