@@ -306,6 +306,9 @@ public class Backend {
                 reason = "while sprinting ";
                 max = magic.XZ_SPEED_MAX_SPRINT;
             }
+            
+            max += player.getWalkSpeed() - 0.2f;
+            
             if (x > max || z > max) {
                 int num = this.increment(player, speedViolation, magic.SPEED_MAX);
                 if(num >= magic.SPEED_MAX) {
