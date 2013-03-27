@@ -123,14 +123,16 @@ public class CommandHandler implements CommandExecutor {
             List<Player> list = SERVER.matchPlayer(args[1]);
             if (list.size() == 1) {
                 Player player = list.get(0);
-                if (USER_MANAGER.safeGetLevel(player.getName()) == 0) {
-                    cs.sendMessage(player.getName() + RED + " is already in Low Level!");
+                User user = USER_MANAGER.getUser(player.getName());
+                if(user != null) {
+                    user.resetLevel();
+                    XRAY_TRACKER.reset(player.getName());
+                    user.clearMessages();
+                    Anticheat.getManager().getBackend().resetChatLevel(player);
+                    cs.sendMessage(player.getName() + GREEN + " has been reset.");
                 } else {
-                    USER_MANAGER.safeReset(player.getName());
-                    cs.sendMessage(player.getName() + GREEN + " has been reset to Low Level.");
+
                 }
-                XRAY_TRACKER.reset(player.getName());
-                cs.sendMessage(player.getName() + GREEN + "'s XRay stats have been reset.");
             } else if (list.size() > 1) {
                 cs.sendMessage(RED + "Multiple players found by name: " + WHITE + args[1] + RED + ".");
             } else {

@@ -20,6 +20,8 @@ package net.h31ix.anticheat.manage;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Level;
 import net.h31ix.anticheat.util.Utilities;
@@ -119,37 +121,43 @@ public class UserManager {
         execute(user, actions, type, config.getLang().getKickReason(), config.getLang().getWarning(), config.getLang().getBanReason());
     }
 
-    public void execute(User user, List<String> actions, CheckType type, String kickReason, List<String> warning, String banReason) {
-        final String name = user.getName();
-        for(String event : actions) {
-            event = event.replaceAll("&player", name).replaceAll("&world", user.getPlayer().getWorld().getName()).replaceAll("&check", type.name());
+    public void execute(final User user, final List<String> actions, final CheckType type, final String kickReason, final List<String> warning, final String banReason) {
+        // Execute synchronously for thread safety when called from AsyncPlayerChatEvent
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Anticheat.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+                final String name = user.getName();
+                for(String event : actions) {
+                    event = event.replaceAll("&player", name).replaceAll("&world", user.getPlayer().getWorld().getName()).replaceAll("&check", type.name());
 
-            if (event.startsWith("COMMAND[")) {
-                for(String cmd : Utilities.getCommands(event)) {
-                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd);
+                    if (event.startsWith("COMMAND[")) {
+                        for(String cmd : Utilities.getCommands(event)) {
+                            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd);
+                        }
+                    } else if (event.equalsIgnoreCase("KICK")) {
+                        user.getPlayer().kickPlayer(RED + kickReason);
+                        String msg = RED + config.getLang().getKickBroadcast().replaceAll("&player", name);
+                        if (!msg.equals("")) {
+                            Bukkit.broadcastMessage(msg);
+                        }
+                    } else if (event.equalsIgnoreCase("WARN")) {
+                        List<String> message = warning;
+                        for (String string : message) {
+                            user.getPlayer().sendMessage(RED + string);
+                        }
+                    } else if (event.equalsIgnoreCase("BAN")) {
+                        user.getPlayer().setBanned(true);
+                        user.getPlayer().kickPlayer(RED + banReason);
+                        String msg = RED + config.getLang().getBanBroadcast().replaceAll("&player", name);
+                        if (!msg.equals("")) {
+                            Bukkit.broadcastMessage(msg);
+                        }
+                    } else if (event.equalsIgnoreCase("RESET")) {
+                        user.resetLevel();
+                    }
                 }
-            } else if (event.equalsIgnoreCase("KICK")) {
-                user.getPlayer().kickPlayer(RED + kickReason);
-                String msg = RED + config.getLang().getKickBroadcast().replaceAll("&player", name);
-                if (!msg.equals("")) {
-                    Bukkit.broadcastMessage(msg);
-                }
-            } else if (event.equalsIgnoreCase("WARN")) {
-                List<String> message = warning;
-                for (String string : message) {
-                    user.getPlayer().sendMessage(RED + string);
-                }
-            } else if (event.equalsIgnoreCase("BAN")) {
-                user.getPlayer().setBanned(true);
-                user.getPlayer().kickPlayer(RED + banReason);
-                String msg = RED + config.getLang().getBanBroadcast().replaceAll("&player", name);
-                if (!msg.equals("")) {
-                    Bukkit.broadcastMessage(msg);
-                }
-            } else if (event.equalsIgnoreCase("RESET")) {
-                user.resetLevel();
             }
-        }
+        });
     }
     
 }

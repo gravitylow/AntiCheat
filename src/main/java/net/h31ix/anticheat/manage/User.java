@@ -117,7 +117,7 @@ public class User {
             type.clearUse(name);
         }
     }
-    
+
     public Location getGoodLocation(Location e) {
         if (goodLocation == null) { return e; }
         
