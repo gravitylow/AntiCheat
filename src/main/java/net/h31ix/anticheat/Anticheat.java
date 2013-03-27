@@ -37,6 +37,7 @@ import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Utilities;
 import net.h31ix.anticheat.xray.XRayListener;
 import net.h31ix.anticheat.xray.XRayTracker;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -80,7 +81,17 @@ public class Anticheat extends JavaPlugin {
                 getPluginLoader().disablePlugin(this);
                 return;
             }
-            // End test
+            // Check if NoCheatPlus is installed
+            Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+                public void run() {
+                    if (Bukkit.getPluginManager().getPlugin("NoCheatPlus") != null) {
+                        getLogger().severe("You are also running NoCheatPlus!");
+                        getLogger().severe("NoCheatPlus has been known to conflict with AntiCheat's results and create false cheat detections.");
+                        getLogger().severe("Please remove or disable NoCheatPlus to silence this warning.");
+                    }
+                }
+            }, 40L);
+            // End tests
             if (verbose) {
                 getLogger().log(Level.INFO, "Finished loading.");
             }

@@ -91,6 +91,10 @@ public class PastebinReport {
     } */
     
     private void createReport(Player player) {
+        if (Bukkit.getPluginManager().getPlugin("NoCheatPlus") != null) {
+            report.append("------------ WARNING! ------------");
+            report.append("This report was run with NoCheatPlus enabled. Results may be inaccurate." + '\n' + '\n');
+        }
         report.append("------------ AntiCheat Report - " + format.format(date) + " ------------" + '\n');
         report.append("Version: " + Anticheat.getVersion() + (Anticheat.isUpdated() ? "" : " (OUTDATED)") + '\n');
         report.append("CraftBukkit: " + Bukkit.getVersion() + '\n');
