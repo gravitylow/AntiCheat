@@ -35,6 +35,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Configuration {
     private AnticheatManager micromanage = null;
+    private Anticheat plugin;
     private File configFile = null;
     private File levelFile = null;
     private File langFile = null;
@@ -67,7 +68,8 @@ public class Configuration {
     private int highestLevel;
     private boolean updateEvents = false;
     
-    public Configuration(AnticheatManager instance) {
+    public Configuration(Anticheat plugin, AnticheatManager instance) {
+        this.plugin = plugin;
         micromanage = instance;
         configFile = new File(micromanage.getPlugin().getDataFolder() + "/config.yml");
         levelFile = new File(micromanage.getPlugin().getDataFolder() + "/data/level.yml");
@@ -323,8 +325,18 @@ public class Configuration {
         readEvents();
         // End pulling values from config
 
+        String version = magic.getString("VERSION");
+        if(version == null) {
+            micromanage.log("Replacing Magic.yml file");
+            // Magic file needs a reset
+            magicFile.delete();
+            plugin.replaceMagic();
+            magic = YamlConfiguration.loadConfiguration(magicFile);
+            version = magic.getString("VERSION");
+        }
+
         save();
-        magicInstance = new Magic(getMagic(), this, CommentedConfiguration.loadConfiguration(micromanage.getPlugin().getResource("magic.yml")));
+        magicInstance = new Magic(getMagic(), this, CommentedConfiguration.loadConfiguration(micromanage.getPlugin().getResource("magic.yml")), Double.parseDouble(version));
         if(micromanage.getBackend() != null) { // If this is first run, backend may not be setup yet
             micromanage.getBackend().updateMagic(magicInstance);
         }

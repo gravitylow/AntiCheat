@@ -59,7 +59,7 @@ public class AnticheatManager {
         plugin = instance;
         // now load all the others!!!!!
         fileLogger = Logger.getLogger("net.h31ix.anticheat.Anticheat");
-        configuration = new Configuration(this);
+        configuration = new Configuration(plugin, this);
         xrayTracker = new XRayTracker();
         userManager = new UserManager(configuration);
         checkManager = new CheckManager(this);

@@ -253,26 +253,26 @@ public class Anticheat extends JavaPlugin {
     }
 
     public static Anticheat getPlugin() {
-            return manager.getPlugin();
+        return manager.getPlugin();
     }
 
     public static AnticheatManager getManager() {
-            return manager;
+        return manager;
     }
 
     public static boolean isUpdated() {
-            return !update;
+        return !update;
     }
 
     public static String getVersion() {
-            return manager.getPlugin().getDescription().getVersion();
+        return manager.getPlugin().getDescription().getVersion();
     }
 
     private void cleanup() {
-            eventList = null;
-            manager = null;
-            config = null;
-            metrics = null;
+        eventList = null;
+        manager = null;
+        config = null;
+        metrics = null;
     }
 
     public static boolean developerMode() {
@@ -291,5 +291,9 @@ public class Anticheat extends JavaPlugin {
                 }
             }
         });
+    }
+
+    public void replaceMagic() {
+        saveResource("magic.yml", true);
     }
 }

@@ -199,7 +199,7 @@ public class PastebinReport {
                 reader.close();
                 
                 String result = response.toString().trim();
-                System.out.println(result); // TODO: Remember to remove this, SSPX
+                //System.out.println(result);
                 url = result;
             } else {
                 url = "Failed to get";

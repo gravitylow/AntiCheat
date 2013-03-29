@@ -345,11 +345,13 @@ public class Magic {
     private FileConfiguration defaults;
     private FileConfiguration magic;
     private Configuration config;
+    private double version;
     
-    public Magic(FileConfiguration magic, Configuration config, FileConfiguration defaults) {
+    public Magic(FileConfiguration magic, Configuration config, FileConfiguration defaults, double version) {
         this.magic = magic;
         this.config = config;
         this.defaults = defaults;
+        this.version = version;
         
         //
         
