@@ -51,6 +51,7 @@ public class Anticheat extends JavaPlugin {
     private static boolean update = false;
     private static Configuration config;
     private static boolean verbose;
+    private static boolean developer;
     private static Metrics metrics;
     private static final long XRAY_TIME = 1200;
 
@@ -272,5 +273,23 @@ public class Anticheat extends JavaPlugin {
             manager = null;
             config = null;
             metrics = null;
+    }
+
+    public static boolean developerMode() {
+        return developer;
+    }
+
+    public static void setDeveloperMode(boolean b) {
+        developer = b;
+    }
+
+    public static void debugLog(final String string) {
+        Bukkit.getScheduler().runTask(getPlugin(), new Runnable() {
+            public void run() {
+                if(developer) {
+                    manager.log("[DEBUG] " + string);
+                }
+            }
+        });
     }
 }

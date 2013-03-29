@@ -52,14 +52,7 @@ public class PastebinReport {
     }
     
     public PastebinReport(CommandSender cs, Player tp) {
-        Player player = null;
-        if (tp == null) {
-            cs.sendMessage(ChatColor.RED + "We were unable to detect the target player when making this report.  Skipping permstester");
-        } else {
-            player = tp;
-        }
-        
-        createReport(player);
+        createReport(tp);
         try {
             writeReport();
         } catch (IOException e) {}
@@ -71,9 +64,10 @@ public class PastebinReport {
     }
     
     private void appendPermissionsTester(Player player) {
-        if (player == null) { return; }
-        
-        // alrighty then noobs.
+        if (player == null) {
+            return;
+        }
+
         for (Permission node : Permission.values()) {
             report.append(player.getName() + ": " + node.toString() + " " + node.get(player));
             if(node.get(player) && !node.whichPermission(player).equals(node.toString())) {

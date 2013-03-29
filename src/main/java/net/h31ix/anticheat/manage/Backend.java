@@ -274,9 +274,10 @@ public class Backend {
                     nofallViolation.put(name, nofallViolation.get(player.getName()) + 1);
                 }
 
-                if (nofallViolation.get(name) >= magic.NOFALL_LIMIT) {
+                int i = nofallViolation.get(name);
+                if (i >= magic.NOFALL_LIMIT) {
                     nofallViolation.put(player.getName(), 1);
-                    return new CheckResult(Result.FAILED, player.getName()+" tried to avoid fall damage (fall distance = 0 "+nofallViolation.get(name)+" times in a row, max=+"+magic.NOFALL_LIMIT+")");
+                    return new CheckResult(Result.FAILED, player.getName()+" tried to avoid fall damage (fall distance = 0 "+i+" times in a row, max="+magic.NOFALL_LIMIT+")");
                 } else {
                     return PASS;
                 }

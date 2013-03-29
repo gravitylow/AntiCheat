@@ -89,8 +89,7 @@ public class AnticheatManager {
         if (i == 0 && getConfiguration().getFileLogLevel() == LOG_LEVEL_HIGH) // Not an alert, normal log message
         {
             fileLog(message);
-        } else if (getConfiguration().getFileLogLevel() != 0)// alert
-        {
+        } else if (getConfiguration().getFileLogLevel() != 0) { // alert
             fileLog(message);
         }
         logs.add(ChatColor.stripColor(message));

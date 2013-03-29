@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.util.Configuration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -102,12 +103,13 @@ public class CheckManager {
     }
 
     public boolean willCheck(Player player, CheckType type) {
-        return
-            isActive(type)
+        boolean check = isActive(type)
             && config.checkInWorld(player.getWorld())
             && !isExempt(player, type)
             && !type.checkPermission(player)
             && !isOpExempt(player);
+        Anticheat.debugLog("Check " + type + (check ? " run " : " not run ") + "on " + player.getName());
+        return check;
     }
 
     public boolean isOnline(Player player) {

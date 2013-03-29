@@ -339,6 +339,11 @@ public class CommandHandler implements CommandExecutor {
             }
         }
     }
+
+    public void handleDeveloper(CommandSender cs) {
+        Anticheat.setDeveloperMode(!Anticheat.developerMode());
+        cs.sendMessage(ChatColor.GREEN + "Developer mode " + (Anticheat.developerMode() ? "ON" : "OFF"));
+    }
     
     public void sendPlayerReport(CommandSender cs, List<CheckType> types, User user, int page) {
         String name = user.getName();
@@ -435,6 +440,8 @@ public class CommandHandler implements CommandExecutor {
                 handleReload(cs);
             } else if (args[0].equalsIgnoreCase("update")) {
                 handleUpdate(cs);
+            } else if (args[0].equalsIgnoreCase("developer")) {
+                handleDeveloper(cs);
             }
             /**
              * else if (args[0].equalsIgnoreCase("calibrate")) { handleCalibrate(cs); }
