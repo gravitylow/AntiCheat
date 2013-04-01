@@ -300,7 +300,7 @@ public class PlayerListener extends EventListener {
                     log(result.getMessage(), player, CheckType.SPRINT);
                 }
             }
-            if (getCheckManager().willCheckQuick(player, CheckType.FLY) && !player.isFlying() && getCheckManager().willCheck(player, CheckType.ZOMBE_FLY)) {
+            if (getCheckManager().willCheckQuick(player, CheckType.FLY) && !player.isFlying()) {
                 CheckResult result = getBackend().checkFlight(player, distance);
                 if(result.failed()) {
                     if (!silentMode()) {
@@ -309,7 +309,7 @@ public class PlayerListener extends EventListener {
                     log(result.getMessage(), player, CheckType.FLY);
                 }
             }
-            if (getCheckManager().willCheckQuick(player, CheckType.VCLIP) && getCheckManager().willCheck(player, CheckType.ZOMBE_FLY) && getCheckManager().willCheck(player, CheckType.FLY) && event.getFrom().getY() > event.getTo().getY()) {
+            if (getCheckManager().willCheckQuick(player, CheckType.VCLIP) && event.getFrom().getY() > event.getTo().getY()) {
                 CheckResult result = getBackend().checkVClip(player, new Distance(event.getFrom(), event.getTo()));
                 if (result.failed()) {
                     if (!silentMode()) {
@@ -325,7 +325,7 @@ public class PlayerListener extends EventListener {
                     log(result.getMessage(), player, CheckType.VCLIP);
                 }
             }
-            if (getCheckManager().willCheckQuick(player, CheckType.NOFALL) && getCheckManager().willCheck(player, CheckType.ZOMBE_FLY) && getCheckManager().willCheck(player, CheckType.FLY) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && event.getFrom().getY() > event.getTo().getY()) {
+            if (getCheckManager().willCheckQuick(player, CheckType.NOFALL) && getCheckManager().willCheck(player, CheckType.FLY) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && event.getFrom().getY() > event.getTo().getY()) {
                 CheckResult result = getBackend().checkNoFall(player, y);
                 if(result.failed()) {
                     if (!silentMode()) {
@@ -340,7 +340,7 @@ public class PlayerListener extends EventListener {
             if (event.getTo() != event.getFrom()) {
                 double x = distance.getXDifference();
                 double z = distance.getZDifference();
-                if (getCheckManager().willCheckQuick(player, CheckType.SPEED) && getCheckManager().willCheck(player, CheckType.ZOMBE_FLY) && getCheckManager().willCheck(player, CheckType.FLY)) {
+                if (getCheckManager().willCheckQuick(player, CheckType.SPEED) && getCheckManager().willCheck(player, CheckType.FLY)) {
                     if (event.getFrom().getY() < event.getTo().getY()) {
                         CheckResult result = getBackend().checkYSpeed(player, y);
                         if(result.failed()) {
