@@ -40,7 +40,6 @@ public class InventoryListener extends EventListener {
                     if (!silentMode()) {
                         getUserManager().getUser(player.getName()).restore(event.getInventory());
                         player.getInventory().clear();
-                        player.damage(99999);
                     }
                     log(result.getMessage(), player, CheckType.FAST_INVENTORY);
                 } else {
