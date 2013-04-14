@@ -432,7 +432,14 @@ public class Magic {
         TIMER_TIMEMIN = getLong("TIMER_TIMEMIN");
         TELEPORT_MIN = getLong("TELEPORT_MIN");
     }
-    
+
+    public double getVersion() {
+        return version;
+    }
+
+    public FileConfiguration getDefaults() {
+       return defaults;
+    }
     private int getInt(String path) {
         if (magic.contains(path)) {
             return magic.getInt(path);

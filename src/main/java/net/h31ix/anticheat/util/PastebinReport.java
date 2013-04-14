@@ -19,15 +19,21 @@
 package net.h31ix.anticheat.util;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.h31ix.anticheat.Anticheat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 public class PastebinReport {
@@ -35,15 +41,13 @@ public class PastebinReport {
     private String url = "";
     private Date date = new Date();
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd kk:mm Z");
+
     
     public PastebinReport(CommandSender cs) {
         Player player = null;
-        try {
+        if(cs instanceof Player) {
             player = (Player) cs;
-        } catch (Exception e) {
-            cs.sendMessage(ChatColor.RED + "We were unable to detect a player when making this report.  Skipping permstester");
         }
-        
         createReport(player);
         try {
             writeReport();
@@ -65,6 +69,7 @@ public class PastebinReport {
     
     private void appendPermissionsTester(Player player) {
         if (player == null) {
+            append("No player defined.");
             return;
         }
 
@@ -76,50 +81,82 @@ public class PastebinReport {
             report.append('\n');
         }
     }
-    /* Not working at the moment.
-    private void dumpConfiguration() {
-        report.append("------------Main Configuration (differences only)-----------" + '\n');
-        report.append(writeDifferencesByLine(Anticheat.getManager().getConfiguration().getMainConfigurationDump(), getDataFromURL("https://raw.github.com/h31ix/AntiCheat/master/src/main/resources/config.yml")));
-        report.append("------------Magic Configuration (differences only)-----------" + '\n');
-        report.append(writeDifferencesByLine(Anticheat.getManager().getConfiguration().getMagic().saveToString(), getDataFromURL("https://raw.github.com/h31ix/AntiCheat/master/src/main/resources/magic.yml")));
-    } */
     
     private void createReport(Player player) {
         if (Bukkit.getPluginManager().getPlugin("NoCheatPlus") != null) {
-            report.append("------------ WARNING! ------------");
-            report.append("This report was run with NoCheatPlus enabled. Results may be inaccurate." + '\n' + '\n');
+            append("------------ WARNING! ------------");
+            append("This report was run with NoCheatPlus enabled. Results may be inaccurate." + '\n');
         }
-        report.append("------------ AntiCheat Report - " + format.format(date) + " ------------" + '\n');
-        report.append("Version: " + Anticheat.getVersion() + (Anticheat.isUpdated() ? "" : " (OUTDATED)") + '\n');
-        report.append("CraftBukkit: " + Bukkit.getVersion() + '\n');
-        report.append("Plugin Count: " + Bukkit.getPluginManager().getPlugins().length + '\n');
+        append("------------ AntiCheat Report - " + format.format(date) + " ------------");
         appendSystemInfo();
-        report.append("------------Last 30 logs------------" + '\n');
-        for (String log : Anticheat.getManager().getLastLogs()) {
-            report.append("[AntiCheat] " + log + '\n');
-        }
-        report.append("------------Permission Tester------------" + '\n');
+        append("------------Last 30 logs------------");
+        appendLogs();
+        append("------------Permission Tester------------");
         appendPermissionsTester(player);
-        //dumpConfiguration();
-        report.append("------------Event Chains------------" + '\n');
-        eventHandlersDump();
-        report.append("-----------End Of Report------------");
+        append("------------Event Chains------------");
+        appendEventHandlers();
+        append("------------Magic Diff------------");
+        appendMagicDiff();
+        append("-----------End Of Report------------");
+    }
+
+    private void appendLogs() {
+        List<String> logs = Anticheat.getManager().getLastLogs();
+        if(logs.size() == 0) {
+            append("No recent logs.");
+            return;
+        }
+        for(String log : logs) {
+            append(log);
+        }
     }
     
     private void appendSystemInfo() {
         Runtime runtime = Runtime.getRuntime();
-        report.append("Java: " + System.getProperty("java.vendor") + " " + System.getProperty("java.version") + '\n');
-        report.append("OS: " + System.getProperty("os.name") + " " + System.getProperty("os.version") + '\n');
-        report.append("Free Memory: " + runtime.freeMemory() / 1024 / 1024 + "MB" + '\n');
-        report.append("Max Memory: " + runtime.maxMemory() / 1024 / 1024 + "MB" + '\n');
-        report.append("Total Memory: " + runtime.totalMemory() / 1024 / 1024 + "MB" + '\n');
-        report.append("Server ID + Name: " + Bukkit.getServerId() + " - " + Bukkit.getName() + '\n');
-        report.append("Online Mode: " + String.valueOf(Bukkit.getOnlineMode()).toUpperCase() + '\n');
-        report.append("Players: " + Bukkit.getOnlinePlayers().length + "/" + Bukkit.getMaxPlayers() + '\n');
+        append("AntiCheat Version: " + Anticheat.getVersion() + (Anticheat.isUpdated() ? "" : " (OUTDATED)"));
+        append("Server Version: " + Bukkit.getVersion());
+        append("Server Implementation: " + Bukkit.getName());
+        append("Server ID: " + Bukkit.getServerId());
+        append("Java Version: " + System.getProperty("java.vendor") + " " + System.getProperty("java.version"));
+        append("OS: " + System.getProperty("os.name") + " " + System.getProperty("os.version"));
+        append("Free Memory: " + runtime.freeMemory() / 1024 / 1024 + "MB");
+        append("Max Memory: " + runtime.maxMemory() / 1024 / 1024 + "MB");
+        append("Total Memory: " + runtime.totalMemory() / 1024 / 1024 + "MB");
+        append("Online Mode: " + String.valueOf(Bukkit.getOnlineMode()).toUpperCase());
+        append("Players: " + Bukkit.getOnlinePlayers().length + "/" + Bukkit.getMaxPlayers());
+        append("Plugin Count: " + Bukkit.getPluginManager().getPlugins().length);
+    }
+
+    private void appendMagicDiff() {
+        // This is hacky, and I like it
+        Magic magic = Anticheat.getManager().getConfiguration().getMagicInstance();
+        FileConfiguration file = magic.getDefaults();
+        append("Version: " + magic.getVersion());
+        boolean changed = false;
+        for(Field field : Magic.class.getFields()) {
+            Object defaultValue = file.get(field.getName());
+            try {
+                Field value = magic.getClass().getDeclaredField(field.getName());
+                boolean x = false;
+                String s1 = value.get(magic).toString();
+                String s2 = defaultValue.toString();
+                if(!s1.equals(s2) && !s1.equals(s2 + ".0")) {
+                    changed = true;
+                    append(field.getName() + ": " + s1 + " (Default: " + s2 + ")");
+                } else {
+                }
+            } catch(NoSuchFieldException ex) {
+
+            } catch(IllegalAccessException ex) {
+
+            }
+        }
+        if(!changed) {
+            append("No changes from default.");
+        }
     }
     
-    private void eventHandlersDump() {
-        // TODO: Get a list of plugins hooking into AntiCheat events.
+    private void appendEventHandlers() {
         report.append(Anticheat.getManager().getEventChainReport());
     }
     
@@ -172,81 +209,8 @@ public class PastebinReport {
             url = "Failed to post.  Check report.txt";
         }
     }
-    
-    private static String getDataFromURL(String url) {
-        try {
-            URL urls = new URL(url);
-            HttpURLConnection conn = (HttpURLConnection) urls.openConnection();
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
-            conn.setRequestMethod("GET");
-            conn.setInstanceFollowRedirects(false);
-            conn.setDoOutput(true);
-            OutputStream out = conn.getOutputStream();
-            
-            out.flush();
-            out.close();
-            
-            if (conn.getResponseCode() == 200) {
-                InputStream receive = conn.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(receive));
-                String line;
-                StringBuffer response = new StringBuffer();
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
-                    response.append("\n");
-                }
-                reader.close();
-                
-                String result = response.toString().trim();
-                //System.out.println(result);
-                url = result;
-            } else {
-                url = "Failed to get";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            url = "Failed to get";
-        }
-        
-        return url;
+
+    private void append(String s) {
+        report.append(s + '\n');
     }
-    
-    private static String writeDifferencesByLine(String one, String two) {
-        String diff = "";
-        String[] diff1 = one.split("\n");
-        String[] diff2 = two.split("\n");
-        int i = 0;
-        while (true) {
-            if (i >= diff1.length) {
-                for(int g = i; g < diff2.length; g++) {
-                    diff += diff2[g] + " (End of File)" + '\n';
-                }
-                break;
-            } else if (i >= diff2.length) {
-                for(int g = i; g < diff1.length; g++) {
-                    diff += diff1[g] + " (End of File)" + '\n';
-                }
-                break;
-            }
-            
-            String d1 = diff1[i];
-            String d2 = diff2[i];
-            
-            if (d1.startsWith("#") || d2.startsWith("#"))
-            {
-                i++;
-                continue;
-            }
-            
-            if(!d1.equalsIgnoreCase(d2)) {
-                diff += d1 + " (" + d2 + ")" + '\n';
-            }
-            
-            i++;
-        }
-        
-        return two;
-    }
-    
 }
