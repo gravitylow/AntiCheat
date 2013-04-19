@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.util.CheckResult;
 import net.h31ix.anticheat.util.CheckResult.Result;
 import net.h31ix.anticheat.util.Distance;
@@ -705,7 +706,9 @@ public class Backend {
                 fastPlaceViolation.put(name, 0);
             }
         } else if (fastPlaceViolation.containsKey(name) && fastPlaceViolation.get(name) > violations) {
+            Anticheat.debugLog("Noted that fastPlaceViolation contains key "+name+" with value "+fastPlaceViolation.get(name));
             Long math = System.currentTimeMillis() - lastBlockPlaced.get(name);
+            Anticheat.debugLog("Player lastBlockPlaced value = "+lastBlockPlaced+", diff="+math);
             if (lastBlockPlaced.get(name) > 0 && math < magic.FASTPLACE_MAXVIOLATIONTIME) {
                 lastBlockPlaced.put(name, time);
                 if (!manager.getConfiguration().silentMode()) {
@@ -713,6 +716,7 @@ public class Backend {
                 }
                 return new CheckResult(Result.FAILED, player.getName()+" placed blocks too fast "+fastBreakViolation.get(name)+" times in a row (max="+violations+")");
             } else if (lastBlockPlaced.get(name) > 0 && math > magic.FASTPLACE_MAXVIOLATIONTIME) {
+                Anticheat.debugLog("Reset facePlaceViolation for "+name);
                 fastPlaceViolation.put(name, 0);
             }
         } else if (lastBlockPlaced.containsKey(name)) {
