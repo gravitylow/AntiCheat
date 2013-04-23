@@ -122,7 +122,7 @@ public class PlayerListener extends EventListener {
     @EventHandler
     public void onPlayerVelocity(PlayerVelocityEvent event) {
         Player player = event.getPlayer();
-        if (getCheckManager().willCheck(player, CheckType.FLY) && getCheckManager().willCheck(player, CheckType.ZOMBE_FLY)) // @h31ix: Change if necessary. I'm not sure what perms should go here :3
+        if (getCheckManager().willCheck(player, CheckType.FLY))
         {
             if (getBackend().justVelocity(player) && getBackend().extendVelocityTime(player)) {
                 event.setCancelled(!silentMode());
@@ -423,7 +423,7 @@ public class PlayerListener extends EventListener {
             return;
         }
 
-        if (getCheckManager().willCheck(player, CheckType.FLY) && !player.isFlying() && getCheckManager().willCheck(player, CheckType.ZOMBE_FLY)) {
+        if (getCheckManager().willCheck(player, CheckType.FLY)) {
             CheckResult result1 = getBackend().checkYAxis(player, new Distance(from, to));
             CheckResult result2 = getBackend().checkAscension(player, from.getY(), to.getY());
             String log = result1.failed() ? result1.getMessage() : result2.failed() ? result2.getMessage() : "";
