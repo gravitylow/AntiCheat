@@ -423,7 +423,7 @@ public class PlayerListener extends EventListener {
             return;
         }
 
-        if (getCheckManager().willCheck(player, CheckType.FLY)) {
+        if (getCheckManager().willCheck(player, CheckType.FLY) && !player.isFlying()) {
             CheckResult result1 = getBackend().checkYAxis(player, new Distance(from, to));
             CheckResult result2 = getBackend().checkAscension(player, from.getY(), to.getY());
             String log = result1.failed() ? result1.getMessage() : result2.failed() ? result2.getMessage() : "";
