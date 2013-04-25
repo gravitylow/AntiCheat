@@ -56,6 +56,6 @@ public class CheckResult {
     
     public int getData() {
         return data;
-    }    
+    }
     
 }
