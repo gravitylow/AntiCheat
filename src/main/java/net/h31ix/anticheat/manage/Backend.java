@@ -230,7 +230,10 @@ public class Backend {
             return new CheckResult(Result.PASSED);
         } else {
             String string = player.getName()+" reached too far for a block";
-            double distance = player.getGameMode() == GameMode.CREATIVE ? magic.BLOCK_MAX_DISTANCE_CREATIVE : magic.BLOCK_MAX_DISTANCE;
+            double distance =
+                    player.getGameMode() == GameMode.CREATIVE ? magic.BLOCK_MAX_DISTANCE_CREATIVE
+                    : player.getLocation().getDirection().getY() > 0.9 ? magic.BLOCK_MAX_DISTANCE_CREATIVE
+                    : magic.BLOCK_MAX_DISTANCE;
             double i = x >= distance ? x : y > distance ? y : z > distance ? z : -1;
             if(i != -1) {
                 return new CheckResult(Result.FAILED, string+" (distance="+i+", max="+magic.BLOCK_MAX_DISTANCE+")");
