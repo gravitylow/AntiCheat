@@ -337,7 +337,7 @@ public class Configuration {
 
         save();
         magicInstance = new Magic(getMagic(), this, CommentedConfiguration.loadConfiguration(micromanage.getPlugin().getResource("magic.yml")), Double.parseDouble(version));
-        if(micromanage.getBackend() != null) { // If this is first run, backend may not be setup yet
+        if(micromanage.getBackend() != null) { // If this is first run, backend may not be setup yet (this is for reloads)
             micromanage.getBackend().updateMagic(magicInstance);
         }
     }
