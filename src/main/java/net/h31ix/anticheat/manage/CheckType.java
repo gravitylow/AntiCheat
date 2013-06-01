@@ -20,7 +20,10 @@ package net.h31ix.anticheat.manage;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import net.h31ix.anticheat.api.CheckFailEvent;
 import net.h31ix.anticheat.util.Permission;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
@@ -57,28 +60,62 @@ public enum CheckType {
     
     private final Permission permission;
     private final Map<String, Integer> level = new HashMap<String, Integer>();
-    
+
+    /**
+     * Initialize a CheckType
+     *
+     * @param perm Permission that applies to this check
+     */
     private CheckType(Permission perm) {
         this.permission = perm;
     }
-    
+
+    /**
+     * Determine whether a player has permission to bypass this check
+     *
+     * @param player Player to check
+     * @return true if the player can bypass
+     */
     public boolean checkPermission(Player player) {
         return permission.get(player);
     }
-    
-    public void logUse(String name) {
-        int amount = level.get(name) == null ? 1 : level.get(name) + 1;
-        level.put(name, amount);
+
+    /**
+     * Log the failure of this check
+     *
+     * @param user User who failed the check
+     */
+    public void logUse(User user) {
+        int amount = level.get(user.getName()) == null ? 1 : level.get(user.getName()) + 1;
+        level.put(user.getName(), amount);
+        Bukkit.getServer().getPluginManager().callEvent(new CheckFailEvent(user, this));
     }
-    
+
+    /**
+     * Clear failure history of this check for a user
+     *
+     * @param name User's name to clear
+     */
     public void clearUse(String name) {
         level.put(name, 0);
     }
-    
+
+    /**
+     * Get how many times a user has failed this check
+     *
+     * @param name User's name
+     * @return number of times failed
+     */
     public int getUses(String name) {
         return level.get(name) != null ? level.get(name) : 0;
     }
-    
+
+    /**
+     * Get the reference name of a check
+     *
+     * @param type Type of check
+     * @return reference name
+     */
     public static String getName(CheckType type) {
         char[] chars = type.toString().replaceAll("_", " ").toLowerCase().toCharArray();
         chars[0] = Character.toUpperCase(chars[0]);

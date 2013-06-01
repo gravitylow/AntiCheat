@@ -38,7 +38,7 @@ public class InventoryListener extends EventListener {
                 CheckResult result = getBackend().checkInventoryClicks(player);
                 if (result.failed()) {
                     if (!silentMode()) {
-                        getUserManager().getUser(player.getName()).restore(event.getInventory());
+                        getUserManager().getUser(player.getName()).restoreInventory(event.getInventory());
                         player.getInventory().clear();
                     }
                     log(result.getMessage(), player, CheckType.FAST_INVENTORY);
@@ -54,12 +54,12 @@ public class InventoryListener extends EventListener {
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
         if(event.getInventory().getType() != InventoryType.BEACON) {
-            getUserManager().getUser(event.getPlayer().getName()).setSnapshot(event.getInventory().getContents());
+            getUserManager().getUser(event.getPlayer().getName()).setInventorySnapshot(event.getInventory().getContents());
         }
     }
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        getUserManager().getUser(event.getPlayer().getName()).removeSnapshot();
+        getUserManager().getUser(event.getPlayer().getName()).removeInventorySnapshot();
     }
 }

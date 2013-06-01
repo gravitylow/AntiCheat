@@ -44,35 +44,67 @@ public class User {
     private String [] messages = new String[2];
     private Long [] messageTimes = new Long[2];
 
+    /**
+     * Initialize an AntiCheat user
+     *
+     * @param name Player's name
+     */
     public User(String name) {
         this.name = name;
         getConfigInfo();
     }
-    
+
+    /**
+     * Initialize an AntiCheat user with a predefined level
+     *
+     * @param name Player's name
+     * @param level Player's level
+     */
     public User(String name, int level) {
         this.name = name;
         this.level = level;
         getConfigInfo();
     }
-    
+
     private void getConfigInfo() {
         config = Anticheat.getManager().getConfiguration();
         silentMode = config.silentMode();
         levels = config.getLevels();
     }
-    
+
+    /**
+     * Get the player's name
+     *
+     * @return Player name
+     */
     public String getName() {
         return name;
     }
-    
+
+    /**
+     * Get the Bukkit player
+     *
+     * @return Player
+     */
     public Player getPlayer() {
         return Bukkit.getPlayer(name);
     }
-    
+
+    /**
+     * Get the user's level value
+     *
+     * @return level
+     */
     public int getLevel() {
         return level;
     }
-    
+
+    /**
+     * Increase the player's level (from failing a check)
+     *
+     * @param type The check failed
+     * @return true if the level was increased
+     */
     public boolean increaseLevel(CheckType type) {
         if (getPlayer() != null && getPlayer().isOnline()) {
             if (silentMode && type.getUses(name) % 4 != 0) {
@@ -101,17 +133,31 @@ public class User {
             return false;
         }
     }
-    
+
+    /**
+     * Decrease the player's level by one value
+     */
     public void decreaseLevel() {
         level = level != 0 ? level - 1 : 0;
     }
-    
-    public void setLevel(int level) {
+
+    /**
+     * Set the users level to a specific value. Must be 0 < level < config-defined highest level
+     * @param level level to set
+     * @return true if the level was valid and set properly
+     */
+    public boolean setLevel(int level) {
         if (level > 0 && level <= config.getHighestLevel()) {
             this.level = level;
+            return true;
+        } else {
+            return false;
         }
     }
-    
+
+    /**
+     * Reset the user's level to zero and clear all check failures
+     */
     public void resetLevel() {
         level = 0;
         for (CheckType type : CheckType.values()) {
@@ -119,21 +165,41 @@ public class User {
         }
     }
 
-    public Location getGoodLocation(Location e) {
-        if (goodLocation == null) { return e; }
+    /**
+     * Get the last known valid location of the player for use in resetting
+     *
+     * @param location default value to be returned if no known good location exists
+     * @return last known valid location
+     */
+    public Location getGoodLocation(Location location) {
+        if (goodLocation == null) {
+            return location;
+        }
         
         return goodLocation;
     }
-    
-    public void setGoodLocation(Location e) {
-        if (Utilities.cantStandAtExp(e) || (e.getBlock().isLiquid() && !Utilities.isFullyInWater(e))) {
-            return;
+
+    /**
+     * Set the last known valid location of the player
+     *
+     * @param location location to be set
+     * @return true if the location was valid and set properly
+     */
+    public boolean setGoodLocation(Location location) {
+        if (Utilities.cantStandAtExp(location) || (location.getBlock().isLiquid() && !Utilities.isFullyInWater(location))) {
+            return false;
         }
         
-        goodLocation = e;
+        goodLocation = location;
+        return true;
     }
 
-    public void setSnapshot(ItemStack[] is) {
+    /**
+     * Store a copy of the player's inventory, for use in resetting
+     *
+     * @param is ItemStack list to store
+     */
+    public void setInventorySnapshot(ItemStack[] is) {
         inventorySnapshot = new ArrayList<ItemStack>();
         for(int i=0;i<is.length;i++) {
             if(is[i] != null) {
@@ -142,11 +208,18 @@ public class User {
         }
     }
 
-    public void removeSnapshot() {
+    /**
+     * Remove the current inventory snapshot
+     */
+    public void removeInventorySnapshot() {
         inventorySnapshot = null;
     }
 
-    public void restore(Inventory inventory) {
+    /**
+     * Restore the player's inventory with the current inventory snapshot
+     * @param inventory Player's inventory
+     */
+    public void restoreInventory(Inventory inventory) {
         if(inventorySnapshot != null) {
             inventory.clear();
             for(ItemStack is : inventorySnapshot) {
@@ -157,16 +230,34 @@ public class User {
         }
     }
 
+    /**
+     * Set the player's to location
+     * @param x X value
+     * @param y Y value
+     * @param z Z value
+     */
     public void setTo(double x, double y, double z) {
         toX = (int)x;
         toY = (int)y;
         toZ = (int)z;
     }
 
+    /**
+     * Check if a given to value is the same as the stored value
+     * @param x X value
+     * @param y Y value
+     * @param z Z value
+     * @return true if coordinates are all equal
+     */
     public boolean checkTo(double x, double y, double z) {
         return (int)x == toX && (int)y == toY && (int)z == toZ;
     }
 
+    /**
+     * Log a player's chat message
+     *
+     * @param message Message to log
+     */
     public void addMessage(String message) {
         messages[1] = messages[0];
         messages[0] = message;
@@ -175,19 +266,39 @@ public class User {
         messageTimes[0] = System.currentTimeMillis();
     }
 
+    /**
+     * Get a stored chat message
+     *
+     * @param index Index of the chat in storage
+     * @return the message
+     */
     public String getMessage(int index) {
         return messages[index];
     }
 
+    /**
+     * Get the time a message in storage was sent
+     *
+     * @param index Index of the chat in storage
+     * @return time the message was sent
+     */
     public Long getMessageTime(int index) {
         return messageTimes[index];
     }
 
+    /**
+     * Clear all stored messages
+     */
     public void clearMessages() {
         messages = new String[2];
         messageTimes = new Long[2];
     }
 
+    /**
+     * Get the time the very last stored message was sent
+     *
+     * @return the last message's time
+     */
     public Long getLastMessageTime() {
         return getMessageTime(0) == null ? -1 : getMessageTime(0);
     }

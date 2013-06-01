@@ -36,12 +36,22 @@ public class UserManager {
     private static final ChatColor YELLOW = ChatColor.YELLOW;
     private static final ChatColor RED = ChatColor.RED;
     private static List<String> alert;
-    
+
+    /**
+     * Initialize the user manager with a given configuration
+     *
+     * @param conf Configuration to use
+     */
     public UserManager(Configuration conf) {
         config = conf;
         alert = config.getLang().getAlert();
     }
-    
+
+    /**
+     * Get a user with the given name
+     * @param name Name
+     * @return User with name
+     */
     public User getUser(String name) {
         for (User user : users) {
             if (user.getName().equalsIgnoreCase(name)) { return user; }
@@ -49,20 +59,41 @@ public class UserManager {
         // Otherwise try to load them
         return loadUserFromFile(name);
     }
-    
+
+    /**
+     * Get all users
+     *
+     * @return List of users
+     */
     public List<User> getUsers() {
         return users;
     }
-    
+
+    /**
+     * Add a user to the list
+     *
+     * @param user User to add
+     */
     public void addUser(User user) {
         users.add(user);
     }
-    
+
+    /**
+     * Remove a user from the list
+     *
+     * @param user User to remove
+     */
     public void remove(User user) {
         config.saveLevel(user.getName(), user.getLevel());
         users.remove(user);
     }
-    
+
+    /**
+     * Get a user's level, or 0 if the player isn't found
+     *
+     * @param name Name of the player
+     * @return player level
+     */
     public int safeGetLevel(String name) {
         User user = getUser(name);
         if (user == null) {
@@ -71,21 +102,37 @@ public class UserManager {
             return user.getLevel();
         }
     }
-    
+
+    /**
+     * Set a user's level
+     *
+     * @param name Name of the player
+     * @param level Level to set
+     */
     public void safeSetLevel(String name, int level) {
         User user = getUser(name);
         if (user != null) {
             user.setLevel(level);
         }
     }
-    
+
+    /**
+     * Reset a user
+     * @param name Name of the user
+     */
     public void safeReset(String name) {
         User user = getUser(name);
         if (user != null) {
             user.resetLevel();
         }
     }
-    
+
+    /**
+     * Load a user into the list from flatfile
+     *
+     * @param name Name of the user
+     * @return true if found in the file
+     */
     public boolean addUserFromFile(String name) {
         User user = loadUserFromFile(name);
         if (user != null) {
@@ -95,7 +142,13 @@ public class UserManager {
             return false;
         }
     }
-    
+
+    /**
+     * Get a user from flatfile
+     *
+     * @param name Name of the user
+     * @return the user if found, null otherwise
+     */
     public User loadUserFromFile(String name) {
         int level = config.getLevel(name);
         if (level == -1) {
@@ -104,7 +157,14 @@ public class UserManager {
             return new User(name, level);
         }
     }
-    
+
+    /**
+     * Fire an alert
+     *
+     * @param user The user to alert
+     * @param level The user's level
+     * @param type The CheckType that triggered the alert
+     */
     public void alert(User user, Level level, CheckType type) {
         ArrayList<String> messageArray = new ArrayList<String>();
         for (int i = 0; i < alert.size(); i++) {
@@ -117,10 +177,27 @@ public class UserManager {
         Utilities.alert(messageArray);
         execute(user, level.getActions(), type);
     }
+
+    /**
+     * Execute configuration actions for an alert
+     * @param user The user
+     * @param actions The list of actions to execute
+     * @param type The CheckType that triggered the alert
+     */
     public void execute(User user, List<String> actions, CheckType type) {
         execute(user, actions, type, config.getLang().getKickReason(), config.getLang().getWarning(), config.getLang().getBanReason());
     }
 
+    /**
+     * Execute configuration actions for an alert
+     *
+     * @param user The user
+     * @param actions The list of actions to execute
+     * @param type The CheckType that triggered the alert
+     * @param kickReason The config's kick reason
+     * @param warning The config's warning format
+     * @param banReason The config's ban reason
+     */
     public void execute(final User user, final List<String> actions, final CheckType type, final String kickReason, final List<String> warning, final String banReason) {
         // Execute synchronously for thread safety when called from AsyncPlayerChatEvent
         Bukkit.getScheduler().scheduleSyncDelayedTask(Anticheat.getPlugin(), new Runnable() {

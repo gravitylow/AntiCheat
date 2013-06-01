@@ -49,7 +49,7 @@ public class EventListener implements Listener {
         USAGE_LIST.put(type, getCheats(type) + 1);
         // Ignore plugins that are creating NPCs with no names (why the hell)
         if (user != null && user.getName() != null) {
-            type.logUse(user.getName());
+            type.logUse(user);
             if (Anticheat.getManager().getConfiguration().getFileLogLevel() == 2 && type.getUses(user.getName()) % 10 == 0) {
                 Anticheat.getManager().fileLog(user.getName() + " has triggered multiple " + type + " checks.");
             }
