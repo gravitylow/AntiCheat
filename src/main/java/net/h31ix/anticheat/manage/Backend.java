@@ -476,7 +476,8 @@ public class Backend {
                     }
                 }
                 long i = System.currentTimeMillis() - lastYtime.get(name);
-                if ((y1 - lastYcoord.get(name)) > magic.Y_MAXDIFF && i < magic.Y_TIME) {
+                double diff = magic.Y_MAXDIFF + (Utilities.isStair(player.getLocation().add(0, -1, 0).getBlock()) ? 0.5 : 0.0);
+                if ((y1 - lastYcoord.get(name)) > diff && i < magic.Y_TIME) {
                     Location g = player.getLocation();
                     yAxisViolations.put(name, yAxisViolations.get(name) + 1);
                     yAxisLastViolation.put(name, System.currentTimeMillis());
