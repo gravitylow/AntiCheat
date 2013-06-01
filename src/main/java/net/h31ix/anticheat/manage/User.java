@@ -25,6 +25,7 @@ import net.h31ix.anticheat.util.Utilities;
 import net.h31ix.anticheat.util.rule.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

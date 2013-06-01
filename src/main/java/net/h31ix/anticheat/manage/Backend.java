@@ -302,6 +302,9 @@ public class Backend {
                 if (player.isSprinting()) {
                     reason = "on soulsand while sprinting ";
                     max = magic.XZ_SPEED_MAX_SOULSAND_SPRINT;
+                } else if (player.hasPotionEffect(PotionEffectType.SPEED)) {
+                        reason = "on soulsand with speed potion ";
+                        max = magic.XZ_SPEED_MAX_SOULSAND_POTION;
                 } else {
                     reason = "on soulsand ";
                     max = magic.XZ_SPEED_MAX_SOULSAND;

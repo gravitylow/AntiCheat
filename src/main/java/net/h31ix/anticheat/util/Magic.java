@@ -318,6 +318,10 @@ public class Magic {
      */
     public final double XZ_SPEED_MAX_SOULSAND_SPRINT;
     /**
+     * Maximum speed a player can travel forwards or backwards on soul sand while under the influence; Type=double, +Leniency=Increase.
+     */
+    public final double XZ_SPEED_MAX_SOULSAND_POTION;
+    /**
      * Maximum times a player can fail the speed check before action is taken; Type=integer, +Leniency=Increase.
      */
     public final int SPEED_MAX;
@@ -424,6 +428,7 @@ public class Magic {
         XZ_SPEED_MAX_WATER = getDouble("XZ_SPEED_MAX_WATER");
         XZ_SPEED_MAX_SOULSAND = getDouble("XZ_SPEED_MAX_SOULSAND");
         XZ_SPEED_MAX_SOULSAND_SPRINT = getDouble("XZ_SPEED_MAX_SOULSAND_SPRINT");
+        XZ_SPEED_MAX_SOULSAND_POTION = getDouble("XZ_SPEED_MAX_SOULSAND_POTION");
         XZ_SPEED_MAX_WATER_SPRINT = getDouble("XZ_SPEED_MAX_WATER_SPRINT");
         SPEED_MAX = getInt("SPEED_MAX");
         INVENTORY_CHECK = getInt("INVENTORY_CHECK");
