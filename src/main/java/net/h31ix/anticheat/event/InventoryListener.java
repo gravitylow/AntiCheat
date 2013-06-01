@@ -32,7 +32,7 @@ public class InventoryListener extends EventListener {
     
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!event.isRightClick() && event.getWhoClicked() instanceof Player) {
+        if (!event.isRightClick() && !event.isShiftClick() && event.getWhoClicked() instanceof Player) {
             Player player = (Player) event.getWhoClicked();
             if (getCheckManager().willCheck(player, CheckType.FAST_INVENTORY)) {
                 CheckResult result = getBackend().checkInventoryClicks(player);
