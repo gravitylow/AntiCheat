@@ -46,6 +46,11 @@ public class CheckManager {
         config = manager.getConfiguration();
     }
 
+    /**
+     * Turn a check on
+     *
+     * @param type The CheckType to enable
+     */
     public void activateCheck(CheckType type) {
         if (isActive(type)) {
             manager.log("The " + type.toString() + " check was activated.");
@@ -53,6 +58,11 @@ public class CheckManager {
         }
     }
 
+    /**
+     * Turn a check off
+     *
+     * @param type The CheckType to disable
+     */
     public void deactivateCheck(CheckType type) {
         if (!isActive(type)) {
             manager.log("The " + type.toString() + " check was deactivated.");
@@ -61,10 +71,22 @@ public class CheckManager {
         }
     }
 
+    /**
+     * Determine whether a check is enabled
+     *
+     * @param type The CheckType to check
+     * @return true if the check is active
+     */
     public boolean isActive(CheckType type) {
         return !checkIgnoreList.contains(type);
     }
 
+    /**
+     * Exempt a player from a check
+     *
+     * @param player The player
+     * @param type The check
+     */
     public void exemptPlayer(Player player, CheckType type) {
         if (!isExempt(player, type)) {
             if (!exemptList.containsKey(player.getName())) {
@@ -76,6 +98,12 @@ public class CheckManager {
         }
     }
 
+    /**
+     * Unexempt a player from a check
+     *
+     * @param player The player
+     * @param type The check
+     */
     public void unexemptPlayer(Player player, CheckType type) {
         if (isExempt(player, type)) {
             manager.log(player.getName() + " was re-added to the " + type.toString() + " check.");
@@ -83,18 +111,42 @@ public class CheckManager {
         }
     }
 
+    /**
+     * Determine whether a player is exempt from a check
+     *
+     * @param player The player
+     * @param type The check
+     */
     public boolean isExempt(Player player, CheckType type) {
         return exemptList.containsKey(player.getName()) ? exemptList.get(player.getName()).contains(type) : false;
     }
 
+    /**
+     * Determine whether a player is exempt from all checks from op status
+     *
+     * @param player The player
+     */
     public boolean isOpExempt(Player player) {
         return (this.manager.getConfiguration().opExempt() && player.isOp());
     }
 
+    /**
+     * Determine whether a player should be checked in their world
+     *
+     * @param player The player
+     * @return true if the player's world is enabled
+     */
     public boolean checkInWorld(Player player) {
         return config.checkInWorld(player.getWorld());
     }
 
+    /**
+     * Run a quick version of the "willCheck" method, using the other non-check-specific methods beforehand
+     *
+     * @param player The player to check
+     * @param type The check being run
+     * @return true if the check should run
+     */
     public boolean willCheckQuick(Player player, CheckType type) {
         return
             isActive(type)
@@ -102,6 +154,13 @@ public class CheckManager {
             && !type.checkPermission(player);
     }
 
+    /**
+     * Determine whether a check should run on a player
+     *
+     * @param player The player to check
+     * @param type The check being run
+     * @return true if the check should run
+     */
     public boolean willCheck(Player player, CheckType type) {
         boolean check = isActive(type)
             && config.checkInWorld(player.getWorld())
@@ -112,6 +171,12 @@ public class CheckManager {
         return check;
     }
 
+    /**
+     * Determine whether a player is actually online; not an NPC
+     *
+     * @param player Player to check
+     * @return true if the player is a real person
+     */
     public boolean isOnline(Player player) {
         // Check if the player is on the user list, e.g. is not an NPC
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -122,12 +187,22 @@ public class CheckManager {
         return false;
     }
 
+    /**
+     * Get the number of exempt players
+     *
+     * @return exempt players
+     */
     public int getExempt() {
         int x = exempt;
         exempt = 0;
         return x;
     }
 
+    /**
+     * Get the number of disabled checks
+     *
+     * @return disabled checks
+     */
     public int getDisabled() {
         int x = disabled;
         disabled = 0;

@@ -23,6 +23,10 @@ import net.h31ix.anticheat.manage.User;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+/**
+ * Fired when a player fails an AntiCheat check
+ */
+
 public class CheckFailEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
@@ -35,10 +39,19 @@ public class CheckFailEvent extends Event {
         this.type = type;
     }
 
+    /**
+     * Get the {@link net.h31ix.anticheat.manage.User} who failed the check
+     *
+     * @return a {@link net.h31ix.anticheat.manage.User}
+     */
     public User getUser() {
         return user;
     }
 
+    /**
+     * Get the {@link net.h31ix.anticheat.manage.CheckType} failed
+     * @return a {@link net.h31ix.anticheat.manage.CheckType}
+     */
     public CheckType getCheck() {
         return type;
     }

@@ -297,7 +297,7 @@ public final class Utilities {
      * @return true if climbable
      */
     public static boolean isClimbableBlock(Block block) {
-        return block.getType() == Material.VINE || block.getType() == Material.LADDER || block.getType() == Material.WATER;
+        return block.getType() == Material.VINE || block.getType() == Material.LADDER || block.getType() == Material.WATER || block.getType() == Material.STATIONARY_WATER;
     }
 
     /**
