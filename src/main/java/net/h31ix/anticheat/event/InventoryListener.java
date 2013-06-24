@@ -41,6 +41,7 @@ public class InventoryListener extends EventListener {
                     if (!silentMode()) {
                         getUserManager().getUser(player.getName()).restoreInventory(event.getInventory());
                         player.getInventory().clear();
+                        event.setCancelled(true);
                     }
                     log(result.getMessage(), player, CheckType.FAST_INVENTORY);
                 } else {
