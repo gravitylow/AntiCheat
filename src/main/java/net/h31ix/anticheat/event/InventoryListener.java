@@ -20,6 +20,7 @@ package net.h31ix.anticheat.event;
 
 import net.h31ix.anticheat.Anticheat;
 import net.h31ix.anticheat.manage.CheckType;
+import net.h31ix.anticheat.manage.User;
 import net.h31ix.anticheat.util.CheckResult;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -60,6 +61,9 @@ public class InventoryListener extends EventListener {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        getUserManager().getUser(event.getPlayer().getName()).removeInventorySnapshot();
+        User user = getUserManager().getUser(event.getPlayer().getName());
+        if(user != null) {
+            user.removeInventorySnapshot();
+        }
     }
 }
