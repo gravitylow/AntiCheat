@@ -20,6 +20,9 @@ package net.h31ix.anticheat.util;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 /**
  * Magic number class. Modifications to values in magic.yml will be accepted here.
  * <p>
@@ -477,6 +480,4 @@ public class Magic {
             return i;
         }
     }
-    
-    
 }

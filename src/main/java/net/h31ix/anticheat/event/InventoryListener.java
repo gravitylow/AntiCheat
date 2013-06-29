@@ -39,7 +39,7 @@ public class InventoryListener extends EventListener {
                 CheckResult result = getBackend().checkInventoryClicks(player);
                 if (result.failed()) {
                     if (!silentMode()) {
-                        getUserManager().getUser(player.getName()).restoreInventory(event.getInventory());
+                        //getUserManager().getUser(player.getName()).restoreInventory(event.getInventory());
                         player.getInventory().clear();
                         event.setCancelled(true);
                     }
