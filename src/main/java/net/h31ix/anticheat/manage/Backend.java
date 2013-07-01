@@ -295,7 +295,7 @@ public class Backend {
     }
 
     public CheckResult checkXZSpeed(Player player, double x, double z) {
-        if (!isSpeedExempt(player) && player.getVehicle() == null && player.getWalkSpeed() > 0) {
+        if (!isSpeedExempt(player) && player.getVehicle() == null) {
             String reason = "";
             double max = magic.XZ_SPEED_MAX;
             if (player.getLocation().getBlock().getType() == Material.SOUL_SAND) {
@@ -319,8 +319,9 @@ public class Backend {
                 reason = "while sprinting ";
                 max = magic.XZ_SPEED_MAX_SPRINT;
             }
-            
-            max += player.getWalkSpeed() - 0.2f;
+
+            float speed = player.getWalkSpeed();
+            max += speed > 0 ? player.getWalkSpeed() - 0.2f : 0;
             
             if (x > max || z > max) {
                 int num = this.increment(player, speedViolation, magic.SPEED_MAX);
