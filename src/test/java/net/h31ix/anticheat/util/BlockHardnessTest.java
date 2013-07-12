@@ -32,14 +32,4 @@ public class BlockHardnessTest {
             }
         }
     }
-
-    @Test
-    public void verifyName() {
-        for(Material m : Material.values()) {
-            BlockHardness hardness = BlockHardness.getHardness(m);
-            if(hardness != null && !hardness.name().equals(m.name())) {
-                Assert.fail("BlockHardness " + hardness + " and its material " + m + " have mismatched names");
-            }
-        }
-    }
 }
