@@ -20,7 +20,6 @@ package net.h31ix.anticheat;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -28,10 +27,7 @@ import java.util.List;
 import java.util.logging.Level;
 import net.h31ix.anticheat.event.*;
 import net.h31ix.anticheat.manage.AnticheatManager;
-import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.User;
-import net.h31ix.anticheat.metrics.Metrics;
-import net.h31ix.anticheat.metrics.Metrics.Graph;
 import net.h31ix.anticheat.update.Updater;
 import net.h31ix.anticheat.util.Configuration;
 import net.h31ix.anticheat.util.Utilities;
@@ -52,7 +48,6 @@ public class Anticheat extends JavaPlugin {
     private static Configuration config;
     private static boolean verbose;
     private static boolean developer;
-    private static Metrics metrics;
     private static final long XRAY_TIME = 1200;
 
     @Override
@@ -70,7 +65,6 @@ public class Anticheat extends JavaPlugin {
         setupEvents();
         setupCommands();
         setupUpdater();
-        setupMetrics();
         restoreLevels();
         // Test for compatibility for 1.4.5-R1.0
         try {
@@ -189,40 +183,6 @@ public class Anticheat extends JavaPlugin {
         }
     }
 
-    private void setupMetrics() {
-        try {
-            metrics = new Metrics(this);
-            final EventListener listener = new EventListener();
-            Graph hacksGraph = metrics.createGraph("Hacks blocked");
-            for (final CheckType type : CheckType.values()) {
-                hacksGraph.addPlotter(new Metrics.Plotter(CheckType.getName(type)) {
-                    @Override
-                    public int getValue() {
-                        return EventListener.getCheats(type);
-                    }
-                });
-                listener.resetCheck(type);
-            }
-            Graph apiGraph = metrics.createGraph("API Usage");
-            apiGraph.addPlotter(new Metrics.Plotter("Checks disabled") {
-                @Override
-                public int getValue() {
-                    return manager.getCheckManager().getDisabled();
-                }
-            });
-            apiGraph.addPlotter(new Metrics.Plotter("Players exempted") {
-                @Override
-                public int getValue() {
-                    return manager.getCheckManager().getExempt();
-                }
-            });
-            metrics.start();
-            if (verbose) {
-                getLogger().log(Level.INFO, "Metrics started.");
-            }
-        } catch (IOException ex) {}
-    }
-
     private void setupConfig() {
         config = manager.getConfiguration();
         checkConfigs();
@@ -272,7 +232,6 @@ public class Anticheat extends JavaPlugin {
         eventList = null;
         manager = null;
         config = null;
-        metrics = null;
     }
 
     public static boolean developerMode() {
