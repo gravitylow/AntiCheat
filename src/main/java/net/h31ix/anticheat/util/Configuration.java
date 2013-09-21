@@ -36,15 +36,20 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class Configuration {
     private AnticheatManager micromanage = null;
     private Anticheat plugin;
+
     private File configFile = null;
     private File levelFile = null;
     private File langFile = null;
     private File magicFile = null;
     private File eventsFile = null;
+    private File enterpriseFile = null;
+
     private CommentedConfiguration config;
     private FileConfiguration level;
     private FileConfiguration magic;
     private FileConfiguration events;
+    private FileConfiguration enterprise;
+
     private boolean logConsole;
     private boolean logXRay;
     private boolean alertXRay;
@@ -56,6 +61,8 @@ public class Configuration {
     private boolean opExempt;
     private boolean trackCreativeXRay;
     private boolean eventChains;
+    private boolean isEnterprise;
+
     private int fileLogLevel = 0;
     private String updateFolder;
     private String chatActionKick;
@@ -76,6 +83,7 @@ public class Configuration {
         langFile = new File(micromanage.getPlugin().getDataFolder() + "/lang.yml");
         magicFile = new File(micromanage.getPlugin().getDataFolder() + "/magic.yml");
         eventsFile = new File(micromanage.getPlugin().getDataFolder() + "/events.yml");
+        enterpriseFile = new File(micromanage.getPlugin().getDataFolder() + "/enterprise.yml");
 
         //
         language = new Language(YamlConfiguration.loadConfiguration(langFile), langFile);
@@ -87,6 +95,9 @@ public class Configuration {
             events.save(eventsFile);
             level.save(levelFile);
             magic.save(magicFile);
+            if(isEnterprise) {
+                enterprise.save(enterpriseFile);
+            }
         } catch (IOException ex) {
             Logger.getLogger(Configuration.class.getName()).severe(ex.getMessage());
         }
@@ -138,6 +149,10 @@ public class Configuration {
     
     public boolean eventChains() {
         return eventChains;
+    }
+
+    public boolean enterprise() {
+        return isEnterprise;
     }
     
     public String chatActionKick() {
@@ -282,6 +297,7 @@ public class Configuration {
         opExempt = getBoolean("System.Exempt op", false);
         trackCreativeXRay = getBoolean("XRay.Track creative", true);
         eventChains = getBoolean("System.Event Chains", true);
+        isEnterprise = getBoolean("System.Enterprise", false);
         chatActionKick = getString("Chat.Kick Action", "KICK");
         chatActionBan = getString("Chat.Ban Action", "BAN");
         chatSpam = getBoolean("Chat.Block chat spam", true);
@@ -333,6 +349,13 @@ public class Configuration {
             plugin.replaceMagic();
             magic = YamlConfiguration.loadConfiguration(magicFile);
             version = magic.getString("VERSION");
+        }
+
+        if(isEnterprise) {
+            if(!enterpriseFile.exists()) {
+                micromanage.getPlugin().save(micromanage.getPlugin().getResource("enterprise.yml"), enterpriseFile);
+            }
+            enterprise = YamlConfiguration.loadConfiguration(enterpriseFile);
         }
 
         save();

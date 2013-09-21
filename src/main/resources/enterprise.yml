@@ -1,0 +1,42 @@
+# AntiCheat configuration file
+# Please report any bugs: http://dev.bukkit.org/server-mods/anticheat/
+
+# Server-specific settings
+server:
+  # An identifiable name for this server
+  name: 'server-1'
+
+# Database settings
+database:
+    # Type of database.
+    type: MySQL
+    
+    # Address of the server
+    hostname: ''
+    
+    # Port of the server
+    port: 3306
+    
+    # Username to connect with
+    username: ''
+    
+    # Password for the user
+    password: ''
+    
+    # Prefix for the tables
+    prefix: 'ac_'
+    
+    # Database/Schema to use
+    database: 'minecraft'
+
+logging:
+  # Keep events in the database?
+  enable: true
+  # Time for actions logged to stay in the database (in days)
+  life: 2
+
+users:
+  # Synchronize user's levels in the database?
+  enable: true
+  # How often to query the databse for synchronization? (in seconds)
+  interval: 60

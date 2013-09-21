@@ -103,7 +103,7 @@ public class Anticheat extends JavaPlugin {
         cleanup();
     }
 
-    private boolean save(InputStream in, File file) {
+    public boolean save(InputStream in, File file) {
         if (!file.exists()) {
             file.getParentFile().mkdirs();
             try {
