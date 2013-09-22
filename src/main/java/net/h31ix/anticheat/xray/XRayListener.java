@@ -18,10 +18,10 @@
 
 package net.h31ix.anticheat.xray;
 
-import net.h31ix.anticheat.Anticheat;
+import net.h31ix.anticheat.AntiCheat;
+import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.manage.CheckManager;
 import net.h31ix.anticheat.manage.CheckType;
-import net.h31ix.anticheat.util.Configuration;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -30,15 +30,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 public class XRayListener implements Listener {
-    private XRayTracker tracker = Anticheat.getManager().getXRayTracker();
-    private Configuration config = Anticheat.getManager().getConfiguration();
-    private CheckManager checkManager = Anticheat.getManager().getCheckManager();
+    private XRayTracker tracker = AntiCheat.getManager().getXRayTracker();
+    private Configuration config = AntiCheat.getManager().getConfiguration();
+    private CheckManager checkManager = AntiCheat.getManager().getCheckManager();
     
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        if (config.logXRay()) {
+        if (config.getConfig().logXRayStats.getValue()) {
             Player p = event.getPlayer();
-            if (p.getGameMode() == GameMode.CREATIVE && !config.trackCreativeXRay()) { return; }
+            if (p.getGameMode() == GameMode.CREATIVE && !config.getConfig().trackCreativeXRay.getValue()) { return; }
             String player = p.getName();
             if (checkManager.willCheck(p, CheckType.XRAY)) {
                 Material m = event.getBlock().getType();

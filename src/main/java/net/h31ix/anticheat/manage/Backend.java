@@ -24,12 +24,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import net.h31ix.anticheat.Anticheat;
+import net.h31ix.anticheat.AntiCheat;
+import net.h31ix.anticheat.config.files.Lang;
 import net.h31ix.anticheat.util.CheckResult;
 import net.h31ix.anticheat.util.CheckResult.Result;
 import net.h31ix.anticheat.util.Distance;
-import net.h31ix.anticheat.util.Language;
-import net.h31ix.anticheat.util.Magic;
+import net.h31ix.anticheat.config.files.Magic;
 import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -94,11 +94,11 @@ public class Backend {
 
     private Magic magic;
     private AnticheatManager manager = null;
-    private Language lang = null;
+    private Lang lang = null;
     private static final CheckResult PASS = new CheckResult(Result.PASSED);
 
     public Backend(AnticheatManager instance) {
-        magic = instance.getConfiguration().getMagicInstance();
+        magic = instance.getConfiguration().getMagic();
         manager = instance;
         lang = manager.getConfiguration().getLang();
         transparent.add((byte) -1);
@@ -462,7 +462,7 @@ public class Backend {
                     Location g = player.getLocation();
                     yAxisViolations.put(name, yAxisViolations.get(name) + 1);
                     yAxisLastViolation.put(name, System.currentTimeMillis());
-                    if (!manager.getConfiguration().silentMode()) {
+                    if (!silentMode()) {
                         g.setY(lastYcoord.get(name));
                         player.sendMessage(ChatColor.RED + "[AntiCheat] Fly hacking on the y-axis detected.  Please wait 5 seconds to prevent getting damage.");
                         if (g.getBlock().getTypeId() == 0) {
@@ -482,7 +482,7 @@ public class Backend {
                     Location g = player.getLocation();
                     yAxisViolations.put(name, yAxisViolations.get(name) + 1);
                     yAxisLastViolation.put(name, System.currentTimeMillis());
-                    if (!manager.getConfiguration().silentMode()) {
+                    if (!silentMode()) {
                         g.setY(lastYcoord.get(name));
                         if (g.getBlock().getTypeId() == 0) {
                             player.teleport(g);
@@ -656,7 +656,7 @@ public class Backend {
             int i = fastBreakViolation.get(name);
             if (i > violations && math < magic.FASTBREAK_MAXVIOLATIONTIME) {
                 lastBlockBroken.put(name, System.currentTimeMillis());
-                if (!manager.getConfiguration().silentMode()) {
+                if (!silentMode()) {
                     player.sendMessage(ChatColor.RED + "[AntiCheat] Fastbreaking detected. Please wait 10 seconds before breaking blocks.");
                 }
                 return new CheckResult(Result.FAILED, player.getName()+" broke blocks too fast "+i+" times in a row (max="+violations+")");
@@ -715,17 +715,17 @@ public class Backend {
                 fastPlaceViolation.put(name, 0);
             }
         } else if (fastPlaceViolation.containsKey(name) && fastPlaceViolation.get(name) > violations) {
-            Anticheat.debugLog("Noted that fastPlaceViolation contains key "+name+" with value "+fastPlaceViolation.get(name));
+            AntiCheat.debugLog("Noted that fastPlaceViolation contains key " + name + " with value " + fastPlaceViolation.get(name));
             Long math = System.currentTimeMillis() - lastBlockPlaced.get(name);
-            Anticheat.debugLog("Player lastBlockPlaced value = "+lastBlockPlaced+", diff="+math);
+            AntiCheat.debugLog("Player lastBlockPlaced value = " + lastBlockPlaced + ", diff=" + math);
             if (lastBlockPlaced.get(name) > 0 && math < magic.FASTPLACE_MAXVIOLATIONTIME) {
                 lastBlockPlaced.put(name, time);
-                if (!manager.getConfiguration().silentMode()) {
+                if (!silentMode()) {
                     player.sendMessage(ChatColor.RED + "[AntiCheat] Fastplacing detected. Please wait 10 seconds before placing blocks.");
                 }
                 return new CheckResult(Result.FAILED, player.getName()+" placed blocks too fast "+fastBreakViolation.get(name)+" times in a row (max="+violations+")");
             } else if (lastBlockPlaced.get(name) > 0 && math > magic.FASTPLACE_MAXVIOLATIONTIME) {
-                Anticheat.debugLog("Reset facePlaceViolation for "+name);
+                AntiCheat.debugLog("Reset facePlaceViolation for " + name);
                 fastPlaceViolation.put(name, 0);
             }
         } else if (lastBlockPlaced.containsKey(name)) {
@@ -772,7 +772,7 @@ public class Backend {
                     user.clearMessages();
                     break;
                 } else if((m.equalsIgnoreCase(msg) && i == 1) || System.currentTimeMillis() - user.getLastMessageTime() < magic.CHAT_MIN * 2) {
-                    return new CheckResult(Result.FAILED, lang.getChatWarning());
+                    return new CheckResult(Result.FAILED, lang.spamWarning.getValue());
                 }
             }
         }
@@ -1044,8 +1044,8 @@ public class Backend {
                     chatKicks.put(name, kick);
                 }
 
-                String event = kick <= magic.CHAT_BAN_LEVEL ? manager.getConfiguration().chatActionKick() : manager.getConfiguration().chatActionBan();
-                manager.getUserManager().execute(manager.getUserManager().getUser(player.getName()), Utilities.stringToList(event), CheckType.SPAM, lang.getChatKickReason() + "(" + kick + "/3)", Utilities.stringToList(lang.getChatWarning()), lang.getChatBanReason());
+                String event = kick <= magic.CHAT_BAN_LEVEL ? manager.getConfiguration().getConfig().spamKickAction.getValue() : manager.getConfiguration().getConfig().spamBanAction.getValue();
+                manager.getUserManager().execute(manager.getUserManager().getUser(player.getName()), Utilities.stringToList(event), CheckType.SPAM, lang.spamKickReason.getValue() + "(" + kick + "/3)", Utilities.stringToList(lang.spamWarning.getValue()), lang.spamBanReason.getValue());
             }
         } else {
             increment(player, chatLevel, magic.CHAT_KICK_LEVEL);
@@ -1067,5 +1067,9 @@ public class Backend {
                 return num;
             }
         }
+    }
+
+    public boolean silentMode() {
+        return manager.getConfiguration().getConfig().silentMode.getValue();
     }
 }

@@ -18,14 +18,13 @@
 
 package net.h31ix.anticheat.manage;
 
-import net.h31ix.anticheat.Anticheat;
-import net.h31ix.anticheat.util.Configuration;
+import net.h31ix.anticheat.AntiCheat;
+import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.util.Level;
 import net.h31ix.anticheat.util.Utilities;
 import net.h31ix.anticheat.util.rule.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -36,10 +35,8 @@ public class User {
     private final String name;
     private int level = 0;
     private Location goodLocation;
-    private boolean silentMode;
     private List<ItemStack> inventorySnapshot = null;
-    private Configuration config = Anticheat.getManager().getConfiguration();
-    private List<Level> levels = new ArrayList<Level>();
+    private Configuration config = AntiCheat.getManager().getConfiguration();
     private int toX, toY, toZ;
     private String [] messages = new String[2];
     private Long [] messageTimes = new Long[2];
@@ -50,8 +47,7 @@ public class User {
      * @param name Player's name
      */
     public User(String name) {
-        this.name = name;
-        getConfigInfo();
+        this(name, 0);
     }
 
     /**
@@ -63,13 +59,6 @@ public class User {
     public User(String name, int level) {
         this.name = name;
         this.level = level;
-        getConfigInfo();
-    }
-
-    private void getConfigInfo() {
-        config = Anticheat.getManager().getConfiguration();
-        silentMode = config.silentMode();
-        levels = config.getLevels();
     }
 
     /**
@@ -107,24 +96,24 @@ public class User {
      */
     public boolean increaseLevel(CheckType type) {
         if (getPlayer() != null && getPlayer().isOnline()) {
-            if (silentMode && type.getUses(name) % 4 != 0) {
+            if (silentMode() && type.getUses(name) % 4 != 0) {
                 // Prevent silent mode from increasing the level way too fast
                 return false;
             } else {
                 level++;
 
                 // Check levels
-                for(Level l : levels) {
+                for(Level l : getLevels()) {
                     if(l.getValue() == level) {
-                        Anticheat.getManager().getUserManager().alert(this, l, type);
-                        if(l.getValue() == config.getHighestLevel()) {
+                        AntiCheat.getManager().getUserManager().alert(this, l, type);
+                        if(l.getValue() == config.getEvents().highestLevel) {
                             level = l.getValue() - 10;
                         }
                     }
                 }
 
                 // Execute rules
-                for(Rule rule : config.getRules()) {
+                for(Rule rule : config.getEvents().rules) {
                     rule.check(this, type);
                 }
                 return true;
@@ -147,7 +136,7 @@ public class User {
      * @return true if the level was valid and set properly
      */
     public boolean setLevel(int level) {
-        if (level > 0 && level <= config.getHighestLevel()) {
+        if (level > 0 && level <= config.getEvents().highestLevel) {
             this.level = level;
             return true;
         } else {
@@ -301,5 +290,13 @@ public class User {
      */
     public Long getLastMessageTime() {
         return getMessageTime(0) == null ? -1 : getMessageTime(0);
+    }
+
+    private List<Level> getLevels() {
+        return config.getEvents().levels;
+    }
+
+    private boolean silentMode() {
+        return config.getConfig().silentMode.getValue();
     }
 }

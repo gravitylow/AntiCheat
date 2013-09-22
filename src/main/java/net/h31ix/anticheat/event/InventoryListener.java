@@ -18,7 +18,7 @@
 
 package net.h31ix.anticheat.event;
 
-import net.h31ix.anticheat.Anticheat;
+import net.h31ix.anticheat.AntiCheat;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.User;
 import net.h31ix.anticheat.util.CheckResult;
@@ -50,7 +50,7 @@ public class InventoryListener extends EventListener {
             }
         }
         
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler

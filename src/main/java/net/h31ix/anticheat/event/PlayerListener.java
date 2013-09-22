@@ -18,7 +18,7 @@
 
 package net.h31ix.anticheat.event;
 
-import net.h31ix.anticheat.Anticheat;
+import net.h31ix.anticheat.AntiCheat;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.User;
 import net.h31ix.anticheat.util.CheckResult;
@@ -45,7 +45,7 @@ public class PlayerListener extends EventListener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        if (getCheckManager().willCheck(player, CheckType.SPAM) && getConfig().commandSpam()) {
+        if (getCheckManager().willCheck(player, CheckType.SPAM) && getConfig().getConfig().blockCommandSpam.getValue()) {
             CheckResult result = getBackend().checkSpam(player, event.getMessage());
             if (result.failed()) {
                 event.setCancelled(!silentMode());
@@ -55,7 +55,7 @@ public class PlayerListener extends EventListener {
             }
         }
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler
@@ -64,7 +64,7 @@ public class PlayerListener extends EventListener {
             getBackend().logEnterExit(event.getPlayer());
         }
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler
@@ -73,7 +73,7 @@ public class PlayerListener extends EventListener {
             getBackend().logEnterExit(event.getPlayer());
         }
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler
@@ -92,7 +92,7 @@ public class PlayerListener extends EventListener {
             }
         }
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler
@@ -101,14 +101,14 @@ public class PlayerListener extends EventListener {
             getBackend().logTeleport(event.getPlayer());
         }
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler
     public void onPlayerChangeWorlds(PlayerChangedWorldEvent event) {
         getBackend().logTeleport(event.getPlayer());
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler
@@ -117,7 +117,7 @@ public class PlayerListener extends EventListener {
             getBackend().logToggleSneak(event.getPlayer());
         }
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler
@@ -132,13 +132,13 @@ public class PlayerListener extends EventListener {
             getBackend().logVelocity(player);
         }
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        if (getCheckManager().willCheck(player, CheckType.SPAM) && getConfig().chatSpam()) {
+        if (getCheckManager().willCheck(player, CheckType.SPAM) && getConfig().getConfig().blockChatSpam.getValue()) {
             CheckResult result = getBackend().checkSpam(player, event.getMessage());
             if (result.failed()) {
                 event.setCancelled(!silentMode());
@@ -148,7 +148,7 @@ public class PlayerListener extends EventListener {
             }
         }
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler
@@ -156,14 +156,14 @@ public class PlayerListener extends EventListener {
         getBackend().clearChatLevel(event.getPlayer());
         getBackend().garbageClean(event.getPlayer());
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         getBackend().garbageClean(event.getPlayer());
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler
@@ -179,7 +179,7 @@ public class PlayerListener extends EventListener {
             }
         }
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler
@@ -201,7 +201,7 @@ public class PlayerListener extends EventListener {
             getBackend().checkLongReachBlock(player, distance.getXDifference(), distance.getYDifference(), distance.getZDifference());
         }
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -215,21 +215,21 @@ public class PlayerListener extends EventListener {
             }
         }
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerEnterBed(PlayerBedEnterEvent event) {
         getBackend().logEnterExit(event.getPlayer());
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerExitBed(PlayerBedLeaveEvent event) {
         getBackend().logEnterExit(event.getPlayer());
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler
@@ -237,7 +237,7 @@ public class PlayerListener extends EventListener {
         Player player = event.getPlayer();
         getBackend().logAnimation(player);
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler
@@ -269,7 +269,7 @@ public class PlayerListener extends EventListener {
             }
         }
 
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -409,7 +409,7 @@ public class PlayerListener extends EventListener {
                 }
             }
         }
-        Anticheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

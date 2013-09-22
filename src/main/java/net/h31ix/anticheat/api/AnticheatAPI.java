@@ -18,7 +18,7 @@
 
 package net.h31ix.anticheat.api;
 
-import net.h31ix.anticheat.Anticheat;
+import net.h31ix.anticheat.AntiCheat;
 import net.h31ix.anticheat.manage.*;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.entity.Player;
@@ -29,9 +29,9 @@ import org.bukkit.entity.Player;
  */
 
 public class AnticheatAPI {
-    private static CheckManager chk = Anticheat.getManager().getCheckManager();
-    private static UserManager umr = Anticheat.getManager().getUserManager();
-    private static XRayTracker xtracker = Anticheat.getManager().getXRayTracker();
+    private static CheckManager chk = AntiCheat.getManager().getCheckManager();
+    private static UserManager umr = AntiCheat.getManager().getUserManager();
+    private static XRayTracker xtracker = AntiCheat.getManager().getXRayTracker();
     
     // CheckManager API
     
@@ -149,6 +149,6 @@ public class AnticheatAPI {
      * @return the AntiCheat Manager
      */
     public static AnticheatManager getManager() {
-        return Anticheat.getManager();
+        return AntiCheat.getManager();
     }
 }

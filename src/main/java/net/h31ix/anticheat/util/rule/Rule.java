@@ -18,7 +18,7 @@
 
 package net.h31ix.anticheat.util.rule;
 
-import net.h31ix.anticheat.Anticheat;
+import net.h31ix.anticheat.AntiCheat;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.User;
 import net.h31ix.anticheat.util.Utilities;
@@ -84,7 +84,7 @@ public class Rule {
     }
 
     public Rule(String string, Type type) {
-        this.string = string = Utilities.removeWhitespace(string).toLowerCase();
+        this.string = Utilities.removeWhitespace(string).toLowerCase();
         this.type = type;
     }
 
@@ -156,7 +156,7 @@ public class Rule {
             text = text.split("\\.")[1];
             List<String> action = new ArrayList<String>();
             action.add(text);
-            Anticheat.getManager().getUserManager().execute(user, action, type);
+            AntiCheat.getManager().getUserManager().execute(user, action, type);
         }
     }
 

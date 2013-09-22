@@ -21,7 +21,7 @@ package net.h31ix.anticheat.util.enterprise;
 public class Database {
 
     public enum DatabaseType {
-        MYSQL,
+        MySQL,
     }
 
     private DatabaseType type;
@@ -29,16 +29,44 @@ public class Database {
     private int port;
     private String username;
     private String password;
-    private String schema;
     private String prefix;
+    private String schema;
 
-    public Database(DatabaseType type, String hostname, int port, String username, String password, String schema, String prefix) {
+    public Database(DatabaseType type, String hostname, int port, String username, String password, String prefix, String schema) {
         this.type = type;
         this.hostname = hostname;
         this.port = port;
         this.username = username;
         this.password = password;
-        this.schema = schema;
         this.prefix = prefix;
+        this.schema = schema;
+    }
+
+    public DatabaseType getType() {
+        return type;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public String getSchema() {
+        return schema;
     }
 }

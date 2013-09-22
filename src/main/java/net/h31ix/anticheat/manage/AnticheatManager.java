@@ -28,8 +28,9 @@ import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.h31ix.anticheat.Anticheat;
-import net.h31ix.anticheat.util.Configuration;
+
+import net.h31ix.anticheat.AntiCheat;
+import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.util.FileFormatter;
 import net.h31ix.anticheat.xray.XRayTracker;
 import org.bukkit.Bukkit;
@@ -37,12 +38,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.RegisteredListener;
 
 /**
- * <p>
  * The internal hub for all managers.
  */
 
 public class AnticheatManager {
-    private static Anticheat plugin = null;
+    private static AntiCheat plugin = null;
     private static Configuration configuration;
     private static XRayTracker xrayTracker = null;
     private static UserManager userManager = null;
@@ -55,17 +55,17 @@ public class AnticheatManager {
     private static Handler fileHandler;
     private static final int LOG_LEVEL_HIGH = 3;
     
-    public AnticheatManager(Anticheat instance, Logger logger) {
+    public AnticheatManager(AntiCheat instance, Logger logger) {
         plugin = instance;
         // now load all the others!!!!!
-        fileLogger = Logger.getLogger("net.h31ix.anticheat.Anticheat");
-        configuration = new Configuration(plugin, this);
+        fileLogger = Logger.getLogger("net.h31ix.anticheat.AntiCheat");
+        configuration = new Configuration(plugin);
         xrayTracker = new XRayTracker();
         userManager = new UserManager(configuration);
-        checkManager = new CheckManager(this);
+        checkManager = new CheckManager(this, configuration);
         backend = new Backend(this);
         try {
-            File file = new File(plugin.getDataFolder() + "/log");
+            File file = new File(plugin.getDataFolder(), "log");
             if (!file.exists()) {
                 file.mkdir();
             }
@@ -83,13 +83,13 @@ public class AnticheatManager {
     }
     
     public void log(String message, int i) {
-        if (i != 1 && getConfiguration().logConsole()) {
+        if (i != 1 && getConfiguration().getConfig().logToConsole.getValue()) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + message);
         }
-        if (i == 0 && getConfiguration().getFileLogLevel() == LOG_LEVEL_HIGH) // Not an alert, normal log message
+        if (i == 0 && getConfiguration().getConfig().fileLogLevel.getValue() == LOG_LEVEL_HIGH) // Not an alert, normal log message
         {
             fileLog(message);
-        } else if (getConfiguration().getFileLogLevel() != 0) { // alert
+        } else if (getConfiguration().getConfig().fileLogLevel.getValue() != 0) { // alert
             fileLog(message);
         }
         logs.add(ChatColor.stripColor(message));
@@ -110,7 +110,7 @@ public class AnticheatManager {
     }
     
     public void addEvent(String e, RegisteredListener[] arr) {
-        if (!configuration.eventChains())
+        if (!configuration.getConfig().eventChains.getValue())
             return;
         if (!eventcache.containsKey(e) || eventcache.get(e) > 30000L) {
             eventchains.put(e, arr);
@@ -120,7 +120,7 @@ public class AnticheatManager {
     
     public String getEventChainReport() {
         String gen = "";
-        if (!configuration.eventChains()) {
+        if (!configuration.getConfig().eventChains.getValue()) {
             return "Event Chains is disabled by the configuration." + '\n';
         }
 
@@ -149,7 +149,7 @@ public class AnticheatManager {
         return gen;
     }
     
-    public Anticheat getPlugin() {
+    public AntiCheat getPlugin() {
         return plugin;
     }
     
@@ -175,5 +175,7 @@ public class AnticheatManager {
     
     public static void close() {
         fileHandler.close();
+
+        configuration.save();
     }
 }

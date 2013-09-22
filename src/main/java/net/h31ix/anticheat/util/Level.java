@@ -20,7 +20,8 @@ package net.h31ix.anticheat.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.h31ix.anticheat.Anticheat;
+
+import net.h31ix.anticheat.AntiCheat;
 import org.bukkit.ChatColor;
 
 public class Level {
@@ -46,8 +47,8 @@ public class Level {
         this(name, value);
         ChatColor c = ChatColor.valueOf(color);
         if(c == null) {
-            Anticheat.getPlugin().getLogger().warning("Event '"+name+"' was initialized with the color '"+color+"' which is invalid.");
-            Anticheat.getPlugin().getLogger().warning("This event will not run properly. See http://jd.bukkit.org/apidocs/org/bukkit/ChatColor.html#enum_constant_summary for a list of valid colors");
+            AntiCheat.getPlugin().getLogger().warning("Event '"+name+"' was initialized with the color '"+color+"' which is invalid.");
+            AntiCheat.getPlugin().getLogger().warning("This event will not run properly. See http://jd.bukkit.org/apidocs/org/bukkit/ChatColor.html#enum_constant_summary for a list of valid colors");
         } else {
             this.color = c;
             customColor = true;
@@ -90,9 +91,9 @@ public class Level {
                 return new Level(name, level);
             }
         } catch (Exception ex) {
-            Anticheat.getPlugin().getLogger().warning("An event was initialized with an invalid string: '"+string+"'");
-            Anticheat.getPlugin().getLogger().warning("The proper format is: 'name: threshold : color' such as 'High : 50 : RED'");
-            Anticheat.getPlugin().getLogger().warning("This event will NOT run. ("+ex.getMessage()+")");
+            AntiCheat.getPlugin().getLogger().warning("An event was initialized with an invalid string: '"+string+"'");
+            AntiCheat.getPlugin().getLogger().warning("The proper format is: 'name: threshold : color' such as 'High : 50 : RED'");
+            AntiCheat.getPlugin().getLogger().warning("This event will NOT run. ("+ex.getMessage()+")");
             return null;
         }
     }

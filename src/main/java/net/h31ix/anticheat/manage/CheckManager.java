@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.h31ix.anticheat.Anticheat;
-import net.h31ix.anticheat.util.Configuration;
+import net.h31ix.anticheat.AntiCheat;
+import net.h31ix.anticheat.config.Configuration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -41,9 +41,9 @@ public class CheckManager {
     private static int disabled = 0;
     private static int exempt = 0;
 
-    public CheckManager(AnticheatManager instance) {
+    public CheckManager(AnticheatManager instance, Configuration config) {
         manager = instance;
-        config = manager.getConfiguration();
+        this.config = config;
     }
 
     /**
@@ -127,7 +127,7 @@ public class CheckManager {
      * @param player The player
      */
     public boolean isOpExempt(Player player) {
-        return (this.manager.getConfiguration().opExempt() && player.isOp());
+        return (this.manager.getConfiguration().getConfig().exemptOp.getValue() && player.isOp());
     }
 
     /**
@@ -137,7 +137,7 @@ public class CheckManager {
      * @return true if the player's world is enabled
      */
     public boolean checkInWorld(Player player) {
-        return config.checkInWorld(player.getWorld());
+        return config.getConfig().exemptedWorlds.getValue().contains(player.getWorld());
     }
 
     /**
@@ -163,11 +163,11 @@ public class CheckManager {
      */
     public boolean willCheck(Player player, CheckType type) {
         boolean check = isActive(type)
-            && config.checkInWorld(player.getWorld())
+            && checkInWorld(player)
             && !isExempt(player, type)
             && !type.checkPermission(player)
             && !isOpExempt(player);
-        Anticheat.debugLog("Check " + type + (check ? " run " : " not run ") + "on " + player.getName());
+        AntiCheat.debugLog("Check " + type + (check ? " run " : " not run ") + "on " + player.getName());
         return check;
     }
 

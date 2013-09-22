@@ -25,13 +25,11 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import net.h31ix.anticheat.Anticheat;
+import net.h31ix.anticheat.AntiCheat;
+import net.h31ix.anticheat.config.files.Magic;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -101,7 +99,7 @@ public class PastebinReport {
     }
 
     private void appendLogs() {
-        List<String> logs = Anticheat.getManager().getLastLogs();
+        List<String> logs = AntiCheat.getManager().getLastLogs();
         if(logs.size() == 0) {
             append("No recent logs.");
             return;
@@ -113,7 +111,7 @@ public class PastebinReport {
     
     private void appendSystemInfo() {
         Runtime runtime = Runtime.getRuntime();
-        append("AntiCheat Version: " + Anticheat.getVersion() + (Anticheat.isUpdated() ? "" : " (OUTDATED)"));
+        append("AntiCheat Version: " + AntiCheat.getVersion() + (AntiCheat.isUpdated() ? "" : " (OUTDATED)"));
         append("Server Version: " + Bukkit.getVersion());
         append("Server Implementation: " + Bukkit.getName());
         append("Server ID: " + Bukkit.getServerId());
@@ -129,8 +127,8 @@ public class PastebinReport {
 
     private void appendMagicDiff() {
         // This is hacky, and I like it
-        Magic magic = Anticheat.getManager().getConfiguration().getMagicInstance();
-        FileConfiguration file = magic.getDefaults();
+        Magic magic = AntiCheat.getManager().getConfiguration().getMagic();
+        FileConfiguration file = magic.getDefaultConfigFile();
         append("Version: " + magic.getVersion());
         boolean changed = false;
         for(Field field : Magic.class.getFields()) {
@@ -157,11 +155,11 @@ public class PastebinReport {
     }
     
     private void appendEventHandlers() {
-        report.append(Anticheat.getManager().getEventChainReport());
+        report.append(AntiCheat.getManager().getEventChainReport());
     }
     
     private void writeReport() throws IOException {
-        File f = new File(Anticheat.getPlugin().getDataFolder() + "/report.txt");
+        File f = new File(AntiCheat.getPlugin().getDataFolder() + "/report.txt");
         FileWriter r = new FileWriter(f);
         BufferedWriter writer = new BufferedWriter(r);
         writer.write(report.toString());

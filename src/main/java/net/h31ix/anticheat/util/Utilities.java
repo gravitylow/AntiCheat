@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.h31ix.anticheat.Anticheat;
+import net.h31ix.anticheat.AntiCheat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -44,6 +44,7 @@ public final class Utilities {
     private static final List<Material> SHOVELS = new ArrayList<Material>();
     private static final List<Material> ANY = new ArrayList<Material>();
     private static final Map<Material, Material> COMBO = new HashMap<Material, Material>();
+
     public static final String SPY_METADATA = "ac-spydata";
 
     /**
@@ -60,14 +61,14 @@ public final class Utilities {
                 }
             }
         }
-        if (Anticheat.getManager().getConfiguration().logConsole()) {
+        if (AntiCheat.getManager().getConfiguration().getConfig().logToConsole.getValue()) {
             for (String msg : message) {
-                Anticheat.getManager().log(msg);
+                AntiCheat.getManager().log(msg);
             }
         }
-        if (Anticheat.getManager().getConfiguration().getFileLogLevel() != 0) {
+        if (AntiCheat.getManager().getConfiguration().getConfig().fileLogLevel.getValue() != 0) {
             for (String msg : message) {
-                Anticheat.getManager().log(msg, 1);
+                AntiCheat.getManager().log(msg, 1);
             }
         }
     }

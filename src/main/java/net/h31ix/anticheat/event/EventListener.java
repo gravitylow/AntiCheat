@@ -21,27 +21,28 @@ package net.h31ix.anticheat.event;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import net.h31ix.anticheat.Anticheat;
+
+import net.h31ix.anticheat.AntiCheat;
+import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.manage.*;
-import net.h31ix.anticheat.util.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 public class EventListener implements Listener {
     private static final Map<CheckType, Integer> USAGE_LIST = new EnumMap<CheckType, Integer>(CheckType.class);
     private static final Map<String, Integer> DECREASE_LIST = new HashMap<String, Integer>();
-    private static final CheckManager CHECK_MANAGER = Anticheat.getManager().getCheckManager();
-    private static final Backend BACKEND = Anticheat.getManager().getBackend();
-    private static final Anticheat PLUGIN = Anticheat.getManager().getPlugin();
-    private static final UserManager USER_MANAGER = Anticheat.getManager().getUserManager();
-    private static final Configuration CONFIG = Anticheat.getManager().getConfiguration();
+    private static final CheckManager CHECK_MANAGER = AntiCheat.getManager().getCheckManager();
+    private static final Backend BACKEND = AntiCheat.getManager().getBackend();
+    private static final AntiCheat PLUGIN = AntiCheat.getManager().getPlugin();
+    private static final UserManager USER_MANAGER = AntiCheat.getManager().getUserManager();
+    private static final Configuration CONFIG = AntiCheat.getManager().getConfiguration();
 
     public static void log(String message, Player player, CheckType type) {
         User user = getUserManager().getUser(player.getName());
         if(user != null) { // npc
             logCheat(type, user);
             if (user.increaseLevel(type) && message != null) {
-                Anticheat.getManager().log(message);
+                AntiCheat.getManager().log(message);
             }
             removeDecrease(user);
         }
@@ -52,8 +53,8 @@ public class EventListener implements Listener {
         // Ignore plugins that are creating NPCs with no names (why the hell)
         if (user != null && user.getName() != null) {
             type.logUse(user);
-            if (Anticheat.getManager().getConfiguration().getFileLogLevel() == 2 && type.getUses(user.getName()) % 10 == 0) {
-                Anticheat.getManager().fileLog(user.getName() + " has triggered multiple " + type + " checks.");
+            if (CONFIG.getConfig().fileLogLevel.getValue() == 2 && type.getUses(user.getName()) % 10 == 0) {
+                AntiCheat.getManager().fileLog(user.getName() + " has triggered multiple " + type + " checks.");
             }
         }
     }
@@ -110,7 +111,7 @@ public class EventListener implements Listener {
     }
 
     public static AnticheatManager getManager() {
-        return Anticheat.getManager();
+        return AntiCheat.getManager();
     }
 
     public static Backend getBackend() {
@@ -121,7 +122,7 @@ public class EventListener implements Listener {
         return USER_MANAGER;
     }
 
-    public static Anticheat getPlugin() {
+    public static AntiCheat getPlugin() {
         return PLUGIN;
     }
 
@@ -130,6 +131,6 @@ public class EventListener implements Listener {
     }
 
     public static boolean silentMode() {
-        return CONFIG.silentMode();
+        return CONFIG.getConfig().silentMode.getValue();
     }
 }

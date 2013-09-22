@@ -34,3 +34,6 @@ System:
   Event Chains: true
   # Should Enterprise options be enabled? Only set this to true if you're an advanced user.
   Enterprise: false
+Disable in:
+- example-world
+- example-world-2

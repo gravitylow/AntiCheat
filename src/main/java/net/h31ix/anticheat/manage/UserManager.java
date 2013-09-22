@@ -21,8 +21,8 @@ package net.h31ix.anticheat.manage;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.h31ix.anticheat.Anticheat;
-import net.h31ix.anticheat.util.Configuration;
+import net.h31ix.anticheat.AntiCheat;
+import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.util.Level;
 import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.Bukkit;
@@ -44,7 +44,7 @@ public class UserManager {
      */
     public UserManager(Configuration conf) {
         config = conf;
-        alert = config.getLang().getAlert();
+        alert = config.getLang().alert.getValue();
     }
 
     /**
@@ -84,7 +84,7 @@ public class UserManager {
      * @param user User to remove
      */
     public void remove(User user) {
-        config.saveLevel(user.getName(), user.getLevel());
+        config.getLevels().saveLevel(user.getName(), user.getLevel());
         users.remove(user);
     }
 
@@ -150,7 +150,7 @@ public class UserManager {
      * @return the user if found, null otherwise
      */
     public User loadUserFromFile(String name) {
-        int level = config.getLevel(name);
+        int level = config.getLevels().getLevel(name);
         if (level == -1) {
             return null;
         } else {
@@ -185,7 +185,7 @@ public class UserManager {
      * @param type The CheckType that triggered the alert
      */
     public void execute(User user, List<String> actions, CheckType type) {
-        execute(user, actions, type, config.getLang().getKickReason(), config.getLang().getWarning(), config.getLang().getBanReason());
+        execute(user, actions, type, config.getLang().kickReason.getValue(), config.getLang().playerWarning.getValue(), config.getLang().banReason.getValue());
     }
 
     /**
@@ -200,7 +200,7 @@ public class UserManager {
      */
     public void execute(final User user, final List<String> actions, final CheckType type, final String kickReason, final List<String> warning, final String banReason) {
         // Execute synchronously for thread safety when called from AsyncPlayerChatEvent
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Anticheat.getPlugin(), new Runnable() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(AntiCheat.getPlugin(), new Runnable() {
             @Override
             public void run() {
                 final String name = user.getName();
@@ -213,7 +213,7 @@ public class UserManager {
                         }
                     } else if (event.equalsIgnoreCase("KICK")) {
                         user.getPlayer().kickPlayer(RED + kickReason);
-                        String msg = RED + config.getLang().getKickBroadcast().replaceAll("&player", name);
+                        String msg = RED + config.getLang().kickBroadcast.getValue().replaceAll("&player", name);
                         if (!msg.equals("")) {
                             Bukkit.broadcastMessage(msg);
                         }
@@ -225,7 +225,7 @@ public class UserManager {
                     } else if (event.equalsIgnoreCase("BAN")) {
                         user.getPlayer().setBanned(true);
                         user.getPlayer().kickPlayer(RED + banReason);
-                        String msg = RED + config.getLang().getBanBroadcast().replaceAll("&player", name);
+                        String msg = RED + config.getLang().banBroadcast.getValue().replaceAll("&player", name);
                         if (!msg.equals("")) {
                             Bukkit.broadcastMessage(msg);
                         }

@@ -20,6 +20,8 @@ package net.h31ix.anticheat;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.User;
 import net.h31ix.anticheat.manage.UserManager;
@@ -35,9 +37,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
 public class CommandHandler implements CommandExecutor {
-    private static final Configuration CONFIG = Anticheat.getManager().getConfiguration();
-    private static final UserManager USER_MANAGER = Anticheat.getManager().getUserManager();
-    private static final XRayTracker XRAY_TRACKER = Anticheat.getManager().getXRayTracker();
+    private static final Configuration CONFIG = AntiCheat.getManager().getConfiguration();
+    private static final UserManager USER_MANAGER = AntiCheat.getManager().getUserManager();
+    private static final XRayTracker XRAY_TRACKER = AntiCheat.getManager().getXRayTracker();
     private static final ChatColor RED = ChatColor.RED;
     private static final ChatColor YELLOW = ChatColor.YELLOW;
     private static final ChatColor GREEN = ChatColor.GREEN;
@@ -55,16 +57,18 @@ public class CommandHandler implements CommandExecutor {
     public void handleLog(CommandSender cs, String[] args) {
         if (hasPermission(cs, Permission.SYSTEM_LOG)) {
             if (args[1].equalsIgnoreCase("enable")) {
-                if (!CONFIG.logConsole()) {
-                    CONFIG.setLog(true);
+                if (!CONFIG.getConfig().logToConsole.getValue()) {
+                    CONFIG.getConfig().logToConsole.setValue(true);
                     cs.sendMessage(GREEN + "Console logging enabled.");
+                    CONFIG.getConfig().reload();
                 } else {
                     cs.sendMessage(GREEN + "Console logging is already enabled!");
                 }
             } else if (args[1].equalsIgnoreCase("disable")) {
-                if (CONFIG.logConsole()) {
-                    CONFIG.setLog(false);
+                if (CONFIG.getConfig().logToConsole.getValue()) {
+                    CONFIG.getConfig().logToConsole.setValue(false);
                     cs.sendMessage(GREEN + "Console logging disabled.");
+                    CONFIG.getConfig().reload();
                 } else {
                     cs.sendMessage(GREEN + "Console logging is already disabled!");
                 }
@@ -94,7 +98,7 @@ public class CommandHandler implements CommandExecutor {
     
     public void handleXRay(CommandSender cs, String[] args) {
         if (hasPermission(cs, Permission.SYSTEM_XRAY)) {
-            if (CONFIG.logXRay()) {
+            if (CONFIG.getConfig().logXRayStats.getValue()) {
                 List<Player> list = SERVER.matchPlayer(args[1]);
                 if (list.size() == 1) {
                     Player player = list.get(0);
@@ -128,7 +132,7 @@ public class CommandHandler implements CommandExecutor {
                     user.resetLevel();
                     XRAY_TRACKER.reset(player.getName());
                     user.clearMessages();
-                    Anticheat.getManager().getBackend().resetChatLevel(player);
+                    AntiCheat.getManager().getBackend().resetChatLevel(player);
                     cs.sendMessage(player.getName() + GREEN + " has been reset.");
                 } else {
 
@@ -157,7 +161,7 @@ public class CommandHandler implements CommandExecutor {
                         if (!sender.hasMetadata(Utilities.SPY_METADATA)) // Maintain ORIGINAL location and other data
                         {
                             SpyState state = new SpyState(sender.getAllowFlight(), sender.isFlying(), sender.getLocation());
-                            sender.setMetadata(Utilities.SPY_METADATA, new FixedMetadataValue(Anticheat.getPlugin(), state));
+                            sender.setMetadata(Utilities.SPY_METADATA, new FixedMetadataValue(AntiCheat.getPlugin(), state));
                         }
                         sender.setAllowFlight(true);
                         sender.setFlying(true);
@@ -175,7 +179,7 @@ public class CommandHandler implements CommandExecutor {
                         sender.setAllowFlight(state.getAllowFlight());
                         sender.setFlying(state.getFlying());
                         sender.teleport(state.getLocation());
-                        sender.removeMetadata(Utilities.SPY_METADATA, Anticheat.getPlugin());
+                        sender.removeMetadata(Utilities.SPY_METADATA, AntiCheat.getPlugin());
                         for (Player p : cs.getServer().getOnlinePlayers()) {
                             p.showPlayer(sender);
                         }
@@ -215,11 +219,11 @@ public class CommandHandler implements CommandExecutor {
     
     public void handleUpdate(CommandSender cs) {
         if (hasPermission(cs, Permission.SYSTEM_UPDATE)) {
-            cs.sendMessage("Running " + GREEN + "AntiCheat " + WHITE + "v" + GREEN + Anticheat.getVersion());
+            cs.sendMessage("Running " + GREEN + "AntiCheat " + WHITE + "v" + GREEN + AntiCheat.getVersion());
             cs.sendMessage(MENU_END);
-            if (!Anticheat.isUpdated()) {
+            if (!AntiCheat.isUpdated()) {
                 cs.sendMessage(GRAY + "There " + GREEN + "IS" + GRAY + " a newer version avaliable.");
-                if (CONFIG.autoUpdate()) {
+                if (CONFIG.getConfig().autoUpdate.getValue()) {
                     cs.sendMessage(GRAY + "It will be installed automatically for you on next launch.");
                 } else {
                     cs.sendMessage(GRAY + "Due to your config settings, we " + RED + "can not" + GRAY + " auto update.");
@@ -235,7 +239,7 @@ public class CommandHandler implements CommandExecutor {
         if (cs instanceof Player) {
             if (hasPermission(cs, Permission.SYSTEM_CALIBRATE)) {
                 Calibrator c = new Calibrator((Player) cs);
-                SERVER.getPluginManager().registerEvents(c, Anticheat.getPlugin());
+                SERVER.getPluginManager().registerEvents(c, AntiCheat.getPlugin());
                 c.calibrate();
             }
         }
@@ -310,10 +314,10 @@ public class CommandHandler implements CommandExecutor {
     
     public void handlePlayerReport(CommandSender cs, String[] args) {
         if (hasPermission(cs, Permission.SYSTEM_REPORT)) {
-            User user = Anticheat.getManager().getUserManager().getUser(args[1]);
+            User user = AntiCheat.getManager().getUserManager().getUser(args[1]);
             boolean cont = false;
             if (user == null) {
-                if ((user = Anticheat.getManager().getUserManager().loadUserFromFile(args[1])) == null) {
+                if ((user = AntiCheat.getManager().getUserManager().loadUserFromFile(args[1])) == null) {
                     cs.sendMessage(RED + "Player: " + WHITE + args[1] + RED + " not found.");
                 } else {
                     cont = true;
@@ -341,15 +345,15 @@ public class CommandHandler implements CommandExecutor {
     }
 
     public void handleDeveloper(CommandSender cs) {
-        Anticheat.setDeveloperMode(!Anticheat.developerMode());
-        cs.sendMessage(ChatColor.GREEN + "Developer mode " + (Anticheat.developerMode() ? "ON" : "OFF"));
+        AntiCheat.setDeveloperMode(!AntiCheat.developerMode());
+        cs.sendMessage(ChatColor.GREEN + "Developer mode " + (AntiCheat.developerMode() ? "ON" : "OFF"));
     }
     
     public void sendPlayerReport(CommandSender cs, List<CheckType> types, User user, int page) {
         String name = user.getName();
         int pages = (int) Math.ceil(((float) types.size()) / 6);
         String levelString = ChatColor.GREEN+"Low";
-        for(Level level : CONFIG.getLevels()) {
+        for(Level level : CONFIG.getEvents().levels) {
             if(level.getValue() == user.getLevel()) {
                 levelString = level.getColor()+level.getName();
             }
@@ -387,7 +391,7 @@ public class CommandHandler implements CommandExecutor {
     
     public void handleReload(CommandSender cs) {
         if (hasPermission(cs, Permission.SYSTEM_RELOAD)) {
-            CONFIG.load();
+            CONFIG.reload();
             cs.sendMessage(GREEN + "AntiCheat configuration reloaded.");
         }
     }
@@ -396,7 +400,7 @@ public class CommandHandler implements CommandExecutor {
     public boolean onCommand(CommandSender cs, Command cmd, String alias, String[] args) {
         if (args.length == 3) {
             if (args[0].equalsIgnoreCase("report")) {
-                for(Level level : CONFIG.getLevels()) {
+                for(Level level : CONFIG.getEvents().levels) {
                     if(args[1].equalsIgnoreCase(level.getName())) {
                         handleReport(cs, args);
                         return true;
