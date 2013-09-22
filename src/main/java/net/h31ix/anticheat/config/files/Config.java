@@ -74,4 +74,3 @@ public class Config extends ConfigurationFile {
         exemptedWorlds = new ConfigValue<List<String>>("Disable in");
     }
 }
-
