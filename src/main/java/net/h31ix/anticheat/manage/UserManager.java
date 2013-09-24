@@ -222,7 +222,9 @@ public class UserManager {
                     } else if (event.equalsIgnoreCase("WARN")) {
                         List<String> message = warning;
                         for (String string : message) {
-                            user.getPlayer().sendMessage(RED + string);
+                            if(!string.equals("")) {
+                                user.getPlayer().sendMessage(RED + string);
+                            }
                         }
                     } else if (event.equalsIgnoreCase("BAN")) {
                         user.getPlayer().setBanned(true);
