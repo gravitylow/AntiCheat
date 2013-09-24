@@ -137,7 +137,7 @@ public class CheckManager {
      * @return true if the player's world is enabled
      */
     public boolean checkInWorld(Player player) {
-        return config.getConfig().exemptedWorlds.getValue().contains(player.getWorld());
+        return !config.getConfig().exemptedWorlds.getValue().contains(player.getWorld().getName());
     }
 
     /**

@@ -169,6 +169,9 @@ public class PlayerListener extends EventListener {
     @EventHandler
     public void onPlayerToggleSprint(PlayerToggleSprintEvent event) {
         Player player = event.getPlayer();
+        if(!event.isSprinting()) {
+            getBackend().logEnterExit(player);
+        }
         if (getCheckManager().willCheck(player, CheckType.SPRINT)) {
             CheckResult result = getBackend().checkSprintHungry(event);
             if (result.failed()) {

@@ -322,7 +322,7 @@ public class Backend {
 
             float speed = player.getWalkSpeed();
             max += speed > 0 ? player.getWalkSpeed() - 0.2f : 0;
-            
+
             if (x > max || z > max) {
                 int num = this.increment(player, speedViolation, magic.SPEED_MAX);
                 if(num >= magic.SPEED_MAX) {
@@ -362,9 +362,9 @@ public class Backend {
     }
 
     public CheckResult checkSprintStill(Player player, Location from, Location to) {
-        if(!isMovingExempt(player) && player.isSprinting() && from.getX() == to.getX() && from.getZ() == to.getZ()) {
+        /*if(!isMovingExempt(player) && player.isSprinting() && from.getX() == to.getX() && from.getZ() == to.getZ()) {
             return new CheckResult(Result.FAILED, player.getName()+" sprinted while standing still (xyz = "+(int)from.getX()+","+(int)from.getY()+","+(int)from.getZ()+")");
-        }
+        }*/
         return PASS;
     }
 
@@ -522,7 +522,7 @@ public class Backend {
     }
 
     public CheckResult checkSight(Player player, Entity entity) {
-        if (entity instanceof LivingEntity) {
+        /*if (entity instanceof LivingEntity) {
             LivingEntity le = (LivingEntity) entity;
             // Check to make sure the entity's head is not surrounded
             Block head = le.getWorld().getBlockAt((int) le.getLocation().getX(), (int) (le.getLocation().getY() + le.getEyeHeight()), (int) le.getLocation().getZ());
@@ -553,7 +553,7 @@ public class Backend {
                 }
             }
             return new CheckResult(Result.FAILED, player.getName()+" tried to damage an entity ("+le.getType()+") out of sight ");
-        }
+        }*/
         return PASS;
     }
 
@@ -634,11 +634,7 @@ public class Backend {
                 }
             }
         }
-        if(!justAnimated(player, block)) {
-            return new CheckResult(Result.FAILED, player.getName()+" didn't animate before breaking a block of "+block.getType());
-        } else {
-            return PASS;
-        }
+        return PASS;
     }
 
     public CheckResult checkFastBreak(Player player, Block block) {
@@ -978,7 +974,7 @@ public class Backend {
 
     public void logTeleport(final Player player) {
         movingExempt.put(player.getName(), System.currentTimeMillis() + magic.TELEPORT_TIME);
-        
+
         /* Data for fly/speed should be reset */
         nofallViolation.remove(player.getName());
         blocksOverFlight.remove(player.getName());

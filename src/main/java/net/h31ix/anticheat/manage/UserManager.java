@@ -169,10 +169,12 @@ public class UserManager {
         ArrayList<String> messageArray = new ArrayList<String>();
         for (int i = 0; i < alert.size(); i++) {
             String message = alert.get(i);
-            message = message.replaceAll("&player", GOLD + user.getName() + GRAY);
-            message = message.replaceAll("&check", GOLD + CheckType.getName(type) + GRAY);
-            message = message.replaceAll("&level", level.getColor() + level.getName() + GRAY);
-            messageArray.add(message);
+            if(!message.equals("")) {
+                message = message.replaceAll("&player", GOLD + user.getName() + GRAY);
+                message = message.replaceAll("&check", GOLD + CheckType.getName(type) + GRAY);
+                message = message.replaceAll("&level", level.getColor() + level.getName() + GRAY);
+                messageArray.add(message);
+            }
         }
         Utilities.alert(messageArray);
         execute(user, level.getActions(), type);
@@ -236,5 +238,5 @@ public class UserManager {
             }
         });
     }
-    
+
 }
