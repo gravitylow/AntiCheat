@@ -142,7 +142,9 @@ public class PlayerListener extends EventListener {
             CheckResult result = getBackend().checkSpam(player, event.getMessage());
             if (result.failed()) {
                 event.setCancelled(!silentMode());
-                player.sendMessage(ChatColor.RED + result.getMessage());
+                if(!result.getMessage().equals("")) {
+                    player.sendMessage(ChatColor.RED + result.getMessage());
+                }
                 getBackend().processChatSpammer(player);
                 log(null, player, CheckType.SPAM);
             }
