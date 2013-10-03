@@ -915,7 +915,7 @@ public class Backend {
     }
 
     public void logAnimation(final Player player) {
-        System.out.println("Log animation");
+        //System.out.println("Log animation");
         animated.put(player.getName(), System.currentTimeMillis());
         increment(player, blockPunches, magic.BLOCK_PUNCH_MIN);
         itemInHand.put(player.getName(), player.getItemInHand().getType());
