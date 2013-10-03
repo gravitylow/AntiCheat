@@ -33,6 +33,7 @@ import java.util.*;
 
 public class User {
     private final String name;
+    private final int id;
     private int level = 0;
     private Location goodLocation;
     private List<ItemStack> inventorySnapshot = null;
@@ -59,6 +60,7 @@ public class User {
     public User(String name, int level) {
         this.name = name;
         this.level = level;
+        this.id = getPlayer().getEntityId();
     }
 
     /**
@@ -68,6 +70,15 @@ public class User {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Get the player's entity ID
+     *
+     * @return Entity id
+     */
+    public int getId() {
+        return id;
     }
 
     /**
@@ -164,7 +175,7 @@ public class User {
         if (goodLocation == null) {
             return location;
         }
-        
+
         return goodLocation;
     }
 
@@ -178,7 +189,7 @@ public class User {
         if (Utilities.cantStandAtExp(location) || (location.getBlock().isLiquid() && !Utilities.isFullyInWater(location))) {
             return false;
         }
-        
+
         goodLocation = location;
         return true;
     }

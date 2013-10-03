@@ -1,9 +1,9 @@
-author: H31IX
+author: Gravity
 database: false
 description: Prevention of hacks and other malicious tinkering on a Minecraft server.
 main: net.h31ix.anticheat.AntiCheat
 name: AntiCheat
-softdepend: [AntiCheat]
+softdepend: [ProtocolLib]
 startup: postworld
 url: http://gravitydevelopment.net
 version: ${project.version}-b${BUILD_NUMBER}
@@ -11,7 +11,7 @@ commands:
   anticheat:
     description: Control and view info about AntiCheat
     usage: /anticheat help
-    aliases: anti
+    aliases: [anti, ac]
 permissions:
   anticheat.alert:
     description: Get alerts

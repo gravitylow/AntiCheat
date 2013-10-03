@@ -1,12 +1,14 @@
 /*
  * Updater for Bukkit.
  *
- * This class provides the means to safetly and easily update a plugin, or check to see if it is updated using dev.bukkit.org
+ * This class provides the means to safely and easily update a plugin, or check to see if it is updated using dev.bukkit.org
  */
 
 package net.h31ix.anticheat.update;
 
 import java.io.*;
+import java.lang.Runnable;
+import java.lang.Thread;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -51,7 +53,7 @@ public class Updater
     private File file; // The plugin's file
     private Thread thread; // Updater thread
     private static final String DBOUrl = "http://dev.bukkit.org/server-mods/"; // Slugs will be appended to this to get to the project's RSS feed
-    private String [] noUpdateTag = {"-DEV","-PRE"}; // If the version number contains one of these, don't update.
+    private String [] noUpdateTag = {"-DEV","-PRE","-SNAPSHOT"}; // If the version number contains one of these, don't update.
     private static final int BYTE_SIZE = 1024; // Used for downloading files
     private String updateFolder = YamlConfiguration.loadConfiguration(new File("bukkit.yml")).getString("settings.update-folder"); // The folder that downloads will be placed in
     private Updater.UpdateResult result = Updater.UpdateResult.SUCCESS; // Used for determining the outcome of the update process
@@ -186,7 +188,7 @@ public class Updater
             try {
                 thread.join();
             } catch (InterruptedException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
         }
     }

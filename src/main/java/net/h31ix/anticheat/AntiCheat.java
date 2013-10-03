@@ -18,17 +18,15 @@
 
 package net.h31ix.anticheat;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import com.comphenix.protocol.ProtocolLibrary;
 import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.event.*;
 import net.h31ix.anticheat.manage.AnticheatManager;
+import net.h31ix.anticheat.manage.PacketManager;
 import net.h31ix.anticheat.manage.User;
 import net.h31ix.anticheat.update.Updater;
 import net.h31ix.anticheat.util.Utilities;
@@ -49,6 +47,8 @@ public class AntiCheat extends JavaPlugin {
     private static boolean verbose;
     private static boolean developer;
     private static final long XRAY_TIME = 1200;
+    private static PacketManager packetManager;
+    private static boolean protocolLib = false;
 
     @Override
     public void onEnable() {
@@ -65,6 +65,7 @@ public class AntiCheat extends JavaPlugin {
         setupEvents();
         setupCommands();
         setupUpdater();
+        setupProtocol();
         restoreLevels();
         // Check if NoCheatPlus is installed
         Bukkit.getScheduler().runTaskLater(this, new Runnable() {
@@ -91,6 +92,16 @@ public class AntiCheat extends JavaPlugin {
         AnticheatManager.close();
         getServer().getScheduler().cancelTasks(this);
         cleanup();
+    }
+
+    private void setupProtocol() {
+        if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
+            protocolLib = true;
+            packetManager = new PacketManager(ProtocolLibrary.getProtocolManager(), this, manager);
+            if (verbose) {
+                getLogger().log(Level.INFO, "Hooked into ProtocolLib");
+            }
+        }
     }
 
     private void setupXray() {
@@ -196,6 +207,10 @@ public class AntiCheat extends JavaPlugin {
 
     public static void setDeveloperMode(boolean b) {
         developer = b;
+    }
+
+    public static boolean isUsingProtocolLib() {
+        return protocolLib;
     }
 
     public static void debugLog(final String string) {
