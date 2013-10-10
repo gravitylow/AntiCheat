@@ -36,7 +36,6 @@ public class Enterprise extends ConfigurationFile {
     public ConfigValue<Integer> loggingInterval;
 
     public ConfigValue<Boolean> usersEnabled;
-    public ConfigValue<Integer> usersInterval;
 
     public Database database;
 
@@ -53,7 +52,6 @@ public class Enterprise extends ConfigurationFile {
         loggingInterval = new ConfigValue<Integer>("logging.interval");
 
         usersEnabled = new ConfigValue<Boolean>("users.enable");
-        usersInterval = new ConfigValue<Integer>("users.interval");
 
         ConfigValue<String> databaseType = new ConfigValue<String>("database.type");
         ConfigValue<String> databaseHostname = new ConfigValue<String>("database.hostname");
@@ -74,7 +72,6 @@ public class Enterprise extends ConfigurationFile {
             databaseSchema.getValue(),
             serverName.getValue(),
             loggingInterval.getValue(),
-            usersInterval.getValue(),
             loggingLife.getValue()
         );
     }

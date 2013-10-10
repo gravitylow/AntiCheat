@@ -30,5 +30,3 @@ logging:
 users:
   # Synchronize user's levels in the database?
   enable: true
-  # How often to query the database for synchronization? (in minutes)
-  interval: 1

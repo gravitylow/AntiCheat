@@ -36,6 +36,9 @@ public class Database {
     private String sqlSyncFrom;
     private String sqlCleanEvents;
 
+    private String sqlCreateEvents;
+    private String sqlCreateUsers;
+
     public enum DatabaseType {
         MySQL,
     }
@@ -50,19 +53,16 @@ public class Database {
     private String serverName;
 
     private int eventInterval;
-    private int userInterval;
 
     private int eventLife;
 
     private Connection connection;
 
     private PreparedStatement eventBatch;
-    private PreparedStatement syncBatch;
 
     private BukkitTask eventTask;
-    private BukkitTask userTask;
 
-    public Database(DatabaseType type, String hostname, int port, String username, String password, String prefix, String schema, String serverName, int eventInterval, int userInterval, int eventLife) {
+    public Database(DatabaseType type, String hostname, int port, String username, String password, String prefix, String schema, String serverName, int eventInterval, int eventLife) {
         this.type = type;
         this.hostname = hostname;
         this.port = port;
@@ -73,14 +73,28 @@ public class Database {
         this.serverName = serverName;
 
         this.eventInterval = eventInterval;
-        this.userInterval = userInterval;
 
         this.eventLife = eventLife;
 
         sqlLogEvent = "INSERT INTO " + prefix + EVENTS_TABLE + " (server, user, check_type) VALUES (?, ?, ?)";
-        sqlSyncTo = "INSERT INTO " + prefix + USERS_TABLE + " (user, level) VALUES (?, ?) ON DUPLICATE KEY UPDATE level = ?, last_update=CURRENT_TIMESTAMP, last_update_server=?";
+        sqlSyncTo = "INSERT INTO " + prefix + USERS_TABLE + " (user, level, last_update_server) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE level = ?, last_update=CURRENT_TIMESTAMP, last_update_server=?";
         sqlSyncFrom = "SELECT level FROM " + prefix + USERS_TABLE + " WHERE user = ?";
         sqlCleanEvents = "DELETE FROM " + prefix + EVENTS_TABLE + " WHERE time < (CURRENT_TIMESTAMP - INTERVAL ? DAY)";
+
+        sqlCreateUsers = "CREATE TABLE IF NOT EXISTS " + prefix + USERS_TABLE + "(" +
+                "  `user` VARCHAR(45) NOT NULL," +
+                "  `level` INT NOT NULL," +
+                "  `last_update` TIMESTAMP NOT NULL DEFAULT NOW()," +
+                "  `last_update_server` VARCHAR(45) NOT NULL," +
+                "  PRIMARY KEY (`user`));";
+
+        sqlCreateEvents = "CREATE TABLE IF NOT EXISTS " + prefix + EVENTS_TABLE + "(" +
+                "  `id` INT NOT NULL AUTO_INCREMENT," +
+                "  `server` VARCHAR(45) NOT NULL," +
+                "  `time` TIMESTAMP NOT NULL DEFAULT NOW()," +
+                "  `user` VARCHAR(45) NOT NULL," +
+                "  `check_type` VARCHAR(45) NOT NULL," +
+                "  PRIMARY KEY (`id`));";
     }
 
     public DatabaseType getType() {
@@ -117,7 +131,6 @@ public class Database {
         try {
             connection = DriverManager.getConnection(url, username, password);
             eventBatch = connection.prepareStatement(sqlLogEvent);
-            syncBatch = connection.prepareStatement(sqlSyncTo);
 
             connection.setAutoCommit(false);
 
@@ -128,29 +141,24 @@ public class Database {
                 }
             }, eventInterval* 60 * 20, eventInterval * 60 * 20);
 
-            userTask = Bukkit.getScheduler().runTaskTimerAsynchronously(AntiCheat.getPlugin(), new Runnable() {
-                @Override
-                public void run() {
-                    flushSyncs();
-                }
-            }, userInterval * 60 * 20, userInterval * 60 * 20);
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        //TODO: setup tables
+        try {
+            connection.prepareStatement(sqlCreateUsers).executeUpdate();
+            connection.prepareStatement(sqlCreateEvents).executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void shutdown() {
         eventTask.cancel();
-        userTask.cancel();
 
         flushEvents();
-        flushSyncs();
 
         try {
             eventBatch.close();
-            syncBatch.close();
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -175,14 +183,16 @@ public class Database {
 
     public void syncTo(User user) {
         if (!user.isWaitingOnLevelSync()) {
-            System.out.println("Syncing to "+user.getName()+" value "+user.getLevel());
+            AntiCheat.debugLog("Syncing to "+user.getName()+" value "+user.getLevel());
             try {
-                syncBatch.setString(1, user.getName());
-                syncBatch.setInt(2, user.getLevel());
-                syncBatch.setInt(3, user.getLevel());
-                syncBatch.setString(4, serverName);
+                PreparedStatement statement = connection.prepareStatement(sqlSyncTo);
+                statement.setString(1, user.getName());
+                statement.setInt(2, user.getLevel());
+                statement.setString(3, serverName);
+                statement.setInt(4, user.getLevel());
+                statement.setString(5, serverName);
 
-                syncBatch.addBatch();
+                statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -199,7 +209,7 @@ public class Database {
 
                     ResultSet set = statement.executeQuery();
                     while (set.next()) {
-                        System.out.println("Added level for " + user.getName()+":" +set.getInt("level"));
+                        AntiCheat.debugLog("Syncing from "+user.getName()+" value "+set.getInt("level"));
                         user.setLevel(set.getInt("level"));
                     }
                 } catch (SQLException e) {
@@ -215,18 +225,6 @@ public class Database {
             connection.commit();
 
             eventBatch = connection.prepareStatement(sqlLogEvent);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void flushSyncs() {
-        System.out.println("Flushing syncs");
-        try {
-            syncBatch.executeBatch();
-            connection.commit();
-
-            syncBatch = connection.prepareStatement(sqlSyncTo);
         } catch (SQLException e) {
             e.printStackTrace();
         }
