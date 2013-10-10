@@ -72,14 +72,10 @@ public class Enterprise extends ConfigurationFile {
             databasePassword.getValue(),
             databasePrefix.getValue(),
             databaseSchema.getValue(),
+            serverName.getValue(),
             loggingInterval.getValue(),
-            usersInterval.getValue()
+            usersInterval.getValue(),
+            loggingLife.getValue()
         );
-    }
-
-    public void logEvent(User user, CheckType type) {
-        if(loggingEnabled.getValue()) {
-            database.logEvent(serverName.getValue(), user, type);
-        }
     }
 }

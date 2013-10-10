@@ -352,18 +352,21 @@ public class CommandHandler implements CommandExecutor {
     public void sendPlayerReport(CommandSender cs, List<CheckType> types, User user, int page) {
         String name = user.getName();
         int pages = (int) Math.ceil(((float) types.size()) / 6);
-        String levelString = ChatColor.GREEN+"Low";
-        for(Level level : CONFIG.getEvents().levels) {
-            if(level.getValue() == user.getLevel()) {
-                levelString = level.getColor()+level.getName();
-            }
+
+        Level level = CONFIG.getEvents().getUserLevel(user.getLevel());
+        String levelString = ChatColor.GREEN + "Low";
+
+        if(level != null) {
+            levelString = level.getColor() + level.getName();
         }
+        levelString += " (" + user.getLevel() + ")";
+
         if (page <= pages && page > 0) {
             cs.sendMessage("--------------------[" + GREEN + "REPORT[" + page + "/" + pages + "]" + WHITE + "]---------------------");
             cs.sendMessage(GRAY + "Player: " + WHITE + name);
             cs.sendMessage(GRAY + "Level: " + levelString);
             for (int x = 0; x < 6; x++) {
-                int index = ((page - 1) * 5) + (x + ((page - 1) * 1));
+                int index = ((page - 1) * 5) + (x + ((page - 1)));
                 if (index < types.size()) {
                     int use = types.get(index).getUses(name);
                     ChatColor color = WHITE;
@@ -391,7 +394,7 @@ public class CommandHandler implements CommandExecutor {
     
     public void handleReload(CommandSender cs) {
         if (hasPermission(cs, Permission.SYSTEM_RELOAD)) {
-            CONFIG.reload();
+            CONFIG.load();
             cs.sendMessage(GREEN + "AntiCheat configuration reloaded.");
         }
     }

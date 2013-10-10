@@ -42,6 +42,8 @@ public class User {
     private String [] messages = new String[2];
     private Long [] messageTimes = new Long[2];
 
+    private boolean isWaitingOnLevelSync;
+
     /**
      * Initialize an AntiCheat user
      *
@@ -60,7 +62,8 @@ public class User {
     public User(String name, int level) {
         this.name = name;
         this.level = level;
-        this.id = getPlayer().getEntityId();
+
+        this.id = getPlayer().isOnline() ? getPlayer().getEntityId() : -1;
     }
 
     /**
@@ -111,23 +114,26 @@ public class User {
                 // Prevent silent mode from increasing the level way too fast
                 return false;
             } else {
-                level++;
+                if (level < config.getEvents().highestLevel) {
+                    level++;
 
-                // Check levels
-                for(Level l : getLevels()) {
-                    if(l.getValue() == level) {
-                        AntiCheat.getManager().getUserManager().alert(this, l, type);
-                        if(l.getValue() == config.getEvents().highestLevel) {
-                            level = l.getValue() - 10;
+                    // Check levels
+                    for(Level l : getLevels()) {
+                        if(l.getValue() == level) {
+                            AntiCheat.getManager().getUserManager().alert(this, l, type);
+                            if(l.getValue() == config.getEvents().highestLevel) {
+                                level = l.getValue() - 10;
+                            }
                         }
                     }
-                }
 
-                // Execute rules
-                for(Rule rule : config.getEvents().rules) {
-                    rule.check(this, type);
+                    // Execute rules
+                    for(Rule rule : config.getEvents().rules) {
+                        rule.check(this, type);
+                    }
+                    return true;
                 }
-                return true;
+                return false;
             }
         } else {
             return false;
@@ -147,9 +153,15 @@ public class User {
      * @return true if the level was valid and set properly
      */
     public boolean setLevel(int level) {
-        if (level > 0 && level <= config.getEvents().highestLevel) {
-            this.level = level;
-            return true;
+        isWaitingOnLevelSync = false;
+        if (level >= 0) {
+            if (level <= config.getEvents().highestLevel) {
+                this.level = level;
+                return true;
+            } else {
+                this.level = config.getEvents().highestLevel;
+                return false;
+            }
         } else {
             return false;
         }
@@ -309,5 +321,13 @@ public class User {
 
     private boolean silentMode() {
         return config.getConfig().silentMode.getValue();
+    }
+
+    public void setIsWaitingOnLevelSync(boolean b) {
+        this.isWaitingOnLevelSync = b;
+    }
+
+    public boolean isWaitingOnLevelSync() {
+        return isWaitingOnLevelSync;
     }
 }

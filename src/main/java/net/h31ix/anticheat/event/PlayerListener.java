@@ -138,6 +138,8 @@ public class PlayerListener extends EventListener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
+        log("asdf", player, CheckType.SPRINT);
+        getUserManager().getUser(player.getName()).increaseLevel(CheckType.SPRINT);
         if (getCheckManager().willCheck(player, CheckType.SPAM) && getConfig().getConfig().blockChatSpam.getValue()) {
             CheckResult result = getBackend().checkSpam(player, event.getMessage());
             if (result.failed()) {
@@ -166,6 +168,9 @@ public class PlayerListener extends EventListener {
         getBackend().garbageClean(event.getPlayer());
 
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
+        if (getConfig().shouldSyncUsers()) {
+            getConfig().getEnterprise().database.syncTo(getUserManager().getUser(event.getPlayer().getName()));
+        }
     }
 
     @EventHandler
@@ -261,7 +266,7 @@ public class PlayerListener extends EventListener {
 
         getBackend().logJoin(player);
 
-        if (getConfig().getConfig().enterprise.getValue()) {
+        if (!getConfig().shouldSyncUsers()) {
             if (getUserManager().getUser(player.getName()) == null) {
                 getUserManager().addUser(new User(player.getName()));
             } else {
@@ -269,6 +274,7 @@ public class PlayerListener extends EventListener {
             }
         } else {
             User user = new User(player.getName());
+            user.setIsWaitingOnLevelSync(true);
             getConfig().getEnterprise().database.syncFrom(user);
             getUserManager().addUser(user);
         }

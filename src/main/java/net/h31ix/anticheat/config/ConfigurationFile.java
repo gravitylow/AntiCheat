@@ -149,6 +149,8 @@ public class ConfigurationFile {
             } else if(loadDefault) {
                 getConfigFile().set(path, getDefaultConfigFile().get(path));
                 value = getDefaultConfigFile().get(path);
+                getConfigFile().set(path, value);
+                save();
             }
         }
 
@@ -162,6 +164,7 @@ public class ConfigurationFile {
 
         public T setValue(T value) {
             getConfigFile().set(path, value);
+            save();
             return value;
         }
 

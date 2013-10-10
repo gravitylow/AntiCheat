@@ -25,6 +25,8 @@ import net.h31ix.anticheat.util.Level;
 import net.h31ix.anticheat.util.rule.Rule;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Events extends ConfigurationFile {
@@ -50,7 +52,7 @@ public class Events extends ConfigurationFile {
         this.levels = new ArrayList<Level>();
         for(String string : levels.getValue()) {
             Level level = Level.load(string);
-            if(level == null) {
+            if(level == null || level.getValue() < 0) {
                 continue;
             }
 
@@ -94,5 +96,26 @@ public class Events extends ConfigurationFile {
                 AntiCheat.getPlugin().getLogger().warning("Couldn't load rule '"+string+"' from config. Improper format used.");
             }
         }
+
+        // Sort levels
+        Collections.sort(this.levels, new Comparator<Level>() {
+            public int compare(Level l1, Level l2) {
+                if (l1.getValue() == l2.getValue()) {
+                    return 0;
+                } else if (l1.getValue() < l2.getValue()) {
+                    return -1;
+                }
+                return 1;
+            }
+        });
+    }
+
+    public Level getUserLevel(int value) {
+        for(int i=0;i<levels.size();i++) {
+            if (i == 0 && value < levels.get(i).getValue()) break;
+            else if (i == levels.size()-1) return levels.get(i);
+            else if (value >= levels.get(i).getValue() && value < levels.get(i+1).getValue()) return levels.get(i);
+        }
+        return null;
     }
 }

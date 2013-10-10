@@ -66,6 +66,8 @@ public class AntiCheat extends JavaPlugin {
         setupCommands();
         setupUpdater();
         setupProtocol();
+        // Enterprise must come before levels
+        setupEnterprise();
         restoreLevels();
         // Check if NoCheatPlus is installed
         Bukkit.getScheduler().runTaskLater(this, new Runnable() {
@@ -78,15 +80,15 @@ public class AntiCheat extends JavaPlugin {
             }
         }, 40L);
         // End tests
-        if (verbose) {
-            getLogger().log(Level.INFO, "Finished loading.");
-        }
+        verboseLog("Finished loading.");
     }
 
     @Override
     public void onDisable() {
-        for (User user : manager.getUserManager().getUsers()) {
-            config.getLevels().saveLevel(user.getName(), user.getLevel());
+        if (!config.shouldSyncUsers()) {
+            for (User user : manager.getUserManager().getUsers()) {
+                config.getLevels().saveLevel(user.getName(), user.getLevel());
+            }
         }
 
         AnticheatManager.close();
@@ -98,9 +100,7 @@ public class AntiCheat extends JavaPlugin {
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
             protocolLib = true;
             packetManager = new PacketManager(ProtocolLibrary.getProtocolManager(), this, manager);
-            if (verbose) {
-                getLogger().log(Level.INFO, "Hooked into ProtocolLib");
-            }
+            verboseLog("Hooked into ProtocolLib");
         }
     }
 
@@ -125,9 +125,7 @@ public class AntiCheat extends JavaPlugin {
                     }
                 }, XRAY_TIME, XRAY_TIME);
 
-                if (verbose) {
-                    getLogger().log(Level.INFO, "Scheduled the XRay checker.");
-                }
+                verboseLog("Scheduled the XRay checker.");
             }
         }
     }
@@ -135,45 +133,37 @@ public class AntiCheat extends JavaPlugin {
     private void setupEvents() {
         for (Listener listener : eventList) {
             getServer().getPluginManager().registerEvents(listener, this);
-            if (verbose) {
-                getLogger().log(Level.INFO, "Registered events for ".concat(listener.toString().split("@")[0].split(".anticheat.")[1]));
-            }
+            verboseLog("Registered events for ".concat(listener.toString().split("@")[0].split(".anticheat.")[1]));
         }
     }
 
     private void setupCommands() {
         getCommand("anticheat").setExecutor(new CommandHandler());
-        if (verbose) {
-            getLogger().log(Level.INFO, "Registered commands.");
-        }
+        verboseLog("Registered commands.");
     }
 
     private void setupUpdater() {
         if (config.getConfig().autoUpdate.getValue()) {
-            if (verbose) {
-                getLogger().log(Level.INFO, "Checking for a new update...");
-            }
+            verboseLog("Checking for a new update...");
             Updater updater = new Updater(this, "anticheat", this.getFile(), Updater.UpdateType.DEFAULT, false);
             update = updater.getResult() != Updater.UpdateResult.NO_UPDATE;
-            if (verbose) {
-                getLogger().log(Level.INFO, "Update available: " + update);
-            }
+            verboseLog("Update available: " + update);
         }
     }
 
     private void setupConfig() {
         config = manager.getConfiguration();
         verbose = config.getConfig().verboseStartup.getValue();
-        if (verbose) {
-            getLogger().log(Level.INFO, "Setup the config.");
-        }
+        verboseLog("Setup the config.");
     }
 
     private void setupEnterprise() {
         if(config.getConfig().enterprise.getValue()) {
             config.getEnterprise().database.connect();
-            if (verbose) {
-                getLogger().log(Level.INFO, "Connected to the database.");
+            verboseLog("Connected to the database.");
+
+            if(config.getEnterprise().loggingEnabled.getValue()) {
+                config.getEnterprise().database.cleanEvents();
             }
         }
     }
@@ -181,16 +171,15 @@ public class AntiCheat extends JavaPlugin {
     private void restoreLevels() {
         for (Player player : getServer().getOnlinePlayers()) {
             String name = player.getName();
-            if(!config.getConfig().enterprise.getValue()) {
+            if (!config.shouldSyncUsers()) {
                 manager.getUserManager().addUser(new User(player.getName(), config.getLevels().getLevel(name)));
             } else {
                 User user = new User(player.getName());
+                user.setIsWaitingOnLevelSync(true);
                 config.getEnterprise().database.syncFrom(user);
                 manager.getUserManager().addUser(user);
             }
-            if (verbose) {
-                getLogger().log(Level.INFO, "Data for " + player.getName() + " re-applied from flatfile");
-            }
+            verboseLog("Data for " + player.getName() + " loaded");
         }
     }
 
@@ -236,5 +225,9 @@ public class AntiCheat extends JavaPlugin {
                 }
             }
         });
+    }
+
+    public void verboseLog(final String string) {
+        getLogger().info(string);
     }
 }

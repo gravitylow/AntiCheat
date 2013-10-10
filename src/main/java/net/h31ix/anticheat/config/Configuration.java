@@ -47,7 +47,9 @@ public class Configuration {
 
         magic = new Magic(plugin, this);
 
-        load();
+        for(ConfigurationFile file : new ConfigurationFile[]{config, events, lang, enterprise, levels, magic}) {
+            checkReload(file);
+        }
     }
 
     public void load() {
@@ -73,11 +75,6 @@ public class Configuration {
         }
     }
 
-    public void reload() {
-        save();
-        load();
-    }
-
     public Config getConfig() {
         return config;
     }
@@ -100,5 +97,13 @@ public class Configuration {
 
     public Magic getMagic() {
         return magic;
+    }
+
+    public boolean shouldSyncEvents() {
+        return getConfig().enterprise.getValue() && getEnterprise().loggingEnabled.getValue();
+    }
+
+    public boolean shouldSyncUsers() {
+        return getConfig().enterprise.getValue() && getEnterprise().usersEnabled.getValue();
     }
 }
