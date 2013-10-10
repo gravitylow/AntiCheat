@@ -177,5 +177,9 @@ public class AnticheatManager {
         fileHandler.close();
 
         configuration.save();
+
+        if(configuration.getConfig().enterprise.getValue()) {
+            configuration.getEnterprise().database.shutdown();
+        }
     }
 }

@@ -25,8 +25,10 @@ logging:
   enable: true
   # Time for actions logged to stay in the database (in days)
   life: 2
+  # How often to upload events to the database (in minutes)
+  interval: 5
 users:
   # Synchronize user's levels in the database?
   enable: true
-  # How often to query the databse for synchronization? (in seconds)
-  interval: 60
+  # How often to query the database for synchronization? (in minutes)
+  interval: 1

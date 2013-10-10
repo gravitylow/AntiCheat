@@ -169,10 +169,25 @@ public class AntiCheat extends JavaPlugin {
         }
     }
 
+    private void setupEnterprise() {
+        if(config.getConfig().enterprise.getValue()) {
+            config.getEnterprise().database.connect();
+            if (verbose) {
+                getLogger().log(Level.INFO, "Connected to the database.");
+            }
+        }
+    }
+
     private void restoreLevels() {
         for (Player player : getServer().getOnlinePlayers()) {
             String name = player.getName();
-            manager.getUserManager().addUser(new User(player.getName(), config.getLevels().getLevel(name)));
+            if(!config.getConfig().enterprise.getValue()) {
+                manager.getUserManager().addUser(new User(player.getName(), config.getLevels().getLevel(name)));
+            } else {
+                User user = new User(player.getName());
+                config.getEnterprise().database.syncFrom(user);
+                manager.getUserManager().addUser(user);
+            }
             if (verbose) {
                 getLogger().log(Level.INFO, "Data for " + player.getName() + " re-applied from flatfile");
             }

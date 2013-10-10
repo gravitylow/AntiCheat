@@ -21,6 +21,8 @@ package net.h31ix.anticheat.config.files;
 import net.h31ix.anticheat.AntiCheat;
 import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.config.ConfigurationFile;
+import net.h31ix.anticheat.manage.CheckType;
+import net.h31ix.anticheat.manage.User;
 import net.h31ix.anticheat.util.enterprise.Database;
 
 public class Enterprise extends ConfigurationFile {
@@ -29,11 +31,12 @@ public class Enterprise extends ConfigurationFile {
 
     public ConfigValue<String> serverName;
 
-    public ConfigValue<String> loggingEnabled;
-    public ConfigValue<String> loggingLife;
+    public ConfigValue<Boolean> loggingEnabled;
+    public ConfigValue<Integer> loggingLife;
+    public ConfigValue<Integer> loggingInterval;
 
-    public ConfigValue<String> usersEnabled;
-    public ConfigValue<String> usersInterval;
+    public ConfigValue<Boolean> usersEnabled;
+    public ConfigValue<Integer> usersInterval;
 
     public Database database;
 
@@ -45,11 +48,12 @@ public class Enterprise extends ConfigurationFile {
     public void open() {
         serverName = new ConfigValue<String>("server.name");
 
-        loggingEnabled = new ConfigValue<String>("logging.enable");
-        loggingLife = new ConfigValue<String>("logging.life");
+        loggingEnabled = new ConfigValue<Boolean>("logging.enable");
+        loggingLife = new ConfigValue<Integer>("logging.life");
+        loggingInterval = new ConfigValue<Integer>("logging.interval");
 
-        usersEnabled = new ConfigValue<String>("users.enable");
-        usersInterval = new ConfigValue<String>("users.interval");
+        usersEnabled = new ConfigValue<Boolean>("users.enable");
+        usersInterval = new ConfigValue<Integer>("users.interval");
 
         ConfigValue<String> databaseType = new ConfigValue<String>("database.type");
         ConfigValue<String> databaseHostname = new ConfigValue<String>("database.hostname");
@@ -61,13 +65,21 @@ public class Enterprise extends ConfigurationFile {
 
         // Convert database values to Database
         database = new Database(
-                Database.DatabaseType.valueOf(databaseType.getValue()),
-                databaseHostname.getValue(),
-                databasePort.getValue(),
-                databaseUsername.getValue(),
-                databasePassword.getValue(),
-                databasePrefix.getValue(),
-                databaseSchema.getValue()
-                );
+            Database.DatabaseType.valueOf(databaseType.getValue()),
+            databaseHostname.getValue(),
+            databasePort.getValue(),
+            databaseUsername.getValue(),
+            databasePassword.getValue(),
+            databasePrefix.getValue(),
+            databaseSchema.getValue(),
+            loggingInterval.getValue(),
+            usersInterval.getValue()
+        );
+    }
+
+    public void logEvent(User user, CheckType type) {
+        if(loggingEnabled.getValue()) {
+            database.logEvent(serverName.getValue(), user, type);
+        }
     }
 }

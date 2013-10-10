@@ -54,7 +54,9 @@ public class UserManager {
      */
     public User getUser(String name) {
         for (User user : users) {
-            if (user.getName().equalsIgnoreCase(name)) { return user; }
+            if (user.getName().equalsIgnoreCase(name)) {
+                return user;
+            }
         }
         // Otherwise try to load them
         return loadUserFromFile(name);

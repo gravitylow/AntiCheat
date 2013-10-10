@@ -38,11 +38,6 @@ public final class Utilities {
     private static final List<Material> INSTANT_BREAK = new ArrayList<Material>();
     private static final List<Material> FOOD = new ArrayList<Material>();
     private static final List<Material> INTERACTABLE = new ArrayList<Material>();
-    private static final List<Material> AXES = new ArrayList<Material>();
-    private static final List<Material> PICKAXES = new ArrayList<Material>();
-    private static final List<Material> SHEARS = new ArrayList<Material>();
-    private static final List<Material> SHOVELS = new ArrayList<Material>();
-    private static final List<Material> ANY = new ArrayList<Material>();
     private static final Map<Material, Material> COMBO = new HashMap<Material, Material>();
 
     public static final String SPY_METADATA = "ac-spydata";
@@ -166,10 +161,8 @@ public final class Utilities {
     public static boolean isHoveringOverWater(Location player, int blocks) {
         for (int i = player.getBlockY(); i > player.getBlockY() - blocks; i--) {
             Block newloc = (new Location(player.getWorld(), player.getBlockX(), i, player.getBlockZ())).getBlock();
-            if (newloc.getTypeId() != 0 && newloc.isLiquid()) {
-                return true;
-            } else if (newloc.getTypeId() != 0) {
-                return false;
+            if (newloc.getType() != Material.AIR) {
+                return newloc.isLiquid();
             }
         }
         
@@ -213,8 +206,16 @@ public final class Utilities {
      * @return true if slab
      */
     public static boolean isSlab(Block block) {
-        int id = block.getTypeId();
-        return id == 43 || id == 44 || id == 125 || id == 126;
+        Material type = block.getType();
+        switch (type) {
+            case STEP:
+            case DOUBLE_STEP:
+            case WOOD_STEP:
+            case WOOD_DOUBLE_STEP:
+                return true;
+            default:
+                return false;
+        }
     }
 
     /**
@@ -224,8 +225,21 @@ public final class Utilities {
      * @return true if stair
      */
     public static boolean isStair(Block block) {
-        int id = block.getTypeId();
-        return id == 53 || id == 67 || id == 108 || id == 109 || id == 114 || id == 128 || id == 134 || id == 135 || id == 136;
+        Material type = block.getType();
+        switch (type) {
+            case WOOD_STAIRS:
+            case SPRUCE_WOOD_STAIRS:
+            case SMOOTH_STAIRS:
+            case SANDSTONE_STAIRS:
+            case QUARTZ_STAIRS:
+            case JUNGLE_WOOD_STAIRS:
+            case NETHER_BRICK_STAIRS:
+            case BIRCH_WOOD_STAIRS:
+            case COBBLESTONE_STAIRS:
+                return true;
+            default:
+                return false;
+        }
     }
 
     /**
@@ -334,7 +348,7 @@ public final class Utilities {
      * @return time in milliseconds to break
      */
     public static long calcSurvivalFastBreak(ItemStack tool, Material block) {
-        if(isInstantBreak(block) || (tool.getType() == Material.SHEARS && block.getId() == Material.LEAVES.getId())) {
+        if(isInstantBreak(block) || (tool.getType() == Material.SHEARS && block == Material.LEAVES)) {
             return 0;
         }
         double bhardness = BlockHardness.getBlockHardness(block);

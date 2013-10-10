@@ -40,9 +40,10 @@ import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.representer.Representer;
 
 /**
- * An implementation of {@link org.bukkit.configuration.file.YamlConfiguration} which preserves comments.
+ * An extension of {@link org.bukkit.configuration.file.YamlConfiguration} which preserves comments.
  * Note that this implementation is not synchronized.
- * Some overridden code has been moved to this file from its implementation.
+ * <br>
+ * Some overridden code has been moved to this file from its parent & modified.
  */
 public class CommentedConfiguration extends YamlConfiguration {
     private Map<Integer, String> comments = new HashMap<Integer, String>();
@@ -116,15 +117,15 @@ public class CommentedConfiguration extends YamlConfiguration {
         }
 
         int i = 0;
-        while(queue.size() > 0) {
-            if(comments.containsKey(i)) {
+        while (queue.size() > 0) {
+            if (comments.containsKey(i)) {
                 builder.append(comments.get(i));
 
                 // Handle subsequent comments
                 int b = i;
-                while(true) {
+                while (true) {
                     b++;
-                    if(comments.containsKey(b)) {
+                    if (comments.containsKey(b)) {
                         builder.append('\n');
                         builder.append(comments.get(b));
                     } else {

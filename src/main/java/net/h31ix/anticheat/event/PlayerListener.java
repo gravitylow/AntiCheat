@@ -261,10 +261,16 @@ public class PlayerListener extends EventListener {
 
         getBackend().logJoin(player);
 
-        if (getUserManager().getUser(player.getName()) == null) {
-            getUserManager().addUser(new User(player.getName()));
+        if (getConfig().getConfig().enterprise.getValue()) {
+            if (getUserManager().getUser(player.getName()) == null) {
+                getUserManager().addUser(new User(player.getName()));
+            } else {
+                getUserManager().addUserFromFile(player.getName());
+            }
         } else {
-            getUserManager().addUserFromFile(player.getName());
+            User user = new User(player.getName());
+            getConfig().getEnterprise().database.syncFrom(user);
+            getUserManager().addUser(user);
         }
         if (player.hasMetadata(Utilities.SPY_METADATA)) {
             for (Player p : player.getServer().getOnlinePlayers()) {

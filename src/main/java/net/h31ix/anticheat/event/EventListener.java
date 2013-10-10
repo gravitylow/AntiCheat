@@ -53,6 +53,7 @@ public class EventListener implements Listener {
         // Ignore plugins that are creating NPCs with no names (why the hell)
         if (user != null && user.getName() != null) {
             type.logUse(user);
+            CONFIG.getEnterprise().logEvent(user, type);
             if (CONFIG.getConfig().fileLogLevel.getValue() == 2 && type.getUses(user.getName()) % 10 == 0) {
                 AntiCheat.getManager().fileLog(user.getName() + " has triggered multiple " + type + " checks.");
             }
