@@ -18,10 +18,6 @@
 
 package net.h31ix.anticheat;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-
 import com.comphenix.protocol.ProtocolLibrary;
 import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.event.*;
@@ -37,6 +33,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AntiCheat extends JavaPlugin {
 
@@ -157,8 +156,8 @@ public class AntiCheat extends JavaPlugin {
     }
 
     private void setupEnterprise() {
-        if(config.getConfig().enterprise.getValue()) {
-            if(config.getEnterprise().loggingEnabled.getValue()) {
+        if (config.getConfig().enterprise.getValue()) {
+            if (config.getEnterprise().loggingEnabled.getValue()) {
                 config.getEnterprise().database.cleanEvents();
             }
         }
@@ -214,7 +213,7 @@ public class AntiCheat extends JavaPlugin {
     public static void debugLog(final String string) {
         Bukkit.getScheduler().runTask(getPlugin(), new Runnable() {
             public void run() {
-                if(developer) {
+                if (developer) {
                     manager.log("[DEBUG] " + string);
                 }
             }

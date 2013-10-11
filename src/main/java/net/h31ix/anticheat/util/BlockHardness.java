@@ -184,15 +184,15 @@ public enum BlockHardness {
     PISTON_EXTENSION(0.70D),
     PISTON_MOVING_PIECE(0.70D),
     PISTON_STICKY_BASE(0.70D);
-    
+
     Material mat;
     double hardness;
-    
+
     BlockHardness(double hard) {
         mat = Material.getMaterial(name());
         hardness = hard;
     }
-    
+
     public static double getBlockHardness(Material m) {
         BlockHardness h = getHardness(m);
         return h == null ? 0D : h.hardness;

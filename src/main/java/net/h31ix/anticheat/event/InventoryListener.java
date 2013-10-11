@@ -30,7 +30,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 
 public class InventoryListener extends EventListener {
-    
+
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!event.isRightClick() && !event.isShiftClick() && event.getWhoClicked() instanceof Player) {
@@ -49,13 +49,13 @@ public class InventoryListener extends EventListener {
                 }
             }
         }
-        
+
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
-        if(event.getInventory().getType() != InventoryType.BEACON) {
+        if (event.getInventory().getType() != InventoryType.BEACON) {
             getUserManager().getUser(event.getPlayer().getName()).setInventorySnapshot(event.getInventory().getContents());
         }
     }
@@ -63,7 +63,7 @@ public class InventoryListener extends EventListener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         User user = getUserManager().getUser(event.getPlayer().getName());
-        if(user != null) {
+        if (user != null) {
             user.removeInventorySnapshot();
         }
     }

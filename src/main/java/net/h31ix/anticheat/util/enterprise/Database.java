@@ -24,7 +24,10 @@ import net.h31ix.anticheat.manage.User;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class Database {
 
@@ -126,12 +129,12 @@ public class Database {
 
             connection.setAutoCommit(false);
 
-            eventTask = Bukkit.getScheduler().runTaskTimerAsynchronously(AntiCheat.getPlugin(), new Runnable(){
+            eventTask = Bukkit.getScheduler().runTaskTimerAsynchronously(AntiCheat.getPlugin(), new Runnable() {
                 @Override
                 public void run() {
                     flushEvents();
                 }
-            }, eventInterval* 60 * 20, eventInterval * 60 * 20);
+            }, eventInterval * 60 * 20, eventInterval * 60 * 20);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -179,7 +182,7 @@ public class Database {
     }
 
     public void cleanEvents() {
-        Bukkit.getScheduler().runTaskAsynchronously(AntiCheat.getPlugin(), new Runnable(){
+        Bukkit.getScheduler().runTaskAsynchronously(AntiCheat.getPlugin(), new Runnable() {
             @Override
             public void run() {
                 try {

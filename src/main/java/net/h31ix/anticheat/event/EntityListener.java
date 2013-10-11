@@ -33,7 +33,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 
 public class EntityListener extends EventListener {
-    
+
     @EventHandler
     public void onEntityShootBow(EntityShootBowEvent event) {
         if (event.getEntity() instanceof Player) {
@@ -48,10 +48,10 @@ public class EntityListener extends EventListener {
                 }
             }
         }
-        
+
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
-    
+
     @EventHandler
     public void onEntityRegainHealth(EntityRegainHealthEvent event) {
         if (event.getEntity() instanceof Player && event.getRegainReason() == RegainReason.SATIATED) {
@@ -67,10 +67,10 @@ public class EntityListener extends EventListener {
                 }
             }
         }
-        
+
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
-    
+
     @EventHandler
     public void onFoodLevelChange(FoodLevelChangeEvent event) {
         if (event.getEntity() instanceof Player) {
@@ -86,10 +86,10 @@ public class EntityListener extends EventListener {
                 }
             }
         }
-        
+
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
-    
+
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
         boolean noHack = true;
@@ -134,15 +134,15 @@ public class EntityListener extends EventListener {
                 getBackend().logDamage(player, 1);
                 if (getCheckManager().willCheck(player, CheckType.AUTOTOOL)) {
                     CheckResult result = getBackend().checkAutoTool(player);
-                    if(result.failed()) {
+                    if (result.failed()) {
                         event.setCancelled(!silentMode());
                         log(result.getMessage(), player, CheckType.AUTOTOOL);
-                        noHack = false;                        
+                        noHack = false;
                     }
                 }
                 if (getCheckManager().willCheck(player, CheckType.FORCEFIELD)) {
                     CheckResult result = getBackend().checkSprintDamage(player);
-                    if(result.failed()) {
+                    if (result.failed()) {
                         event.setCancelled(!silentMode());
                         log(result.getMessage(), player, CheckType.FORCEFIELD);
                         noHack = false;
@@ -150,7 +150,7 @@ public class EntityListener extends EventListener {
                 }
                 if (getCheckManager().willCheck(player, CheckType.NO_SWING)) {
                     CheckResult result = getBackend().checkAnimation(player, event.getEntity());
-                    if(result.failed()) {                    
+                    if (result.failed()) {
                         event.setCancelled(!silentMode());
                         log(result.getMessage(), player, CheckType.NO_SWING);
                         noHack = false;
@@ -158,7 +158,7 @@ public class EntityListener extends EventListener {
                 }
                 if (getCheckManager().willCheck(player, CheckType.FORCEFIELD)) {
                     CheckResult result = getBackend().checkSight(player, e.getEntity());
-                    if(result.failed()) {
+                    if (result.failed()) {
                         event.setCancelled(!silentMode());
                         log(result.getMessage(), player, CheckType.FORCEFIELD);
                         noHack = false;
@@ -169,7 +169,7 @@ public class EntityListener extends EventListener {
                 }
             }
         }
-        
+
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 }

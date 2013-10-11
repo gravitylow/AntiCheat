@@ -21,6 +21,7 @@ package net.h31ix.anticheat.config.files;
 import net.h31ix.anticheat.AntiCheat;
 import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.config.ConfigurationFile;
+
 import java.util.List;
 
 public class Config extends ConfigurationFile {

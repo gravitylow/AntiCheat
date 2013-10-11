@@ -19,7 +19,6 @@
 package net.h31ix.anticheat.util;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public enum Permission {
     /* Check Nodes */
@@ -49,7 +48,7 @@ public enum Permission {
     CHECK_VISUAL,
     CHECK_FASTINVENTORY,
     CHECK_AUTOTOOL,
-    
+
     /* System Nodes */
     SYSTEM_LOG,
     SYSTEM_XRAY,
@@ -64,7 +63,7 @@ public enum Permission {
     SYSTEM_RELOAD;
 
     private static final String PERMISSION_ALL = "anticheat.*";
-    
+
     public boolean get(CommandSender cs) {
         return cs.hasPermission(toString()) || cs.hasPermission(getBase()) || cs.hasPermission(PERMISSION_ALL);
     }
@@ -74,17 +73,17 @@ public enum Permission {
     }
 
     public String whichPermission(CommandSender cs) {
-        for(String s : new String[]{toString(), getBase(), PERMISSION_ALL}) {
-            if(cs.hasPermission(s)) {
+        for (String s : new String[]{toString(), getBase(), PERMISSION_ALL}) {
+            if (cs.hasPermission(s)) {
                 return s;
             }
         }
         return null;
     }
-    
+
     @Override
     public String toString() {
         return "anticheat." + this.name().toLowerCase().replace("_", ".");
     }
-    
+
 }

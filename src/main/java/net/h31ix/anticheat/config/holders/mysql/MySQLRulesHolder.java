@@ -54,13 +54,13 @@ public class MySQLRulesHolder extends ConfigurationTable implements Rules {
 
             this.rules = new ArrayList<Rule>();
             ResultSet set = getConnection().prepareStatement(sqlLoad).executeQuery();
-            while(set.next()) {
+            while (set.next()) {
                 String string = set.getString("rule");
                 Rule rule = Rule.load(string);
-                if(rule != null) {
+                if (rule != null) {
                     this.rules.add(rule);
                 } else {
-                    AntiCheat.getPlugin().getLogger().warning("Couldn't load rule '"+string+"' from the database. Improper format used.");
+                    AntiCheat.getPlugin().getLogger().warning("Couldn't load rule '" + string + "' from the database. Improper format used.");
                 }
             }
         } catch (SQLException e) {

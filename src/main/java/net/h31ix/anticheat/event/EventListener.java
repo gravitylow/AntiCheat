@@ -18,15 +18,15 @@
 
 package net.h31ix.anticheat.event;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-
 import net.h31ix.anticheat.AntiCheat;
 import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.manage.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EventListener implements Listener {
     private static final Map<CheckType, Integer> USAGE_LIST = new EnumMap<CheckType, Integer>(CheckType.class);
@@ -39,7 +39,7 @@ public class EventListener implements Listener {
 
     public static void log(String message, Player player, CheckType type) {
         User user = getUserManager().getUser(player.getName());
-        if(user != null) { // npc
+        if (user != null) { // npc
             logCheat(type, user);
             if (user.increaseLevel(type) && message != null) {
                 AntiCheat.getManager().log(message);
@@ -75,17 +75,17 @@ public class EventListener implements Listener {
     }
 
     private static void removeDecrease(User user) {
-    int x = 0;
-    // Ignore plugins that are creating NPCs with no names
-    if (user.getName() != null) {
-        if (DECREASE_LIST.get(user.getName()) != null) {
-            x = DECREASE_LIST.get(user.getName());
-            x -= 2;
-            if (x < 0) {
-                x = 0;
+        int x = 0;
+        // Ignore plugins that are creating NPCs with no names
+        if (user.getName() != null) {
+            if (DECREASE_LIST.get(user.getName()) != null) {
+                x = DECREASE_LIST.get(user.getName());
+                x -= 2;
+                if (x < 0) {
+                    x = 0;
+                }
             }
-        }
-        DECREASE_LIST.put(user.getName(), x);
+            DECREASE_LIST.put(user.getName(), x);
         }
     }
 

@@ -21,14 +21,10 @@ package net.h31ix.anticheat.config.holders.yaml;
 import net.h31ix.anticheat.AntiCheat;
 import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.config.ConfigurationFile;
-import net.h31ix.anticheat.config.providers.Events;
 import net.h31ix.anticheat.config.providers.Rules;
-import net.h31ix.anticheat.util.Level;
 import net.h31ix.anticheat.util.rule.Rule;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class YamlRulesHolder extends ConfigurationFile implements Rules {
@@ -53,19 +49,19 @@ public class YamlRulesHolder extends ConfigurationFile implements Rules {
         // Convert rules list to Rules
         this.rules = new ArrayList<Rule>();
         List<String> tempRules = rules.getValue();
-        for(int i=0;i<tempRules.size();i++) {
+        for (int i = 0; i < tempRules.size(); i++) {
             String string = tempRules.get(i);
 
-            if(string.equals("Check_SPIDER < 0 ? Player.KICK : null")) {
+            if (string.equals("Check_SPIDER < 0 ? Player.KICK : null")) {
                 // Default rule, won't ever run so we shouldn't load it; only used as example
                 continue;
             }
 
             Rule rule = Rule.load(string);
-            if(rule != null) {
+            if (rule != null) {
                 this.rules.add(rule);
             } else {
-                AntiCheat.getPlugin().getLogger().warning("Couldn't load rule '"+string+"' from config. Improper format used.");
+                AntiCheat.getPlugin().getLogger().warning("Couldn't load rule '" + string + "' from config. Improper format used.");
             }
         }
     }

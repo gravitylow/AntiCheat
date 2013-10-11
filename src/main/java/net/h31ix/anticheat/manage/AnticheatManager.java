@@ -18,6 +18,14 @@
 
 package net.h31ix.anticheat.manage;
 
+import net.h31ix.anticheat.AntiCheat;
+import net.h31ix.anticheat.config.Configuration;
+import net.h31ix.anticheat.util.FileFormatter;
+import net.h31ix.anticheat.xray.XRayTracker;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.plugin.RegisteredListener;
+
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -28,14 +36,6 @@ import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import net.h31ix.anticheat.AntiCheat;
-import net.h31ix.anticheat.config.Configuration;
-import net.h31ix.anticheat.util.FileFormatter;
-import net.h31ix.anticheat.xray.XRayTracker;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.plugin.RegisteredListener;
 
 /**
  * The internal hub for all managers.
@@ -54,7 +54,7 @@ public class AnticheatManager {
     private static List<String> logs = new CopyOnWriteArrayList<String>();
     private static Handler fileHandler;
     private static final int LOG_LEVEL_HIGH = 3;
-    
+
     public AnticheatManager(AntiCheat instance, Logger logger) {
         plugin = instance;
         // now load all the others!!!!!
@@ -77,11 +77,11 @@ public class AnticheatManager {
         fileLogger.setUseParentHandlers(false);
         fileLogger.addHandler(fileHandler);
     }
-    
+
     public void log(String message) {
         log(message, 0);
     }
-    
+
     public void log(String message, int i) {
         if (i != 1 && getConfiguration().getConfig().logToConsole.getValue()) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + message);
@@ -94,21 +94,23 @@ public class AnticheatManager {
         }
         logs.add(ChatColor.stripColor(message));
     }
-    
+
     public void fileLog(String message) {
         fileLogger.info(message);
     }
-    
+
     public List<String> getLastLogs() {
         List<String> log = new CopyOnWriteArrayList<String>();
-        if (logs.size() < 30) { return logs; }
+        if (logs.size() < 30) {
+            return logs;
+        }
         for (int i = logs.size() - 1; i >= 0; i--) {
             log.add(logs.get(i));
         }
         logs.clear();
         return log;
     }
-    
+
     public void addEvent(String e, RegisteredListener[] arr) {
         if (!configuration.getConfig().eventChains.getValue())
             return;
@@ -117,66 +119,66 @@ public class AnticheatManager {
             eventcache.put(e, System.currentTimeMillis());
         }
     }
-    
+
     public String getEventChainReport() {
         String gen = "";
         if (!configuration.getConfig().eventChains.getValue()) {
             return "Event Chains is disabled by the configuration." + '\n';
         }
 
-        if(eventchains.entrySet().size() == 0) {
+        if (eventchains.entrySet().size() == 0) {
             return "No event chains found." + '\n';
         }
 
         for (Entry<String, RegisteredListener[]> e : eventchains.entrySet()) {
             String toadd = "";
             String ename = e.getKey();
-            
+
             toadd += ename + ":" + '\n';
-            
+
             RegisteredListener[] reg = e.getValue();
-            for(RegisteredListener plug : reg) {
+            for (RegisteredListener plug : reg) {
                 String pluginname = plug.getPlugin().getName();
                 if (pluginname.equals("AntiCheat"))
                     pluginname = "self";
-                
+
                 toadd += "- " + pluginname + '\n';
             }
-            
+
             gen += toadd + '\n';
         }
-        
+
         return gen;
     }
-    
+
     public AntiCheat getPlugin() {
         return plugin;
     }
-    
+
     public Configuration getConfiguration() {
         return configuration;
     }
-    
+
     public XRayTracker getXRayTracker() {
         return xrayTracker;
     }
-    
+
     public UserManager getUserManager() {
         return userManager;
     }
-    
+
     public CheckManager getCheckManager() {
         return checkManager;
     }
-    
+
     public Backend getBackend() {
         return backend;
     }
-    
+
     public static void close() {
         fileHandler.close();
 
-        if(configuration.getConfig().enterprise.getValue()) {
+        if (configuration.getConfig().enterprise.getValue()) {
             configuration.getEnterprise().database.shutdown();
         }
     }

@@ -32,16 +32,16 @@ import java.util.SortedMap;
  * Where CONDITION is a statement that will be evaluated as either <b>TRUE</b> or <b>FALSE</b>
  * and the results are actions to be taken for either outcome.
  * <br /><br />
- *
+ * <p/>
  * Should you need additional actions, the system will recursively parse the following values and handle appropriately.
  * <br />
  * For instance, (CONDITION) ? (TRUE RESULT) : (CONDITION) ? (TRUE RESULT) : (FALSE RESULT) is a valid rule
  * <br /><br />
- *
+ * <p/>
  * An example of a valid Conditional Rule:<br />
  * Check_SPIDER > 0 ? Player.KICK : null<br />
  * <i>The above statement would read 'If the spider check has been failed over zero times, kick the player. Otherwise, do nothing.'</i>
- *
+ * <p/>
  * To see syntax for variables and functions that you may use, see {@link net.h31ix.anticheat.util.rule.Rule}
  */
 public class ConditionalRule extends Rule {
@@ -62,11 +62,11 @@ public class ConditionalRule extends Rule {
         try {
             // Load all variables
             SortedMap<String, Object> map = getVariables(user, type);
-            for(String key : map.keySet()) {
+            for (String key : map.keySet()) {
                 engine.put(key, map.get(key));
             }
 
-            boolean value = (Boolean)engine.eval(getString().split(TRUE_DELIMITER)[0]);
+            boolean value = (Boolean) engine.eval(getString().split(TRUE_DELIMITER)[0]);
             // Yo dawg I heard you like conditionals...
             String next = value ? getString().split(TRUE_DELIMITER)[1].split(FALSE_DELIMITER)[0] : getString().split(TRUE_DELIMITER)[1].split(FALSE_DELIMITER)[1];
 
@@ -80,14 +80,14 @@ public class ConditionalRule extends Rule {
 
     private void execute(String string, User user, CheckType type) {
         // If we're told to do nothing
-        if(string.equalsIgnoreCase("null") || string.equalsIgnoreCase("none")) return;
+        if (string.equalsIgnoreCase("null") || string.equalsIgnoreCase("none")) return;
 
         // If this string is a new conditional statement
-        if(TYPE.matches(string)) {
+        if (TYPE.matches(string)) {
             new ConditionalRule(string).check(user, type);
-        } else if(isVariableSet(string)) {
+        } else if (isVariableSet(string)) {
             setVariable(string.split("=")[0], string.split("=")[1], user);
-        } else if(isFunction(string)) {
+        } else if (isFunction(string)) {
             doFunction(string, type, user);
         }
     }

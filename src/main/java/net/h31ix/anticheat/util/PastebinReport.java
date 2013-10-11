@@ -18,6 +18,13 @@
 
 package net.h31ix.anticheat.util;
 
+import net.h31ix.anticheat.AntiCheat;
+import net.h31ix.anticheat.config.files.Magic;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+
 import java.io.*;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
@@ -27,44 +34,39 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import net.h31ix.anticheat.AntiCheat;
-import net.h31ix.anticheat.config.files.Magic;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-
 public class PastebinReport {
     private StringBuilder report = new StringBuilder();
     private String url = "";
     private Date date = new Date();
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd kk:mm Z");
 
-    
+
     public PastebinReport(CommandSender cs) {
         Player player = null;
-        if(cs instanceof Player) {
+        if (cs instanceof Player) {
             player = (Player) cs;
         }
         createReport(player);
         try {
             writeReport();
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
         postReport();
     }
-    
+
     public PastebinReport(CommandSender cs, Player tp) {
         createReport(tp);
         try {
             writeReport();
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
         postReport();
     }
-    
+
     public String getURL() {
         return url;
     }
-    
+
     private void appendPermissionsTester(Player player) {
         if (player == null) {
             append("No player defined.");
@@ -73,13 +75,13 @@ public class PastebinReport {
 
         for (Permission node : Permission.values()) {
             report.append(player.getName() + ": " + node.toString() + " " + node.get(player));
-            if(node.get(player) && !node.whichPermission(player).equals(node.toString())) {
-                report.append(" (Applied by " + node.whichPermission(player) +")");
+            if (node.get(player) && !node.whichPermission(player).equals(node.toString())) {
+                report.append(" (Applied by " + node.whichPermission(player) + ")");
             }
             report.append('\n');
         }
     }
-    
+
     private void createReport(Player player) {
         if (Bukkit.getPluginManager().getPlugin("NoCheatPlus") != null) {
             append("------------ WARNING! ------------");
@@ -100,15 +102,15 @@ public class PastebinReport {
 
     private void appendLogs() {
         List<String> logs = AntiCheat.getManager().getLastLogs();
-        if(logs.size() == 0) {
+        if (logs.size() == 0) {
             append("No recent logs.");
             return;
         }
-        for(String log : logs) {
+        for (String log : logs) {
             append(log);
         }
     }
-    
+
     private void appendSystemInfo() {
         Runtime runtime = Runtime.getRuntime();
         append("AntiCheat Version: " + AntiCheat.getVersion() + (AntiCheat.isUpdated() ? "" : " (OUTDATED)"));
@@ -131,33 +133,33 @@ public class PastebinReport {
         FileConfiguration file = magic.getDefaultConfigFile();
         append("Version: " + magic.getVersion());
         boolean changed = false;
-        for(Field field : Magic.class.getFields()) {
+        for (Field field : Magic.class.getFields()) {
             Object defaultValue = file.get(field.getName());
             try {
                 Field value = magic.getClass().getDeclaredField(field.getName());
                 boolean x = false;
                 String s1 = value.get(magic).toString();
                 String s2 = defaultValue.toString();
-                if(!s1.equals(s2) && !s1.equals(s2 + ".0")) {
+                if (!s1.equals(s2) && !s1.equals(s2 + ".0")) {
                     changed = true;
                     append(field.getName() + ": " + s1 + " (Default: " + s2 + ")");
                 } else {
                 }
-            } catch(NoSuchFieldException ex) {
+            } catch (NoSuchFieldException ex) {
 
-            } catch(IllegalAccessException ex) {
+            } catch (IllegalAccessException ex) {
 
             }
         }
-        if(!changed) {
+        if (!changed) {
             append("No changes from default.");
         }
     }
-    
+
     private void appendEventHandlers() {
         report.append(AntiCheat.getManager().getEventChainReport());
     }
-    
+
     private void writeReport() throws IOException {
         File f = new File(AntiCheat.getPlugin().getDataFolder() + "/report.txt");
         FileWriter r = new FileWriter(f);
@@ -165,7 +167,7 @@ public class PastebinReport {
         writer.write(report.toString());
         writer.close();
     }
-    
+
     private void postReport() {
         try {
             URL urls = new URL("http://pastebin.com/api/api_post.php");
@@ -177,11 +179,11 @@ public class PastebinReport {
             conn.setInstanceFollowRedirects(false);
             conn.setDoOutput(true);
             OutputStream out = conn.getOutputStream();
-            
+
             out.write(("api_option=paste" + "&api_dev_key=" + URLEncoder.encode("c0616def494dcb5b7632304f8c52c0f1", "utf-8") + "&api_paste_code=" + URLEncoder.encode(report.toString(), "utf-8") + "&api_paste_private=" + URLEncoder.encode("1", "utf-8") + "&api_paste_name=" + URLEncoder.encode("", "utf-8") + "&api_paste_expire_date=" + URLEncoder.encode("1M", "utf-8") + "&api_paste_format=" + URLEncoder.encode("text", "utf-8") + "&api_user_key=" + URLEncoder.encode("", "utf-8")).getBytes());
             out.flush();
             out.close();
-            
+
             if (conn.getResponseCode() == 200) {
                 InputStream receive = conn.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(receive));
@@ -192,9 +194,9 @@ public class PastebinReport {
                     response.append("\r\n");
                 }
                 reader.close();
-                
+
                 String result = response.toString().trim();
-                
+
                 if (!result.contains("http://")) {
                     url = "Failed to post.  Check report.txt";
                 } else {

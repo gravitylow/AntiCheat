@@ -33,12 +33,14 @@ public class XRayListener implements Listener {
     private XRayTracker tracker = AntiCheat.getManager().getXRayTracker();
     private Configuration config = AntiCheat.getManager().getConfiguration();
     private CheckManager checkManager = AntiCheat.getManager().getCheckManager();
-    
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         if (config.getConfig().logXRayStats.getValue()) {
             Player p = event.getPlayer();
-            if (p.getGameMode() == GameMode.CREATIVE && !config.getConfig().trackCreativeXRay.getValue()) { return; }
+            if (p.getGameMode() == GameMode.CREATIVE && !config.getConfig().trackCreativeXRay.getValue()) {
+                return;
+            }
             String player = p.getName();
             if (checkManager.willCheck(p, CheckType.XRAY)) {
                 Material m = event.getBlock().getType();

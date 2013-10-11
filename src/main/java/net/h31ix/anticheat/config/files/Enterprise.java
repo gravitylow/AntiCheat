@@ -67,16 +67,16 @@ public class Enterprise extends ConfigurationFile {
 
         // Convert database values to Database
         database = new Database(
-            Database.DatabaseType.valueOf(databaseType.getValue()),
-            databaseHostname.getValue(),
-            databasePort.getValue(),
-            databaseUsername.getValue(),
-            databasePassword.getValue(),
-            databasePrefix.getValue(),
-            databaseSchema.getValue(),
-            serverName.getValue(),
-            loggingInterval.getValue(),
-            loggingLife.getValue()
+                Database.DatabaseType.valueOf(databaseType.getValue()),
+                databaseHostname.getValue(),
+                databasePort.getValue(),
+                databaseUsername.getValue(),
+                databasePassword.getValue(),
+                databasePrefix.getValue(),
+                databaseSchema.getValue(),
+                serverName.getValue(),
+                loggingInterval.getValue(),
+                loggingLife.getValue()
         );
 
         database.connect();

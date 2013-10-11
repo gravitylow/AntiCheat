@@ -18,16 +18,6 @@
 
 package net.h31ix.anticheat.config.yaml;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Queue;
-import java.util.logging.Level;
-
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -39,6 +29,15 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.representer.Representer;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+
 /**
  * An extension of {@link org.bukkit.configuration.file.YamlConfiguration} which preserves comments.
  * Note that this implementation is not synchronized.
@@ -47,7 +46,7 @@ import org.yaml.snakeyaml.representer.Representer;
  */
 public class CommentedConfiguration extends YamlConfiguration {
     private Map<Integer, String> comments = new HashMap<Integer, String>();
-    
+
     private final DumperOptions yamlOptions = new DumperOptions();
     private final Representer yamlRepresenter = new YamlRepresenter();
     private final Yaml yaml = new Yaml(new YamlConstructor(), yamlRepresenter, yamlOptions);
@@ -66,11 +65,11 @@ public class CommentedConfiguration extends YamlConfiguration {
         }
 
         /** - CommentedConfiguration
-        String header = parseHeader(contents);
-        if (header.length() > 0) {
-            options().header(header);
-        }
-        **/
+         String header = parseHeader(contents);
+         if (header.length() > 0) {
+         options().header(header);
+         }
+         **/
 
         if (input != null) {
             convertMapsToSections(input, this);
@@ -80,14 +79,14 @@ public class CommentedConfiguration extends YamlConfiguration {
         int i = 0;
         int blank = 0;
         String[] lines = contents.split("\n");
-        while(i < lines.length) {
-            if(lines[i].trim().equalsIgnoreCase("")) {
+        while (i < lines.length) {
+            if (lines[i].trim().equalsIgnoreCase("")) {
                 i++;
                 blank++;
                 continue;
             }
-            if(lines[i].contains(COMMENT_PREFIX)) {
-                comments.put(i-blank, lines[i]);
+            if (lines[i].contains(COMMENT_PREFIX)) {
+                comments.put(i - blank, lines[i]);
             }
             i++;
         }
@@ -112,7 +111,7 @@ public class CommentedConfiguration extends YamlConfiguration {
 
         String[] lines = dump.split("\n");
         ArrayDeque<String> queue = new ArrayDeque<String>();
-        for(String string : lines) {
+        for (String string : lines) {
             queue.add(string);
         }
 
@@ -148,7 +147,7 @@ public class CommentedConfiguration extends YamlConfiguration {
 
     /**
      * Creates a new {@link CommentedConfiguration}, loading from the given file.
-     * <p>
+     * <p/>
      * Any errors loading the Configuration will be logged and then ignored.
      * If the specified input is not a valid config, a blank config will be returned.
      *
@@ -167,7 +166,7 @@ public class CommentedConfiguration extends YamlConfiguration {
         } catch (IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Cannot load " + file, ex);
         } catch (InvalidConfigurationException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "Cannot load " + file , ex);
+            Bukkit.getLogger().log(Level.SEVERE, "Cannot load " + file, ex);
         }
 
         return config;
@@ -175,7 +174,7 @@ public class CommentedConfiguration extends YamlConfiguration {
 
     /**
      * Creates a new {@link CommentedConfiguration}, loading from the given stream.
-     * <p>
+     * <p/>
      * Any errors loading the Configuration will be logged and then ignored.
      * If the specified input is not a valid config, a blank config will be returned.
      *

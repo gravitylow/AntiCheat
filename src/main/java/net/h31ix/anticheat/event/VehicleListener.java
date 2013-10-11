@@ -26,32 +26,32 @@ import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 
 public class VehicleListener extends EventListener {
-    
+
     @EventHandler(ignoreCancelled = true)
     public void onVehicleEnter(VehicleEnterEvent event) {
         if (event.getEntered() instanceof Player) {
             getBackend().logEnterExit((Player) event.getEntered());
         }
-        
+
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
-    
+
     @EventHandler(ignoreCancelled = true)
     public void onVehicleExit(VehicleExitEvent event) {
         if (event.getExited() instanceof Player) {
             getBackend().logEnterExit((Player) event.getExited());
         }
-        
+
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
-    
-    
+
+
     @EventHandler(ignoreCancelled = true)
     public void onVehicleDestroy(VehicleDestroyEvent event) {
-        if (event.getVehicle().getPassenger() != null &&  event.getVehicle().getPassenger() instanceof Player) {
+        if (event.getVehicle().getPassenger() != null && event.getVehicle().getPassenger() instanceof Player) {
             getBackend().logEnterExit((Player) event.getVehicle().getPassenger());
         }
-        
+
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
-    }     
+    }
 }

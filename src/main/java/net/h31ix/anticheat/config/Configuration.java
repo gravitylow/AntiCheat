@@ -19,13 +19,15 @@
 package net.h31ix.anticheat.config;
 
 import net.h31ix.anticheat.AntiCheat;
-import net.h31ix.anticheat.config.files.*;
+import net.h31ix.anticheat.config.files.Config;
+import net.h31ix.anticheat.config.files.Enterprise;
+import net.h31ix.anticheat.config.files.Lang;
 import net.h31ix.anticheat.config.files.Magic;
 import net.h31ix.anticheat.config.holders.mysql.MySQLEventsHolder;
 import net.h31ix.anticheat.config.holders.mysql.MySQLLevelsHolder;
 import net.h31ix.anticheat.config.holders.mysql.MySQLRulesHolder;
-import net.h31ix.anticheat.config.holders.yaml.YamlLevelsHolder;
 import net.h31ix.anticheat.config.holders.yaml.YamlEventsHolder;
+import net.h31ix.anticheat.config.holders.yaml.YamlLevelsHolder;
 import net.h31ix.anticheat.config.holders.yaml.YamlRulesHolder;
 import net.h31ix.anticheat.config.providers.Events;
 import net.h31ix.anticheat.config.providers.Levels;
@@ -54,53 +56,59 @@ public class Configuration {
         lang = new Lang(plugin, this);
         magic = new Magic(plugin, this);
 
-        flatfiles = new ArrayList<ConfigurationFile>(){{ add(config); add(enterprise); add(lang); add(magic); }};
+        flatfiles = new ArrayList<ConfigurationFile>() {{
+            add(config);
+            add(enterprise);
+            add(lang);
+            add(magic);
+        }};
+
         dbfiles = new ArrayList<ConfigurationTable>();
 
         // The following values can be configuration from a database, or from flatfile.
-        if(config.enterprise.getValue() && enterprise.configEvents.getValue()) {
+        if (config.enterprise.getValue() && enterprise.configEvents.getValue()) {
             events = new MySQLEventsHolder(this);
-            dbfiles.add((MySQLEventsHolder)events);
+            dbfiles.add((MySQLEventsHolder) events);
         } else {
             events = new YamlEventsHolder(plugin, this);
-            flatfiles.add((YamlEventsHolder)events);
+            flatfiles.add((YamlEventsHolder) events);
         }
 
-        if(config.enterprise.getValue() && enterprise.configRules.getValue()) {
+        if (config.enterprise.getValue() && enterprise.configRules.getValue()) {
             rules = new MySQLRulesHolder(this);
-            dbfiles.add((MySQLRulesHolder)rules);
+            dbfiles.add((MySQLRulesHolder) rules);
         } else {
             rules = new YamlRulesHolder(plugin, this);
-            flatfiles.add((YamlRulesHolder)rules);
+            flatfiles.add((YamlRulesHolder) rules);
         }
 
-        if(config.enterprise.getValue() && enterprise.configEvents.getValue()) {
+        if (config.enterprise.getValue() && enterprise.configEvents.getValue()) {
             levels = new MySQLLevelsHolder(this);
-            dbfiles.add((MySQLLevelsHolder)levels);
+            dbfiles.add((MySQLLevelsHolder) levels);
         } else {
             levels = new YamlLevelsHolder(plugin, this);
-            flatfiles.add((YamlLevelsHolder)levels);
+            flatfiles.add((YamlLevelsHolder) levels);
         }
         // End
 
-        for(ConfigurationFile file : flatfiles) {
+        for (ConfigurationFile file : flatfiles) {
             file.save();
             checkReload(file);
         }
     }
 
     public void load() {
-        for(ConfigurationFile file : flatfiles) {
+        for (ConfigurationFile file : flatfiles) {
             file.load();
             checkReload(file);
         }
-        for(ConfigurationTable table : dbfiles) {
+        for (ConfigurationTable table : dbfiles) {
             table.load();
         }
     }
 
     private void checkReload(ConfigurationFile file) {
-        if(file.needsReload()) {
+        if (file.needsReload()) {
             file.reload();
             file.setNeedsReload(false);
         }

@@ -18,11 +18,6 @@
 
 package net.h31ix.anticheat.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.h31ix.anticheat.AntiCheat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -33,6 +28,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.NumberConversions;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class Utilities {
     private static final List<Material> INSTANT_BREAK = new ArrayList<Material>();
@@ -46,7 +46,6 @@ public final class Utilities {
      * Send a hack level alert to players and console
      *
      * @param message List of strings to send as the alert
-     *
      */
     public static void alert(List<String> message) {
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -126,18 +125,19 @@ public final class Utilities {
      */
     public static boolean isFullyInWater(Location player) {
         double touchedX = fixXAxis(player.getX());
-        
+
         // Yes, this doesn't make sense, but it's supposed to fix some false positives in water walk.
         // Think of it as 2 negatives = a positive :)
         if (!(new Location(player.getWorld(), touchedX, player.getY(), player.getBlockZ()).getBlock()).isLiquid() && !(new Location(player.getWorld(), touchedX, Math.round(player.getY()), player.getBlockZ()).getBlock()).isLiquid()) {
             return true;
         }
-        
+
         return (new Location(player.getWorld(), touchedX, player.getY(), player.getBlockZ()).getBlock()).isLiquid() && (new Location(player.getWorld(), touchedX, Math.round(player.getY()), player.getBlockZ()).getBlock()).isLiquid();
     }
 
     /**
      * Fixes a player's X position to determine the block they are on, even if they're on the edge
+     *
      * @param x player's x position
      * @return fixed x position
      */
@@ -165,7 +165,7 @@ public final class Utilities {
                 return newloc.isLiquid();
             }
         }
-        
+
         return false;
     }
 
@@ -336,56 +336,57 @@ public final class Utilities {
         try {
             Integer.parseInt(string);
             x = true;
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+        }
         return x;
     }
 
     /**
      * Calculate the time in milliseconds that it should take to break the given block with the given tool
      *
-     * @param tool tool to check
+     * @param tool  tool to check
      * @param block block to check
      * @return time in milliseconds to break
      */
     public static long calcSurvivalFastBreak(ItemStack tool, Material block) {
-        if(isInstantBreak(block) || (tool.getType() == Material.SHEARS && block == Material.LEAVES)) {
+        if (isInstantBreak(block) || (tool.getType() == Material.SHEARS && block == Material.LEAVES)) {
             return 0;
         }
         double bhardness = BlockHardness.getBlockHardness(block);
         double thardness = ToolHardness.getToolHardness(tool.getType());
         long enchantlvl = (long) tool.getEnchantmentLevel(Enchantment.DIG_SPEED);
-        
+
         long result = Math.round((bhardness * thardness) * 0.10 * 10000);
-        
+
         result += 150;
-        
+
         if (enchantlvl > 0) {
             result /= enchantlvl * enchantlvl + 1L;
         }
-        
+
         if (result > 25000) {
             result = 25000;
         } else if (result < 0) {
             result = 0;
         }
 
-        if(isQuickCombo(tool, block)) {
-            result = result/2;
+        if (isQuickCombo(tool, block)) {
+            result = result / 2;
         }
-        
+
         return result;
     }
 
     /**
      * Determine whether the given tool is a combination that makes the breaking of this block faster
      *
-     * @param tool tool to check
+     * @param tool  tool to check
      * @param block block to check
      * @return true if quick combo
      */
     private static boolean isQuickCombo(ItemStack tool, Material block) {
-        for(Material t : COMBO.keySet()) {
-            if(tool.getType() == t && COMBO.get(t) == block) {
+        for (Material t : COMBO.keySet()) {
+            if (tool.getType() == t && COMBO.get(t) == block) {
                 return true;
             }
         }
@@ -395,14 +396,14 @@ public final class Utilities {
     /**
      * Determine if a block ISN'T one of the specified types
      *
-     * @param block block to check
+     * @param block     block to check
      * @param materials array of possible materials
      * @return true if the block isn't any of the materials
      */
     public static boolean blockIsnt(Block block, Material[] materials) {
         Material type = block.getType();
-        for(Material m : materials) {
-            if(m == type) {
+        for (Material m : materials) {
+            if (m == type) {
                 return false;
             }
         }
@@ -415,7 +416,7 @@ public final class Utilities {
      * @param command input string
      * @return parsed commands
      */
-    public static String [] getCommands(String command) {
+    public static String[] getCommands(String command) {
         return command.replaceAll("COMMAND\\[", "").replaceAll("]", "").split(";");
     }
 
@@ -433,12 +434,12 @@ public final class Utilities {
      * Determine if a player has the given enchantment on their armor
      *
      * @param player player to check
-     * @param e enchantment to check
+     * @param e      enchantment to check
      * @return true if the armor has this enchantment
      */
     public static boolean hasArmorEnchantment(Player player, Enchantment e) {
-        for(ItemStack is : player.getInventory().getArmorContents()) {
-            if(is != null && is.containsEnchantment(e)) {
+        for (ItemStack is : player.getInventory().getArmorContents()) {
+            if (is != null && is.containsEnchantment(e)) {
                 return true;
             }
         }
@@ -465,16 +466,16 @@ public final class Utilities {
      */
     public static String listToCommaString(List<String> list) {
         StringBuilder b = new StringBuilder();
-        for(int i=0;i<list.size();i++) {
+        for (int i = 0; i < list.size(); i++) {
             b.append(list.get(i));
-            if(i < list.size()-1) {
+            if (i < list.size() - 1) {
                 b.append(",");
             }
         }
         return b.toString();
     }
 
-    
+
     static {
         // START INSTANT BREAK MATERIALS
         INSTANT_BREAK.add(Material.RED_MUSHROOM);

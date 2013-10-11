@@ -18,12 +18,12 @@
 
 package net.h31ix.anticheat.util;
 
+import net.h31ix.anticheat.AntiCheat;
+import org.bukkit.ChatColor;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import net.h31ix.anticheat.AntiCheat;
-import org.bukkit.ChatColor;
 
 public class Level {
 
@@ -39,8 +39,8 @@ public class Level {
         this.actions = actions;
 
         ChatColor c = ChatColor.valueOf(color);
-        if(c == null) {
-            AntiCheat.getPlugin().getLogger().warning("Event '"+name+"' was initialized with the color '"+color+"' which is invalid.");
+        if (c == null) {
+            AntiCheat.getPlugin().getLogger().warning("Event '" + name + "' was initialized with the color '" + color + "' which is invalid.");
             AntiCheat.getPlugin().getLogger().warning("This event will not run properly. See http://jd.bukkit.org/apidocs/org/bukkit/ChatColor.html#enum_constant_summary for a list of valid colors");
         } else {
             this.color = c;
@@ -69,7 +69,7 @@ public class Level {
 
     public static Level load(String string) {
         try {
-            if(string.split(":").length == 4) {
+            if (string.split(":").length == 4) {
                 string = Utilities.removeWhitespace(string);
                 String name = string.split(":")[0];
                 int level = Integer.parseInt(string.split(":")[1]);
@@ -80,15 +80,15 @@ public class Level {
                 throw new Exception();
             }
         } catch (Exception ex) {
-            AntiCheat.getPlugin().getLogger().warning("An event was initialized with an invalid string: '"+string+"'");
+            AntiCheat.getPlugin().getLogger().warning("An event was initialized with an invalid string: '" + string + "'");
             AntiCheat.getPlugin().getLogger().warning("The proper format is: 'name : threshold : color : action' such as 'High : 50 : RED : KICK'");
-            AntiCheat.getPlugin().getLogger().warning("This event will NOT run. ("+ex.getMessage()+")");
+            AntiCheat.getPlugin().getLogger().warning("This event will NOT run. (" + ex.getMessage() + ")");
             return null;
         }
     }
 
     @Override
     public String toString() {
-        return name + " : " + value + " : "+ color.name() + " : " + Utilities.listToCommaString(actions);
+        return name + " : " + value + " : " + color.name() + " : " + Utilities.listToCommaString(actions);
     }
 }

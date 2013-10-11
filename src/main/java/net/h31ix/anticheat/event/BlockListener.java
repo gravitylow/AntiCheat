@@ -41,12 +41,12 @@ public class BlockListener extends EventListener {
         }
         if (getCheckManager().willCheck(player, CheckType.AUTOTOOL)) {
             CheckResult result = getBackend().checkAutoTool(player);
-            if(result.failed()) {
+            if (result.failed()) {
                 event.setCancelled(!silentMode());
-                log(result.getMessage(), player, CheckType.AUTOTOOL);                
+                log(result.getMessage(), player, CheckType.AUTOTOOL);
             }
         }
-        
+
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
@@ -63,7 +63,7 @@ public class BlockListener extends EventListener {
                 getBackend().logBlockPlace(player);
             }
         }
-        
+
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }
 
@@ -76,7 +76,7 @@ public class BlockListener extends EventListener {
             CheckResult result;
             if (getCheckManager().willCheck(player, CheckType.FAST_BREAK)) {
                 result = getBackend().checkFastBreak(player, block);
-                if(result.failed()) {
+                if (result.failed()) {
                     event.setCancelled(!silentMode());
                     log(result.getMessage(), player, CheckType.FAST_BREAK);
                     noHack = false;
@@ -84,7 +84,7 @@ public class BlockListener extends EventListener {
             }
             if (getCheckManager().willCheck(player, CheckType.NO_SWING)) {
                 result = getBackend().checkSwing(player, block);
-                if(result.failed()) {
+                if (result.failed()) {
                     event.setCancelled(!silentMode());
                     log(result.getMessage(), player, CheckType.NO_SWING);
                     noHack = false;

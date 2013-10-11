@@ -18,16 +18,16 @@
 
 package net.h31ix.anticheat.manage;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.h31ix.anticheat.api.CheckFailEvent;
 import net.h31ix.anticheat.util.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * <p>
+ * <p/>
  * All the types of checks and their corresponding permission nodes.
  */
 
@@ -57,7 +57,7 @@ public enum CheckType {
     ITEM_SPAM(Permission.CHECK_ITEMSPAM),
     FAST_INVENTORY(Permission.CHECK_FASTINVENTORY),
     AUTOTOOL(Permission.CHECK_AUTOTOOL);
-    
+
     private final Permission permission;
     private final Map<String, Integer> level = new HashMap<String, Integer>();
 

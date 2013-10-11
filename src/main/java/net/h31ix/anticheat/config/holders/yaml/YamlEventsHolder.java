@@ -22,9 +22,7 @@ import net.h31ix.anticheat.AntiCheat;
 import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.config.ConfigurationFile;
 import net.h31ix.anticheat.config.providers.Events;
-import net.h31ix.anticheat.config.providers.Rules;
 import net.h31ix.anticheat.util.Level;
-import net.h31ix.anticheat.util.rule.Rule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,9 +57,9 @@ public class YamlEventsHolder extends ConfigurationFile implements Events {
 
         // Convert levels list to Levels
         this.levels = new ArrayList<Level>();
-        for(String string : levels.getValue()) {
+        for (String string : levels.getValue()) {
             Level level = Level.load(string);
-            if(level == null || level.getValue() < 0) {
+            if (level == null || level.getValue() < 0) {
                 continue;
             }
 

@@ -18,15 +18,15 @@
 
 package net.h31ix.anticheat.manage;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.h31ix.anticheat.AntiCheat;
 import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.util.Level;
 import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserManager {
     private List<User> users = new ArrayList<User>();
@@ -49,6 +49,7 @@ public class UserManager {
 
     /**
      * Get a user with the given name
+     *
      * @param name Name
      * @return User with name
      */
@@ -119,7 +120,7 @@ public class UserManager {
     /**
      * Set a user's level
      *
-     * @param name Name of the player
+     * @param name  Name of the player
      * @param level Level to set
      */
     public void safeSetLevel(String name, int level) {
@@ -131,6 +132,7 @@ public class UserManager {
 
     /**
      * Reset a user
+     *
      * @param name Name of the user
      */
     public void safeReset(String name) {
@@ -143,15 +145,15 @@ public class UserManager {
     /**
      * Fire an alert
      *
-     * @param user The user to alert
+     * @param user  The user to alert
      * @param level The user's level
-     * @param type The CheckType that triggered the alert
+     * @param type  The CheckType that triggered the alert
      */
     public void alert(User user, Level level, CheckType type) {
         ArrayList<String> messageArray = new ArrayList<String>();
         for (int i = 0; i < alert.size(); i++) {
             String message = alert.get(i);
-            if(!message.equals("")) {
+            if (!message.equals("")) {
                 message = message.replaceAll("&player", GOLD + user.getName() + GRAY);
                 message = message.replaceAll("&check", GOLD + CheckType.getName(type) + GRAY);
                 message = message.replaceAll("&level", level.getColor() + level.getName() + GRAY);
@@ -164,9 +166,10 @@ public class UserManager {
 
     /**
      * Execute configuration actions for an alert
-     * @param user The user
+     *
+     * @param user    The user
      * @param actions The list of actions to execute
-     * @param type The CheckType that triggered the alert
+     * @param type    The CheckType that triggered the alert
      */
     public void execute(User user, List<String> actions, CheckType type) {
         execute(user, actions, type, config.getLang().kickReason.getValue(), config.getLang().playerWarning.getValue(), config.getLang().banReason.getValue());
@@ -175,12 +178,12 @@ public class UserManager {
     /**
      * Execute configuration actions for an alert
      *
-     * @param user The user
-     * @param actions The list of actions to execute
-     * @param type The CheckType that triggered the alert
+     * @param user       The user
+     * @param actions    The list of actions to execute
+     * @param type       The CheckType that triggered the alert
      * @param kickReason The config's kick reason
-     * @param warning The config's warning format
-     * @param banReason The config's ban reason
+     * @param warning    The config's warning format
+     * @param banReason  The config's ban reason
      */
     public void execute(final User user, final List<String> actions, final CheckType type, final String kickReason, final List<String> warning, final String banReason) {
         // Execute synchronously for thread safety when called from AsyncPlayerChatEvent
@@ -188,11 +191,11 @@ public class UserManager {
             @Override
             public void run() {
                 final String name = user.getName();
-                for(String event : actions) {
+                for (String event : actions) {
                     event = event.replaceAll("&player", name).replaceAll("&world", user.getPlayer().getWorld().getName()).replaceAll("&check", type.name());
 
                     if (event.startsWith("COMMAND[")) {
-                        for(String cmd : Utilities.getCommands(event)) {
+                        for (String cmd : Utilities.getCommands(event)) {
                             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd);
                         }
                     } else if (event.equalsIgnoreCase("KICK")) {
@@ -204,7 +207,7 @@ public class UserManager {
                     } else if (event.equalsIgnoreCase("WARN")) {
                         List<String> message = warning;
                         for (String string : message) {
-                            if(!string.equals("")) {
+                            if (!string.equals("")) {
                                 user.getPlayer().sendMessage(RED + string);
                             }
                         }

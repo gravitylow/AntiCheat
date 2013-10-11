@@ -25,20 +25,20 @@ public class Calibrator implements Listener {
     private double[] doubles = new double[10];
     private int[] ints = new int[10];
     private int times = 0;
-    
+
     // Value-specific calculations
     private long projectileTime;
     private long dropItemTime;
     private long punchAvg;
     private double blockBreakMax;
     private double blockPlaceMax;
-    
+
     public Calibrator(Player player) {
         this.player = player;
         player.sendMessage(ChatColor.GREEN + "----You have entered calibration mode.----");
         // Wait for listener to be registered and calibrate method called.
     }
-    
+
     public void calibrate() {
         switch (step) {
             case 0:
@@ -56,9 +56,9 @@ public class Calibrator implements Listener {
                  * player.sendMessage("Place blocks from as far away as you can possibly get from them."); break;
                  */
         }
-        
+
     }
-    
+
     private int getLongCount() {
         int fill = 0;
         for (long l : longs) {
@@ -68,7 +68,7 @@ public class Calibrator implements Listener {
         }
         return fill;
     }
-    
+
     private int getDoubleCount() {
         int fill = 0;
         for (double d : doubles) {
@@ -78,7 +78,7 @@ public class Calibrator implements Listener {
         }
         return fill;
     }
-    
+
     private void clear() {
         for (int i = 0; i < longs.length; i++) {
             longs[i] = 0;
@@ -93,14 +93,14 @@ public class Calibrator implements Listener {
         lastDouble = 0;
         lastLong = 0;
         times = 0;
-        
+
     }
-    
+
     private void sendStep() {
         step++;
         player.sendMessage(ChatColor.GREEN + "Step " + step + "/" + TOTAL);
     }
-    
+
     // Find the average time it takes to do a task
     private long getAvgLong() {
         int count = getLongCount();
@@ -125,7 +125,7 @@ public class Calibrator implements Listener {
         }
         return -1;
     }
-    
+
     // Find the maximum time it takes to do a task
     private double getMaxDouble(double length) {
         int count = getDoubleCount();
@@ -146,7 +146,7 @@ public class Calibrator implements Listener {
         }
         return -1;
     }
-    
+
     // Get the absolute time it takes to do something X times
     private long getAbsoluteLong() {
         int count = getLongCount();
@@ -167,10 +167,10 @@ public class Calibrator implements Listener {
         }
         return -1;
     }
-    
-    
+
+
     // Begin event listeners
-    
+
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         if (event.getPlayer() == player) {
@@ -182,7 +182,7 @@ public class Calibrator implements Listener {
             }
         }
     }
-    
+
     @EventHandler
     public void onEntityShootBow(EntityShootBowEvent event) {
         if (event.getEntity() instanceof Player && ((Player) event.getEntity()) == player) {
@@ -194,7 +194,7 @@ public class Calibrator implements Listener {
             }
         }
     }
-    
+
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getPlayer() == player) {
@@ -204,11 +204,11 @@ public class Calibrator implements Listener {
                     punchAvg = v;
                 }
             } else if (step == 1) {
-                
+
             }
         }
     }
-    
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.getPlayer() == player) {
@@ -222,7 +222,7 @@ public class Calibrator implements Listener {
             }
         }
     }
-    
+
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         if (event.getPlayer() == player) {

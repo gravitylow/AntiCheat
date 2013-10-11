@@ -57,7 +57,7 @@ public class ConfigurationFile {
         this.rawFile = rawFile;
         this.saveDefault = saveDefault;
 
-        if(saveDefault) {
+        if (saveDefault) {
             defaultConfigFile = YamlConfiguration.loadConfiguration(plugin.getResource(fileName));
         }
         load();
@@ -65,11 +65,11 @@ public class ConfigurationFile {
 
     public void load() {
         // Can change with user editing
-        if(!rawFile.exists()) {
-            if(saveDefault) {
+        if (!rawFile.exists()) {
+            if (saveDefault) {
                 plugin.saveResource(fileName, true);
             } else {
-                if(!rawFile.getParentFile().exists()) {
+                if (!rawFile.getParentFile().exists()) {
                     rawFile.getParentFile().mkdir();
                 }
                 try {
@@ -144,9 +144,9 @@ public class ConfigurationFile {
         public ConfigValue(String path, boolean loadDefault) {
             this.path = path;
 
-            if(getConfigFile().contains(path)) {
+            if (getConfigFile().contains(path)) {
                 value = getConfigFile().get(path);
-            } else if(loadDefault) {
+            } else if (loadDefault) {
                 getConfigFile().set(path, getDefaultConfigFile().get(path));
                 value = getDefaultConfigFile().get(path);
                 getConfigFile().set(path, value);

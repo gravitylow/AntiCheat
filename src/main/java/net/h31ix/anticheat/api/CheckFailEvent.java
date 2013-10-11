@@ -50,6 +50,7 @@ public class CheckFailEvent extends Event {
 
     /**
      * Get the {@link net.h31ix.anticheat.manage.CheckType} failed
+     *
      * @return a {@link net.h31ix.anticheat.manage.CheckType}
      */
     public CheckType getCheck() {

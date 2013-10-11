@@ -47,14 +47,14 @@ public class YamlLevelsHolder extends ConfigurationFile implements Levels {
 
     @Override
     public void saveLevelsFromUsers(List<User> users) {
-        for(User user : users) {
+        for (User user : users) {
             saveLevelFromUser(user);
         }
     }
 
     private int getLevel(String name) {
         ConfigValue<Integer> level = new ConfigValue<Integer>(name, false);
-        if(level.hasValue()) {
+        if (level.hasValue()) {
             return level.getValue();
         } else {
             return 0;

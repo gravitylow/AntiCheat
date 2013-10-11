@@ -24,16 +24,16 @@ import net.h31ix.anticheat.config.ConfigurationFile;
 
 /**
  * Magic number class. Modifications to values in magic.yml will be accepted here.
- * <p>
+ * <p/>
  * Note that although each value is documented, changing it may have unintended side-effects. For instance, setting something to 0 that the plugin then uses as a dividend will result in an error. <br>
  * Also realize that the smaller a value is, the less you should change it; it's probably small for a reason. The larger a value is, the safer it is to probably change it.
- * <p>
+ * <p/>
  * <b>How to read the value documentation:</b> <br>
  * First, you will see a description of the value. Then, you will see a type: <br>
  * <b>Type SYSTEM:</b> This is a 'long' value, measured in milliseconds, used to compare past and future events with the current system time. Remember, 1000 ms = 1 second. <br>
  * <b>Type INTEGER:</b> This is a regular number. It's typically used as something trivial, such as how many times X event can occur. <br>
  * <b>Type DOUBLE:</b> This is a number that has a decimal in it. It's typically used to evaluate speed or distance.
- * <p>
+ * <p/>
  * After the type, you may see a recommendation labeled as '+Leniency'. This means 'In order to add leniency to this value, do X' <br>
  * The suggestion for adding leniency will either be to INCREASE or DECREASE the variable. Doing what it suggests will cause the system to not judge the people being checked so vigorously.
  */
@@ -349,7 +349,7 @@ public class Magic extends ConfigurationFile {
     public long TELEPORT_MIN;
 
     private double version;
-    
+
     public Magic(AntiCheat plugin, Configuration config) {
         super(plugin, config, "magic.yml");
     }
@@ -358,7 +358,7 @@ public class Magic extends ConfigurationFile {
     public void open() {
         version = new ConfigValue<Double>("VERSION").getValue();
 
-        if(version == 0.2D) {
+        if (version == 0.2D) {
             // 0.2 -> 0.3 diffs
             // Fix improperly stored double Y_MAXDIFF
             new ConfigValue<Double>("Y_MAXDIFF").setValue(new ConfigValue<Double>("Y_MAXDIFF").getDefaultValue());

@@ -29,7 +29,7 @@ public class XRayStats {
     private double l = 0;
     private double r = 0;
     private double o = 0;
-    
+
     public XRayStats(String player, Map<String, Integer> diamond, Map<String, Integer> gold, Map<String, Integer> iron, Map<String, Integer> lapis, Map<String, Integer> redstone, Map<String, Integer> other, Map<String, Integer> total) {
         if (total.get(player) != null) {
             t = total.get(player);
@@ -53,31 +53,31 @@ public class XRayStats {
             o = (other.get(player) / t) * DIVISOR;
         }
     }
-    
+
     public double getTotal() {
         return t;
     }
-    
+
     public double getDiamond() {
         return d;
     }
-    
+
     public double getGold() {
         return g;
     }
-    
+
     public double getIron() {
         return i;
     }
-    
+
     public double getLapis() {
         return l;
     }
-    
+
     public double getRedstone() {
         return r;
     }
-    
+
     public double getOther() {
         return o;
     }

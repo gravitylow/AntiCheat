@@ -45,7 +45,7 @@ public class MySQLEventsHolder extends ConfigurationTable implements Events {
         highestLevel = 0;
         levels = new ArrayList<Level>();
 
-        String sqlCreate= "CREATE TABLE IF NOT EXISTS " + getFullTable() + "(" +
+        String sqlCreate = "CREATE TABLE IF NOT EXISTS " + getFullTable() + "(" +
                 "  `id` INT NOT NULL," +
                 "  `name` VARCHAR(45) NOT NULL," +
                 "  `level` INT NOT NULL," +
@@ -59,14 +59,14 @@ public class MySQLEventsHolder extends ConfigurationTable implements Events {
             getConnection().commit();
 
             ResultSet set = getConnection().prepareStatement(sqlLoad).executeQuery();
-            while(set.next()) {
+            while (set.next()) {
                 String name = set.getString("name");
                 int level = set.getInt("level");
                 String color = set.getString("color");
                 List<String> actions = Arrays.asList(set.getString("actions").split(","));
 
                 levels.add(new Level(name, level, color, actions));
-                if(level > highestLevel) {
+                if (level > highestLevel) {
                     highestLevel = level;
                 }
             }

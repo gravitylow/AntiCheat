@@ -24,37 +24,39 @@ import net.h31ix.anticheat.manage.User;
 import net.h31ix.anticheat.util.Utilities;
 
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * A rule is a scriptable function used to customize the functions of AntiCheat<br />
  * Rules are executed whenever a user's level rises.<br /><br />
- *
+ * <p/>
  * There are various variables you can use to interact with AntiCheat through your rules<br />
  * Variables are denoted with the type followed by a _ followed by the variable name.<br />
  * For instance, a variable coming from a user who has used FLY 5 times and is checked by a rule containing 'Check_FLY' will produce a value of 5.
  * <br /><br />
- *
+ * <p/>
  * <b>Types of variables:</b><br />
  * - Check: Contains all valid checks as listed in {@link net.h31ix.anticheat.manage.CheckType}, and will return the number of times this user has failed the given check<br />
  * - Player: Contains LEVEL, the player's current level and CHECK, the check that was just failed
  * <br /><br />
- *
+ * <p/>
  * There are also functions you can use to execute an action within AntiCheat<br />
  * Functions are denoted with the type followed by a period followed by the function name.<br />
  * For instance, a rule containing Player.KICK will result in the user being kicked.<br />
  * <br /><br />
- *
+ * <p/>
  * <b>Types of functions:</b><br />
  * - Player: RESET, KICK, BAN, COMMAND[command] OR COMMAND[command1;command2]
  * <i>- when using commands <b>&player</b> will be replaced by the player name, <b>&world</b> will be replaced by the player's world,
  * and <b>&check</b> will be replaced by the check that caused this rule to be run</i><br />
  * <br /><br />
- *
+ * <p/>
  * The Rule class itself is not an functional rule setup,
  * it is inherited and made functional by different implementations of the rule parser.<br />
  * The only current Rule implementation is the {@link net.h31ix.anticheat.util.rule.ConditionalRule}
- *
  */
 public class Rule {
 
@@ -106,12 +108,12 @@ public class Rule {
      * @return an instance of Rule if an implementation exists to handle this rule, null if none are found
      */
     public static Rule load(String string) {
-        for(Type type : Type.values()) {
-            if(type.matches(string)) {
+        for (Type type : Type.values()) {
+            if (type.matches(string)) {
                 try {
                     Class c = Class.forName(type.getInstance());
                     Constructor con = c.getConstructor(String.class);
-                    return (Rule)con.newInstance(string);
+                    return (Rule) con.newInstance(string);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -135,10 +137,10 @@ public class Rule {
 
     protected SortedMap<String, Object> getVariables(User user, CheckType type) {
         SortedMap<String, Object> map = new TreeMap<String, Object>();
-        map.put("player_check",  type.name().toLowerCase());
+        map.put("player_check", type.name().toLowerCase());
         map.put("player_level", user.getLevel());
-        for(CheckType t : CheckType.values()) {
-            map.put("check_"+t.name().toLowerCase(), t.getUses(user.getName()));
+        for (CheckType t : CheckType.values()) {
+            map.put("check_" + t.name().toLowerCase(), t.getUses(user.getName()));
         }
         return map;
     }
@@ -146,13 +148,13 @@ public class Rule {
     protected void setVariable(String variable, String value, User user) {
         // Only variable that can be set for now, may change in the future
         // others wouldn't make any sense to set
-        if(variable.equals("player_level") && Utilities.isInt(value)) {
+        if (variable.equals("player_level") && Utilities.isInt(value)) {
             user.setLevel(Integer.parseInt(value));
         }
     }
 
     protected void doFunction(String text, CheckType type, User user) {
-        if(text.toLowerCase().startsWith("player")) {
+        if (text.toLowerCase().startsWith("player")) {
             text = text.split("\\.")[1];
             List<String> action = new ArrayList<String>();
             action.add(text);
@@ -170,6 +172,6 @@ public class Rule {
 
     @Override
     public String toString() {
-        return type+"{"+string+"}";
+        return type + "{" + string + "}";
     }
 }

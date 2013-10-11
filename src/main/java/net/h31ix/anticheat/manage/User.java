@@ -30,7 +30,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User {
     private final String name;
@@ -40,8 +41,8 @@ public class User {
     private List<ItemStack> inventorySnapshot = null;
     private Configuration config = AntiCheat.getManager().getConfiguration();
     private int toX, toY, toZ;
-    private String [] messages = new String[2];
-    private Long [] messageTimes = new Long[2];
+    private String[] messages = new String[2];
+    private Long[] messageTimes = new Long[2];
 
     private boolean isWaitingOnLevelSync;
     private Timestamp levelSyncTimestamp;
@@ -94,10 +95,10 @@ public class User {
 
     public Level getNamedLevel() {
         List<Level> levels = config.getEvents().getLevels();
-        for (int i=0;i<levels.size();i++) {
+        for (int i = 0; i < levels.size(); i++) {
             if (i == 0 && level < levels.get(i).getValue()) break;
-            else if (i == levels.size()-1) return levels.get(i);
-            else if (level >= levels.get(i).getValue() && level < levels.get(i+1).getValue()) return levels.get(i);
+            else if (i == levels.size() - 1) return levels.get(i);
+            else if (level >= levels.get(i).getValue() && level < levels.get(i + 1).getValue()) return levels.get(i);
         }
         return null;
     }
@@ -118,17 +119,17 @@ public class User {
                     level++;
 
                     // Check levels
-                    for(Level l : getLevels()) {
-                        if(l.getValue() == level) {
+                    for (Level l : getLevels()) {
+                        if (l.getValue() == level) {
                             AntiCheat.getManager().getUserManager().alert(this, l, type);
-                            if(l.getValue() == config.getEvents().getHighestLevel()) {
+                            if (l.getValue() == config.getEvents().getHighestLevel()) {
                                 level = l.getValue() - 10;
                             }
                         }
                     }
 
                     // Execute rules
-                    for(Rule rule : config.getRules().getRules()) {
+                    for (Rule rule : config.getRules().getRules()) {
                         rule.check(this, type);
                     }
                     return true;
@@ -149,6 +150,7 @@ public class User {
 
     /**
      * Set the users level to a specific value. Must be 0 < level < config-defined highest level
+     *
      * @param level level to set
      * @return true if the level was valid and set properly
      */
@@ -213,8 +215,8 @@ public class User {
      */
     public void setInventorySnapshot(ItemStack[] is) {
         inventorySnapshot = new ArrayList<ItemStack>();
-        for(int i=0;i<is.length;i++) {
-            if(is[i] != null) {
+        for (int i = 0; i < is.length; i++) {
+            if (is[i] != null) {
                 inventorySnapshot.add(is[i].clone());
             }
         }
@@ -229,13 +231,14 @@ public class User {
 
     /**
      * Restore the player's inventory with the current inventory snapshot
+     *
      * @param inventory Player's inventory
      */
     public void restoreInventory(Inventory inventory) {
-        if(inventorySnapshot != null) {
+        if (inventorySnapshot != null) {
             inventory.clear();
-            for(ItemStack is : inventorySnapshot) {
-                if(is != null) {
+            for (ItemStack is : inventorySnapshot) {
+                if (is != null) {
                     inventory.addItem(is);
                 }
             }
@@ -244,25 +247,27 @@ public class User {
 
     /**
      * Set the player's to location
+     *
      * @param x X value
      * @param y Y value
      * @param z Z value
      */
     public void setTo(double x, double y, double z) {
-        toX = (int)x;
-        toY = (int)y;
-        toZ = (int)z;
+        toX = (int) x;
+        toY = (int) y;
+        toZ = (int) z;
     }
 
     /**
      * Check if a given to value is the same as the stored value
+     *
      * @param x X value
      * @param y Y value
      * @param z Z value
      * @return true if coordinates are all equal
      */
     public boolean checkTo(double x, double y, double z) {
-        return (int)x == toX && (int)y == toY && (int)z == toZ;
+        return (int) x == toX && (int) y == toY && (int) z == toZ;
     }
 
     /**

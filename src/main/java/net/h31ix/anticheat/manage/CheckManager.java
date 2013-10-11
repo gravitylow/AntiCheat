@@ -18,18 +18,18 @@
 
 package net.h31ix.anticheat.manage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.h31ix.anticheat.AntiCheat;
 import net.h31ix.anticheat.config.Configuration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
- * <p>
+ * <p/>
  * The manager that AntiCheat will check with to see if it should watch certain checks and certain players.
  */
 
@@ -85,7 +85,7 @@ public class CheckManager {
      * Exempt a player from a check
      *
      * @param player The player
-     * @param type The check
+     * @param type   The check
      */
     public void exemptPlayer(Player player, CheckType type) {
         if (!isExempt(player, type)) {
@@ -102,7 +102,7 @@ public class CheckManager {
      * Unexempt a player from a check
      *
      * @param player The player
-     * @param type The check
+     * @param type   The check
      */
     public void unexemptPlayer(Player player, CheckType type) {
         if (isExempt(player, type)) {
@@ -115,7 +115,7 @@ public class CheckManager {
      * Determine whether a player is exempt from a check
      *
      * @param player The player
-     * @param type The check
+     * @param type   The check
      */
     public boolean isExempt(Player player, CheckType type) {
         return exemptList.containsKey(player.getName()) ? exemptList.get(player.getName()).contains(type) : false;
@@ -144,29 +144,29 @@ public class CheckManager {
      * Run a quick version of the "willCheck" method, using the other non-check-specific methods beforehand
      *
      * @param player The player to check
-     * @param type The check being run
+     * @param type   The check being run
      * @return true if the check should run
      */
     public boolean willCheckQuick(Player player, CheckType type) {
         return
-            isActive(type)
-            && !isExempt(player, type)
-            && !type.checkPermission(player);
+                isActive(type)
+                        && !isExempt(player, type)
+                        && !type.checkPermission(player);
     }
 
     /**
      * Determine whether a check should run on a player
      *
      * @param player The player to check
-     * @param type The check being run
+     * @param type   The check being run
      * @return true if the check should run
      */
     public boolean willCheck(Player player, CheckType type) {
         boolean check = isActive(type)
-            && checkInWorld(player)
-            && !isExempt(player, type)
-            && !type.checkPermission(player)
-            && !isOpExempt(player);
+                && checkInWorld(player)
+                && !isExempt(player, type)
+                && !type.checkPermission(player)
+                && !isOpExempt(player);
         AntiCheat.debugLog("Check " + type + (check ? " run " : " not run ") + "on " + player.getName());
         return check;
     }

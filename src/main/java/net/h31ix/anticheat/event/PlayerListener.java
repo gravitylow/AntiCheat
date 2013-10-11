@@ -81,11 +81,13 @@ public class PlayerListener extends EventListener {
         if (event.getEntity().getShooter() instanceof Player) {
             Player player = (Player) event.getEntity().getShooter();
 
-            if (event.getEntity() instanceof Arrow) { return; }
+            if (event.getEntity() instanceof Arrow) {
+                return;
+            }
 
             if (getCheckManager().willCheck(player, CheckType.FAST_PROJECTILE)) {
                 CheckResult result = getBackend().checkProjectile(player);
-                if(result.failed()) {
+                if (result.failed()) {
                     event.setCancelled(!silentMode());
                     log(result.getMessage(), player, CheckType.FAST_PROJECTILE);
                 }
@@ -123,8 +125,7 @@ public class PlayerListener extends EventListener {
     @EventHandler
     public void onPlayerVelocity(PlayerVelocityEvent event) {
         Player player = event.getPlayer();
-        if (getCheckManager().willCheck(player, CheckType.FLY))
-        {
+        if (getCheckManager().willCheck(player, CheckType.FLY)) {
             if (getBackend().justVelocity(player) && getBackend().extendVelocityTime(player)) {
                 event.setCancelled(!silentMode());
                 return; // don't log it lol.
@@ -143,7 +144,7 @@ public class PlayerListener extends EventListener {
             CheckResult result = getBackend().checkSpam(player, event.getMessage());
             if (result.failed()) {
                 event.setCancelled(!silentMode());
-                if(!result.getMessage().equals("")) {
+                if (!result.getMessage().equals("")) {
                     player.sendMessage(ChatColor.RED + result.getMessage());
                 }
                 getBackend().processChatSpammer(player);
@@ -176,7 +177,7 @@ public class PlayerListener extends EventListener {
     @EventHandler
     public void onPlayerToggleSprint(PlayerToggleSprintEvent event) {
         Player player = event.getPlayer();
-        if(!event.isSprinting()) {
+        if (!event.isSprinting()) {
             getBackend().logEnterExit(player);
         }
         if (getCheckManager().willCheck(player, CheckType.SPRINT)) {
@@ -219,7 +220,7 @@ public class PlayerListener extends EventListener {
         Player player = event.getPlayer();
         if (getCheckManager().willCheck(player, CheckType.ITEM_SPAM)) {
             CheckResult result = getBackend().checkFastDrop(player);
-            if(result.failed()) {
+            if (result.failed()) {
                 event.setCancelled(!silentMode());
                 log(result.getMessage(), player, CheckType.ITEM_SPAM);
             }
@@ -285,7 +286,7 @@ public class PlayerListener extends EventListener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
         final Player player = event.getPlayer();
-        if(getCheckManager().checkInWorld(player) && !getCheckManager().isOpExempt(player)) {
+        if (getCheckManager().checkInWorld(player) && !getCheckManager().isOpExempt(player)) {
             final Location from = event.getFrom();
             final Location to = event.getTo();
 
@@ -298,9 +299,9 @@ public class PlayerListener extends EventListener {
 
             if (getCheckManager().willCheckQuick(player, CheckType.SPEED)) {
                 CheckResult result = getBackend().checkFreeze(player, from.getY(), to.getY());
-                if(result.failed()) {
+                if (result.failed()) {
                     log(result.getMessage(), player, CheckType.SPEED);
-                    if(!silentMode()) {
+                    if (!silentMode()) {
                         player.kickPlayer("Freezing client");
                     }
                 }
@@ -314,7 +315,7 @@ public class PlayerListener extends EventListener {
             }
             if (getCheckManager().willCheckQuick(player, CheckType.FLY) && !player.isFlying()) {
                 CheckResult result = getBackend().checkFlight(player, distance);
-                if(result.failed()) {
+                if (result.failed()) {
                     if (!silentMode()) {
                         event.setTo(user.getGoodLocation(from.clone()));
                     }
@@ -339,7 +340,7 @@ public class PlayerListener extends EventListener {
             }
             if (getCheckManager().willCheckQuick(player, CheckType.NOFALL) && getCheckManager().willCheck(player, CheckType.FLY) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && event.getFrom().getY() > event.getTo().getY()) {
                 CheckResult result = getBackend().checkNoFall(player, y);
-                if(result.failed()) {
+                if (result.failed()) {
                     if (!silentMode()) {
                         event.setTo(user.getGoodLocation(from.clone()));
                         player.damage(1); // I added this in here so the player would still receive damage.
@@ -355,7 +356,7 @@ public class PlayerListener extends EventListener {
                 if (getCheckManager().willCheckQuick(player, CheckType.SPEED) && getCheckManager().willCheck(player, CheckType.FLY)) {
                     if (event.getFrom().getY() < event.getTo().getY()) {
                         CheckResult result = getBackend().checkYSpeed(player, y);
-                        if(result.failed()) {
+                        if (result.failed()) {
                             if (!silentMode()) {
                                 event.setTo(user.getGoodLocation(from.clone()));
                             }
@@ -385,7 +386,7 @@ public class PlayerListener extends EventListener {
                 }
                 if (getCheckManager().willCheckQuick(player, CheckType.WATER_WALK)) {
                     CheckResult result = getBackend().checkWaterWalk(player, x, y, z);
-                    if(result.failed()) {
+                    if (result.failed()) {
                         if (!silentMode()) {
                             player.teleport(user.getGoodLocation(player.getLocation().add(0, -1, 0)));
                         }
@@ -395,7 +396,7 @@ public class PlayerListener extends EventListener {
                 }
                 if (getCheckManager().willCheckQuick(player, CheckType.SNEAK)) {
                     CheckResult result = getBackend().checkSneak(player, x, z);
-                    if(result.failed()) {
+                    if (result.failed()) {
                         if (!silentMode()) {
                             event.setTo(user.getGoodLocation(from.clone()));
                             player.setSneaking(false);
@@ -406,7 +407,7 @@ public class PlayerListener extends EventListener {
                 }
                 if (getCheckManager().willCheckQuick(player, CheckType.SPIDER)) {
                     CheckResult result = getBackend().checkSpider(player, y);
-                    if(result.failed()) {
+                    if (result.failed()) {
                         if (!silentMode()) {
                             event.setTo(user.getGoodLocation(from.clone()));
                         }
@@ -430,7 +431,7 @@ public class PlayerListener extends EventListener {
         final Location from = event.getFrom();
         final Location to = event.getTo();
 
-        if(!user.checkTo(to.getX(), to.getY(), to.getZ())) {
+        if (!user.checkTo(to.getX(), to.getY(), to.getZ())) {
             // The to value has been modified by another plugin
             return;
         }
@@ -439,7 +440,7 @@ public class PlayerListener extends EventListener {
             CheckResult result1 = getBackend().checkYAxis(player, new Distance(from, to));
             CheckResult result2 = getBackend().checkAscension(player, from.getY(), to.getY());
             String log = result1.failed() ? result1.getMessage() : result2.failed() ? result2.getMessage() : "";
-            if(!log.equals("")) {
+            if (!log.equals("")) {
                 if (!silentMode()) {
                     event.setTo(user.getGoodLocation(from.clone()));
                 }

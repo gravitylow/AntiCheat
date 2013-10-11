@@ -18,9 +18,6 @@
 
 package net.h31ix.anticheat;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.User;
@@ -35,6 +32,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandHandler implements CommandExecutor {
     private static final Configuration CONFIG = AntiCheat.getManager().getConfiguration();
@@ -53,7 +53,7 @@ public class CommandHandler implements CommandExecutor {
     private static final int HIGH_THRESHOLD = 50;
     private static final String PERMISSIONS_ERROR = RED + "Insufficient Permissions.";
     private static final String MENU_END = "-----------------------------------------------------";
-    
+
     public void handleLog(CommandSender cs, String[] args) {
         if (hasPermission(cs, Permission.SYSTEM_LOG)) {
             if (args[1].equalsIgnoreCase("enable")) {
@@ -77,7 +77,7 @@ public class CommandHandler implements CommandExecutor {
             }
         }
     }
-    
+
     public void handleDebug(CommandSender cs) {
         if (hasPermission(cs, Permission.SYSTEM_DEBUG)) {
             cs.sendMessage(GRAY + "Please wait while I collect some data...");
@@ -86,7 +86,7 @@ public class CommandHandler implements CommandExecutor {
             cs.sendMessage(GREEN + "Please include this link when making bug reports.");
         }
     }
-    
+
     public void handleDebug(CommandSender cs, Player tp) {
         if (hasPermission(cs, Permission.SYSTEM_REPORT)) {
             cs.sendMessage(GRAY + "Please wait while I collect some data...");
@@ -95,7 +95,7 @@ public class CommandHandler implements CommandExecutor {
             cs.sendMessage(GREEN + "Please include this link when making bug reports.");
         }
     }
-    
+
     public void handleXRay(CommandSender cs, String[] args) {
         if (hasPermission(cs, Permission.SYSTEM_XRAY)) {
             if (CONFIG.getConfig().logXRayStats.getValue()) {
@@ -121,14 +121,14 @@ public class CommandHandler implements CommandExecutor {
             }
         }
     }
-    
+
     public void handleReset(CommandSender cs, String[] args) {
         if (hasPermission(cs, Permission.SYSTEM_RESET)) {
             List<Player> list = SERVER.matchPlayer(args[1]);
             if (list.size() == 1) {
                 Player player = list.get(0);
                 User user = USER_MANAGER.getUser(player.getName());
-                if(user != null) {
+                if (user != null) {
                     user.resetLevel();
                     XRAY_TRACKER.reset(player.getName());
                     user.clearMessages();
@@ -144,7 +144,7 @@ public class CommandHandler implements CommandExecutor {
             }
         }
     }
-    
+
     public void handleSpy(CommandSender cs, String[] args) {
         if (cs instanceof Player) {
             if (hasPermission(cs, Permission.SYSTEM_SPY)) {
@@ -193,11 +193,11 @@ public class CommandHandler implements CommandExecutor {
             cs.sendMessage(RED + "Sorry, but you can't spy on a player from the console.");
         }
     }
-    
+
     public void handleHelp(CommandSender cs) {
         if (hasPermission(cs, Permission.SYSTEM_HELP)) {
             String base = "/AntiCheat ";
-            String [] lines = {
+            String[] lines = {
                     "log [Enable/Disable]" + WHITE + " - toggle logging",
                     "report [low/medium/high]" + WHITE + " - show users in groups",
                     "report [user]" + WHITE + " - get a player's cheat report",
@@ -211,12 +211,12 @@ public class CommandHandler implements CommandExecutor {
             };
 
             cs.sendMessage("----------------------[" + GREEN + "AntiCheat" + WHITE + "]----------------------");
-            for(String s : lines) {
+            for (String s : lines) {
                 cs.sendMessage(base + GREEN + s);
             }
         }
     }
-    
+
     public void handleUpdate(CommandSender cs) {
         if (hasPermission(cs, Permission.SYSTEM_UPDATE)) {
             cs.sendMessage("Running " + GREEN + "AntiCheat " + WHITE + "v" + GREEN + AntiCheat.getVersion());
@@ -234,7 +234,7 @@ public class CommandHandler implements CommandExecutor {
             }
         }
     }
-    
+
     public void handleCalibrate(CommandSender cs) {
         if (cs instanceof Player) {
             if (hasPermission(cs, Permission.SYSTEM_CALIBRATE)) {
@@ -244,7 +244,7 @@ public class CommandHandler implements CommandExecutor {
             }
         }
     }
-    
+
     public void handleReport(CommandSender cs, String[] args) {
         if (hasPermission(cs, Permission.SYSTEM_REPORT)) {
             getPlayers();
@@ -276,7 +276,7 @@ public class CommandHandler implements CommandExecutor {
             }
         }
     }
-    
+
     public int getReportPageNum(String[] args) {
         if (args.length == 2) {
             return 1;
@@ -286,7 +286,7 @@ public class CommandHandler implements CommandExecutor {
             return -1;
         }
     }
-    
+
     public void sendReport(CommandSender cs, List<String> players, String group, ChatColor color, int page) {
         int pages = (int) Math.ceil(((float) players.size()) / 7);
         if (page <= pages && page > 0) {
@@ -311,7 +311,7 @@ public class CommandHandler implements CommandExecutor {
             }
         }
     }
-    
+
     public void handlePlayerReport(CommandSender cs, String[] args) {
         if (hasPermission(cs, Permission.SYSTEM_REPORT)) {
             User user = AntiCheat.getManager().getUserManager().getUser(args[1]);
@@ -348,7 +348,7 @@ public class CommandHandler implements CommandExecutor {
         AntiCheat.setDeveloperMode(!AntiCheat.developerMode());
         cs.sendMessage(ChatColor.GREEN + "Developer mode " + (AntiCheat.developerMode() ? "ON" : "OFF"));
     }
-    
+
     public void sendPlayerReport(CommandSender cs, List<CheckType> types, User user, int page) {
         String name = user.getName();
         int pages = (int) Math.ceil(((float) types.size()) / 6);
@@ -356,7 +356,7 @@ public class CommandHandler implements CommandExecutor {
         Level level = user.getNamedLevel();
         String levelString = ChatColor.GREEN + "Low";
 
-        if(level != null) {
+        if (level != null) {
             levelString = level.getColor() + level.getName();
         }
         levelString += " (" + user.getLevel() + ")";
@@ -391,20 +391,20 @@ public class CommandHandler implements CommandExecutor {
             }
         }
     }
-    
+
     public void handleReload(CommandSender cs) {
         if (hasPermission(cs, Permission.SYSTEM_RELOAD)) {
             CONFIG.load();
             cs.sendMessage(GREEN + "AntiCheat configuration reloaded.");
         }
     }
-    
+
     @Override
     public boolean onCommand(CommandSender cs, Command cmd, String alias, String[] args) {
         if (args.length == 3) {
             if (args[0].equalsIgnoreCase("report")) {
-                for(Level level : CONFIG.getEvents().getLevels()) {
-                    if(args[1].equalsIgnoreCase(level.getName())) {
+                for (Level level : CONFIG.getEvents().getLevels()) {
+                    if (args[1].equalsIgnoreCase(level.getName())) {
                         handleReport(cs, args);
                         return true;
                     }
@@ -461,7 +461,7 @@ public class CommandHandler implements CommandExecutor {
         }
         return true;
     }
-    
+
     public void getPlayers() {
         high.clear();
         med.clear();
@@ -479,7 +479,7 @@ public class CommandHandler implements CommandExecutor {
     }
 
     public boolean hasPermission(CommandSender cs, Permission perm) {
-        if(perm.get(cs)) {
+        if (perm.get(cs)) {
             return true;
         } else {
             cs.sendMessage(PERMISSIONS_ERROR + " (" + WHITE + perm.toString() + RED + ")");
