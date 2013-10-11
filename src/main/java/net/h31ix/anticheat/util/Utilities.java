@@ -456,6 +456,24 @@ public final class Utilities {
         i.add(string);
         return i;
     }
+
+    /**
+     * Create a comma-delimited string from a list
+     *
+     * @param list the list to parse
+     * @return the list in a string format
+     */
+    public static String listToCommaString(List<String> list) {
+        StringBuilder b = new StringBuilder();
+        for(int i=0;i<list.size();i++) {
+            b.append(list.get(i));
+            if(i < list.size()-1) {
+                b.append(",");
+            }
+        }
+        return b.toString();
+    }
+
     
     static {
         // START INSTANT BREAK MATERIALS

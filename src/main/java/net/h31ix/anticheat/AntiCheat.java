@@ -41,6 +41,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class AntiCheat extends JavaPlugin {
 
     private static AnticheatManager manager;
+    private static AntiCheat plugin;
     private static List<Listener> eventList = new ArrayList<Listener>();
     private static boolean update = false;
     private static Configuration config;
@@ -52,6 +53,7 @@ public class AntiCheat extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        plugin = this;
         manager = new AnticheatManager(this, getLogger());
         eventList.add(new PlayerListener());
         eventList.add(new BlockListener());
@@ -85,11 +87,8 @@ public class AntiCheat extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (!config.shouldSyncUsers()) {
-            for (User user : manager.getUserManager().getUsers()) {
-                config.getLevels().saveLevel(user.getName(), user.getLevel());
-            }
-        }
+        verboseLog("Saving user levels...");
+        config.getLevels().saveLevelsFromUsers(getManager().getUserManager().getUsers());
 
         AnticheatManager.close();
         getServer().getScheduler().cancelTasks(this);
@@ -159,9 +158,6 @@ public class AntiCheat extends JavaPlugin {
 
     private void setupEnterprise() {
         if(config.getConfig().enterprise.getValue()) {
-            config.getEnterprise().database.connect();
-            verboseLog("Connected to the database.");
-
             if(config.getEnterprise().loggingEnabled.getValue()) {
                 config.getEnterprise().database.cleanEvents();
             }
@@ -171,20 +167,18 @@ public class AntiCheat extends JavaPlugin {
     private void restoreLevels() {
         for (Player player : getServer().getOnlinePlayers()) {
             String name = player.getName();
-            if (!config.shouldSyncUsers()) {
-                manager.getUserManager().addUser(new User(player.getName(), config.getLevels().getLevel(name)));
-            } else {
-                User user = new User(player.getName());
-                user.setIsWaitingOnLevelSync(true);
-                config.getEnterprise().database.syncFrom(user);
-                manager.getUserManager().addUser(user);
-            }
-            verboseLog("Data for " + player.getName() + " loaded");
+
+            User user = new User(name);
+            user.setIsWaitingOnLevelSync(true);
+            config.getLevels().loadLevelToUser(user);
+
+            manager.getUserManager().addUser(user);
+            verboseLog("Data for " + name + " loaded");
         }
     }
 
     public static AntiCheat getPlugin() {
-        return manager.getPlugin();
+        return plugin;
     }
 
     public static AnticheatManager getManager() {
@@ -228,6 +222,8 @@ public class AntiCheat extends JavaPlugin {
     }
 
     public void verboseLog(final String string) {
-        getLogger().info(string);
+        if (verbose) {
+            getLogger().info(string);
+        }
     }
 }

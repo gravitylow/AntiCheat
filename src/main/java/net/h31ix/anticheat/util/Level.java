@@ -19,6 +19,7 @@
 package net.h31ix.anticheat.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.h31ix.anticheat.AntiCheat;
@@ -29,34 +30,21 @@ public class Level {
     private String name;
     private int value;
     private ChatColor color = ChatColor.RED;
-    private boolean customColor = false;
     private List<String> actions = new ArrayList<String>();
 
-    public Level(String name, int value) {
+    public Level(String name, int value, String color, List<String> actions) {
+
         this.name = name;
         this.value = value;
-    }
+        this.actions = actions;
 
-    public Level(String name, int value, ChatColor color) {
-        this(name, value);
-        this.color = color;
-        customColor = true;
-    }
-
-    public Level(String name, int value, String color) {
-        this(name, value);
         ChatColor c = ChatColor.valueOf(color);
         if(c == null) {
             AntiCheat.getPlugin().getLogger().warning("Event '"+name+"' was initialized with the color '"+color+"' which is invalid.");
             AntiCheat.getPlugin().getLogger().warning("This event will not run properly. See http://jd.bukkit.org/apidocs/org/bukkit/ChatColor.html#enum_constant_summary for a list of valid colors");
         } else {
             this.color = c;
-            customColor = true;
         }
-    }
-
-    public void addAction(String string) {
-        actions.add(string);
     }
 
     public void setValue(int value) {
@@ -81,18 +69,19 @@ public class Level {
 
     public static Level load(String string) {
         try {
-            string = Utilities.removeWhitespace(string);
-            String name = string.split(":")[0];
-            int level = Integer.parseInt(string.split(":")[1]);
-            if(string.split(":").length == 3) {
+            if(string.split(":").length == 4) {
+                string = Utilities.removeWhitespace(string);
+                String name = string.split(":")[0];
+                int level = Integer.parseInt(string.split(":")[1]);
                 String color = string.split(":")[2];
-                return new Level(name, level, color);
+                List<String> actions = Arrays.asList(string.split(":")[3].split(","));
+                return new Level(name, level, color, actions);
             } else {
-                return new Level(name, level);
+                throw new Exception();
             }
         } catch (Exception ex) {
             AntiCheat.getPlugin().getLogger().warning("An event was initialized with an invalid string: '"+string+"'");
-            AntiCheat.getPlugin().getLogger().warning("The proper format is: 'name: threshold : color' such as 'High : 50 : RED'");
+            AntiCheat.getPlugin().getLogger().warning("The proper format is: 'name : threshold : color : action' such as 'High : 50 : RED : KICK'");
             AntiCheat.getPlugin().getLogger().warning("This event will NOT run. ("+ex.getMessage()+")");
             return null;
         }
@@ -100,6 +89,6 @@ public class Level {
 
     @Override
     public String toString() {
-        return name + " : " + value + (customColor ? " : "+color.name() : "");
+        return name + " : " + value + " : "+ color.name() + " : " + Utilities.listToCommaString(actions);
     }
 }

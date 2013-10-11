@@ -317,7 +317,7 @@ public class CommandHandler implements CommandExecutor {
             User user = AntiCheat.getManager().getUserManager().getUser(args[1]);
             boolean cont = false;
             if (user == null) {
-                if ((user = AntiCheat.getManager().getUserManager().loadUserFromFile(args[1])) == null) {
+                if ((user = AntiCheat.getManager().getUserManager().getUser(args[1])) == null) {
                     cs.sendMessage(RED + "Player: " + WHITE + args[1] + RED + " not found.");
                 } else {
                     cont = true;
@@ -353,7 +353,7 @@ public class CommandHandler implements CommandExecutor {
         String name = user.getName();
         int pages = (int) Math.ceil(((float) types.size()) / 6);
 
-        Level level = CONFIG.getEvents().getUserLevel(user.getLevel());
+        Level level = user.getNamedLevel();
         String levelString = ChatColor.GREEN + "Low";
 
         if(level != null) {
@@ -403,7 +403,7 @@ public class CommandHandler implements CommandExecutor {
     public boolean onCommand(CommandSender cs, Command cmd, String alias, String[] args) {
         if (args.length == 3) {
             if (args[0].equalsIgnoreCase("report")) {
-                for(Level level : CONFIG.getEvents().levels) {
+                for(Level level : CONFIG.getEvents().getLevels()) {
                     if(args[1].equalsIgnoreCase(level.getName())) {
                         handleReport(cs, args);
                         return true;

@@ -59,7 +59,10 @@ public class UserManager {
             }
         }
         // Otherwise try to load them
-        return loadUserFromFile(name);
+        User user = new User(name);
+        user.setIsWaitingOnLevelSync(true);
+        config.getLevels().loadLevelToUser(user);
+        return user;
     }
 
     /**
@@ -86,8 +89,16 @@ public class UserManager {
      * @param user User to remove
      */
     public void remove(User user) {
-        config.getLevels().saveLevel(user.getName(), user.getLevel());
         users.remove(user);
+    }
+
+    /**
+     * Save a user's level
+     *
+     * @param user User to save
+     */
+    public void saveLevel(User user) {
+        config.getLevels().saveLevelFromUser(user);
     }
 
     /**
@@ -126,37 +137,6 @@ public class UserManager {
         User user = getUser(name);
         if (user != null) {
             user.resetLevel();
-        }
-    }
-
-    /**
-     * Load a user into the list from flatfile
-     *
-     * @param name Name of the user
-     * @return true if found in the file
-     */
-    public boolean addUserFromFile(String name) {
-        User user = loadUserFromFile(name);
-        if (user != null) {
-            users.add(user);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Get a user from flatfile
-     *
-     * @param name Name of the user
-     * @return the user if found, null otherwise
-     */
-    public User loadUserFromFile(String name) {
-        int level = config.getLevels().getLevel(name);
-        if (level == -1) {
-            return null;
-        } else {
-            return new User(name, level);
         }
     }
 

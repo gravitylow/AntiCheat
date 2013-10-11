@@ -114,10 +114,7 @@ public class Backend {
 
     public void garbageClean(Player player) {
         String pN = player.getName();
-        User user = manager.getUserManager().getUser(pN);
-        if (user != null) {
-            manager.getUserManager().remove(user);
-        }
+
         blocksDropped.remove(pN);
         blockTime.remove(pN);
         movingExempt.remove(pN);

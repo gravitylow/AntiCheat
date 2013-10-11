@@ -138,8 +138,7 @@ public class PlayerListener extends EventListener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        log("asdf", player, CheckType.SPRINT);
-        getUserManager().getUser(player.getName()).increaseLevel(CheckType.SPRINT);
+
         if (getCheckManager().willCheck(player, CheckType.SPAM) && getConfig().getConfig().blockChatSpam.getValue()) {
             CheckResult result = getBackend().checkSpam(player, event.getMessage());
             if (result.failed()) {
@@ -167,10 +166,11 @@ public class PlayerListener extends EventListener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         getBackend().garbageClean(event.getPlayer());
 
+        User user = getUserManager().getUser(event.getPlayer().getName());
+
+        getConfig().getLevels().saveLevelFromUser(user);
+
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
-        if (getConfig().shouldSyncUsers()) {
-            getConfig().getEnterprise().database.syncTo(getUserManager().getUser(event.getPlayer().getName()));
-        }
     }
 
     @EventHandler
@@ -266,18 +266,11 @@ public class PlayerListener extends EventListener {
 
         getBackend().logJoin(player);
 
-        if (!getConfig().shouldSyncUsers()) {
-            if (getUserManager().getUser(player.getName()) == null) {
-                getUserManager().addUser(new User(player.getName()));
-            } else {
-                getUserManager().addUserFromFile(player.getName());
-            }
-        } else {
-            User user = new User(player.getName());
-            user.setIsWaitingOnLevelSync(true);
-            getConfig().getEnterprise().database.syncFrom(user);
-            getUserManager().addUser(user);
-        }
+        User user = new User(player.getName());
+        user.setIsWaitingOnLevelSync(true);
+        getConfig().getLevels().loadLevelToUser(user);
+        getUserManager().addUser(user);
+
         if (player.hasMetadata(Utilities.SPY_METADATA)) {
             for (Player p : player.getServer().getOnlinePlayers()) {
                 if (!Permission.SYSTEM_SPY.get(p)) {

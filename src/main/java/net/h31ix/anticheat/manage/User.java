@@ -29,6 +29,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 public class User {
@@ -43,6 +44,7 @@ public class User {
     private Long [] messageTimes = new Long[2];
 
     private boolean isWaitingOnLevelSync;
+    private Timestamp levelSyncTimestamp;
 
     /**
      * Initialize an AntiCheat user
@@ -50,19 +52,7 @@ public class User {
      * @param name Player's name
      */
     public User(String name) {
-        this(name, 0);
-    }
-
-    /**
-     * Initialize an AntiCheat user with a predefined level
-     *
-     * @param name Player's name
-     * @param level Player's level
-     */
-    public User(String name, int level) {
         this.name = name;
-        this.level = level;
-
         this.id = getPlayer().isOnline() ? getPlayer().getEntityId() : -1;
     }
 
@@ -102,6 +92,16 @@ public class User {
         return level;
     }
 
+    public Level getNamedLevel() {
+        List<Level> levels = config.getEvents().getLevels();
+        for (int i=0;i<levels.size();i++) {
+            if (i == 0 && level < levels.get(i).getValue()) break;
+            else if (i == levels.size()-1) return levels.get(i);
+            else if (level >= levels.get(i).getValue() && level < levels.get(i+1).getValue()) return levels.get(i);
+        }
+        return null;
+    }
+
     /**
      * Increase the player's level (from failing a check)
      *
@@ -114,21 +114,21 @@ public class User {
                 // Prevent silent mode from increasing the level way too fast
                 return false;
             } else {
-                if (level < config.getEvents().highestLevel) {
+                if (level < config.getEvents().getHighestLevel()) {
                     level++;
 
                     // Check levels
                     for(Level l : getLevels()) {
                         if(l.getValue() == level) {
                             AntiCheat.getManager().getUserManager().alert(this, l, type);
-                            if(l.getValue() == config.getEvents().highestLevel) {
+                            if(l.getValue() == config.getEvents().getHighestLevel()) {
                                 level = l.getValue() - 10;
                             }
                         }
                     }
 
                     // Execute rules
-                    for(Rule rule : config.getEvents().rules) {
+                    for(Rule rule : config.getRules().getRules()) {
                         rule.check(this, type);
                     }
                     return true;
@@ -155,11 +155,11 @@ public class User {
     public boolean setLevel(int level) {
         isWaitingOnLevelSync = false;
         if (level >= 0) {
-            if (level <= config.getEvents().highestLevel) {
+            if (level <= config.getEvents().getHighestLevel()) {
                 this.level = level;
                 return true;
             } else {
-                this.level = config.getEvents().highestLevel;
+                this.level = config.getEvents().getHighestLevel();
                 return false;
             }
         } else {
@@ -316,7 +316,7 @@ public class User {
     }
 
     private List<Level> getLevels() {
-        return config.getEvents().levels;
+        return config.getEvents().getLevels();
     }
 
     private boolean silentMode() {
@@ -329,5 +329,13 @@ public class User {
 
     public boolean isWaitingOnLevelSync() {
         return isWaitingOnLevelSync;
+    }
+
+    public void setLevelSyncTimestamp(Timestamp timestamp) {
+        levelSyncTimestamp = timestamp;
+    }
+
+    public Timestamp getLevelSyncTimestamp() {
+        return levelSyncTimestamp;
     }
 }

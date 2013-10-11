@@ -28,16 +28,11 @@ import java.sql.*;
 
 public class Database {
 
-    private static final String EVENTS_TABLE = "events";
-    private static final String USERS_TABLE = "users";
+    private static final String EVENTS_TABLE = "logs";
 
     private String sqlLogEvent;
-    private String sqlSyncTo;
-    private String sqlSyncFrom;
     private String sqlCleanEvents;
-
     private String sqlCreateEvents;
-    private String sqlCreateUsers;
 
     public enum DatabaseType {
         MySQL,
@@ -76,17 +71,12 @@ public class Database {
 
         this.eventLife = eventLife;
 
-        sqlLogEvent = "INSERT INTO " + prefix + EVENTS_TABLE + " (server, user, check_type) VALUES (?, ?, ?)";
-        sqlSyncTo = "INSERT INTO " + prefix + USERS_TABLE + " (user, level, last_update_server) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE level = ?, last_update=CURRENT_TIMESTAMP, last_update_server=?";
-        sqlSyncFrom = "SELECT level FROM " + prefix + USERS_TABLE + " WHERE user = ?";
-        sqlCleanEvents = "DELETE FROM " + prefix + EVENTS_TABLE + " WHERE time < (CURRENT_TIMESTAMP - INTERVAL ? DAY)";
+        sqlLogEvent = "INSERT INTO " + prefix + EVENTS_TABLE +
+                " (server, user, check_type) " +
+                "VALUES (?, ?, ?)";
 
-        sqlCreateUsers = "CREATE TABLE IF NOT EXISTS " + prefix + USERS_TABLE + "(" +
-                "  `user` VARCHAR(45) NOT NULL," +
-                "  `level` INT NOT NULL," +
-                "  `last_update` TIMESTAMP NOT NULL DEFAULT NOW()," +
-                "  `last_update_server` VARCHAR(45) NOT NULL," +
-                "  PRIMARY KEY (`user`));";
+        sqlCleanEvents = "DELETE FROM " + prefix + EVENTS_TABLE + " " +
+                "WHERE time < (CURRENT_TIMESTAMP - INTERVAL ? DAY)";
 
         sqlCreateEvents = "CREATE TABLE IF NOT EXISTS " + prefix + EVENTS_TABLE + "(" +
                 "  `id` INT NOT NULL AUTO_INCREMENT," +
@@ -132,6 +122,8 @@ public class Database {
             connection = DriverManager.getConnection(url, username, password);
             eventBatch = connection.prepareStatement(sqlLogEvent);
 
+            connection.prepareStatement(sqlCreateEvents).executeUpdate();
+
             connection.setAutoCommit(false);
 
             eventTask = Bukkit.getScheduler().runTaskTimerAsynchronously(AntiCheat.getPlugin(), new Runnable(){
@@ -141,12 +133,6 @@ public class Database {
                 }
             }, eventInterval* 60 * 20, eventInterval * 60 * 20);
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            connection.prepareStatement(sqlCreateUsers).executeUpdate();
-            connection.prepareStatement(sqlCreateEvents).executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -179,44 +165,6 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    public void syncTo(User user) {
-        if (!user.isWaitingOnLevelSync()) {
-            AntiCheat.debugLog("Syncing to "+user.getName()+" value "+user.getLevel());
-            try {
-                PreparedStatement statement = connection.prepareStatement(sqlSyncTo);
-                statement.setString(1, user.getName());
-                statement.setInt(2, user.getLevel());
-                statement.setString(3, serverName);
-                statement.setInt(4, user.getLevel());
-                statement.setString(5, serverName);
-
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void syncFrom(final User user) {
-        Bukkit.getScheduler().runTaskAsynchronously(AntiCheat.getPlugin(), new Runnable(){
-            @Override
-            public void run() {
-                try {
-                    PreparedStatement statement = connection.prepareStatement(sqlSyncFrom);
-                    statement.setString(1, user.getName());
-
-                    ResultSet set = statement.executeQuery();
-                    while (set.next()) {
-                        AntiCheat.debugLog("Syncing from "+user.getName()+" value "+set.getInt("level"));
-                        user.setLevel(set.getInt("level"));
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     public void flushEvents() {

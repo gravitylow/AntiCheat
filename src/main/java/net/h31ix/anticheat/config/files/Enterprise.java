@@ -21,8 +21,6 @@ package net.h31ix.anticheat.config.files;
 import net.h31ix.anticheat.AntiCheat;
 import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.config.ConfigurationFile;
-import net.h31ix.anticheat.manage.CheckType;
-import net.h31ix.anticheat.manage.User;
 import net.h31ix.anticheat.util.enterprise.Database;
 
 public class Enterprise extends ConfigurationFile {
@@ -35,7 +33,10 @@ public class Enterprise extends ConfigurationFile {
     public ConfigValue<Integer> loggingLife;
     public ConfigValue<Integer> loggingInterval;
 
-    public ConfigValue<Boolean> usersEnabled;
+    public ConfigValue<Boolean> syncUsers;
+
+    public ConfigValue<Boolean> configEvents;
+    public ConfigValue<Boolean> configRules;
 
     public Database database;
 
@@ -51,7 +52,10 @@ public class Enterprise extends ConfigurationFile {
         loggingLife = new ConfigValue<Integer>("logging.life");
         loggingInterval = new ConfigValue<Integer>("logging.interval");
 
-        usersEnabled = new ConfigValue<Boolean>("users.enable");
+        syncUsers = new ConfigValue<Boolean>("sync.users");
+
+        configEvents = new ConfigValue<Boolean>("config.events");
+        configRules = new ConfigValue<Boolean>("config.rules");
 
         ConfigValue<String> databaseType = new ConfigValue<String>("database.type");
         ConfigValue<String> databaseHostname = new ConfigValue<String>("database.hostname");
@@ -74,5 +78,7 @@ public class Enterprise extends ConfigurationFile {
             loggingInterval.getValue(),
             loggingLife.getValue()
         );
+
+        database.connect();
     }
 }

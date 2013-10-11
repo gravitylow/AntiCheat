@@ -53,7 +53,7 @@ public class EventListener implements Listener {
         // Ignore plugins that are creating NPCs with no names (why the hell)
         if (user != null && user.getName() != null) {
             type.logUse(user);
-            if (CONFIG.shouldSyncEvents()) {
+            if (CONFIG.getConfig().enterprise.getValue() && CONFIG.getEnterprise().loggingEnabled.getValue()) {
                 CONFIG.getEnterprise().database.logEvent(user, type);
             }
             if (CONFIG.getConfig().fileLogLevel.getValue() == 2 && type.getUses(user.getName()) % 10 == 0) {
