@@ -65,20 +65,22 @@ public class Enterprise extends ConfigurationFile {
         ConfigValue<String> databaseSchema = new ConfigValue<String>("database.database");
         ConfigValue<Integer> databasePort = new ConfigValue<Integer>("database.port");
 
-        // Convert database values to Database
-        database = new Database(
-                Database.DatabaseType.valueOf(databaseType.getValue()),
-                databaseHostname.getValue(),
-                databasePort.getValue(),
-                databaseUsername.getValue(),
-                databasePassword.getValue(),
-                databasePrefix.getValue(),
-                databaseSchema.getValue(),
-                serverName.getValue(),
-                loggingInterval.getValue(),
-                loggingLife.getValue()
-        );
+        if (getConfiguration().getConfig().enterprise.getValue()) {
+            // Convert database values to Database
+            database = new Database(
+                    Database.DatabaseType.valueOf(databaseType.getValue()),
+                    databaseHostname.getValue(),
+                    databasePort.getValue(),
+                    databaseUsername.getValue(),
+                    databasePassword.getValue(),
+                    databasePrefix.getValue(),
+                    databaseSchema.getValue(),
+                    serverName.getValue(),
+                    loggingInterval.getValue(),
+                    loggingLife.getValue()
+            );
 
-        database.connect();
+            database.connect();
+        }
     }
 }
