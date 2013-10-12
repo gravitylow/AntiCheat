@@ -23,11 +23,9 @@ import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.config.ConfigurationFile;
 import net.h31ix.anticheat.config.providers.Events;
 import net.h31ix.anticheat.util.Level;
+import net.h31ix.anticheat.util.Utilities;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class YamlEventsHolder extends ConfigurationFile implements Events {
 
@@ -54,6 +52,13 @@ public class YamlEventsHolder extends ConfigurationFile implements Events {
     @Override
     public void open() {
         ConfigValue<List<String>> levels = new ConfigValue<List<String>>("events");
+
+        // Clean up old values
+        if(levels.didLoadDefault()) {
+            new ConfigValue<List<String>>("levels").setValue(null);
+            new ConfigValue<List<String>>("actions").setValue(null);
+            save();
+        }
 
         // Convert levels list to Levels
         this.levels = new ArrayList<Level>();

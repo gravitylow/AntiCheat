@@ -38,6 +38,7 @@ public class ConfigurationFile {
     private AntiCheat plugin;
 
     private boolean saveDefault;
+    private boolean didSaveDefault;
 
     protected boolean needsReload;
 
@@ -68,6 +69,7 @@ public class ConfigurationFile {
         if (!rawFile.exists()) {
             if (saveDefault) {
                 plugin.saveResource(fileName, true);
+                didSaveDefault = true;
             } else {
                 if (!rawFile.getParentFile().exists()) {
                     rawFile.getParentFile().mkdir();
@@ -137,6 +139,8 @@ public class ConfigurationFile {
 
         private Object value = null;
 
+        private boolean didLoadDefault;
+
         public ConfigValue(String path) {
             this(path, true);
         }
@@ -151,6 +155,7 @@ public class ConfigurationFile {
                 value = getDefaultConfigFile().get(path);
                 getConfigFile().set(path, value);
                 save();
+                didLoadDefault = true;
             }
         }
 
@@ -174,6 +179,10 @@ public class ConfigurationFile {
 
         public boolean hasValue() {
             return value != null;
+        }
+
+        public boolean didLoadDefault() {
+            return didLoadDefault;
         }
     }
 }
