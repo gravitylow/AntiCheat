@@ -47,6 +47,7 @@ public class AntiCheat extends JavaPlugin {
     private static boolean verbose;
     private static boolean developer;
     private static final long XRAY_TIME = 1200;
+    private static final int PROJECT_ID = 38723;
     private static PacketManager packetManager;
     private static boolean protocolLib = false;
 
@@ -143,7 +144,7 @@ public class AntiCheat extends JavaPlugin {
     private void setupUpdater() {
         if (config.getConfig().autoUpdate.getValue()) {
             verboseLog("Checking for a new update...");
-            Updater updater = new Updater(this, "anticheat", this.getFile(), Updater.UpdateType.DEFAULT, false);
+            Updater updater = new Updater(this, PROJECT_ID, this.getFile(), Updater.UpdateType.DEFAULT, false);
             update = updater.getResult() != Updater.UpdateResult.NO_UPDATE;
             verboseLog("Update available: " + update);
         }
