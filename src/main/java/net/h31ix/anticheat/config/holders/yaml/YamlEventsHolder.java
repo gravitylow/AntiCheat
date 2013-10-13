@@ -23,7 +23,6 @@ import net.h31ix.anticheat.config.Configuration;
 import net.h31ix.anticheat.config.ConfigurationFile;
 import net.h31ix.anticheat.config.providers.Events;
 import net.h31ix.anticheat.util.Level;
-import net.h31ix.anticheat.util.Utilities;
 
 import java.util.*;
 

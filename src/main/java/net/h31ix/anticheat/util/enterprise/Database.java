@@ -182,21 +182,23 @@ public class Database {
     }
 
     public void cleanEvents() {
-        Bukkit.getScheduler().runTaskAsynchronously(AntiCheat.getPlugin(), new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    PreparedStatement statement = connection.prepareStatement(sqlCleanEvents);
-                    statement.setInt(1, eventLife);
+        if (eventLife != 0) {
+            Bukkit.getScheduler().runTaskAsynchronously(AntiCheat.getPlugin(), new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        PreparedStatement statement = connection.prepareStatement(sqlCleanEvents);
+                        statement.setInt(1, eventLife);
 
-                    statement.executeUpdate();
+                        statement.executeUpdate();
 
-                    connection.commit();
-                    AntiCheat.getPlugin().verboseLog("Cleaned " + statement.getUpdateCount() + " old events from the database");
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                        connection.commit();
+                        AntiCheat.getPlugin().verboseLog("Cleaned " + statement.getUpdateCount() + " old events from the database");
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }

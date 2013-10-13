@@ -48,9 +48,9 @@ public class Enterprise extends ConfigurationFile {
     public void open() {
         serverName = new ConfigValue<String>("server.name");
 
-        loggingEnabled = new ConfigValue<Boolean>("logging.enable");
-        loggingLife = new ConfigValue<Integer>("logging.life");
-        loggingInterval = new ConfigValue<Integer>("logging.interval");
+        loggingEnabled = new ConfigValue<Boolean>("log.enable");
+        loggingLife = new ConfigValue<Integer>("log.life");
+        loggingInterval = new ConfigValue<Integer>("log.interval");
 
         syncUsers = new ConfigValue<Boolean>("sync.users");
 
