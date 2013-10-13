@@ -842,9 +842,7 @@ public class Backend {
     }
 
     public CheckResult checkFastAnimation(final Player player) {
-        animated.put(player.getName(), System.currentTimeMillis());
-        increment(player, blockPunches, magic.BLOCK_PUNCH_MIN);
-        itemInHand.put(player.getName(), player.getItemInHand().getType());
+        logAnimation(player);
 
         String name = player.getName();
         int clicks = animations.containsKey(name) ? animations.get(name) + 1 : 1;
@@ -859,6 +857,12 @@ public class Backend {
             }
         }
         return PASS;
+    }
+
+    public void logAnimation(final Player player) {
+        animated.put(player.getName(), System.currentTimeMillis());
+        increment(player, blockPunches, magic.BLOCK_PUNCH_MIN);
+        itemInHand.put(player.getName(), player.getItemInHand().getType());
     }
 
     public void clearChatLevel(Player player) {
