@@ -41,14 +41,18 @@ public class YamlLevelsHolder extends ConfigurationFile implements Levels {
 
     @Override
     public void saveLevelFromUser(User user) {
+        saveLevelFromUser(user, true);
+    }
+
+    private void saveLevelFromUser(User user, boolean remove) {
         saveLevel(user.getName(), user.getLevel());
-        AntiCheat.getManager().getUserManager().remove(user);
+        if (remove) AntiCheat.getManager().getUserManager().remove(user);
     }
 
     @Override
     public void saveLevelsFromUsers(List<User> users) {
         for (User user : users) {
-            saveLevelFromUser(user);
+            saveLevelFromUser(user, false);
         }
     }
 
