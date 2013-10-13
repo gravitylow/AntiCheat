@@ -30,8 +30,8 @@ public class Enterprise extends ConfigurationFile {
     public ConfigValue<String> serverName;
 
     public ConfigValue<Boolean> loggingEnabled;
-    public ConfigValue<Integer> loggingLife;
-    public ConfigValue<Integer> loggingInterval;
+    public ConfigValue<String> loggingLife;
+    public ConfigValue<String> loggingInterval;
 
     public ConfigValue<Boolean> syncUsers;
 
@@ -49,8 +49,8 @@ public class Enterprise extends ConfigurationFile {
         serverName = new ConfigValue<String>("server.name");
 
         loggingEnabled = new ConfigValue<Boolean>("log.enable");
-        loggingLife = new ConfigValue<Integer>("log.life");
-        loggingInterval = new ConfigValue<Integer>("log.interval");
+        loggingLife = new ConfigValue<String>("log.life");
+        loggingInterval = new ConfigValue<String>("log.interval");
 
         syncUsers = new ConfigValue<Boolean>("sync.users");
 

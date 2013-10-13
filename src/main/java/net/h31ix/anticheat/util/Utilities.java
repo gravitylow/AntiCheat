@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class Utilities {
     private static final List<Material> INSTANT_BREAK = new ArrayList<Material>();
@@ -473,6 +475,27 @@ public final class Utilities {
             }
         }
         return b.toString();
+    }
+
+    /**
+     * Parse a string in the format of "XdXhXmXs" to seconds
+     * @param string The string to parse
+     * @return seconds
+     */
+    public static long lifeToSeconds(String string) {
+        if (string.equals("0") || string.equals("")) return 0;
+        String[] lifeMatch = new String[]{ "d", "h", "m", "s" };
+        int[] lifeInterval = new int[]{ 86400, 3600, 60, 1 };
+        long seconds = 0L;
+
+        for (int i=0;i<lifeMatch.length;i++) {
+            Matcher matcher = Pattern.compile("([0-9]*)" + lifeMatch[i]).matcher(string);
+            while (matcher.find()) {
+                seconds += Integer.parseInt(matcher.group(1)) * lifeInterval[i];
+            }
+
+        }
+        return seconds;
     }
 
 

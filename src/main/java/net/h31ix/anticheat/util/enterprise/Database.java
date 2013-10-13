@@ -21,6 +21,7 @@ package net.h31ix.anticheat.util.enterprise;
 import net.h31ix.anticheat.AntiCheat;
 import net.h31ix.anticheat.manage.CheckType;
 import net.h31ix.anticheat.manage.User;
+import net.h31ix.anticheat.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -50,9 +51,9 @@ public class Database {
     private String schema;
     private String serverName;
 
-    private int eventInterval;
+    private long logInterval;
 
-    private int eventLife;
+    private long logLife;
 
     private Connection connection;
 
@@ -60,7 +61,7 @@ public class Database {
 
     private BukkitTask eventTask;
 
-    public Database(DatabaseType type, String hostname, int port, String username, String password, String prefix, String schema, String serverName, int eventInterval, int eventLife) {
+    public Database(DatabaseType type, String hostname, int port, String username, String password, String prefix, String schema, String serverName, String logInterval, String logLife) {
         this.type = type;
         this.hostname = hostname;
         this.port = port;
@@ -70,16 +71,16 @@ public class Database {
         this.schema = schema;
         this.serverName = serverName;
 
-        this.eventInterval = eventInterval;
+        this.logInterval = Utilities.lifeToSeconds(logInterval);
 
-        this.eventLife = eventLife;
+        this.logLife = Utilities.lifeToSeconds(logLife);
 
         sqlLogEvent = "INSERT INTO " + prefix + EVENTS_TABLE +
                 " (server, user, check_type) " +
                 "VALUES (?, ?, ?)";
 
         sqlCleanEvents = "DELETE FROM " + prefix + EVENTS_TABLE + " " +
-                "WHERE time < (CURRENT_TIMESTAMP - INTERVAL ? DAY)";
+                "WHERE time < (CURRENT_TIMESTAMP - INTERVAL ? SECOND)";
 
         sqlCreateEvents = "CREATE TABLE IF NOT EXISTS " + prefix + EVENTS_TABLE + "(" +
                 "  `id` INT NOT NULL AUTO_INCREMENT," +
@@ -129,12 +130,14 @@ public class Database {
 
             connection.setAutoCommit(false);
 
-            eventTask = Bukkit.getScheduler().runTaskTimerAsynchronously(AntiCheat.getPlugin(), new Runnable() {
-                @Override
-                public void run() {
-                    flushEvents();
-                }
-            }, eventInterval * 60 * 20, eventInterval * 60 * 20);
+            if (logInterval != 0) {
+                eventTask = Bukkit.getScheduler().runTaskTimerAsynchronously(AntiCheat.getPlugin(), new Runnable() {
+                    @Override
+                    public void run() {
+                        flushEvents();
+                    }
+                }, logInterval * 20, logInterval * 20);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -182,13 +185,13 @@ public class Database {
     }
 
     public void cleanEvents() {
-        if (eventLife != 0) {
+        if (logLife != 0) {
             Bukkit.getScheduler().runTaskAsynchronously(AntiCheat.getPlugin(), new Runnable() {
                 @Override
                 public void run() {
                     try {
                         PreparedStatement statement = connection.prepareStatement(sqlCleanEvents);
-                        statement.setInt(1, eventLife);
+                        statement.setLong(1, logLife);
 
                         statement.executeUpdate();
 

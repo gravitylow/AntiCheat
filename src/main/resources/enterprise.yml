@@ -24,10 +24,10 @@ database:
 log:
   # Upload cheat logs to the database?
   enable: true
-  # Time for logs to stay in the database (in days)
-  life: 2
-  # How often to upload logs to the database (in minutes)
-  interval: 5
+  # Time for logs to stay in the database (you can use any combination of d,h,m,s). Set to '' to disable pruning.
+  life: 2d
+  # How often to upload logs to the database (you can use any combination of d,h,m,s)
+  interval: 5m
 # Syncing settings
 sync:
   # Keep user's levels synced in the database?

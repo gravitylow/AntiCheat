@@ -54,7 +54,7 @@ public class User {
      */
     public User(String name) {
         this.name = name;
-        this.id = getPlayer().isOnline() ? getPlayer().getEntityId() : -1;
+        this.id = getPlayer() != null && getPlayer().isOnline() ? getPlayer().getEntityId() : -1;
     }
 
     /**
