@@ -231,6 +231,7 @@ public class PlayerListener extends EventListener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerEnterBed(PlayerBedEnterEvent event) {
+        if (event.getBed().getType() != Material.BED) return;
         getBackend().logEnterExit(event.getPlayer());
 
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
@@ -238,6 +239,7 @@ public class PlayerListener extends EventListener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerExitBed(PlayerBedLeaveEvent event) {
+        if (event.getBed().getType() != Material.BED) return;
         getBackend().logEnterExit(event.getPlayer());
 
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
@@ -246,7 +248,13 @@ public class PlayerListener extends EventListener {
     @EventHandler
     public void onPlayerAnimation(PlayerAnimationEvent event) {
         Player player = event.getPlayer();
-        getBackend().logAnimation(player);
+        if (getCheckManager().willCheck(player, CheckType.FAST_ANIMATION)) {
+            CheckResult result = getBackend().checkFastAnimation(player);
+            if (result.failed()) {
+                event.setCancelled(!silentMode());
+                log(result.getMessage(), player, CheckType.FAST_ANIMATION);
+            }
+        }
 
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }

@@ -1,8 +1,10 @@
 # AntiCheat configuration file
 # Please report any bugs: http://dev.bukkit.org/server-mods/anticheat/
 # Documentation for these values is available at http://gravitydevelopment.net/docs/anticheat/net/h31ix/anticheat/util/Magic.html
-ANIMATION_MIN: 200
+ANIMATION_CHECK: 5
 ASCENSION_COUNT_MAX: 8
+ANIMATION_TIMEMIN: 400
+ANIMATION_MIN: 200
 BLOCK_BREAK_MIN: 0.1
 BLOCK_MAX_DISTANCE: 5.5
 BLOCK_MAX_DISTANCE_CREATIVE: 6.0

@@ -84,7 +84,7 @@ public class AnticheatManager {
 
     public void log(String message, int i) {
         if (i != 1 && getConfiguration().getConfig().logToConsole.getValue()) {
-            plugin.getLogger().info(ChatColor.RED + message);
+            Bukkit.getConsoleSender().sendMessage("[AntiCheat] " + ChatColor.RED + message);
         }
         if (i == 0 && getConfiguration().getConfig().fileLogLevel.getValue() == LOG_LEVEL_HIGH) // Not an alert, normal log message
         {

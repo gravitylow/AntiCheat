@@ -86,6 +86,8 @@ public class Backend {
     private Map<String, Long> stepTime = new HashMap<String, Long>();
     private HashSet<Byte> transparent = new HashSet<Byte>();
     private Map<String, Long> lastFallPacket = new HashMap<String, Long>();
+    private Map<String, Long> animationTime = new HashMap<String, Long>();
+    private Map<String, Integer> animations = new HashMap<String, Integer>();
 
     private Magic magic;
     private AnticheatManager manager = null;
@@ -839,6 +841,26 @@ public class Backend {
         return PASS;
     }
 
+    public CheckResult checkFastAnimation(final Player player) {
+        animated.put(player.getName(), System.currentTimeMillis());
+        increment(player, blockPunches, magic.BLOCK_PUNCH_MIN);
+        itemInHand.put(player.getName(), player.getItemInHand().getType());
+
+        String name = player.getName();
+        int clicks = animations.containsKey(name) ? animations.get(name) + 1 : 1;
+        animations.put(name, clicks);
+        if (clicks == 1) {
+            animationTime.put(name, System.currentTimeMillis());
+        } else if (clicks == magic.ANIMATION_CHECK) {
+            long time = System.currentTimeMillis() - animationTime.get(name);
+            animations.put(name, 0);
+            if (time < magic.ANIMATION_TIMEMIN) {
+                return new CheckResult(Result.FAILED, player.getName() + " clicked " + clicks + " times in " + time + " ms (max=" + magic.ANIMATION_CHECK + " in " + magic.ANIMATION_TIMEMIN + " ms)");
+            }
+        }
+        return PASS;
+    }
+
     public void clearChatLevel(Player player) {
         chatLevel.remove(player.getName());
     }
@@ -909,23 +931,9 @@ public class Backend {
         return isDoing(player, placedBlock, magic.BLOCK_PLACE_MIN);
     }
 
-    public void logAnimation(final Player player) {
-        //System.out.println("Log animation");
-        animated.put(player.getName(), System.currentTimeMillis());
-        increment(player, blockPunches, magic.BLOCK_PUNCH_MIN);
-        itemInHand.put(player.getName(), player.getItemInHand().getType());
-    }
-
     public void resetAnimation(final Player player) {
         animated.remove(player.getName());
         blockPunches.put(player.getName(), 0);
-    }
-
-    public boolean justAnimated(Player player, Block block) {
-        if (player.getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) || (Utilities.isInstantBreak(block.getType()) || (player.getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES))) {
-            return true;
-        }
-        return justAnimated(player);
     }
 
     private boolean justAnimated(Player player) {

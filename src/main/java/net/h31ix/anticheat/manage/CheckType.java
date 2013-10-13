@@ -56,6 +56,7 @@ public enum CheckType {
     FAST_PROJECTILE(Permission.CHECK_FASTPROJECTILE),
     ITEM_SPAM(Permission.CHECK_ITEMSPAM),
     FAST_INVENTORY(Permission.CHECK_FASTINVENTORY),
+    FAST_ANIMATION(Permission.CHECK_FASTANIMATION),
     AUTOTOOL(Permission.CHECK_AUTOTOOL);
 
     private final Permission permission;
