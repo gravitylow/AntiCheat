@@ -33,9 +33,9 @@ public class Enterprise extends ConfigurationFile {
     public ConfigValue<String> loggingLife;
     public ConfigValue<String> loggingInterval;
 
-    public ConfigValue<Boolean> syncUsers;
+    public ConfigValue<Boolean> syncLevels;
 
-    public ConfigValue<Boolean> configEvents;
+    public ConfigValue<Boolean> configGroups    ;
     public ConfigValue<Boolean> configRules;
 
     public Database database;
@@ -52,9 +52,9 @@ public class Enterprise extends ConfigurationFile {
         loggingLife = new ConfigValue<String>("log.life");
         loggingInterval = new ConfigValue<String>("log.interval");
 
-        syncUsers = new ConfigValue<Boolean>("sync.users");
+        syncLevels = new ConfigValue<Boolean>("sync.levels");
 
-        configEvents = new ConfigValue<Boolean>("config.events");
+        configGroups = new ConfigValue<Boolean>("config.groups");
         configRules = new ConfigValue<Boolean>("config.rules");
 
         ConfigValue<String> databaseType = new ConfigValue<String>("database.type");

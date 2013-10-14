@@ -52,6 +52,8 @@ public class Configuration {
     public Configuration(AntiCheat plugin) {
 
         config = new Config(plugin, this);
+        plugin.setVerbose(config.verboseStartup.getValue());
+        // Now load others
         enterprise = new Enterprise(plugin, this);
         lang = new Lang(plugin, this);
         magic = new Magic(plugin, this);
@@ -66,7 +68,7 @@ public class Configuration {
         dbfiles = new ArrayList<ConfigurationTable>();
 
         // The following values can be configuration from a database, or from flatfile.
-        if (config.enterprise.getValue() && enterprise.configEvents.getValue()) {
+        if (config.enterprise.getValue() && enterprise.configGroups.getValue()) {
             groups = new MySQLGroupsHolder(this);
             dbfiles.add((MySQLGroupsHolder) groups);
         } else {
@@ -82,7 +84,7 @@ public class Configuration {
             flatfiles.add((YamlRulesHolder) rules);
         }
 
-        if (config.enterprise.getValue() && enterprise.configEvents.getValue()) {
+        if (config.enterprise.getValue() && enterprise.syncLevels.getValue()) {
             levels = new MySQLLevelsHolder(this);
             dbfiles.add((MySQLLevelsHolder) levels);
         } else {

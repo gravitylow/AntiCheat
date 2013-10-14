@@ -152,7 +152,6 @@ public class AntiCheat extends JavaPlugin {
 
     private void setupConfig() {
         config = manager.getConfiguration();
-        verbose = config.getConfig().verboseStartup.getValue();
         verboseLog("Setup the config.");
     }
 
@@ -225,5 +224,9 @@ public class AntiCheat extends JavaPlugin {
         if (verbose) {
             getLogger().info(string);
         }
+    }
+
+    public void setVerbose(boolean b) {
+        verbose = b;
     }
 }

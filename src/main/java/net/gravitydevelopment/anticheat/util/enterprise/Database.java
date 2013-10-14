@@ -139,6 +139,7 @@ public class Database {
                 }, logInterval * 20, logInterval * 20);
             }
 
+            AntiCheat.getPlugin().verboseLog("Connected to the database.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
