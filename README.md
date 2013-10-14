@@ -7,7 +7,7 @@ AntiCheat helps server admins easily identify and block malicious users by monit
 
 Usage
 -------
-Simply drag and drop the plugin into your Plugins folder. Optional configuration and permissions are avaliable:
+Simply drag and drop the plugin into your Plugins folder. Optional configuration and permissions are available:
  
 http://dev.bukkit.org/server-mods/anticheat/pages/configuration/
 
@@ -34,7 +34,7 @@ Development Builds --- http://ci.gravitydevelopment.net/job/AntiCheat/
 
 Latest release download: http://api.bukget.org/2/bukkit/plugin/anticheat/latest/download
 
-Latest dev download: http://ci.h31ix.net/job/AntiCheat/lastSuccessfulBuild/artifact/target/AntiCheat.jar
+Latest dev download: http://ci.gravitydevelopment.net/job/AntiCheat/lastSuccessfulBuild/artifact/target/AntiCheat.jar
 
 Compiling
 -------
