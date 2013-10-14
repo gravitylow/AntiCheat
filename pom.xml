@@ -1,18 +1,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.h31ix.anticheat</groupId>
+    <groupId>net.gravitydevelopment.anticheat</groupId>
     <artifactId>AntiCheat</artifactId>
-    <version>1.5.9-DEV</version>
+    <version>2.0-DEV</version>
     <name>AntiCheat</name>
     <url>http://gravitydevelopment.net</url>
+    <properties>
+        <project.build.version>${project.version}</project.build.version>
+    </properties>
     <repositories>
         <repository>
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/repositories/public/</url>
         </repository>
         <repository>
-            <id>comphenix-rep</id>
+            <id>comphenix-repo</id>
             <name>Comphenix Repository</name>
             <url>http://repo.comphenix.net/content/groups/public</url>
         </repository>
@@ -31,21 +34,6 @@
             </plugin>
         </plugins>
         <finalName>AntiCheat</finalName>
-        <resources>
-            <resource>
-                <targetPath>.</targetPath>
-                <filtering>true</filtering>
-                <directory>${basedir}/src/main/resources</directory>
-                <includes>
-                    <include>plugin.yml</include>
-                    <include>config.yml</include>
-                    <include>lang.yml</include>
-                    <include>magic.yml</include>
-                    <include>events.yml</include>
-                    <include>enterprise.yml</include>
-                </includes>
-            </resource>
-        </resources>
         <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
@@ -53,7 +41,26 @@
                 <version>2.2</version>
             </extension>
         </extensions>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
+    <profiles>
+        <profile>
+            <id>jenkins</id>
+            <activation>
+                <property>
+                    <name>env.BUILD_NUMBER</name>
+                </property>
+            </activation>
+            <properties>
+                <project.build.version>{project.version}-b${env.BUILD_NUMBER}</project.build.version>
+            </properties>
+        </profile>
+    </profiles>
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
@@ -81,4 +88,5 @@
             <url>file:///var/lib/jenkins/repo</url>
         </repository>
     </distributionManagement>
+
 </project>
