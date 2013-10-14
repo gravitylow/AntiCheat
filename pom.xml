@@ -57,7 +57,7 @@
                 </property>
             </activation>
             <properties>
-                <project.build.version>{project.version}-b${env.BUILD_NUMBER}</project.build.version>
+                <project.build.version>${project.version}-b${env.BUILD_NUMBER}</project.build.version>
             </properties>
         </profile>
     </profiles>
