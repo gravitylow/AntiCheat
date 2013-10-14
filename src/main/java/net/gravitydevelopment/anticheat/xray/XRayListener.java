@@ -36,9 +36,9 @@ public class XRayListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        if (config.getConfig().logXRayStats.getValue()) {
+        if (config.getConfig().checkXRay.getValue()) {
             Player p = event.getPlayer();
-            if (p.getGameMode() == GameMode.CREATIVE && !config.getConfig().trackCreativeXRay.getValue()) {
+            if (p.getGameMode() == GameMode.CREATIVE && !config.getConfig().checkCreativeXRay.getValue()) {
                 return;
             }
             String player = p.getName();

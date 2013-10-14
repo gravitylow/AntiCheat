@@ -43,6 +43,8 @@ public class User {
     private int toX, toY, toZ;
     private String[] messages = new String[2];
     private Long[] messageTimes = new Long[2];
+    private String[] commands = new String[2];
+    private Long[] commandTimes = new Long[2];
 
     private boolean isWaitingOnLevelSync;
     private Timestamp levelSyncTimestamp;
@@ -281,11 +283,24 @@ public class User {
      * @param message Message to log
      */
     public void addMessage(String message) {
-        messages[1] = messages[0];
-        messages[0] = message;
+        addToSpamLog(message, messages, messageTimes);
+    }
 
-        messageTimes[1] = messageTimes[0];
-        messageTimes[0] = System.currentTimeMillis();
+    /**
+     * Log a player's command
+     *
+     * @param command Command to log
+     */
+    public void addCommand(String command) {
+        addToSpamLog(command, commands, commandTimes);
+    }
+
+    private void addToSpamLog(String string, String[] messages, Long[] times) {
+        messages[1] = messages[0];
+        messages[0] = string;
+
+        times[1] = times[0];
+        times[0] = System.currentTimeMillis();
     }
 
     /**
@@ -299,6 +314,16 @@ public class User {
     }
 
     /**
+     * Get a stored command
+     *
+     * @param index Index of the command in storage
+     * @return the command
+     */
+    public String getCommand(int index) {
+        return commands[index];
+    }
+
+    /**
      * Get the time a message in storage was sent
      *
      * @param index Index of the chat in storage
@@ -306,6 +331,16 @@ public class User {
      */
     public Long getMessageTime(int index) {
         return messageTimes[index];
+    }
+
+    /**
+     * Get the time a command in storage was sent
+     *
+     * @param index Index of the command in storage
+     * @return time the command was sent
+     */
+    public Long getCommandTime(int index) {
+        return commandTimes[index];
     }
 
     /**
@@ -317,12 +352,29 @@ public class User {
     }
 
     /**
+     * Clear all stored commands
+     */
+    public void clearCommands() {
+        commands = new String[2];
+        commandTimes = new Long[2];
+    }
+
+    /**
      * Get the time the very last stored message was sent
      *
      * @return the last message's time
      */
     public Long getLastMessageTime() {
         return getMessageTime(0) == null ? -1 : getMessageTime(0);
+    }
+
+    /**
+     * Get the time the very last stored command was sent
+     *
+     * @return the last command's time
+     */
+    public Long getLastCommandTime() {
+        return getCommandTime(0) == null ? -1 : getCommandTime(0);
     }
 
     private List<Group> getLevels() {

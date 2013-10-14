@@ -88,7 +88,7 @@ public class CommandHandler implements CommandExecutor {
 
     public void handleXRay(CommandSender cs, String[] args) {
         if (hasPermission(cs, Permission.SYSTEM_XRAY)) {
-            if (CONFIG.getConfig().logXRayStats.getValue()) {
+            if (CONFIG.getConfig().checkXRay.getValue()) {
                 List<Player> list = SERVER.matchPlayer(args[1]);
                 if (list.size() == 1) {
                     Player player = list.get(0);

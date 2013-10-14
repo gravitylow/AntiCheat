@@ -45,13 +45,13 @@ public class PlayerListener extends EventListener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        if (getCheckManager().willCheck(player, CheckType.SPAM) && getConfig().getConfig().blockCommandSpam.getValue()) {
-            CheckResult result = getBackend().checkSpam(player, event.getMessage());
+        if (getCheckManager().willCheck(player, CheckType.COMMAND_SPAM)) {
+            CheckResult result = getBackend().checkCommandSpam(player, event.getMessage());
             if (result.failed()) {
                 event.setCancelled(!silentMode());
-                player.sendMessage(ChatColor.RED + result.getMessage());
-                getBackend().processChatSpammer(player);
-                log(null, player, CheckType.SPAM);
+                if (!silentMode()) player.sendMessage(ChatColor.RED + result.getMessage());
+                getBackend().processCommandSpammer(player);
+                log(null, player, CheckType.COMMAND_SPAM);
             }
         }
 
@@ -140,15 +140,15 @@ public class PlayerListener extends EventListener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
 
-        if (getCheckManager().willCheck(player, CheckType.SPAM) && getConfig().getConfig().blockChatSpam.getValue()) {
-            CheckResult result = getBackend().checkSpam(player, event.getMessage());
+        if (getCheckManager().willCheck(player, CheckType.CHAT_SPAM)) {
+            CheckResult result = getBackend().checkChatSpam(player, event.getMessage());
             if (result.failed()) {
                 event.setCancelled(!silentMode());
-                if (!result.getMessage().equals("")) {
+                if (!result.getMessage().equals("") && !silentMode()) {
                     player.sendMessage(ChatColor.RED + result.getMessage());
                 }
                 getBackend().processChatSpammer(player);
-                log(null, player, CheckType.SPAM);
+                log(null, player, CheckType.CHAT_SPAM);
             }
         }
 
@@ -157,7 +157,6 @@ public class PlayerListener extends EventListener {
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event) {
-        getBackend().clearChatLevel(event.getPlayer());
         getBackend().garbageClean(event.getPlayer());
 
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());

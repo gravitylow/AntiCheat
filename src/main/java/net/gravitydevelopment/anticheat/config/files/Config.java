@@ -29,24 +29,31 @@ public class Config extends ConfigurationFile {
     public static final String FILENAME = "config.yml";
 
     public ConfigValue<Boolean> logToConsole;
-    public ConfigValue<Boolean> logXRayStats;
     public ConfigValue<Boolean> autoUpdate;
     public ConfigValue<Boolean> verboseStartup;
-    public ConfigValue<Boolean> alertWhenXRayIsFound;
     public ConfigValue<Boolean> silentMode;
     public ConfigValue<Boolean> exemptOp;
-    public ConfigValue<Boolean> trackCreativeXRay;
+
+    public ConfigValue<Boolean> checkXRay;
+    public ConfigValue<Boolean> checkCreativeXRay;
+    public ConfigValue<Boolean> alertXRay;
+    public ConfigValue<Integer> alertXRayInterval;
+
     public ConfigValue<Boolean> eventChains;
     public ConfigValue<Boolean> enterprise;
-    public ConfigValue<Boolean> blockChatSpam;
-    public ConfigValue<Boolean> blockCommandSpam;
+
+    public ConfigValue<Boolean> blockChatSpamSpeed;
+    public ConfigValue<Boolean> blockCommandSpamSpeed;
+    public ConfigValue<Boolean> blockChatSpamRepetition;
+    public ConfigValue<Boolean> blockCommandSpamRepetition;
+    public ConfigValue<String> chatSpamActionOne;
+    public ConfigValue<String> chatSpamActionTwo;
+    public ConfigValue<String> commandSpamActionOne;
+    public ConfigValue<String> commandSpamActionTwo;
 
     public ConfigValue<Integer> fileLogLevel;
 
-    public ConfigValue<String> spamKickAction;
-    public ConfigValue<String> spamBanAction;
-
-    public ConfigValue<List<String>> exemptedWorlds;
+    public ConfigValue<List<String>> disabledWorlds;
 
     public Config(AntiCheat plugin, Configuration config) {
         super(plugin, config, FILENAME);
@@ -55,23 +62,31 @@ public class Config extends ConfigurationFile {
     @Override
     public void open() {
         logToConsole = new ConfigValue<Boolean>("system.log-to-console");
-        logXRayStats = new ConfigValue<Boolean>("xray.check-xray");
-        alertWhenXRayIsFound = new ConfigValue<Boolean>("xray.alert");
+
+        checkXRay = new ConfigValue<Boolean>("xray.check-xray");
+        alertXRay = new ConfigValue<Boolean>("xray.alert");
+        alertXRayInterval = new ConfigValue<Integer>("xray.alert-interval");
+        checkCreativeXRay = new ConfigValue<Boolean>("xray.check-creative");
+
         autoUpdate = new ConfigValue<Boolean>("system.auto-update");
         verboseStartup = new ConfigValue<Boolean>("system.verbose-startup");
         silentMode = new ConfigValue<Boolean>("system.silent-mode");
         exemptOp = new ConfigValue<Boolean>("system.exempt-op");
-        trackCreativeXRay = new ConfigValue<Boolean>("xray.check-creative");
         eventChains = new ConfigValue<Boolean>("system.event-chains");
         enterprise = new ConfigValue<Boolean>("system.enterprise");
-        blockChatSpam = new ConfigValue<Boolean>("spam.chat");
-        blockCommandSpam = new ConfigValue<Boolean>("spam.command");
+
+        blockChatSpamSpeed = new ConfigValue<Boolean>("spam.chat.block-speed");
+        blockChatSpamRepetition = new ConfigValue<Boolean>("spam.chat.block-repetition");
+        chatSpamActionOne = new ConfigValue<String>("spam.chat.action-one");
+        chatSpamActionTwo = new ConfigValue<String>("spam.chat.action-two");
+
+        blockCommandSpamSpeed = new ConfigValue<Boolean>("spam.command.block-speed");
+        blockCommandSpamRepetition = new ConfigValue<Boolean>("spam.command.block-repetition");
+        commandSpamActionOne = new ConfigValue<String>("spam.command.action-one");
+        commandSpamActionTwo = new ConfigValue<String>("spam.command.action-two");
 
         fileLogLevel = new ConfigValue<Integer>("system.file-log-level");
 
-        spamKickAction = new ConfigValue<String>("spam.action-one");
-        spamBanAction = new ConfigValue<String>("spam.action-two");
-
-        exemptedWorlds = new ConfigValue<List<String>>("disable-in");
+        disabledWorlds = new ConfigValue<List<String>>("disable-in");
     }
 }

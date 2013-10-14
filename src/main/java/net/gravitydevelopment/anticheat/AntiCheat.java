@@ -46,7 +46,6 @@ public class AntiCheat extends JavaPlugin {
     private static Configuration config;
     private static boolean verbose;
     private static boolean developer;
-    private static final long XRAY_TIME = 1200;
     private static final int PROJECT_ID = 38723;
     private static PacketManager packetManager;
     private static boolean protocolLib = false;
@@ -105,9 +104,10 @@ public class AntiCheat extends JavaPlugin {
 
     private void setupXray() {
         final XRayTracker xtracker = manager.getXRayTracker();
-        if (config.getConfig().logXRayStats.getValue()) {
+        final int time = config.getConfig().alertXRayInterval.getValue() * 20;
+        if (config.getConfig().checkXRay.getValue()) {
             eventList.add(new XRayListener());
-            if (config.getConfig().alertWhenXRayIsFound.getValue()) {
+            if (config.getConfig().alertXRay.getValue()) {
                 getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
                     @Override
                     public void run() {
@@ -122,7 +122,7 @@ public class AntiCheat extends JavaPlugin {
                             }
                         }
                     }
-                }, XRAY_TIME, XRAY_TIME);
+                }, time, time);
 
                 verboseLog("Scheduled the XRay checker.");
             }

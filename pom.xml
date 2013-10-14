@@ -8,6 +8,7 @@
     <url>http://gravitydevelopment.net</url>
     <properties>
         <project.build.version>${project.version}</project.build.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <repositories>
         <repository>

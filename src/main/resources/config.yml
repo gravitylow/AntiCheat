@@ -5,16 +5,25 @@ xray:
   check-xray: true
   # Should a warning be sent to admins when a person is found that could be xraying?
   alert: false
+  # How often (in seconds) should AntiCheat check for xrayers if alert is true?
+  alert-interval: 60
   # Should players in creative mode be tracked for possible xray usage?
   check-creative: true
 spam:
-  # Should AntiCheat block players spamming messages in chat?
-  chat: true
+  chat:
+    # Should AntiCheat block players spamming messages in chat?
+    block-speed: true
+    block-repetition: true
+    # Valid actions = NONE,KICK,BAN,COMMAND[command]
+    action-one: KICK
+    action-two: BAN
   # Should AntiCheat block players spamming commands in chat?
-  command: true
-  # Valid actions = NONE,KICK,BAN,COMMAND[command]
-  action-one: KICK
-  action-two: BAN
+  command:
+    block-speed: true
+    block-repetition: true
+    # Valid actions = NONE,KICK,BAN,COMMAND[command]
+    action-one: KICK
+    action-two: BAN
 system:
   # Turning auto-update off is a _BAD_ idea. You will no longer be protected by the latest hacks/cheats if you do so, and will have to update manually.
   auto-update: true

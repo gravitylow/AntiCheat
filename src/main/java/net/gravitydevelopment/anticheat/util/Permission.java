@@ -30,7 +30,8 @@ public enum Permission {
     CHECK_NOSWING,
     CHECK_FASTBREAK,
     CHECK_FASTPLACE,
-    CHECK_SPAM,
+    CHECK_CHATSPAM,
+    CHECK_COMMANDSPAM,
     CHECK_SPRINT,
     CHECK_SNEAK,
     CHECK_SPEED,
@@ -66,6 +67,7 @@ public enum Permission {
     private static final String PERMISSION_ALL = "anticheat.*";
 
     public boolean get(CommandSender cs) {
+        if ((this == CHECK_CHATSPAM || this == CHECK_COMMANDSPAM) && cs.hasPermission("anticheat.check.spam")) return true;
         return cs.hasPermission(toString()) || cs.hasPermission(getBase()) || cs.hasPermission(PERMISSION_ALL);
     }
 

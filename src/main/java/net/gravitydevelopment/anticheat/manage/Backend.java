@@ -46,7 +46,7 @@ public class Backend {
     private Map<String, Integer> ascensionCount = new HashMap<String, Integer>();
     private Map<String, Double> blocksOverFlight = new HashMap<String, Double>();
     private Map<String, Integer> chatLevel = new HashMap<String, Integer>();
-    private Map<String, Integer> chatKicks = new HashMap<String, Integer>();
+    private Map<String, Integer> commandLevel = new HashMap<String, Integer>();
     private Map<String, Integer> nofallViolation = new HashMap<String, Integer>();
     private Map<String, Integer> speedViolation = new HashMap<String, Integer>();
     private Map<String, Integer> fastBreakViolation = new HashMap<String, Integer>();
@@ -127,7 +127,6 @@ public class Backend {
         isAscending.remove(pN);
         ascensionCount.remove(pN);
         blocksOverFlight.remove(pN);
-        chatLevel.remove(pN);
         nofallViolation.remove(pN);
         fastBreakViolation.remove(pN);
         yAxisViolations.remove(pN);
@@ -748,7 +747,7 @@ public class Backend {
         lastHeal.put(player.getName(), System.currentTimeMillis());
     }
 
-    public CheckResult checkSpam(Player player, String msg) {
+    public CheckResult checkChatSpam(Player player, String msg) {
         String name = player.getName();
         User user = manager.getUserManager().getUser(name);
         if (user.getLastMessageTime() != -1) {
@@ -762,12 +761,43 @@ public class Backend {
                 if (System.currentTimeMillis() - l > magic.CHAT_REPEAT_MIN * 100) {
                     user.clearMessages();
                     break;
-                } else if ((m.equalsIgnoreCase(msg) && i == 1) || System.currentTimeMillis() - user.getLastMessageTime() < magic.CHAT_MIN * 2) {
-                    return new CheckResult(Result.FAILED, lang.spamWarning.getValue());
+                } else {
+                    if (manager.getConfiguration().getConfig().blockChatSpamRepetition.getValue() && m.equalsIgnoreCase(msg) && i == 1) {
+                        return new CheckResult(Result.FAILED, lang.spamWarning.getValue());
+                    } else if (manager.getConfiguration().getConfig().blockChatSpamSpeed.getValue() && System.currentTimeMillis() - user.getLastCommandTime() < magic.COMMAND_MIN * 2) {
+                        return new CheckResult(Result.FAILED, lang.spamWarning.getValue());
+                    }
                 }
             }
         }
         user.addMessage(msg);
+        return PASS;
+    }
+
+    public CheckResult checkCommandSpam(Player player, String cmd) {
+        String name = player.getName();
+        User user = manager.getUserManager().getUser(name);
+        if (user.getLastCommandTime() != -1) {
+            for (int i = 0; i < 2; i++) {
+                String m = user.getCommand(i);
+                if (m == null) {
+                    break;
+                }
+                Long l = user.getCommandTime(i);
+
+                if (System.currentTimeMillis() - l > magic.COMMAND_REPEAT_MIN * 100) {
+                    user.clearCommands();
+                    break;
+                } else {
+                    if (manager.getConfiguration().getConfig().blockCommandSpamRepetition.getValue() && m.equalsIgnoreCase(cmd) && i == 1) {
+                        return new CheckResult(Result.FAILED, lang.spamWarning.getValue());
+                    } else if (manager.getConfiguration().getConfig().blockCommandSpamSpeed.getValue() && System.currentTimeMillis() - user.getLastCommandTime() < magic.COMMAND_MIN * 2) {
+                        return new CheckResult(Result.FAILED, lang.spamWarning.getValue());
+                    }
+                }
+            }
+        }
+        user.addCommand(cmd);
         return PASS;
     }
 
@@ -863,10 +893,6 @@ public class Backend {
         animated.put(player.getName(), System.currentTimeMillis());
         increment(player, blockPunches, magic.BLOCK_PUNCH_MIN);
         itemInHand.put(player.getName(), player.getItemInHand().getType());
-    }
-
-    public void clearChatLevel(Player player) {
-        chatLevel.remove(player.getName());
     }
 
     public void logInstantBreak(final Player player) {
@@ -1036,24 +1062,24 @@ public class Backend {
     }
 
     public void processChatSpammer(Player player) {
-        if (chatLevel.get(player.getName()) != null && chatLevel.get(player.getName()) >= magic.CHAT_KICK_LEVEL) {
-            if (player != null && player.isOnline()) {
-                String name = player.getName();
-                int kick;
-                if (chatKicks.get(name) == null || chatKicks.get(name) == 0) {
-                    kick = 1;
-                    chatKicks.put(name, kick);
-                } else {
-                    kick = chatKicks.get(name) + 1;
-                    chatKicks.put(name, kick);
-                }
-
-                String event = kick <= magic.CHAT_BAN_LEVEL ? manager.getConfiguration().getConfig().spamKickAction.getValue() : manager.getConfiguration().getConfig().spamBanAction.getValue();
-                manager.getUserManager().execute(manager.getUserManager().getUser(player.getName()), Utilities.stringToList(event), CheckType.SPAM, lang.spamKickReason.getValue() + "(" + kick + "/3)", Utilities.stringToList(lang.spamWarning.getValue()), lang.spamBanReason.getValue());
-            }
-        } else {
-            increment(player, chatLevel, magic.CHAT_KICK_LEVEL);
+        User user = manager.getUserManager().getUser(player.getName());
+        int level = chatLevel.containsKey(user.getName()) ? chatLevel.get(user.getName()) : 0;
+        if (player != null && player.isOnline() && level >= magic.CHAT_ACTION_ONE_LEVEL) {
+            String event = level >= magic.CHAT_ACTION_TWO_LEVEL ? manager.getConfiguration().getConfig().chatSpamActionTwo.getValue() : manager.getConfiguration().getConfig().chatSpamActionOne.getValue();
+            manager.getUserManager().execute(manager.getUserManager().getUser(player.getName()), Utilities.stringToList(event), CheckType.CHAT_SPAM, lang.spamKickReason.getValue(), Utilities.stringToList(lang.spamWarning.getValue()), lang.spamBanReason.getValue());
         }
+        System.out.println("Chat level: "+level);
+        chatLevel.put(user.getName(), level + 1);
+    }
+
+    public void processCommandSpammer(Player player) {
+        User user = manager.getUserManager().getUser(player.getName());
+        int level = commandLevel.containsKey(user.getName()) ? commandLevel.get(user.getName()) : 0;
+        if (player != null && player.isOnline() && level >= magic.COMMAND_ACTION_ONE_LEVEL) {
+            String event = level >= magic.COMMAND_ACTION_TWO_LEVEL ? manager.getConfiguration().getConfig().commandSpamActionTwo.getValue() : manager.getConfiguration().getConfig().commandSpamActionOne.getValue();
+            manager.getUserManager().execute(manager.getUserManager().getUser(player.getName()), Utilities.stringToList(event), CheckType.COMMAND_SPAM, lang.spamKickReason.getValue(), Utilities.stringToList(lang.spamWarning.getValue()), lang.spamBanReason.getValue());
+        }
+        commandLevel.put(user.getName(), level + 1);
     }
 
     public int increment(Player player, Map<String, Integer> map, int num) {

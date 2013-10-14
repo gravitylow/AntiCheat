@@ -148,17 +148,21 @@ public class Magic extends ConfigurationFile {
      */
     public int BLOCK_PUNCH_MIN;
     /**
-     * Number of chat spam violations before a player is warned; Type=integer, +Leniency=Increase.
+     * Number of command spam violations before action one is executed; Type=integer, +Leniency=Increase.
      */
-    public int CHAT_WARN_LEVEL;
+    public int COMMAND_ACTION_ONE_LEVEL;
     /**
-     * Number of chat spam violations before a player is kicked; Type=integer, +Leniency=Increase.
+     * Number of command spam violations before action two is executed; Type=integer, +Leniency=Increase.
      */
-    public int CHAT_KICK_LEVEL;
+    public int COMMAND_ACTION_TWO_LEVEL;
     /**
-     * Number of kicks for chat violation before a player is banned; Type=integer, +Leniency=Increase.
+     * Number of chat spam violations before action one is executed; Type=integer, +Leniency=Increase.
      */
-    public int CHAT_BAN_LEVEL;
+    public int CHAT_ACTION_ONE_LEVEL;
+    /**
+     * Number of chat spam violations before action two is executed; Type=integer, +Leniency=Increase.
+     */
+    public int CHAT_ACTION_TWO_LEVEL;
     /**
      * Number of times a player can be caught in-flight before action is taken; Type=integer, +Leniency=Increase.
      */
@@ -224,11 +228,19 @@ public class Magic extends ConfigurationFile {
      */
     public int ANIMATION_MIN;
     /**
+     * Minimum time between commands; Type=system, +Leniency=Increase.
+     */
+    public int COMMAND_MIN;
+    /**
+     * MTime before repeating a command is ignored; Type=system, +Leniency=Increase.
+     */
+    public int COMMAND_REPEAT_MIN;
+    /**
      * Minimum time between chats; Type=system, +Leniency=Increase.
      */
     public int CHAT_MIN;
     /**
-     * Minimum time between repeating yourself in the chat; Type=system, +Leniency=Increase.
+     * Time before repeating yourself in chat is ignored; Type=system, +Leniency=Increase.
      */
     public int CHAT_REPEAT_MIN;
     /**
@@ -400,9 +412,10 @@ public class Magic extends ConfigurationFile {
         FASTPLACE_MAXVIOLATIONS_CREATIVE = new ConfigValue<Integer>("FASTPLACE_MAXVIOLATIONS_CREATIVE").getValue();
         FASTPLACE_MAXVIOLATIONTIME = new ConfigValue<Integer>("FASTPLACE_MAXVIOLATIONTIME").getValue();
         BLOCK_PUNCH_MIN = new ConfigValue<Integer>("BLOCK_PUNCH_MIN").getValue();
-        CHAT_WARN_LEVEL = new ConfigValue<Integer>("CHAT_WARN_LEVEL").getValue();
-        CHAT_KICK_LEVEL = new ConfigValue<Integer>("CHAT_KICK_LEVEL").getValue();
-        CHAT_BAN_LEVEL = new ConfigValue<Integer>("CHAT_BAN_LEVEL").getValue();
+        CHAT_ACTION_ONE_LEVEL = new ConfigValue<Integer>("CHAT_ACTION_ONE_LEVEL").getValue();
+        CHAT_ACTION_TWO_LEVEL = new ConfigValue<Integer>("CHAT_ACTION_TWO_LEVEL").getValue();
+        COMMAND_ACTION_ONE_LEVEL = new ConfigValue<Integer>("COMMAND_ACTION_ONE_LEVEL").getValue();
+        COMMAND_ACTION_TWO_LEVEL = new ConfigValue<Integer>("COMMAND_ACTION_TWO_LEVEL").getValue();
         FLIGHT_LIMIT = new ConfigValue<Integer>("FLIGHT_LIMIT").getValue();
         FLIGHT_BLOCK_LIMIT = new ConfigValue<Double>("FLIGHT_BLOCK_LIMIT").getValue();
         WATER_CLIMB_MAX = new ConfigValue<Double>("WATER_CLIMB_MAX").getValue();
@@ -419,6 +432,8 @@ public class Magic extends ConfigurationFile {
         WATER_SPEED_VIOLATION_MAX = new ConfigValue<Integer>("WATER_SPEED_VIOLATION_MAX").getValue();
         SPRINT_FOOD_MIN = new ConfigValue<Integer>("SPRINT_FOOD_MIN").getValue();
         ANIMATION_MIN = new ConfigValue<Integer>("ANIMATION_MIN").getValue();
+        COMMAND_MIN = new ConfigValue<Integer>("COMMAND_MIN").getValue();
+        COMMAND_REPEAT_MIN = new ConfigValue<Integer>("COMMAND_REPEAT_MIN").getValue();
         CHAT_MIN = new ConfigValue<Integer>("CHAT_MIN").getValue();
         CHAT_REPEAT_MIN = new ConfigValue<Integer>("CHAT_REPEAT_MIN").getValue();
         SPRINT_MIN = new ConfigValue<Double>("SPRINT_MIN").getValue();
