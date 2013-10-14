@@ -124,7 +124,7 @@ public class AnticheatAPI {
      * Set a player's hack level (Min = 0, Max = 50)
      *
      * @param player Player to set
-     * @param level  Level to set to
+     * @param level  Group to set to
      */
     public static void setLevel(Player player, int level) {
         umr.safeSetLevel(player.getName(), level);

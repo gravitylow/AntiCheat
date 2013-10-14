@@ -25,17 +25,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Level {
+public class Group {
 
     private String name;
-    private int value;
+    private int level;
     private ChatColor color = ChatColor.RED;
     private List<String> actions = new ArrayList<String>();
 
-    public Level(String name, int value, String color, List<String> actions) {
+    public Group(String name, int level, String color, List<String> actions) {
 
         this.name = name;
-        this.value = value;
+        this.level = level;
         this.actions = actions;
 
         ChatColor c = ChatColor.valueOf(color);
@@ -46,17 +46,12 @@ public class Level {
             this.color = c;
         }
     }
-
-    public void setValue(int value) {
-        this.value = value;
-    }
-
     public String getName() {
         return name;
     }
 
-    public int getValue() {
-        return value;
+    public int getLevel() {
+        return level;
     }
 
     public ChatColor getColor() {
@@ -67,7 +62,7 @@ public class Level {
         return actions;
     }
 
-    public static Level load(String string) {
+    public static Group load(String string) {
         try {
             if (string.split(":").length == 4) {
                 string = Utilities.removeWhitespace(string);
@@ -75,7 +70,7 @@ public class Level {
                 int level = Integer.parseInt(string.split(":")[1]);
                 String color = string.split(":")[2];
                 List<String> actions = Arrays.asList(string.split(":")[3].split(","));
-                return new Level(name, level, color, actions);
+                return new Group(name, level, color, actions);
             } else {
                 throw new Exception();
             }
@@ -89,6 +84,6 @@ public class Level {
 
     @Override
     public String toString() {
-        return name + " : " + value + " : " + color.name() + " : " + Utilities.listToCommaString(actions);
+        return name + " : " + level + " : " + color.name() + " : " + Utilities.listToCommaString(actions);
     }
 }

@@ -20,8 +20,8 @@ package net.gravitydevelopment.anticheat.config.holders.mysql;
 
 import net.gravitydevelopment.anticheat.config.Configuration;
 import net.gravitydevelopment.anticheat.config.ConfigurationTable;
-import net.gravitydevelopment.anticheat.config.providers.Events;
-import net.gravitydevelopment.anticheat.util.Level;
+import net.gravitydevelopment.anticheat.config.providers.Groups;
+import net.gravitydevelopment.anticheat.util.Group;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,21 +29,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MySQLEventsHolder extends ConfigurationTable implements Events {
+public class MySQLGroupsHolder extends ConfigurationTable implements Groups {
 
-    private static final String TABLE = "events";
+    private static final String TABLE = "groups";
 
-    private List<Level> levels;
+    private List<Group> groups;
     private int highestLevel;
 
-    public MySQLEventsHolder(Configuration config) {
+    public MySQLGroupsHolder(Configuration config) {
         super(config, TABLE);
     }
 
     @Override
     public void open() {
         highestLevel = 0;
-        levels = new ArrayList<Level>();
+        groups = new ArrayList<Group>();
 
         String sqlCreate = "CREATE TABLE IF NOT EXISTS " + getFullTable() + "(" +
                 "  `id` INT NOT NULL," +
@@ -65,7 +65,7 @@ public class MySQLEventsHolder extends ConfigurationTable implements Events {
                 String color = set.getString("color");
                 List<String> actions = Arrays.asList(set.getString("actions").split(","));
 
-                levels.add(new Level(name, level, color, actions));
+                groups.add(new Group(name, level, color, actions));
                 if (level > highestLevel) {
                     highestLevel = level;
                 }
@@ -76,8 +76,8 @@ public class MySQLEventsHolder extends ConfigurationTable implements Events {
     }
 
     @Override
-    public List<Level> getLevels() {
-        return levels;
+    public List<Group> getGroups() {
+        return groups;
     }
 
     @Override

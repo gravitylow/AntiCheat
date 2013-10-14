@@ -18,13 +18,13 @@
 
 package net.gravitydevelopment.anticheat.config.providers;
 
-import net.gravitydevelopment.anticheat.util.Level;
+import net.gravitydevelopment.anticheat.util.Group;
 
 import java.util.List;
 
-public interface Events {
+public interface Groups {
 
-    public List<Level> getLevels();
+    public List<Group> getGroups();
 
     public int getHighestLevel();
 }

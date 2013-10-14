@@ -31,10 +31,10 @@ log:
 # Syncing settings
 sync:
   # Keep user's levels synced in the database?
-  users: true
+  levels: true
 # Configuration settings
 config:
-  # Load events configuration from the database?
-  events: true
+  # Load groups configuration from the database?
+  groups: true
   # Load rules configuration from the database?
   rules: true

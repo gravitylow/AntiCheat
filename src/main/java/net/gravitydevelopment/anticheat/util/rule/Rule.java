@@ -21,6 +21,7 @@ package net.gravitydevelopment.anticheat.util.rule;
 import net.gravitydevelopment.anticheat.AntiCheat;
 import net.gravitydevelopment.anticheat.manage.CheckType;
 import net.gravitydevelopment.anticheat.manage.User;
+import net.gravitydevelopment.anticheat.util.Group;
 import net.gravitydevelopment.anticheat.util.Utilities;
 
 import java.lang.reflect.Constructor;
@@ -139,6 +140,8 @@ public class Rule {
         SortedMap<String, Object> map = new TreeMap<String, Object>();
         map.put("player_check", type.name().toLowerCase());
         map.put("player_level", user.getLevel());
+        map.put("player_group", user.getGroup().getName());
+        map.put("player_name", user.getName());
         for (CheckType t : CheckType.values()) {
             map.put("check_" + t.name().toLowerCase(), t.getUses(user.getName()));
         }
@@ -150,6 +153,12 @@ public class Rule {
         // others wouldn't make any sense to set
         if (variable.equals("player_level") && Utilities.isInt(value)) {
             user.setLevel(Integer.parseInt(value));
+        } else if (variable.equals("player_group") && Utilities.isInt(value)) {
+            for (Group group : AntiCheat.getManager().getConfiguration().getGroups().getGroups()) {
+                if (group.getName().equalsIgnoreCase(value)) {
+                    user.setLevel(group.getLevel());
+                }
+            }
         }
     }
 

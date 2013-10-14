@@ -20,7 +20,7 @@ package net.gravitydevelopment.anticheat.manage;
 
 import net.gravitydevelopment.anticheat.AntiCheat;
 import net.gravitydevelopment.anticheat.config.Configuration;
-import net.gravitydevelopment.anticheat.util.Level;
+import net.gravitydevelopment.anticheat.util.Group;
 import net.gravitydevelopment.anticheat.util.Utilities;
 import net.gravitydevelopment.anticheat.util.rule.Rule;
 import org.bukkit.Bukkit;
@@ -93,12 +93,17 @@ public class User {
         return level;
     }
 
-    public Level getNamedLevel() {
-        List<Level> levels = config.getEvents().getLevels();
-        for (int i = 0; i < levels.size(); i++) {
-            if (i == 0 && level < levels.get(i).getValue()) break;
-            else if (i == levels.size() - 1) return levels.get(i);
-            else if (level >= levels.get(i).getValue() && level < levels.get(i + 1).getValue()) return levels.get(i);
+    /**
+     * Get the user's group
+     *
+     * @return group
+     */
+    public Group getGroup() {
+        List<Group> groups = config.getGroups().getGroups();
+        for (int i = 0; i < groups.size(); i++) {
+            if (i == 0 && level < groups.get(i).getLevel()) break;
+            else if (i == groups.size() - 1) return groups.get(i);
+            else if (level >= groups.get(i).getLevel() && level < groups.get(i + 1).getLevel()) return groups.get(i);
         }
         return null;
     }
@@ -115,15 +120,15 @@ public class User {
                 // Prevent silent mode from increasing the level way too fast
                 return false;
             } else {
-                if (level < config.getEvents().getHighestLevel()) {
+                if (level < config.getGroups().getHighestLevel()) {
                     level++;
 
                     // Check levels
-                    for (Level l : getLevels()) {
-                        if (l.getValue() == level) {
+                    for (Group l : getLevels()) {
+                        if (l.getLevel() == level) {
                             AntiCheat.getManager().getUserManager().alert(this, l, type);
-                            if (l.getValue() == config.getEvents().getHighestLevel()) {
-                                level = l.getValue() - 10;
+                            if (l.getLevel() == config.getGroups().getHighestLevel()) {
+                                level = l.getLevel() - 10;
                             }
                         }
                     }
@@ -157,11 +162,11 @@ public class User {
     public boolean setLevel(int level) {
         isWaitingOnLevelSync = false;
         if (level >= 0) {
-            if (level <= config.getEvents().getHighestLevel()) {
+            if (level <= config.getGroups().getHighestLevel()) {
                 this.level = level;
                 return true;
             } else {
-                this.level = config.getEvents().getHighestLevel();
+                this.level = config.getGroups().getHighestLevel();
                 return false;
             }
         } else {
@@ -320,8 +325,8 @@ public class User {
         return getMessageTime(0) == null ? -1 : getMessageTime(0);
     }
 
-    private List<Level> getLevels() {
-        return config.getEvents().getLevels();
+    private List<Group> getLevels() {
+        return config.getGroups().getGroups();
     }
 
     private boolean silentMode() {

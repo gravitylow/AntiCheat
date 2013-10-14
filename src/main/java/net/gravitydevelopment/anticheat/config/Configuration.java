@@ -23,13 +23,13 @@ import net.gravitydevelopment.anticheat.config.files.Config;
 import net.gravitydevelopment.anticheat.config.files.Enterprise;
 import net.gravitydevelopment.anticheat.config.files.Lang;
 import net.gravitydevelopment.anticheat.config.files.Magic;
-import net.gravitydevelopment.anticheat.config.holders.mysql.MySQLEventsHolder;
+import net.gravitydevelopment.anticheat.config.holders.mysql.MySQLGroupsHolder;
 import net.gravitydevelopment.anticheat.config.holders.mysql.MySQLLevelsHolder;
 import net.gravitydevelopment.anticheat.config.holders.mysql.MySQLRulesHolder;
-import net.gravitydevelopment.anticheat.config.holders.yaml.YamlEventsHolder;
+import net.gravitydevelopment.anticheat.config.holders.yaml.YamlGroupsHolder;
 import net.gravitydevelopment.anticheat.config.holders.yaml.YamlLevelsHolder;
 import net.gravitydevelopment.anticheat.config.holders.yaml.YamlRulesHolder;
-import net.gravitydevelopment.anticheat.config.providers.Events;
+import net.gravitydevelopment.anticheat.config.providers.Groups;
 import net.gravitydevelopment.anticheat.config.providers.Levels;
 import net.gravitydevelopment.anticheat.config.providers.Rules;
 
@@ -42,7 +42,7 @@ public class Configuration {
     private Lang lang;
     private Magic magic;
 
-    private Events events;
+    private Groups groups;
     private Levels levels;
     private Rules rules;
 
@@ -67,11 +67,11 @@ public class Configuration {
 
         // The following values can be configuration from a database, or from flatfile.
         if (config.enterprise.getValue() && enterprise.configEvents.getValue()) {
-            events = new MySQLEventsHolder(this);
-            dbfiles.add((MySQLEventsHolder) events);
+            groups = new MySQLGroupsHolder(this);
+            dbfiles.add((MySQLGroupsHolder) groups);
         } else {
-            events = new YamlEventsHolder(plugin, this);
-            flatfiles.add((YamlEventsHolder) events);
+            groups = new YamlGroupsHolder(plugin, this);
+            flatfiles.add((YamlGroupsHolder) groups);
         }
 
         if (config.enterprise.getValue() && enterprise.configRules.getValue()) {
@@ -118,8 +118,8 @@ public class Configuration {
         return config;
     }
 
-    public Events getEvents() {
-        return events;
+    public Groups getGroups() {
+        return groups;
     }
 
     public Rules getRules() {

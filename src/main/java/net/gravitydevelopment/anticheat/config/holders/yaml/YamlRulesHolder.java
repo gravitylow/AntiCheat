@@ -29,7 +29,7 @@ import java.util.List;
 
 public class YamlRulesHolder extends ConfigurationFile implements Rules {
 
-    public static final String FILENAME = "events.yml";
+    public static final String FILENAME = "rules.yml";
 
     private List<Rule> rules;
 

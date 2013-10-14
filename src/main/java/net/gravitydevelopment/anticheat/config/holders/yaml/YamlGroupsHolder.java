@@ -21,26 +21,26 @@ package net.gravitydevelopment.anticheat.config.holders.yaml;
 import net.gravitydevelopment.anticheat.AntiCheat;
 import net.gravitydevelopment.anticheat.config.Configuration;
 import net.gravitydevelopment.anticheat.config.ConfigurationFile;
-import net.gravitydevelopment.anticheat.config.providers.Events;
-import net.gravitydevelopment.anticheat.util.Level;
+import net.gravitydevelopment.anticheat.config.providers.Groups;
+import net.gravitydevelopment.anticheat.util.Group;
 
 import java.util.*;
 
-public class YamlEventsHolder extends ConfigurationFile implements Events {
+public class YamlGroupsHolder extends ConfigurationFile implements Groups {
 
-    public static final String FILENAME = "events.yml";
+    public static final String FILENAME = "groups.yml";
 
-    private List<Level> levels;
+    private List<Group> groups;
 
     private int highestLevel;
 
-    public YamlEventsHolder(AntiCheat plugin, Configuration config) {
+    public YamlGroupsHolder(AntiCheat plugin, Configuration config) {
         super(plugin, config, FILENAME);
     }
 
     @Override
-    public List<Level> getLevels() {
-        return levels;
+    public List<Group> getGroups() {
+        return groups;
     }
 
     @Override
@@ -50,33 +50,26 @@ public class YamlEventsHolder extends ConfigurationFile implements Events {
 
     @Override
     public void open() {
-        ConfigValue<List<String>> levels = new ConfigValue<List<String>>("events");
+        ConfigValue<List<String>> groups = new ConfigValue<List<String>>("groups");
 
-        // Clean up old values
-        if(levels.didLoadDefault()) {
-            new ConfigValue<List<String>>("levels").setValue(null);
-            new ConfigValue<List<String>>("actions").setValue(null);
-            save();
-        }
-
-        // Convert levels list to Levels
-        this.levels = new ArrayList<Level>();
-        for (String string : levels.getValue()) {
-            Level level = Level.load(string);
-            if (level == null || level.getValue() < 0) {
+        // Convert groups list to Levels
+        this.groups = new ArrayList<Group>();
+        for (String string : groups.getValue()) {
+            Group group = Group.load(string);
+            if (group == null || group.getLevel() < 0) {
                 continue;
             }
 
-            this.levels.add(level);
-            highestLevel = level.getValue() > highestLevel ? level.getValue() : highestLevel;
+            this.groups.add(group);
+            highestLevel = group.getLevel() > highestLevel ? group.getLevel() : highestLevel;
         }
 
-        // Sort levels
-        Collections.sort(this.levels, new Comparator<Level>() {
-            public int compare(Level l1, Level l2) {
-                if (l1.getValue() == l2.getValue()) {
+        // Sort groups
+        Collections.sort(this.groups, new Comparator<Group>() {
+            public int compare(Group l1, Group l2) {
+                if (l1.getLevel() == l2.getLevel()) {
                     return 0;
-                } else if (l1.getValue() < l2.getValue()) {
+                } else if (l1.getLevel() < l2.getLevel()) {
                     return -1;
                 }
                 return 1;

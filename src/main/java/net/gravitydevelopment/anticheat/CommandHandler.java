@@ -45,12 +45,7 @@ public class CommandHandler implements CommandExecutor {
     private static final ChatColor GREEN = ChatColor.GREEN;
     private static final ChatColor WHITE = ChatColor.WHITE;
     private static final ChatColor GRAY = ChatColor.GRAY;
-    private List<String> high = new ArrayList<String>();
-    private List<String> med = new ArrayList<String>();
-    private List<String> low = new ArrayList<String>();
     private static final Server SERVER = Bukkit.getServer();
-    private static final int MED_THRESHOLD = 20;
-    private static final int HIGH_THRESHOLD = 50;
     private static final String PERMISSIONS_ERROR = RED + "Insufficient Permissions.";
     private static final String MENU_END = "-----------------------------------------------------";
 
@@ -79,12 +74,7 @@ public class CommandHandler implements CommandExecutor {
     }
 
     public void handleDebug(CommandSender cs) {
-        if (hasPermission(cs, Permission.SYSTEM_DEBUG)) {
-            cs.sendMessage(GRAY + "Please wait while I collect some data...");
-            PastebinReport report = new PastebinReport(cs);
-            cs.sendMessage(GREEN + "Debug information posted to: " + WHITE + report.getURL());
-            cs.sendMessage(GREEN + "Please include this link when making bug reports.");
-        }
+        handleDebug(cs, null);
     }
 
     public void handleDebug(CommandSender cs, Player tp) {
@@ -199,7 +189,7 @@ public class CommandHandler implements CommandExecutor {
             String base = "/AntiCheat ";
             String[] lines = {
                     "log [Enable/Disable]" + WHITE + " - toggle logging",
-                    "report [low/medium/high]" + WHITE + " - show users in groups",
+                    "report [group]" + WHITE + " - show users in groups",
                     "report [user]" + WHITE + " - get a player's cheat report",
                     "reload" + WHITE + " - reload AntiCheat configuration",
                     "reset [user]" + WHITE + " - reset user's hack level",
@@ -247,30 +237,26 @@ public class CommandHandler implements CommandExecutor {
 
     public void handleReport(CommandSender cs, String[] args) {
         if (hasPermission(cs, Permission.SYSTEM_REPORT)) {
-            getPlayers();
             if (args.length > 1) {
                 String group = args[1];
+                int num = getReportPageNum(args);
                 if (group.equalsIgnoreCase("low")) {
-                    int num = getReportPageNum(args);
                     if (num > 0) {
-                        sendReport(cs, low, "Low", GREEN, num);
+                        sendReport(cs, null, num);
                     } else {
                         cs.sendMessage(RED + "Not a valid page number: " + WHITE + args[2]);
                     }
-                } else if (group.equalsIgnoreCase("medium")) {
-                    int num = getReportPageNum(args);
-                    if (num > 0) {
-                        sendReport(cs, med, "Medium", YELLOW, num);
-                    } else {
-                        cs.sendMessage(RED + "Not a valid page number: " + WHITE + args[2]);
+                } else {
+                    boolean sent = false;
+                    for (Group g : CONFIG.getGroups().getGroups()) {
+                        if (g.getName().equalsIgnoreCase(group)) {
+                            sendReport(cs, g, num);
+                            sent = true;
+                            break;
+                        }
                     }
-                }
-                if (group.equalsIgnoreCase("high")) {
-                    int num = getReportPageNum(args);
-                    if (num > 0) {
-                        sendReport(cs, high, "High", RED, num);
-                    } else {
-                        cs.sendMessage(RED + "Not a valid page number: " + WHITE + args[2]);
+                    if (!sent) {
+                        cs.sendMessage(RED + "Not a valid group: " + WHITE + group);
                     }
                 }
             }
@@ -287,15 +273,17 @@ public class CommandHandler implements CommandExecutor {
         }
     }
 
-    public void sendReport(CommandSender cs, List<String> players, String group, ChatColor color, int page) {
-        int pages = (int) Math.ceil(((float) players.size()) / 7);
+    public void sendReport(CommandSender cs, Group group, int page) {
+        List<User> users = USER_MANAGER.getUsersInGroup(group);
+        ChatColor color = group == null ? GREEN : group.getColor();
+        int pages = (int) Math.ceil(((float) users.size()) / 7);
         if (page <= pages && page > 0) {
             cs.sendMessage("--------------------[" + GREEN + "REPORT[" + page + "/" + pages + "]" + WHITE + "]---------------------");
             cs.sendMessage(GRAY + "Group: " + color + group);
             for (int x = 0; x < 7; x++) {
                 int index = ((page - 1) * 6) + (x + ((page - 1) * 1));
-                if (index < players.size()) {
-                    String player = players.get(index);
+                if (index < users.size()) {
+                    String player = users.get(index).getName();
                     cs.sendMessage(GRAY + player);
                 }
             }
@@ -346,25 +334,25 @@ public class CommandHandler implements CommandExecutor {
 
     public void handleDeveloper(CommandSender cs) {
         AntiCheat.setDeveloperMode(!AntiCheat.developerMode());
-        cs.sendMessage(ChatColor.GREEN + "Developer mode " + (AntiCheat.developerMode() ? "ON" : "OFF"));
+        cs.sendMessage(GREEN + "Developer mode " + (AntiCheat.developerMode() ? "ON" : "OFF"));
     }
 
     public void sendPlayerReport(CommandSender cs, List<CheckType> types, User user, int page) {
         String name = user.getName();
         int pages = (int) Math.ceil(((float) types.size()) / 6);
 
-        Level level = user.getNamedLevel();
-        String levelString = ChatColor.GREEN + "Low";
+        Group group = user.getGroup();
+        String groupString = GREEN + "Low";
 
-        if (level != null) {
-            levelString = level.getColor() + level.getName();
+        if (group != null) {
+            groupString = group.getColor() + group.getName();
         }
-        levelString += " (" + user.getLevel() + ")";
+        groupString += " (" + user.getLevel() + ")";
 
         if (page <= pages && page > 0) {
             cs.sendMessage("--------------------[" + GREEN + "REPORT[" + page + "/" + pages + "]" + WHITE + "]---------------------");
             cs.sendMessage(GRAY + "Player: " + WHITE + name);
-            cs.sendMessage(GRAY + "Level: " + levelString);
+            cs.sendMessage(GRAY + "Group: " + groupString);
             for (int x = 0; x < 6; x++) {
                 int index = ((page - 1) * 5) + (x + ((page - 1)));
                 if (index < types.size()) {
@@ -383,7 +371,7 @@ public class CommandHandler implements CommandExecutor {
             if (pages == 0) {
                 cs.sendMessage("--------------------[" + GREEN + "REPORT[1/1]" + WHITE + "]---------------------");
                 cs.sendMessage(GRAY + "Player: " + WHITE + name);
-                cs.sendMessage(GRAY + "Level: " + levelString);
+                cs.sendMessage(GRAY + "Group: " + groupString);
                 cs.sendMessage(GRAY + "This user has not failed any checks.");
                 cs.sendMessage(MENU_END);
             } else {
@@ -403,8 +391,8 @@ public class CommandHandler implements CommandExecutor {
     public boolean onCommand(CommandSender cs, Command cmd, String alias, String[] args) {
         if (args.length == 3) {
             if (args[0].equalsIgnoreCase("report")) {
-                for (Level level : CONFIG.getEvents().getLevels()) {
-                    if (args[1].equalsIgnoreCase(level.getName())) {
+                for (Group group : CONFIG.getGroups().getGroups()) {
+                    if (args[1].equalsIgnoreCase(group.getName())) {
                         handleReport(cs, args);
                         return true;
                     }
@@ -437,12 +425,8 @@ public class CommandHandler implements CommandExecutor {
             } else if (args[0].equalsIgnoreCase("debug")) {
                 handleDebug(cs);
             } else if (args[0].equalsIgnoreCase("report")) {
-                cs.sendMessage(ChatColor.GREEN + "To see the report of a specific user, type their name, like so:");
-                cs.sendMessage(ChatColor.WHITE + "/anticheat report [user]");
-                cs.sendMessage(ChatColor.GRAY + " - This will allow you to see the checks that user has failed.");
-                cs.sendMessage(ChatColor.GREEN + "To see the report of an AntiCheat group, type it's name, like so:");
-                cs.sendMessage(ChatColor.WHITE + "/anticheat report [low/medium/high]");
-                cs.sendMessage(ChatColor.GRAY + " - This will allow you to see which players are good, and which could be hacking.");
+                cs.sendMessage(GREEN + "To see a user's report, use " + WHITE + "/anticheat report [user]");
+                cs.sendMessage(GREEN + "To see all users in a group, use " + WHITE + "/anticheat report [group]");
             } else if (args[0].equalsIgnoreCase("reload")) {
                 handleReload(cs);
             } else if (args[0].equalsIgnoreCase("update")) {
@@ -460,22 +444,6 @@ public class CommandHandler implements CommandExecutor {
             handleHelp(cs); // Handle no args as alias of help
         }
         return true;
-    }
-
-    public void getPlayers() {
-        high.clear();
-        med.clear();
-        low.clear();
-        for (Player player : SERVER.getOnlinePlayers()) {
-            int level = USER_MANAGER.safeGetLevel(player.getName());
-            if (level <= MED_THRESHOLD) {
-                low.add(player.getName());
-            } else if (level <= HIGH_THRESHOLD) {
-                med.add(player.getName());
-            } else {
-                high.add(player.getName());
-            }
-        }
     }
 
     public boolean hasPermission(CommandSender cs, Permission perm) {

@@ -1,9 +1,0 @@
-# AntiCheat configuration file
-# Please report any bugs: http://dev.bukkit.org/server-mods/anticheat/
-events:
-    - 'Medium : 20 : YELLOW : WARN'
-    - 'High : 50 : RED : KICK'
-    - 'Custom : -1 : GREEN : COMMAND[ban &player;say hello world]'
-rules:
-    # if spider check is less than 0, set level to 20. otherwise, do nothing
-    - 'Check_SPIDER < 0 ? Player.KICK : null'

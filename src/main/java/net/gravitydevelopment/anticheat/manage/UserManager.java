@@ -20,7 +20,7 @@ package net.gravitydevelopment.anticheat.manage;
 
 import net.gravitydevelopment.anticheat.AntiCheat;
 import net.gravitydevelopment.anticheat.config.Configuration;
-import net.gravitydevelopment.anticheat.util.Level;
+import net.gravitydevelopment.anticheat.util.Group;
 import net.gravitydevelopment.anticheat.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,7 +33,6 @@ public class UserManager {
     private static Configuration config;
     private static final ChatColor GRAY = ChatColor.GRAY;
     private static final ChatColor GOLD = ChatColor.GOLD;
-    private static final ChatColor YELLOW = ChatColor.YELLOW;
     private static final ChatColor RED = ChatColor.RED;
     private static List<String> alert;
 
@@ -103,6 +102,21 @@ public class UserManager {
     }
 
     /**
+     * Get users in group
+     *
+     * @param group Group to find users of
+     */
+    public List<User> getUsersInGroup(Group group) {
+        List<User> list = new ArrayList<User>();
+        for (User u : users) {
+            if (u.getGroup() == group) {
+                list.add(u);
+            }
+        }
+        return list;
+    }
+
+    /**
      * Get a user's level, or 0 if the player isn't found
      *
      * @param name Name of the player
@@ -121,7 +135,7 @@ public class UserManager {
      * Set a user's level
      *
      * @param name  Name of the player
-     * @param level Level to set
+     * @param level Group to set
      */
     public void safeSetLevel(String name, int level) {
         User user = getUser(name);
@@ -146,22 +160,23 @@ public class UserManager {
      * Fire an alert
      *
      * @param user  The user to alert
-     * @param level The user's level
+     * @param group The user's group
      * @param type  The CheckType that triggered the alert
      */
-    public void alert(User user, Level level, CheckType type) {
+    public void alert(User user, Group group, CheckType type) {
         ArrayList<String> messageArray = new ArrayList<String>();
         for (int i = 0; i < alert.size(); i++) {
             String message = alert.get(i);
             if (!message.equals("")) {
                 message = message.replaceAll("&player", GOLD + user.getName() + GRAY);
                 message = message.replaceAll("&check", GOLD + CheckType.getName(type) + GRAY);
-                message = message.replaceAll("&level", level.getColor() + level.getName() + GRAY);
+                message = message.replaceAll("&group", group.getColor() + group.getName() + GRAY);
+                message = message.replaceAll("&level", "" + user.getLevel() + GRAY);
                 messageArray.add(message);
             }
         }
         Utilities.alert(messageArray);
-        execute(user, level.getActions(), type);
+        execute(user, group.getActions(), type);
     }
 
     /**
