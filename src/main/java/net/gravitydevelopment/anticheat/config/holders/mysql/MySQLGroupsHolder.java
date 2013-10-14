@@ -52,11 +52,21 @@ public class MySQLGroupsHolder extends ConfigurationTable implements Groups {
                 "  `color` VARCHAR(45) NOT NULL," +
                 "  `actions` VARCHAR(45) NOT NULL," +
                 "  PRIMARY KEY (`id`));";
+        String sqlPopulate = "INSERT INTO " + getFullTable() +
+                "  SELECT t.*" +
+                "  FROM (" +
+                "    (SELECT 1 as id, 'Medium' as name, 20 as level, 'YELLOW' as color, 'WARN' as actions)" +
+                "    UNION ALL " +
+                "    (SELECT 2 as id, 'High' as name, 50 as level, 'RED' as color, 'KICK' as actions)" +
+                "  ) t" +
+                "  WHERE NOT EXISTS (SELECT * FROM " + getFullTable() + ");";
         String sqlLoad = "SELECT * FROM " + getFullTable();
 
         try {
             getConnection().prepareStatement(sqlCreate).executeUpdate();
+            getConnection().prepareStatement(sqlPopulate).executeUpdate();
             getConnection().commit();
+
 
             ResultSet set = getConnection().prepareStatement(sqlLoad).executeQuery();
             while (set.next()) {
