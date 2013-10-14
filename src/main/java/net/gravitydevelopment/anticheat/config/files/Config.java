@@ -54,24 +54,24 @@ public class Config extends ConfigurationFile {
 
     @Override
     public void open() {
-        logToConsole = new ConfigValue<Boolean>("System.Log to console");
-        logXRayStats = new ConfigValue<Boolean>("XRay.Log xray stats");
-        autoUpdate = new ConfigValue<Boolean>("System.Auto update");
-        verboseStartup = new ConfigValue<Boolean>("System.Verbose startup");
-        alertWhenXRayIsFound = new ConfigValue<Boolean>("XRay.Alert when xray is found");
-        silentMode = new ConfigValue<Boolean>("System.Silent mode");
-        exemptOp = new ConfigValue<Boolean>("System.Exempt op");
-        trackCreativeXRay = new ConfigValue<Boolean>("XRay.Track creative");
-        eventChains = new ConfigValue<Boolean>("System.Event Chains");
-        enterprise = new ConfigValue<Boolean>("System.Enterprise");
-        blockChatSpam = new ConfigValue<Boolean>("Chat.Block chat spam");
-        blockCommandSpam = new ConfigValue<Boolean>("Chat.Block command spam");
+        logToConsole = new ConfigValue<Boolean>("system.log-to-console");
+        logXRayStats = new ConfigValue<Boolean>("xray.check-xray");
+        alertWhenXRayIsFound = new ConfigValue<Boolean>("xray.alert");
+        autoUpdate = new ConfigValue<Boolean>("system.auto-update");
+        verboseStartup = new ConfigValue<Boolean>("system.verbose-startup");
+        silentMode = new ConfigValue<Boolean>("system.silent-mode");
+        exemptOp = new ConfigValue<Boolean>("system.exempt-op");
+        trackCreativeXRay = new ConfigValue<Boolean>("xray.check-creative");
+        eventChains = new ConfigValue<Boolean>("system.event-chains");
+        enterprise = new ConfigValue<Boolean>("system.enterprise");
+        blockChatSpam = new ConfigValue<Boolean>("spam.chat");
+        blockCommandSpam = new ConfigValue<Boolean>("spam.command");
 
-        fileLogLevel = new ConfigValue<Integer>("System.File log level");
+        fileLogLevel = new ConfigValue<Integer>("system.file-log-level");
 
-        spamKickAction = new ConfigValue<String>("Chat.Kick Action");
-        spamBanAction = new ConfigValue<String>("Chat.Ban Action");
+        spamKickAction = new ConfigValue<String>("spam.action-one");
+        spamBanAction = new ConfigValue<String>("spam.action-two");
 
-        exemptedWorlds = new ConfigValue<List<String>>("Disable in");
+        exemptedWorlds = new ConfigValue<List<String>>("disable-in");
     }
 }

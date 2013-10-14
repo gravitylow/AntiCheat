@@ -1,39 +1,39 @@
 # AntiCheat configuration file
 # Please report any bugs: http://dev.bukkit.org/server-mods/anticheat/
-XRay:
+xray:
   # Should AntiCheat use calculations to try and find xrayers?
-  Log xray stats: true
+  check-xray: true
   # Should a warning be sent to admins when a person is found that could be xraying?
-  Alert when xray is found: false
+  alert: false
   # Should players in creative mode be tracked for possible xray usage?
-  Track creative: true
-Chat:
+  check-creative: true
+spam:
   # Should AntiCheat block players spamming messages in chat?
-  Block chat spam: true
+  chat: true
   # Should AntiCheat block players spamming commands in chat?
-  Block command spam: true
+  command: true
   # Valid actions = NONE,KICK,BAN,COMMAND[command]
-  Kick Action: KICK
-  Ban Action: BAN
-System:
+  action-one: KICK
+  action-two: BAN
+system:
   # Turning auto-update off is a _BAD_ idea. You will no longer be protected by the latest hacks/cheats if you do so, and will have to update manually.
-  Auto update: true
+  auto-update: true
   # Should AntiCheat log ALL failed checks to console?
-  Log to console: false
+  log-to-console: false
   # Should AntiCheat log to files?
   # 0 = off, 1 = log only when an event takes place, 2 = more detailed logs, 3 = most detailed logs
-  File log level: 1
+  file-log-level: 1
   # Should AntiCheat display extra debug information when starting?
-  Verbose startup: false
+  verbose-startup: false
   # If silent mode is on, players will not be stopped when they try to hack, and AntiCheat will do everything possible to keep them unaware of their rising hack level.
   # However, alerts will still be sent to console and to admins online, and events will still take place.
-  Silent mode: false
+  silent-mode: false
   # Should ops be exempt from all checks?
-  Exempt op: false
+  exempt-op: false
   # Should AntiCheat track plugins in its own registered events?
-  Event Chains: true
+  event-chains: true
   # Should Enterprise options be enabled? Only set this to true if you're an advanced user.
-  Enterprise: false
-Disable in:
+  enterprise: false
+disable-in:
 - example-world
 - example-world-2
