@@ -3,7 +3,7 @@
 # Documentation for these values is available at http://gravitydevelopment.net/docs/anticheat/net/h31ix/anticheat/util/Magic.html
 ANIMATION_CHECK: 5
 ANIMATION_MIN: 200
-ANIMATION_TIMEMIN: 400
+ANIMATION_TIMEMIN: 90
 ASCENSION_COUNT_MAX: 8
 BLOCK_BREAK_MIN: 0.1
 BLOCK_MAX_DISTANCE: 5.5
