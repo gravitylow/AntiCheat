@@ -67,7 +67,6 @@ public class MySQLGroupsHolder extends ConfigurationTable implements Groups {
             getConnection().prepareStatement(sqlPopulate).executeUpdate();
             getConnection().commit();
 
-
             ResultSet set = getConnection().prepareStatement(sqlLoad).executeQuery();
             while (set.next()) {
                 String name = set.getString("name");

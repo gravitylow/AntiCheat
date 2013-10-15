@@ -1068,7 +1068,6 @@ public class Backend {
             String event = level >= magic.CHAT_ACTION_TWO_LEVEL ? manager.getConfiguration().getConfig().chatSpamActionTwo.getValue() : manager.getConfiguration().getConfig().chatSpamActionOne.getValue();
             manager.getUserManager().execute(manager.getUserManager().getUser(player.getName()), Utilities.stringToList(event), CheckType.CHAT_SPAM, lang.spamKickReason.getValue(), Utilities.stringToList(lang.spamWarning.getValue()), lang.spamBanReason.getValue());
         }
-        System.out.println("Chat level: "+level);
         chatLevel.put(user.getName(), level + 1);
     }
 
