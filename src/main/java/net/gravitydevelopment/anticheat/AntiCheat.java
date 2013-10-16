@@ -66,7 +66,7 @@ public class AntiCheat extends JavaPlugin {
         setupEvents();
         setupCommands();
         setupUpdater();
-        setupProtocol();
+        // setupProtocol(); TODO
         // Enterprise must come before levels
         setupEnterprise();
         restoreLevels();
