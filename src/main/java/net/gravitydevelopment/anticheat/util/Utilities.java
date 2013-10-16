@@ -334,13 +334,12 @@ public final class Utilities {
      * @return true if int
      */
     public static boolean isInt(String string) {
-        boolean x = false;
         try {
             Integer.parseInt(string);
-            x = true;
+            return true;
         } catch (Exception ex) {
+            return false;
         }
-        return x;
     }
 
     /**
@@ -454,10 +453,8 @@ public final class Utilities {
      * @param string the string to parse
      * @return ArrayList with string
      */
-    public static ArrayList<String> stringToList(String string) {
-        ArrayList<String> i = new ArrayList<String>();
-        i.add(string);
-        return i;
+    public static ArrayList<String> stringToList(final String string) {
+        return new ArrayList<String>() {{ add(string); }};
     }
 
     /**

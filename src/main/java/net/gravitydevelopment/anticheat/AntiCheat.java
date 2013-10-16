@@ -32,8 +32,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,10 +145,17 @@ public class AntiCheat extends JavaPlugin {
 
     private void setupUpdater() {
         if (config.getConfig().autoUpdate.getValue()) {
-            verboseLog("Checking for a new update...");
-            Updater updater = new Updater(this, PROJECT_ID, this.getFile(), Updater.UpdateType.DEFAULT, false);
-            update = updater.getResult() != Updater.UpdateResult.NO_UPDATE;
-            verboseLog("Update available: " + update);
+            final File file = this.getFile();
+            final Plugin plugin = this;
+            getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
+                @Override
+                public void run() {
+                    verboseLog("Checking for a new update...");
+                    Updater updater = new Updater(plugin, PROJECT_ID, file, Updater.UpdateType.DEFAULT, false);
+                    update = updater.getResult() != Updater.UpdateResult.NO_UPDATE;
+                    verboseLog("Update available: " + update);
+                }
+            });
         }
     }
 
