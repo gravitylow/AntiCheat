@@ -1,6 +1,5 @@
 author: Gravity
-database: false
-description: Prevention of hacks and other malicious tinkering on a Minecraft server.
+description: AntiCheat helps easily identify and block malicious users on your server.
 main: net.gravitydevelopment.anticheat.AntiCheat
 name: AntiCheat
 softdepend: [ProtocolLib]
@@ -11,7 +10,7 @@ commands:
   anticheat:
     description: Control and view info about AntiCheat
     usage: /anticheat help
-    aliases: [anti, ac]
+    aliases: anti
 permissions:
   anticheat.alert:
     description: Get alerts
@@ -23,8 +22,6 @@ permissions:
     description: Spy system access
   anticheat.system.xray:
     description: XRay info access
-  anticheat.system.calibrate:
-    description: Calibrate info access
   anticheat.mod:
     description: Mod helper perm
     children:
@@ -41,6 +38,10 @@ permissions:
     description: Reset access
   anticheat.system.update:
     description: Update access
+  anticheat.system.calibrate:
+    description: Calibrate info access
+  anticheat.system.debug:
+    description: Debug access
   anticheat.admin:
     description: Admin helper perm
     children:
@@ -50,6 +51,7 @@ permissions:
       anticheat.system.reset: true
       anticheat.system.update: true
       anticheat.system.calibrate: true
+      anticheat.system.debug: true
   anticheat.check.zombe.fly:
     description: Allow players to use zombe flymod
     default: false
@@ -128,6 +130,9 @@ permissions:
   anticheat.check.autotool:
     description: Allows players to use autotool to switch tools quickly
     default: false
+  anticheat.check.fastanimation:
+    description: Allows players to attack or interact very quickly
+    default: false
   anticheat.check.exempt:
     description: Total exemption from checks
     default: false
@@ -158,3 +163,4 @@ permissions:
       anticheat.check.vclip: true
       anticheat.check.fastinventory: true
       anticheat.check.autotool: true
+      anticheat.check.fastanimation: true

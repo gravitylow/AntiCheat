@@ -333,8 +333,10 @@ public class CommandHandler implements CommandExecutor {
     }
 
     public void handleDeveloper(CommandSender cs) {
-        AntiCheat.setDeveloperMode(!AntiCheat.developerMode());
-        cs.sendMessage(GREEN + "Developer mode " + (AntiCheat.developerMode() ? "ON" : "OFF"));
+        if (hasPermission(cs, Permission.SYSTEM_DEBUG)) {
+            AntiCheat.setDeveloperMode(!AntiCheat.developerMode());
+            cs.sendMessage(GREEN + "Developer mode " + (AntiCheat.developerMode() ? "ON" : "OFF"));
+        }
     }
 
     public void sendPlayerReport(CommandSender cs, List<CheckType> types, User user, int page) {
