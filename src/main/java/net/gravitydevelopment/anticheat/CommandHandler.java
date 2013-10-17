@@ -209,10 +209,10 @@ public class CommandHandler implements CommandExecutor {
 
     public void handleUpdate(CommandSender cs) {
         if (hasPermission(cs, Permission.SYSTEM_UPDATE)) {
-            cs.sendMessage("Running " + GREEN + "AntiCheat " + WHITE + "v" + GREEN + AntiCheat.getVersion());
+            cs.sendMessage(GRAY + "Running AntiCheat v" + GREEN + AntiCheat.getVersion());
             cs.sendMessage(MENU_END);
             if (!AntiCheat.isUpdated()) {
-                cs.sendMessage(GRAY + "There " + GREEN + "IS" + GRAY + " a newer version avaliable.");
+                cs.sendMessage(GRAY + "There " + GREEN + "IS" + GRAY + " a newer version available.");
                 if (CONFIG.getConfig().autoUpdate.getValue()) {
                     cs.sendMessage(GRAY + "It will be installed automatically for you on next launch.");
                 } else {
@@ -246,6 +246,13 @@ public class CommandHandler implements CommandExecutor {
                     } else {
                         cs.sendMessage(RED + "Not a valid page number: " + WHITE + args[2]);
                     }
+                } else if (group.equalsIgnoreCase("all")) {
+                    cs.sendMessage(GREEN + "Low: " + WHITE + USER_MANAGER.getUsersInGroup(null).size() + " players");
+                    for (Group g : CONFIG.getGroups().getGroups()) {
+                        int numPlayers = USER_MANAGER.getUsersInGroup(g).size();
+                        cs.sendMessage(g.getColor() + g.getName() + WHITE + ": " + numPlayers + " players");
+                    }
+                    cs.sendMessage("Use /anticheat report [group] for a list of players in each group.");
                 } else {
                     boolean sent = false;
                     for (Group g : CONFIG.getGroups().getGroups()) {
@@ -276,10 +283,11 @@ public class CommandHandler implements CommandExecutor {
     public void sendReport(CommandSender cs, Group group, int page) {
         List<User> users = USER_MANAGER.getUsersInGroup(group);
         ChatColor color = group == null ? GREEN : group.getColor();
+        String groupName = group == null ? "Low" : group.getName();
         int pages = (int) Math.ceil(((float) users.size()) / 7);
         if (page <= pages && page > 0) {
             cs.sendMessage("--------------------[" + GREEN + "REPORT[" + page + "/" + pages + "]" + WHITE + "]---------------------");
-            cs.sendMessage(GRAY + "Group: " + color + group);
+            cs.sendMessage(GRAY + "Group: " + color + groupName);
             for (int x = 0; x < 7; x++) {
                 int index = ((page - 1) * 6) + (x + ((page - 1) * 1));
                 if (index < users.size()) {
@@ -291,7 +299,7 @@ public class CommandHandler implements CommandExecutor {
         } else {
             if (pages == 0) {
                 cs.sendMessage("--------------------[" + GREEN + "REPORT[1/1]" + WHITE + "]---------------------");
-                cs.sendMessage(GRAY + "Group: " + color + group);
+                cs.sendMessage(GRAY + "Group: " + color + groupName);
                 cs.sendMessage(GRAY + "There are no users in this group.");
                 cs.sendMessage(MENU_END);
             } else {
@@ -413,7 +421,7 @@ public class CommandHandler implements CommandExecutor {
             } else if (args[0].equalsIgnoreCase("spy")) {
                 handleSpy(cs, args);
             } else if (args[0].equalsIgnoreCase("report")) {
-                if (args[1].equalsIgnoreCase("low") || args[1].equalsIgnoreCase("medium") || args[1].equalsIgnoreCase("high")) {
+                if (args[1].equalsIgnoreCase("low") || args[1].equalsIgnoreCase("medium") || args[1].equalsIgnoreCase("high") || args[1].equalsIgnoreCase("all")) {
                     handleReport(cs, args);
                 } else {
                     handlePlayerReport(cs, args);

@@ -38,7 +38,6 @@ public class ConfigurationFile {
     private AntiCheat plugin;
 
     private boolean saveDefault;
-    private boolean didSaveDefault;
 
     protected boolean needsReload;
 
@@ -69,7 +68,6 @@ public class ConfigurationFile {
         if (!rawFile.exists()) {
             if (saveDefault) {
                 plugin.saveResource(fileName, true);
-                didSaveDefault = true;
             } else {
                 if (!rawFile.getParentFile().exists()) {
                     rawFile.getParentFile().mkdir();

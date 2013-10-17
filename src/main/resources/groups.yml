@@ -1,5 +1,5 @@
 # AntiCheat configuration file
-# Please report any bugs: http://dev.bukkit.org/server-mods/anticheat/
+# Please report any bugs: https://github.com/gravitylow/AntiCheat/issues
 groups:
     - 'Medium : 20 : YELLOW : WARN'
     - 'High : 50 : RED : KICK'
