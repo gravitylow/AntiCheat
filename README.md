@@ -3,7 +3,7 @@ AntiCheat
 
 AntiCheat helps server admins easily identify and block malicious users by monitoring and analyzing the behaviour of their players.
 
-[![Build Status](https://travis-ci.org/h31ix/AntiCheat.png?branch=master)](https://travis-ci.org/h31ix/AntiCheat)
+[![Build Status](https://travis-ci.org/gravitylow/AntiCheat.png?branch=master)](https://travis-ci.org/gravitylow/AntiCheat)
 
 Usage
 -------
