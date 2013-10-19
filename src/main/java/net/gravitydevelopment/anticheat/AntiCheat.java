@@ -51,10 +51,12 @@ public class AntiCheat extends JavaPlugin {
     private static final int PROJECT_ID = 38723;
     private static PacketManager packetManager;
     private static boolean protocolLib = false;
+    private static Long loadTime;
 
     @Override
     public void onEnable() {
         plugin = this;
+        loadTime = System.currentTimeMillis();
         manager = new AnticheatManager(this, getLogger());
         eventList.add(new PlayerListener());
         eventList.add(new BlockListener());
@@ -237,5 +239,9 @@ public class AntiCheat extends JavaPlugin {
 
     public void setVerbose(boolean b) {
         verbose = b;
+    }
+
+    public Long getLoadTime() {
+        return loadTime;
     }
 }

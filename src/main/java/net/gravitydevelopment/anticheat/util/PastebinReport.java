@@ -35,11 +35,11 @@ import java.util.Date;
 import java.util.List;
 
 public class PastebinReport {
+    private static final String DATE = new SimpleDateFormat("yyyy-MM-dd kk:mm Z").format(new Date());
+    private static final String API_KEY = "6eeace09c2742f8463b9db9b0c467605";
+
     private StringBuilder report = new StringBuilder();
     private String url = "";
-    private Date date = new Date();
-    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd kk:mm Z");
-
 
     public PastebinReport(CommandSender cs) {
         Player player = null;
@@ -87,7 +87,7 @@ public class PastebinReport {
             append("------------ WARNING! ------------");
             append("This report was run with NoCheatPlus enabled. Results may be inaccurate." + '\n');
         }
-        append("------------ AntiCheat Report - " + format.format(date) + " ------------");
+        append("------------ AntiCheat Report - " + DATE + " ------------");
         appendSystemInfo();
         append("------------Last 30 logs------------");
         appendLogs();
@@ -125,6 +125,7 @@ public class PastebinReport {
         append("Online Mode: " + String.valueOf(Bukkit.getOnlineMode()).toUpperCase());
         append("Players: " + Bukkit.getOnlinePlayers().length + "/" + Bukkit.getMaxPlayers());
         append("Plugin Count: " + Bukkit.getPluginManager().getPlugins().length);
+        append("Plugin Uptime: " + ((System.currentTimeMillis() - AntiCheat.getPlugin().getLoadTime()) / 1000) / 60 + " minutes");
     }
 
     private void appendMagicDiff() {
@@ -180,7 +181,7 @@ public class PastebinReport {
             conn.setDoOutput(true);
             OutputStream out = conn.getOutputStream();
 
-            out.write(("api_option=paste" + "&api_dev_key=" + URLEncoder.encode("c0616def494dcb5b7632304f8c52c0f1", "utf-8") + "&api_paste_code=" + URLEncoder.encode(report.toString(), "utf-8") + "&api_paste_private=" + URLEncoder.encode("1", "utf-8") + "&api_paste_name=" + URLEncoder.encode("", "utf-8") + "&api_paste_expire_date=" + URLEncoder.encode("1M", "utf-8") + "&api_paste_format=" + URLEncoder.encode("text", "utf-8") + "&api_user_key=" + URLEncoder.encode("", "utf-8")).getBytes());
+            out.write(("api_option=paste" + "&api_dev_key=" + URLEncoder.encode(API_KEY, "utf-8") + "&api_paste_code=" + URLEncoder.encode(report.toString(), "utf-8") + "&api_paste_private=" + URLEncoder.encode("1", "utf-8") + "&api_paste_name=" + URLEncoder.encode("", "utf-8") + "&api_paste_expire_date=" + URLEncoder.encode("1M", "utf-8") + "&api_paste_format=" + URLEncoder.encode("text", "utf-8") + "&api_user_key=" + URLEncoder.encode("", "utf-8")).getBytes());
             out.flush();
             out.close();
 
