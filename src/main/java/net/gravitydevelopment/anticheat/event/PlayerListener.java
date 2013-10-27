@@ -246,14 +246,7 @@ public class PlayerListener extends EventListener {
 
     @EventHandler
     public void onPlayerAnimation(PlayerAnimationEvent event) {
-        Player player = event.getPlayer();
-        if (getCheckManager().willCheck(player, CheckType.FAST_ANIMATION)) {
-            CheckResult result = getBackend().checkFastAnimation(player);
-            if (result.failed()) {
-                event.setCancelled(!silentMode());
-                log(result.getMessage(), player, CheckType.FAST_ANIMATION);
-            }
-        }
+        getBackend().logAnimation(event.getPlayer());
 
         AntiCheat.getManager().addEvent(event.getEventName(), event.getHandlers().getRegisteredListeners());
     }

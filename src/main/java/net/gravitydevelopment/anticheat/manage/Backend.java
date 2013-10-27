@@ -86,8 +86,6 @@ public class Backend {
     private Map<String, Long> stepTime = new HashMap<String, Long>();
     private HashSet<Byte> transparent = new HashSet<Byte>();
     private Map<String, Long> lastFallPacket = new HashMap<String, Long>();
-    private Map<String, Long> animationTime = new HashMap<String, Long>();
-    private Map<String, Integer> animations = new HashMap<String, Integer>();
 
     private Magic magic;
     private AnticheatManager manager = null;
@@ -866,24 +864,6 @@ public class Backend {
             startEat.remove(player.getName());
             if ((System.currentTimeMillis() - l) < magic.EAT_TIME_MIN) {
                 return new CheckResult(Result.FAILED, player.getName() + " ate too quickly (time=" + (System.currentTimeMillis() - l) + " ms, min=" + magic.EAT_TIME_MIN + " ms)");
-            }
-        }
-        return PASS;
-    }
-
-    public CheckResult checkFastAnimation(final Player player) {
-        logAnimation(player);
-
-        String name = player.getName();
-        int clicks = animations.containsKey(name) ? animations.get(name) + 1 : 1;
-        animations.put(name, clicks);
-        if (clicks == 1) {
-            animationTime.put(name, System.currentTimeMillis());
-        } else if (clicks == magic.ANIMATION_CHECK) {
-            long time = System.currentTimeMillis() - animationTime.get(name);
-            animations.put(name, 0);
-            if (time < magic.ANIMATION_TIMEMIN) {
-                return new CheckResult(Result.FAILED, player.getName() + " clicked " + clicks + " times in " + time + " ms (max=" + magic.ANIMATION_CHECK + " in " + magic.ANIMATION_TIMEMIN + " ms)");
             }
         }
         return PASS;

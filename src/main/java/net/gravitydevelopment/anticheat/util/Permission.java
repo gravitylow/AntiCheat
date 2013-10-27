@@ -48,7 +48,6 @@ public enum Permission {
     CHECK_ITEMSPAM,
     CHECK_VISUAL,
     CHECK_FASTINVENTORY,
-    CHECK_FASTANIMATION,
     CHECK_AUTOTOOL,
 
     /* System Nodes */

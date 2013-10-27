@@ -40,14 +40,6 @@ import net.gravitydevelopment.anticheat.config.ConfigurationFile;
 
 public class Magic extends ConfigurationFile {
     /**
-     * The number of animations to wait before checking fastclicking; Type=integer; +Leniency=Increase.
-     */
-    public int ANIMATION_CHECK;
-    /**
-     * The minimum time it should have taken for the player to click X times; Type=integer; +Leniency=Increase.
-     */
-    public long ANIMATION_TIMEMIN;
-    /**
      * Time to exempt a player from moving because of entering/exiting a vehicle; Type=system, +Leniency=Increase.
      */
     public int ENTERED_EXITED_TIME;
@@ -467,8 +459,6 @@ public class Magic extends ConfigurationFile {
         TIMER_STEP_CHECK = new ConfigValue<Integer>("TIMER_STEP_CHECK").getValue();
         TIMER_TIMEMIN = new ConfigValue<Integer>("TIMER_TIMEMIN").getValue();
         TELEPORT_MIN = new ConfigValue<Integer>("TELEPORT_MIN").getValue();
-        ANIMATION_CHECK = new ConfigValue<Integer>("ANIMATION_CHECK").getValue();
-        ANIMATION_TIMEMIN = new ConfigValue<Integer>("ANIMATION_TIMEMIN").getValue();
     }
 
     public double getVersion() {
