@@ -24,9 +24,32 @@ import java.util.List;
 
 public interface Levels {
 
+    /**
+     * Checks for a stored level for this user, and loads it to their object if found.
+     *
+     * @param user User to load.
+     */
     public void loadLevelToUser(User user);
 
+    /**
+     * Saves the user's level to storage.
+     *
+     * @param user User to save.
+     */
     public void saveLevelFromUser(User user);
 
+    /**
+     * Saves a list of user's levels to storage.
+     * Used on server shutdown / reload.
+     *
+     * @param users List of users to save.
+     */
     public void saveLevelsFromUsers(List<User> users);
+
+    /**
+     * Check to see if the user's level has been manually changed since it was loaded, and update it if needed
+     *
+     * @param user User to update.
+     */
+    public void updateLevelToUser(User user);
 }

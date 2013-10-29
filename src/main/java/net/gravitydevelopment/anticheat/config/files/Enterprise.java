@@ -34,8 +34,9 @@ public class Enterprise extends ConfigurationFile {
     public ConfigValue<String> loggingInterval;
 
     public ConfigValue<Boolean> syncLevels;
+    public ConfigValue<String> syncInterval;
 
-    public ConfigValue<Boolean> configGroups    ;
+    public ConfigValue<Boolean> configGroups;
     public ConfigValue<Boolean> configRules;
 
     public Database database;
@@ -53,6 +54,7 @@ public class Enterprise extends ConfigurationFile {
         loggingInterval = new ConfigValue<String>("log.interval");
 
         syncLevels = new ConfigValue<Boolean>("sync.levels");
+        syncInterval = new ConfigValue<String>("sync.interval");
 
         configGroups = new ConfigValue<Boolean>("config.groups");
         configRules = new ConfigValue<Boolean>("config.rules");
@@ -77,7 +79,9 @@ public class Enterprise extends ConfigurationFile {
                     databaseSchema.getValue(),
                     serverName.getValue(),
                     loggingInterval.getValue(),
-                    loggingLife.getValue()
+                    loggingLife.getValue(),
+                    syncLevels.getValue(),
+                    syncInterval.getValue()
             );
 
             database.connect();

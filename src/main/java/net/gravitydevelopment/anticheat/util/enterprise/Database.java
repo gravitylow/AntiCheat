@@ -52,16 +52,19 @@ public class Database {
     private String serverName;
 
     private long logInterval;
-
     private long logLife;
+
+    private boolean syncLevels;
+    private long syncInterval;
 
     private Connection connection;
 
     private PreparedStatement eventBatch;
 
     private BukkitTask eventTask;
+    private BukkitTask syncTask;
 
-    public Database(DatabaseType type, String hostname, int port, String username, String password, String prefix, String schema, String serverName, String logInterval, String logLife) {
+    public Database(DatabaseType type, String hostname, int port, String username, String password, String prefix, String schema, String serverName, String logInterval, String logLife, boolean syncLevels, String syncInterval) {
         this.type = type;
         this.hostname = hostname;
         this.port = port;
@@ -72,8 +75,10 @@ public class Database {
         this.serverName = serverName;
 
         this.logInterval = Utilities.lifeToSeconds(logInterval);
-
         this.logLife = Utilities.lifeToSeconds(logLife);
+
+        this.syncLevels = syncLevels;
+        this.syncInterval = Utilities.lifeToSeconds(syncInterval);
 
         sqlLogEvent = "INSERT INTO " + prefix + EVENTS_TABLE +
                 " (server, user, check_type) " +
@@ -139,6 +144,15 @@ public class Database {
                 }, logInterval * 20, logInterval * 20);
             }
 
+            if(syncLevels && syncInterval != 0) {
+                syncTask = Bukkit.getScheduler().runTaskTimerAsynchronously(AntiCheat.getPlugin(), new Runnable() {
+                    @Override
+                    public void run() {
+                        syncUsers();
+                    }
+                }, syncInterval * 20, syncInterval * 20);
+            }
+
             AntiCheat.getPlugin().verboseLog("Connected to the database.");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -146,7 +160,8 @@ public class Database {
     }
 
     public void shutdown() {
-        eventTask.cancel();
+        if (eventTask != null) eventTask.cancel();
+        if (syncTask != null) syncTask.cancel();
 
         flushEvents();
 
@@ -203,6 +218,12 @@ public class Database {
                     }
                 }
             });
+        }
+    }
+
+    private void syncUsers() {
+        for (User user : AntiCheat.getManager().getUserManager().getUsers()) {
+            AntiCheat.getManager().getConfiguration().getLevels().updateLevelToUser(user);
         }
     }
 }

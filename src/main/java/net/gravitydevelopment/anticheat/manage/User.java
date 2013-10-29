@@ -400,4 +400,9 @@ public class User {
     public Timestamp getLevelSyncTimestamp() {
         return levelSyncTimestamp;
     }
+
+    @Override
+    public String toString() {
+        return "User {name = " + name + ", level = " + level + "}";
+    }
 }

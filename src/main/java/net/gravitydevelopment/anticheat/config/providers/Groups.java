@@ -24,7 +24,18 @@ import java.util.List;
 
 public interface Groups {
 
+    /**
+     * Get all groups.
+     *
+     * @return List of groups.
+     */
     public List<Group> getGroups();
 
+    /**
+     * Get the highest level value assigned to a group.
+     * Used as a maximum cap to rising hack levels.
+     *
+     * @return Highest group level.
+     */
     public int getHighestLevel();
 }

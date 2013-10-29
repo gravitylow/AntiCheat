@@ -32,6 +32,8 @@ log:
 sync:
   # Keep user's levels synced in the database?
   levels: true
+  # How often to check for changes to user's levels? (you can use any combination of d,h,m,s)
+  interval: 1m
 # Configuration settings
 config:
   # Load groups configuration from the database?

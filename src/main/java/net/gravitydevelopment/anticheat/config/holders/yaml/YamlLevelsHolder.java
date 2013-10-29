@@ -56,6 +56,12 @@ public class YamlLevelsHolder extends ConfigurationFile implements Levels {
         }
     }
 
+    @Override
+    public void updateLevelToUser(User user) {
+        // This method intentionally left blank.
+        return;
+    }
+
     private int getLevel(String name) {
         ConfigValue<Integer> level = new ConfigValue<Integer>(name, false);
         if (level.hasValue()) {

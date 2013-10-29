@@ -25,5 +25,10 @@ import java.util.List;
 
 public interface Rules {
 
+    /**
+     * Get all rules.
+     *
+     * @return List of rules.
+     */
     public List<Rule> getRules();
 }
