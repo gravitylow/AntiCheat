@@ -64,9 +64,15 @@ public enum Permission {
     SYSTEM_RELOAD;
 
     private static final String PERMISSION_ALL = "anticheat.*";
+    private static final String PERMISSION_SPAM = "anticheat.check.spam";
+
+    public static boolean getCommandExempt(CommandSender cs, String commandLabel) {
+        // Check permission, base, and all will have already been checked
+        return cs.hasPermission(CHECK_COMMANDSPAM.toString() + commandLabel);
+    }
 
     public boolean get(CommandSender cs) {
-        if ((this == CHECK_CHATSPAM || this == CHECK_COMMANDSPAM) && cs.hasPermission("anticheat.check.spam")) return true;
+        if ((this == CHECK_CHATSPAM || this == CHECK_COMMANDSPAM) && cs.hasPermission(PERMISSION_SPAM)) return true;
         return cs.hasPermission(toString()) || cs.hasPermission(getBase()) || cs.hasPermission(PERMISSION_ALL);
     }
 
