@@ -428,7 +428,7 @@ public class Backend {
 
         for (int i = 0; i < (Math.round(distance.getYDifference())) + 1; i++) {
             Block block = new Location(player.getWorld(), player.getLocation().getX(), to + i, player.getLocation().getZ()).getBlock();
-            if (block.getTypeId() != 0 && block.getType().isSolid()) {
+            if (block.getType() != Material.AIR && block.getType().isSolid()) {
                 return new CheckResult(Result.FAILED, player.getName() + " tried to move through a solid block", (int) from + 3);
             }
         }
@@ -457,7 +457,7 @@ public class Backend {
                     if (!silentMode()) {
                         g.setY(lastYcoord.get(name));
                         player.sendMessage(ChatColor.RED + "[AntiCheat] Fly hacking on the y-axis detected.  Please wait 5 seconds to prevent getting damage.");
-                        if (g.getBlock().getTypeId() == 0) {
+                        if (g.getBlock().getType() == Material.AIR) {
                             player.teleport(g);
                         }
                     }
@@ -476,7 +476,7 @@ public class Backend {
                     yAxisLastViolation.put(name, System.currentTimeMillis());
                     if (!silentMode()) {
                         g.setY(lastYcoord.get(name));
-                        if (g.getBlock().getTypeId() == 0) {
+                        if (g.getBlock().getType() == Material.AIR) {
                             player.teleport(g);
                         }
                     }

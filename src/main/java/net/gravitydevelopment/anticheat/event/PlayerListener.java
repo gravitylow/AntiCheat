@@ -328,7 +328,7 @@ public class PlayerListener extends EventListener {
                     if (!silentMode()) {
                         int data = result.getData() > 3 ? 3 : result.getData();
                         Location newloc = new Location(player.getWorld(), event.getFrom().getX(), event.getFrom().getY() + data, event.getFrom().getZ());
-                        if (newloc.getBlock().getTypeId() == 0) {
+                        if (newloc.getBlock().getType() == Material.AIR) {
                             event.setTo(newloc);
                         } else {
                             event.setTo(user.getGoodLocation(from.clone()));
