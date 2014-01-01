@@ -32,11 +32,13 @@ import net.gravitydevelopment.anticheat.config.holders.yaml.YamlRulesHolder;
 import net.gravitydevelopment.anticheat.config.providers.Groups;
 import net.gravitydevelopment.anticheat.config.providers.Levels;
 import net.gravitydevelopment.anticheat.config.providers.Rules;
+import net.gravitydevelopment.anticheat.manage.AnticheatManager;
 
 import java.util.ArrayList;
 
 public class Configuration {
 
+    private AnticheatManager manager;
     private Config config;
     private Enterprise enterprise;
     private Lang lang;
@@ -50,7 +52,7 @@ public class Configuration {
     private ArrayList<ConfigurationTable> dbfiles;
 
     public Configuration(AntiCheat plugin) {
-
+        manager = plugin.getManager();
         config = new Config(plugin, this);
         plugin.setVerbose(config.verboseStartup.getValue());
         // Now load others
@@ -106,6 +108,9 @@ public class Configuration {
         }
         for (ConfigurationTable table : dbfiles) {
             table.load();
+        }
+        if (manager.getBackend() != null) {
+            manager.getBackend().updateMagic(magic);
         }
     }
 
