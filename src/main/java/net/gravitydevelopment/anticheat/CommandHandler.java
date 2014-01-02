@@ -19,6 +19,7 @@
 package net.gravitydevelopment.anticheat;
 
 import net.gravitydevelopment.anticheat.config.Configuration;
+import net.gravitydevelopment.anticheat.manage.CheckManager;
 import net.gravitydevelopment.anticheat.manage.CheckType;
 import net.gravitydevelopment.anticheat.manage.User;
 import net.gravitydevelopment.anticheat.manage.UserManager;
@@ -366,14 +367,15 @@ public class CommandHandler implements CommandExecutor {
             for (int x = 0; x < 6; x++) {
                 int index = ((page - 1) * 5) + (x + ((page - 1)));
                 if (index < types.size()) {
-                    int use = types.get(index).getUses(name);
+                    CheckType type = types.get(index);
+                    int use = type.getUses(name);
                     ChatColor color = WHITE;
                     if (use >= 20) {
                         color = YELLOW;
                     } else if (use > 50) {
                         color = RED;
                     }
-                    cs.sendMessage(GRAY + CheckType.getName(types.get(index)) + ": " + color + use);
+                    cs.sendMessage(GRAY + CheckType.getName(type) + ": " + color + use);
                 }
             }
             cs.sendMessage(MENU_END);
@@ -387,6 +389,20 @@ public class CommandHandler implements CommandExecutor {
             } else {
                 cs.sendMessage(RED + "Page not found. Requested " + WHITE + page + RED + ", Max " + WHITE + pages);
             }
+        }
+
+        if (AntiCheat.developerMode()) {
+            int permission = 0;
+            int check = 0;
+            for (Permission perm : Permission.values()) {
+                if (perm.get(user.getPlayer())) permission++;
+            }
+            CheckManager manager = AntiCheat.getManager().getCheckManager();
+            for (CheckType type : CheckType.values()) {
+                if (manager.willCheck(user.getPlayer(), type)) check++;
+            }
+            cs.sendMessage(ChatColor.GOLD + "User has " + permission + "/" + Permission.values().length + " permissions");
+            cs.sendMessage(ChatColor.GOLD + "User will be checked for " + check + "/" + CheckType.values().length + " checks");
         }
     }
 

@@ -225,7 +225,7 @@ public class AntiCheat extends JavaPlugin {
         Bukkit.getScheduler().runTask(getPlugin(), new Runnable() {
             public void run() {
                 if (developer) {
-                    manager.log("[DEBUG] " + string);
+                    manager.debugLog("[DEBUG] " + string);
                 }
             }
         });

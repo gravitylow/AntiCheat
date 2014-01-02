@@ -82,6 +82,11 @@ public class AnticheatManager {
         log(message, 0);
     }
 
+    public void debugLog(String message) {
+        Bukkit.getConsoleSender().sendMessage("[AntiCheat] " + ChatColor.GRAY + message);
+        logs.add(ChatColor.stripColor(message));
+    }
+
     public void log(String message, int i) {
         if (i != 1 && getConfiguration().getConfig().logToConsole.getValue()) {
             Bukkit.getConsoleSender().sendMessage("[AntiCheat] " + ChatColor.RED + message);
