@@ -19,6 +19,7 @@
 package net.gravitydevelopment.anticheat.util;
 
 import net.gravitydevelopment.anticheat.AntiCheat;
+import net.gravitydevelopment.anticheat.config.Configuration;
 import net.gravitydevelopment.anticheat.config.files.Magic;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -113,6 +114,7 @@ public class PastebinReport {
 
     private void appendSystemInfo() {
         Runtime runtime = Runtime.getRuntime();
+        Configuration config = AntiCheat.getManager().getConfiguration();
         append("AntiCheat Version: " + AntiCheat.getVersion() + (AntiCheat.isUpdated() ? "" : " (OUTDATED)"));
         append("Server Version: " + Bukkit.getVersion());
         append("Server Implementation: " + Bukkit.getName());
@@ -122,10 +124,18 @@ public class PastebinReport {
         append("Free Memory: " + runtime.freeMemory() / 1024 / 1024 + "MB");
         append("Max Memory: " + runtime.maxMemory() / 1024 / 1024 + "MB");
         append("Total Memory: " + runtime.totalMemory() / 1024 / 1024 + "MB");
-        append("Online Mode: " + String.valueOf(Bukkit.getOnlineMode()).toUpperCase());
+        append("Online Mode: " + Bukkit.getOnlineMode());
         append("Players: " + Bukkit.getOnlinePlayers().length + "/" + Bukkit.getMaxPlayers());
         append("Plugin Count: " + Bukkit.getPluginManager().getPlugins().length);
         append("Plugin Uptime: " + ((System.currentTimeMillis() - AntiCheat.getPlugin().getLoadTime()) / 1000) / 60 + " minutes");
+        append("Enterprise: " + config.getConfig().enterprise.getValue());
+        if (config.getConfig().enterprise.getValue()) {
+            append("- Server name: " + config.getEnterprise().serverName.getValue());
+            append("- Database type: " + config.getEnterprise().database.getType());
+            append("- Groups source: " + (config.getEnterprise().configGroups.getValue() ? "Database" : "Flatfile"));
+            append("- Rules source: " + (config.getEnterprise().configRules.getValue() ? "Database" : "Flatfile"));
+            append("- Levels source: " + (config.getEnterprise().syncLevels.getValue() ? "Database" : "Flatfile"));
+        }
     }
 
     private void appendMagicDiff() {
