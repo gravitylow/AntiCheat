@@ -51,8 +51,8 @@ public class Configuration {
     private ArrayList<ConfigurationFile> flatfiles;
     private ArrayList<ConfigurationTable> dbfiles;
 
-    public Configuration(AntiCheat plugin) {
-        manager = plugin.getManager();
+    public Configuration(AntiCheat plugin, AnticheatManager manager) {
+        this.manager = manager;
         config = new Config(plugin, this);
         plugin.setVerbose(config.verboseStartup.getValue());
         // Now load others

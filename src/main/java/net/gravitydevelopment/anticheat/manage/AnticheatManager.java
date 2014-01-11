@@ -59,7 +59,7 @@ public class AnticheatManager {
         plugin = instance;
         // now load all the others!!!!!
         fileLogger = Logger.getLogger("net.gravitydevelopment.anticheat.AntiCheat");
-        configuration = new Configuration(plugin);
+        configuration = new Configuration(plugin, this);
         xrayTracker = new XRayTracker();
         userManager = new UserManager(configuration);
         checkManager = new CheckManager(this, configuration);
