@@ -33,7 +33,9 @@ import net.gravitydevelopment.anticheat.config.providers.Groups;
 import net.gravitydevelopment.anticheat.config.providers.Levels;
 import net.gravitydevelopment.anticheat.config.providers.Rules;
 import net.gravitydevelopment.anticheat.manage.AnticheatManager;
+import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class Configuration {
@@ -52,6 +54,7 @@ public class Configuration {
     private ArrayList<ConfigurationTable> dbfiles;
 
     public Configuration(AntiCheat plugin, AnticheatManager manager) {
+        removeOldFiles();
         this.manager = manager;
         config = new Config(plugin, this);
         plugin.setVerbose(config.verboseStartup.getValue());
@@ -118,6 +121,26 @@ public class Configuration {
         if (file.needsReload()) {
             file.reload();
             file.setNeedsReload(false);
+        }
+    }
+
+    private void removeOldFiles() {
+        ArrayList<String> removed = new ArrayList<String>();
+        File configFile = new File(AntiCheat.getPlugin().getDataFolder(), "config.yml");
+        if (configFile.exists() && YamlConfiguration.loadConfiguration(configFile).getString("System.Auto update") != null) {
+            configFile.renameTo(new File(AntiCheat.getPlugin().getDataFolder(), "config.old"));
+            removed.add("config.yml has been renamed to config.old and replaced with the new config.yml");
+        }
+        File eventsFile = new File(AntiCheat.getPlugin().getDataFolder(), "events.yml");
+        if (eventsFile.exists()) {
+            eventsFile.renameTo(new File(AntiCheat.getPlugin().getDataFolder(), "events.old"));
+            removed.add("events.yml has been renamed to events.old and replaced with groups.yml and rules.yml");
+        }
+        if (removed.size() > 0) {
+            AntiCheat.getPlugin().getLogger().info("You are upgrading from an old version of AntiCheat. Due to configuration changes, the following files have been modified:");
+            for (String s : removed) {
+                AntiCheat.getPlugin().getLogger().info(s);
+            }
         }
     }
 
