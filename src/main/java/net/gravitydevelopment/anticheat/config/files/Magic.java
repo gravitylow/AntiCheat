@@ -312,6 +312,10 @@ public class Magic extends ConfigurationFile {
      */
     public double XZ_SPEED_MAX_POTION;
     /**
+     * Maximum speed a player can travel forwards or backwards while sprinting while under the influence; Type=double, +Leniency=Increase.
+     */
+    public double XZ_SPEED_MAX_POTION_SPRINT;
+    /**
      * Maximum speed a player can travel forwards or backwards while sneaking; Type=double, +Leniency=Increase.
      */
     public double XZ_SPEED_MAX_SNEAK;
@@ -374,11 +378,11 @@ public class Magic extends ConfigurationFile {
             // 0.2 -> 0.3 diffs
             // Fix improperly stored double Y_MAXDIFF
             new ConfigValue<Double>("Y_MAXDIFF").setValue(new ConfigValue<Double>("Y_MAXDIFF").getDefaultValue());
-            // Update version
-            version = new ConfigValue<Double>("VERSION").setValue(0.3D);
             setNeedsReload(true);
 
         }
+        new ConfigValue<Double>("VERSION").setValue(new ConfigValue<Double>("VERSION").getDefaultValue());
+
         ENTERED_EXITED_TIME = new ConfigValue<Integer>("ENTERED_EXITED_TIME").getValue();
         SNEAK_TIME = new ConfigValue<Integer>("SNEAK_TIME").getValue();
         TELEPORT_TIME = new ConfigValue<Integer>("TELEPORT_TIME").getValue();
@@ -445,6 +449,7 @@ public class Magic extends ConfigurationFile {
         Y_TIME = new ConfigValue<Integer>("Y_TIME").getValue();
         XZ_SPEED_MAX = new ConfigValue<Double>("XZ_SPEED_MAX").getValue();
         XZ_SPEED_MAX_SPRINT = new ConfigValue<Double>("XZ_SPEED_MAX_SPRINT").getValue();
+        XZ_SPEED_MAX_POTION_SPRINT = new ConfigValue<Double>("XZ_SPEED_MAX_POTION_SPRINT").getValue();
         XZ_SPEED_MAX_FLY = new ConfigValue<Double>("XZ_SPEED_MAX_FLY").getValue();
         XZ_SPEED_MAX_POTION = new ConfigValue<Double>("XZ_SPEED_MAX_POTION").getValue();
         XZ_SPEED_MAX_SNEAK = new ConfigValue<Double>("XZ_SPEED_MAX_SNEAK").getValue();

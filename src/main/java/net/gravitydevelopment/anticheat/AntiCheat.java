@@ -154,7 +154,7 @@ public class AntiCheat extends JavaPlugin {
                 public void run() {
                     verboseLog("Checking for a new update...");
                     Updater updater = new Updater(plugin, PROJECT_ID, file, Updater.UpdateType.DEFAULT, false);
-                    update = updater.getResult() != Updater.UpdateResult.NO_UPDATE;
+                    update = updater.getResult() == Updater.UpdateResult.SUCCESS;
                     verboseLog("Update available: " + update);
                 }
             });

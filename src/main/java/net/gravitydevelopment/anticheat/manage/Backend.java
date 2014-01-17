@@ -304,8 +304,13 @@ public class Backend {
                 reason = "while flying ";
                 max = magic.XZ_SPEED_MAX_FLY;
             } else if (player.hasPotionEffect(PotionEffectType.SPEED)) {
-                reason = "with speed potion ";
-                max = magic.XZ_SPEED_MAX_POTION;
+                if (player.isSprinting()) {
+                    reason = "with speed potion while sprinting ";
+                    max = magic.XZ_SPEED_MAX_POTION_SPRINT;
+                } else {
+                    reason = "with speed potion ";
+                    max = magic.XZ_SPEED_MAX_POTION;
+                }
             } else if (player.isSprinting()) {
                 reason = "while sprinting ";
                 max = magic.XZ_SPEED_MAX_SPRINT;
@@ -440,7 +445,7 @@ public class Backend {
         if (distance.getYDifference() > magic.TELEPORT_MIN || distance.getYDifference() < 0) {
             return PASS;
         }
-        if (!isMovingExempt(player) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && !Utilities.isClimbableBlock(player.getLocation().add(0, -1, 0).getBlock()) && !player.isInsideVehicle() && !Utilities.isInWater(player)) {
+        if (!isMovingExempt(player) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && !Utilities.isClimbableBlock(player.getLocation().add(0, -1, 0).getBlock()) && !player.isInsideVehicle() && !Utilities.isInWater(player) && !hasJumpPotion(player)) {
             double y1 = player.getLocation().getY();
             String name = player.getName();
             // Fix Y axis spam.
@@ -1039,6 +1044,14 @@ public class Backend {
         } else {
             return false;
         }
+    }
+
+    public boolean hasJumpPotion(Player player) {
+        return player.hasPotionEffect(PotionEffectType.JUMP);
+    }
+
+    public boolean hasSpeedPotion(Player player) {
+        return player.hasPotionEffect(PotionEffectType.SPEED);
     }
 
     public void processChatSpammer(Player player) {
