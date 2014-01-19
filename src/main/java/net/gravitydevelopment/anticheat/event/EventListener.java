@@ -19,8 +19,11 @@
 package net.gravitydevelopment.anticheat.event;
 
 import net.gravitydevelopment.anticheat.AntiCheat;
+import net.gravitydevelopment.anticheat.check.Backend;
+import net.gravitydevelopment.anticheat.check.CheckType;
 import net.gravitydevelopment.anticheat.config.Configuration;
 import net.gravitydevelopment.anticheat.manage.*;
+import net.gravitydevelopment.anticheat.util.User;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
@@ -55,9 +58,6 @@ public class EventListener implements Listener {
             type.logUse(user);
             if (CONFIG.getConfig().enterprise.getValue() && CONFIG.getEnterprise().loggingEnabled.getValue()) {
                 CONFIG.getEnterprise().database.logEvent(user, type);
-            }
-            if (CONFIG.getConfig().fileLogLevel.getValue() == 2 && type.getUses(user.getName()) % 10 == 0) {
-                AntiCheat.getManager().fileLog(user.getName() + " has triggered multiple " + type + " checks.");
             }
         }
     }
@@ -113,7 +113,7 @@ public class EventListener implements Listener {
         return CHECK_MANAGER;
     }
 
-    public static AnticheatManager getManager() {
+    public static AntiCheatManager getManager() {
         return AntiCheat.getManager();
     }
 

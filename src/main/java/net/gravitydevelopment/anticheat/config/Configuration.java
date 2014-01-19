@@ -32,7 +32,7 @@ import net.gravitydevelopment.anticheat.config.holders.yaml.YamlRulesHolder;
 import net.gravitydevelopment.anticheat.config.providers.Groups;
 import net.gravitydevelopment.anticheat.config.providers.Levels;
 import net.gravitydevelopment.anticheat.config.providers.Rules;
-import net.gravitydevelopment.anticheat.manage.AnticheatManager;
+import net.gravitydevelopment.anticheat.manage.AntiCheatManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -40,7 +40,7 @@ import java.util.ArrayList;
 
 public class Configuration {
 
-    private AnticheatManager manager;
+    private AntiCheatManager manager;
     private Config config;
     private Enterprise enterprise;
     private Lang lang;
@@ -53,7 +53,7 @@ public class Configuration {
     private ArrayList<ConfigurationFile> flatfiles;
     private ArrayList<ConfigurationTable> dbfiles;
 
-    public Configuration(AntiCheat plugin, AnticheatManager manager) {
+    public Configuration(AntiCheat plugin, AntiCheatManager manager) {
         removeOldFiles();
         this.manager = manager;
         config = new Config(plugin, this);

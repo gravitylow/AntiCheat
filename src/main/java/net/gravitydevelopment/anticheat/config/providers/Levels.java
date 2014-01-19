@@ -18,7 +18,7 @@
 
 package net.gravitydevelopment.anticheat.config.providers;
 
-import net.gravitydevelopment.anticheat.manage.User;
+import net.gravitydevelopment.anticheat.util.User;
 
 import java.util.List;
 

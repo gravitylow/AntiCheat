@@ -16,13 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.gravitydevelopment.anticheat.manage;
+package net.gravitydevelopment.anticheat.check;
 
 import net.gravitydevelopment.anticheat.AntiCheat;
 import net.gravitydevelopment.anticheat.config.files.Lang;
 import net.gravitydevelopment.anticheat.config.files.Magic;
-import net.gravitydevelopment.anticheat.util.CheckResult;
-import net.gravitydevelopment.anticheat.util.CheckResult.Result;
+import net.gravitydevelopment.anticheat.manage.AntiCheatManager;
+import net.gravitydevelopment.anticheat.util.User;
 import net.gravitydevelopment.anticheat.util.Distance;
 import net.gravitydevelopment.anticheat.util.Utilities;
 import org.bukkit.ChatColor;
@@ -88,11 +88,11 @@ public class Backend {
     private Map<String, Long> lastFallPacket = new HashMap<String, Long>();
 
     private Magic magic;
-    private AnticheatManager manager = null;
+    private AntiCheatManager manager = null;
     private Lang lang = null;
-    private static final CheckResult PASS = new CheckResult(Result.PASSED);
+    private static final CheckResult PASS = new CheckResult(CheckResult.Result.PASSED);
 
-    public Backend(AnticheatManager instance) {
+    public Backend(AntiCheatManager instance) {
         magic = instance.getConfiguration().getMagic();
         manager = instance;
         lang = manager.getConfiguration().getLang();
@@ -178,7 +178,7 @@ public class Backend {
         f = (f * f + f * 2.0F) / 3.0F;
         f = f > 1.0F ? 1.0F : f;
         if (Math.abs(force - f) > magic.BOW_ERROR) {
-            return new CheckResult(Result.FAILED, player.getName() + " fired their bow too fast (actual force=" + force + ", calculated force=" + f + ")");
+            return new CheckResult(CheckResult.Result.FAILED, player.getName() + " fired their bow too fast (actual force=" + force + ", calculated force=" + f + ")");
         } else {
             return PASS;
         }
@@ -188,13 +188,13 @@ public class Backend {
         increment(player, projectilesShot, 10);
         if (!projectileTime.containsKey(player.getName())) {
             projectileTime.put(player.getName(), System.currentTimeMillis());
-            return new CheckResult(Result.PASSED);
+            return new CheckResult(CheckResult.Result.PASSED);
         } else if (projectilesShot.get(player.getName()) == magic.PROJECTILE_CHECK) {
             long time = System.currentTimeMillis() - projectileTime.get(player.getName());
             projectileTime.remove(player.getName());
             projectilesShot.remove(player.getName());
             if (time < magic.PROJECTILE_TIME_MIN) {
-                return new CheckResult(Result.FAILED, player.getName() + " wound up a bow too fast (actual time=" + time + ", min time=" + magic.PROJECTILE_TIME_MIN + ")");
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " wound up a bow too fast (actual time=" + time + ", min time=" + magic.PROJECTILE_TIME_MIN + ")");
             }
         }
         return PASS;
@@ -204,13 +204,13 @@ public class Backend {
         increment(player, blocksDropped, 10);
         if (!blockTime.containsKey(player.getName())) {
             blockTime.put(player.getName(), System.currentTimeMillis());
-            return new CheckResult(Result.PASSED);
+            return new CheckResult(CheckResult.Result.PASSED);
         } else if (blocksDropped.get(player.getName()) == magic.DROP_CHECK) {
             long time = System.currentTimeMillis() - blockTime.get(player.getName());
             blockTime.remove(player.getName());
             blocksDropped.remove(player.getName());
             if (time < magic.DROP_TIME_MIN) {
-                return new CheckResult(Result.FAILED, player.getName() + " dropped an item too fast (actual time=" + time + ", min time=" + magic.DROP_TIME_MIN + ")");
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " dropped an item too fast (actual time=" + time + ", min time=" + magic.DROP_TIME_MIN + ")");
             }
         }
         return PASS;
@@ -218,7 +218,7 @@ public class Backend {
 
     public CheckResult checkLongReachBlock(Player player, double x, double y, double z) {
         if (isInstantBreakExempt(player)) {
-            return new CheckResult(Result.PASSED);
+            return new CheckResult(CheckResult.Result.PASSED);
         } else {
             String string = player.getName() + " reached too far for a block";
             double distance =
@@ -227,7 +227,7 @@ public class Backend {
                             : magic.BLOCK_MAX_DISTANCE;
             double i = x >= distance ? x : y > distance ? y : z > distance ? z : -1;
             if (i != -1) {
-                return new CheckResult(Result.FAILED, string + " (distance=" + i + ", max=" + magic.BLOCK_MAX_DISTANCE + ")");
+                return new CheckResult(CheckResult.Result.FAILED, string + " (distance=" + i + ", max=" + magic.BLOCK_MAX_DISTANCE + ")");
             } else {
                 return PASS;
             }
@@ -238,7 +238,7 @@ public class Backend {
         String string = player.getName() + " reached too far for an entity";
         double i = x >= magic.ENTITY_MAX_DISTANCE ? x : y > magic.ENTITY_MAX_DISTANCE ? y : z > magic.ENTITY_MAX_DISTANCE ? z : -1;
         if (i != -1) {
-            return new CheckResult(Result.FAILED, string + " (distance=" + i + ", max=" + magic.ENTITY_MAX_DISTANCE + ")");
+            return new CheckResult(CheckResult.Result.FAILED, string + " (distance=" + i + ", max=" + magic.ENTITY_MAX_DISTANCE + ")");
         } else {
             return PASS;
         }
@@ -246,7 +246,7 @@ public class Backend {
 
     public CheckResult checkSpider(Player player, double y) {
         if (y <= magic.LADDER_Y_MAX && y >= magic.LADDER_Y_MIN && !Utilities.isClimbableBlock(player.getLocation().getBlock())) {
-            return new CheckResult(Result.FAILED, player.getName() + " tried to climb a non-ladder (" + player.getLocation().getBlock().getType() + ")");
+            return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to climb a non-ladder (" + player.getLocation().getBlock().getType() + ")");
         } else {
             return PASS;
         }
@@ -254,7 +254,7 @@ public class Backend {
 
     public CheckResult checkYSpeed(Player player, double y) {
         if (!isMovingExempt(player) && !player.isInsideVehicle() && !player.isSleeping() && y > magic.Y_SPEED_MAX && !isDoing(player, velocitized, magic.VELOCITY_TIME) && !player.hasPotionEffect(PotionEffectType.JUMP)) {
-            return new CheckResult(Result.FAILED, player.getName() + "'s y speed was too high (speed=" + y + ", max=" + magic.Y_SPEED_MAX + ")");
+            return new CheckResult(CheckResult.Result.FAILED, player.getName() + "'s y speed was too high (speed=" + y + ", max=" + magic.Y_SPEED_MAX + ")");
         } else {
             return PASS;
         }
@@ -273,7 +273,7 @@ public class Backend {
                 int i = nofallViolation.get(name);
                 if (i >= magic.NOFALL_LIMIT) {
                     nofallViolation.put(player.getName(), 1);
-                    return new CheckResult(Result.FAILED, player.getName() + " tried to avoid fall damage (fall distance = 0 " + i + " times in a row, max=" + magic.NOFALL_LIMIT + ")");
+                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to avoid fall damage (fall distance = 0 " + i + " times in a row, max=" + magic.NOFALL_LIMIT + ")");
                 } else {
                     return PASS;
                 }
@@ -322,7 +322,7 @@ public class Backend {
             if (x > max || z > max) {
                 int num = this.increment(player, speedViolation, magic.SPEED_MAX);
                 if (num >= magic.SPEED_MAX) {
-                    return new CheckResult(Result.FAILED, player.getName() + "'s speed was too high " + reason + num + " times in a row (max=" + magic.SPEED_MAX + ", speed=" + (x > z ? x : z) + ", max speed=" + max + ")");
+                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + "'s speed was too high " + reason + num + " times in a row (max=" + magic.SPEED_MAX + ", speed=" + (x > z ? x : z) + ", max speed=" + max + ")");
                 } else {
                     return PASS;
                 }
@@ -339,7 +339,7 @@ public class Backend {
         if (player.isSneaking() && !player.isFlying() && !isMovingExempt(player) && !player.isInsideVehicle()) {
             double i = x > magic.XZ_SPEED_MAX_SNEAK ? x : z > magic.XZ_SPEED_MAX_SNEAK ? z : -1;
             if (i != -1) {
-                return new CheckResult(Result.FAILED, player.getName() + " was sneaking too fast (speed=" + i + ", max=" + magic.XZ_SPEED_MAX_SNEAK + ")");
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " was sneaking too fast (speed=" + i + ", max=" + magic.XZ_SPEED_MAX_SNEAK + ")");
             } else {
                 return PASS;
             }
@@ -351,7 +351,7 @@ public class Backend {
     public CheckResult checkSprintHungry(PlayerToggleSprintEvent event) {
         Player player = event.getPlayer();
         if (event.isSprinting() && player.getGameMode() != GameMode.CREATIVE && player.getFoodLevel() <= magic.SPRINT_FOOD_MIN) {
-            return new CheckResult(Result.FAILED, player.getName() + " sprinted while hungry (food=" + player.getFoodLevel() + ", min=" + magic.SPRINT_FOOD_MIN + ")");
+            return new CheckResult(CheckResult.Result.FAILED, player.getName() + " sprinted while hungry (food=" + player.getFoodLevel() + ", min=" + magic.SPRINT_FOOD_MIN + ")");
         } else {
             return PASS;
         }
@@ -386,7 +386,7 @@ public class Backend {
                                     int v = waterSpeedViolation.get(player.getName());
                                     if (v >= magic.WATER_SPEED_VIOLATION_MAX) {
                                         waterSpeedViolation.put(player.getName(), 0);
-                                        return new CheckResult(Result.FAILED, player.getName() + " stood on water " + v + " times (can't stand on " + block.getType() + " or " + block.getRelative(BlockFace.DOWN).getType() + ")");
+                                        return new CheckResult(CheckResult.Result.FAILED, player.getName() + " stood on water " + v + " times (can't stand on " + block.getType() + " or " + block.getRelative(BlockFace.DOWN).getType() + ")");
                                     } else {
                                         waterSpeedViolation.put(player.getName(), v + 1);
                                     }
@@ -411,7 +411,7 @@ public class Backend {
                     } else {
                         waterAscensionViolation.put(player.getName(), v + 1);
                     }
-                    return new CheckResult(Result.FAILED, player.getName() + " stood on water " + v + " times (can't stand on " + block.getType() + " or " + block.getRelative(BlockFace.DOWN).getType() + ")");
+                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + " stood on water " + v + " times (can't stand on " + block.getType() + " or " + block.getRelative(BlockFace.DOWN).getType() + ")");
                 } else {
                     waterAscensionViolation.put(player.getName(), 1);
                 }
@@ -434,7 +434,7 @@ public class Backend {
         for (int i = 0; i < (Math.round(distance.getYDifference())) + 1; i++) {
             Block block = new Location(player.getWorld(), player.getLocation().getX(), to + i, player.getLocation().getZ()).getBlock();
             if (block.getType() != Material.AIR && block.getType().isSolid()) {
-                return new CheckResult(Result.FAILED, player.getName() + " tried to move through a solid block", (int) from + 3);
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to move through a solid block", (int) from + 3);
             }
         }
 
@@ -466,7 +466,7 @@ public class Backend {
                             player.teleport(g);
                         }
                     }
-                    return new CheckResult(Result.FAILED, player.getName() + " tried to fly on y-axis " + yAxisViolations.get(name) + " times (max =" + magic.Y_MAXVIOLATIONS + ")");
+                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to fly on y-axis " + yAxisViolations.get(name) + " times (max =" + magic.Y_MAXVIOLATIONS + ")");
                 } else {
                     if (yAxisViolations.get(name) > magic.Y_MAXVIOLATIONS && (System.currentTimeMillis() - yAxisLastViolation.get(name)) > magic.Y_MAXVIOTIME) {
                         yAxisViolations.put(name, 0);
@@ -485,7 +485,7 @@ public class Backend {
                             player.teleport(g);
                         }
                     }
-                    return new CheckResult(Result.FAILED, player.getName() + " tried to fly on y-axis in " + i + " ms (min =" + magic.Y_TIME + ")");
+                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to fly on y-axis in " + i + " ms (min =" + magic.Y_TIME + ")");
                 } else {
                     if ((y1 - lastYcoord.get(name)) > magic.Y_MAXDIFF + 1 || (System.currentTimeMillis() - lastYtime.get(name)) > magic.Y_TIME) {
                         lastYtime.put(name, System.currentTimeMillis());
@@ -512,7 +512,7 @@ public class Backend {
             long time = System.currentTimeMillis() - stepTime.get(name);
             steps.put(name, 0);
             if (time < magic.TIMER_TIMEMIN) {
-                return new CheckResult(Result.FAILED, player.getName() + " tried to alter their timer, took " + step + " steps in " + time + " ms (min = " + magic.TIMER_TIMEMIN + " ms)");
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to alter their timer, took " + step + " steps in " + time + " ms (min = " + magic.TIMER_TIMEMIN + " ms)");
             }
         }
         return PASS;
@@ -575,7 +575,7 @@ public class Backend {
             }
 
             if (blocksOverFlight.get(name) > magic.FLIGHT_BLOCK_LIMIT && (y1 <= y2)) {
-                return new CheckResult(Result.FAILED, player.getName() + " flew over " + blocksOverFlight.get(name) + " blocks (max=" + magic.FLIGHT_BLOCK_LIMIT + ")");
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " flew over " + blocksOverFlight.get(name) + " blocks (max=" + magic.FLIGHT_BLOCK_LIMIT + ")");
             }
         } else {
             blocksOverFlight.put(name, 0D);
@@ -607,7 +607,7 @@ public class Backend {
                 if (!block.getRelative(BlockFace.NORTH).isLiquid() && !block.getRelative(BlockFace.SOUTH).isLiquid() && !block.getRelative(BlockFace.EAST).isLiquid() && !block.getRelative(BlockFace.WEST).isLiquid()) {
                     increment(player, ascensionCount, max);
                     if (ascensionCount.get(name) >= max) {
-                        return new CheckResult(Result.FAILED, player.getName() + " ascended " + ascensionCount.get(name) + " times in a row (max = " + max + string + ")");
+                        return new CheckResult(CheckResult.Result.FAILED, player.getName() + " ascended " + ascensionCount.get(name) + " times in a row (max = " + max + string + ")");
                     }
                 }
             } else {
@@ -624,7 +624,7 @@ public class Backend {
                 if (blockPunches.get(name) != null && player.getGameMode() != GameMode.CREATIVE) {
                     int i = blockPunches.get(name);
                     if (i < magic.BLOCK_PUNCH_MIN) {
-                        return new CheckResult(Result.FAILED, player.getName() + " tried to break a block of " + block.getType() + " after only " + i + " punches (min=" + magic.BLOCK_PUNCH_MIN + ")");
+                        return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to break a block of " + block.getType() + " after only " + i + " punches (min=" + magic.BLOCK_PUNCH_MIN + ")");
                     } else {
                         blockPunches.put(name, 0); // it should reset after EACH block break.
                     }
@@ -652,7 +652,7 @@ public class Backend {
                 if (!silentMode()) {
                     player.sendMessage(ChatColor.RED + "[AntiCheat] Fastbreaking detected. Please wait 10 seconds before breaking blocks.");
                 }
-                return new CheckResult(Result.FAILED, player.getName() + " broke blocks too fast " + i + " times in a row (max=" + violations + ")");
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " broke blocks too fast " + i + " times in a row (max=" + violations + ")");
             } else if (fastBreakViolation.get(name) > 0 && math > magic.FASTBREAK_MAXVIOLATIONTIME) {
                 fastBreakViolation.put(name, 0);
             }
@@ -679,7 +679,7 @@ public class Backend {
                     int i = fastBreaks.get(name);
                     fastBreaks.put(name, 0);
                     fastBreakViolation.put(name, fastBreakViolation.get(name) + 1);
-                    return new CheckResult(Result.FAILED, player.getName() + " tried to break " + i + " blocks in " + math + " ms (max=" + magic.FASTBREAK_LIMIT + " in " + timemax + " ms)");
+                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to break " + i + " blocks in " + math + " ms (max=" + magic.FASTBREAK_LIMIT + " in " + timemax + " ms)");
                 } else if (fastBreaks.get(name) >= magic.FASTBREAK_LIMIT || fastBreakViolation.get(name) > 0) {
                     if (!blockBreakHolder.containsKey(name) || !blockBreakHolder.get(name)) {
                         blockBreakHolder.put(name, true);
@@ -716,7 +716,7 @@ public class Backend {
                 if (!silentMode()) {
                     player.sendMessage(ChatColor.RED + "[AntiCheat] Fastplacing detected. Please wait 10 seconds before placing blocks.");
                 }
-                return new CheckResult(Result.FAILED, player.getName() + " placed blocks too fast " + fastBreakViolation.get(name) + " times in a row (max=" + violations + ")");
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " placed blocks too fast " + fastBreakViolation.get(name) + " times in a row (max=" + violations + ")");
             } else if (lastBlockPlaced.get(name) > 0 && math > magic.FASTPLACE_MAXVIOLATIONTIME) {
                 AntiCheat.debugLog("Reset facePlaceViolation for " + name);
                 fastPlaceViolation.put(name, 0);
@@ -730,7 +730,7 @@ public class Backend {
                 lastBlockPlaceTime.put(name, (time - last));
                 lastBlockPlaced.put(name, time);
                 fastPlaceViolation.put(name, fastPlaceViolation.get(name) + 1);
-                return new CheckResult(Result.FAILED, player.getName() + " tried to place a block " + thisTime + " ms after the last one (min=" + magic.FASTPLACE_TIMEMIN + " ms)");
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to place a block " + thisTime + " ms after the last one (min=" + magic.FASTPLACE_TIMEMIN + " ms)");
             }
             lastBlockPlaceTime.put(name, (time - last));
         }
@@ -766,9 +766,9 @@ public class Backend {
                     break;
                 } else {
                     if (manager.getConfiguration().getConfig().blockChatSpamRepetition.getValue() && m.equalsIgnoreCase(msg) && i == 1) {
-                        return new CheckResult(Result.FAILED, lang.spamWarning.getValue());
+                        return new CheckResult(CheckResult.Result.FAILED, lang.spamWarning.getValue());
                     } else if (manager.getConfiguration().getConfig().blockChatSpamSpeed.getValue() && System.currentTimeMillis() - user.getLastCommandTime() < magic.COMMAND_MIN * 2) {
-                        return new CheckResult(Result.FAILED, lang.spamWarning.getValue());
+                        return new CheckResult(CheckResult.Result.FAILED, lang.spamWarning.getValue());
                     }
                 }
             }
@@ -793,9 +793,9 @@ public class Backend {
                     break;
                 } else {
                     if (manager.getConfiguration().getConfig().blockCommandSpamRepetition.getValue() && m.equalsIgnoreCase(cmd) && i == 1) {
-                        return new CheckResult(Result.FAILED, lang.spamWarning.getValue());
+                        return new CheckResult(CheckResult.Result.FAILED, lang.spamWarning.getValue());
                     } else if (manager.getConfiguration().getConfig().blockCommandSpamSpeed.getValue() && System.currentTimeMillis() - user.getLastCommandTime() < magic.COMMAND_MIN * 2) {
-                        return new CheckResult(Result.FAILED, lang.spamWarning.getValue());
+                        return new CheckResult(CheckResult.Result.FAILED, lang.spamWarning.getValue());
                     }
                 }
             }
@@ -820,7 +820,7 @@ public class Backend {
             long time = System.currentTimeMillis() - inventoryTime.get(name);
             inventoryClicks.put(name, 0);
             if (time < magic.INVENTORY_TIMEMIN) {
-                return new CheckResult(Result.FAILED, player.getName() + " clicked inventory slots " + clicks + " times in " + time + " ms (max=" + magic.INVENTORY_CHECK + " in " + magic.INVENTORY_TIMEMIN + " ms)");
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " clicked inventory slots " + clicks + " times in " + time + " ms (max=" + magic.INVENTORY_CHECK + " in " + magic.INVENTORY_TIMEMIN + " ms)");
             }
         }
         return PASS;
@@ -828,7 +828,7 @@ public class Backend {
 
     public CheckResult checkAutoTool(Player player) {
         if (itemInHand.containsKey(player.getName()) && itemInHand.get(player.getName()) != player.getItemInHand().getType()) {
-            return new CheckResult(Result.FAILED, player.getName() + " switched tools too fast (had " + itemInHand.get(player.getName()) + ", has " + player.getItemInHand().getType() + ")");
+            return new CheckResult(CheckResult.Result.FAILED, player.getName() + " switched tools too fast (had " + itemInHand.get(player.getName()) + ", has " + player.getItemInHand().getType() + ")");
         } else {
             return PASS;
         }
@@ -836,7 +836,7 @@ public class Backend {
 
     public CheckResult checkSprintDamage(Player player) {
         if (isDoing(player, sprinted, magic.SPRINT_MIN)) {
-            return new CheckResult(Result.FAILED, player.getName() + " sprinted and damaged an entity too fast (min sprint=" + magic.SPRINT_MIN + " ms)");
+            return new CheckResult(CheckResult.Result.FAILED, player.getName() + " sprinted and damaged an entity too fast (min sprint=" + magic.SPRINT_MIN + " ms)");
         } else {
             return PASS;
         }
@@ -844,7 +844,7 @@ public class Backend {
 
     public CheckResult checkAnimation(Player player, Entity e) {
         if (!justAnimated(player)) {
-            return new CheckResult(Result.FAILED, player.getName() + " didn't animate before damaging a " + e.getType());
+            return new CheckResult(CheckResult.Result.FAILED, player.getName() + " didn't animate before damaging a " + e.getType());
         } else {
             return PASS;
         }
@@ -856,7 +856,7 @@ public class Backend {
             long l = lastHeal.get(player.getName());
             lastHeal.remove(player.getName());
             if ((System.currentTimeMillis() - l) < magic.HEAL_TIME_MIN) {
-                return new CheckResult(Result.FAILED, player.getName() + " healed too quickly (time=" + (System.currentTimeMillis() - l) + " ms, min=" + magic.HEAL_TIME_MIN + " ms)");
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " healed too quickly (time=" + (System.currentTimeMillis() - l) + " ms, min=" + magic.HEAL_TIME_MIN + " ms)");
             }
         }
         return PASS;
@@ -868,7 +868,7 @@ public class Backend {
             long l = startEat.get(player.getName());
             startEat.remove(player.getName());
             if ((System.currentTimeMillis() - l) < magic.EAT_TIME_MIN) {
-                return new CheckResult(Result.FAILED, player.getName() + " ate too quickly (time=" + (System.currentTimeMillis() - l) + " ms, min=" + magic.EAT_TIME_MIN + " ms)");
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " ate too quickly (time=" + (System.currentTimeMillis() - l) + " ms, min=" + magic.EAT_TIME_MIN + " ms)");
             }
         }
         return PASS;

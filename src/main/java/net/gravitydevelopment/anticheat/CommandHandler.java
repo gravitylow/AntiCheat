@@ -19,9 +19,10 @@
 package net.gravitydevelopment.anticheat;
 
 import net.gravitydevelopment.anticheat.config.Configuration;
+import net.gravitydevelopment.anticheat.config.ConfigurationFile;
 import net.gravitydevelopment.anticheat.manage.CheckManager;
-import net.gravitydevelopment.anticheat.manage.CheckType;
-import net.gravitydevelopment.anticheat.manage.User;
+import net.gravitydevelopment.anticheat.check.CheckType;
+import net.gravitydevelopment.anticheat.util.User;
 import net.gravitydevelopment.anticheat.manage.UserManager;
 import net.gravitydevelopment.anticheat.util.*;
 import net.gravitydevelopment.anticheat.xray.XRayTracker;
@@ -52,24 +53,36 @@ public class CommandHandler implements CommandExecutor {
 
     public void handleLog(CommandSender cs, String[] args) {
         if (hasPermission(cs, Permission.SYSTEM_LOG)) {
-            if (args[1].equalsIgnoreCase("enable")) {
-                if (!CONFIG.getConfig().logToConsole.getValue()) {
-                    CONFIG.getConfig().logToConsole.setValue(true);
-                    cs.sendMessage(GREEN + "Console logging enabled.");
-                    CONFIG.getConfig().reload();
-                } else {
-                    cs.sendMessage(GREEN + "Console logging is already enabled!");
-                }
-            } else if (args[1].equalsIgnoreCase("disable")) {
-                if (CONFIG.getConfig().logToConsole.getValue()) {
-                    CONFIG.getConfig().logToConsole.setValue(false);
-                    cs.sendMessage(GREEN + "Console logging disabled.");
-                    CONFIG.getConfig().reload();
-                } else {
-                    cs.sendMessage(GREEN + "Console logging is already disabled!");
-                }
+
+            ConfigurationFile.ConfigValue<Boolean> value;
+            String name;
+            if (args[1].equalsIgnoreCase("file")) {
+                value = CONFIG.getConfig().logToFile;
+                name = "File logging";
+            } else if (args[1].equalsIgnoreCase("console")) {
+                value = CONFIG.getConfig().logToConsole;
+                name = "Console logging";
             } else {
-                cs.sendMessage(RED + "Usage: /anticheat log [enable/disable]");
+                cs.sendMessage(RED + "Usage: /anticheat log [file/console] [on/off]");
+                return;
+            }
+
+            boolean newValue;
+            if (args[2].equalsIgnoreCase("on") || args[2].equalsIgnoreCase("enable")) {
+                newValue = true;
+            } else if (args[2].equalsIgnoreCase("off") || args[2].equalsIgnoreCase("disable")) {
+                newValue = false;
+            } else {
+                cs.sendMessage(RED + "Usage: /anticheat log [file/console] [on/off]");
+                return;
+            }
+
+            if (value.getValue() == newValue) {
+                cs.sendMessage(GREEN + name + " is already enabled!");
+            } else {
+                value.setValue(newValue);
+                cs.sendMessage(GREEN + name + (newValue ? " enabled." : " disabled."));
+                CONFIG.getConfig().reload();
             }
         }
     }
@@ -189,7 +202,7 @@ public class CommandHandler implements CommandExecutor {
         if (hasPermission(cs, Permission.SYSTEM_HELP)) {
             String base = "/AntiCheat ";
             String[] lines = {
-                    "log [Enable/Disable]" + WHITE + " - toggle logging",
+                    "log [file/console] [on/off]" + WHITE + " - toggle logging",
                     "report [group]" + WHITE + " - show users in groups",
                     "report [user]" + WHITE + " - get a player's cheat report",
                     "reload" + WHITE + " - reload AntiCheat configuration",
@@ -425,10 +438,11 @@ public class CommandHandler implements CommandExecutor {
                 }
                 handlePlayerReport(cs, args);
             }
-        } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("log")) {
                 handleLog(cs, args);
-            } else if (args[0].equalsIgnoreCase("xray")) {
+            }
+        } else if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("xray")) {
                 handleXRay(cs, args);
             } else if (args[0].equalsIgnoreCase("debug")) {
                 handleDebug(cs, Bukkit.getPlayer(args[1]));

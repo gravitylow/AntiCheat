@@ -29,9 +29,8 @@ system:
   auto-update: true
   # Should AntiCheat log ALL failed checks to console?
   log-to-console: false
-  # Should AntiCheat log to files?
-  # 0 = off, 1 = log only when an event takes place, 2 = more detailed logs, 3 = most detailed logs
-  file-log-level: 1
+  # Should AntiCheat log to file?
+  log-to-file: true
   # Should AntiCheat display extra debug information when starting?
   verbose-startup: false
   # If silent mode is on, players will not be stopped when they try to hack, and AntiCheat will do everything possible to keep them unaware of their rising hack level.

@@ -12,36 +12,39 @@ commands:
     usage: /anticheat help
     aliases: anti
 permissions:
+  anticheat.notice:
+    description: See broadcasts when a player is kicked or banned for hacking
   anticheat.alert:
-    description: Get alerts
+    description: See alerts when a player might be cheating
   anticheat.system.help:
-    description: Help access
+    description: Access the help message
   anticheat.system.report:
-    description: Reports access
+    description: Access cheat reports
   anticheat.system.spy:
-    description: Spy system access
+    description: Access the spy system
   anticheat.system.xray:
-    description: XRay info access
+    description: Access info about xray usage
   anticheat.mod:
     description: Mod helper perm
     children:
+      anticheat.system.notice: true
       anticheat.system.alert: true
       anticheat.system.help: true
       anticheat.system.report: true
       anticheat.system.spy: true
       anticheat.system.xray: true
   anticheat.system.log:
-    description: Log access
+    description: Access turning console logging on or off
   anticheat.system.reload:
-    description: Reload access
+    description: Access reloading the system
   anticheat.system.reset:
-    description: Reset access
+    description: Access resetting a player's cheat level
   anticheat.system.update:
-    description: Update access
+    description: Access information about whether the system is updated
   anticheat.system.calibrate:
-    description: Calibrate info access
+    description: Access the calibration system
   anticheat.system.debug:
-    description: Debug access
+    description: Access debug reports
   anticheat.admin:
     description: Admin helper perm
     children:

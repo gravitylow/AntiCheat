@@ -19,9 +19,9 @@
 package net.gravitydevelopment.anticheat.api;
 
 import net.gravitydevelopment.anticheat.AntiCheat;
-import net.gravitydevelopment.anticheat.manage.AnticheatManager;
+import net.gravitydevelopment.anticheat.manage.AntiCheatManager;
 import net.gravitydevelopment.anticheat.manage.CheckManager;
-import net.gravitydevelopment.anticheat.manage.CheckType;
+import net.gravitydevelopment.anticheat.check.CheckType;
 import net.gravitydevelopment.anticheat.manage.UserManager;
 import net.gravitydevelopment.anticheat.xray.XRayTracker;
 import org.bukkit.entity.Player;
@@ -150,7 +150,7 @@ public class AnticheatAPI {
      *
      * @return the AntiCheat Manager
      */
-    public static AnticheatManager getManager() {
+    public static AntiCheatManager getManager() {
         return AntiCheat.getManager();
     }
 }

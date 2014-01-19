@@ -18,8 +18,8 @@
 
 package net.gravitydevelopment.anticheat.util.rule;
 
-import net.gravitydevelopment.anticheat.manage.CheckType;
-import net.gravitydevelopment.anticheat.manage.User;
+import net.gravitydevelopment.anticheat.check.CheckType;
+import net.gravitydevelopment.anticheat.util.User;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;

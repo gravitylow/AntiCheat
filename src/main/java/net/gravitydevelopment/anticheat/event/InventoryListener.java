@@ -19,9 +19,9 @@
 package net.gravitydevelopment.anticheat.event;
 
 import net.gravitydevelopment.anticheat.AntiCheat;
-import net.gravitydevelopment.anticheat.manage.CheckType;
-import net.gravitydevelopment.anticheat.manage.User;
-import net.gravitydevelopment.anticheat.util.CheckResult;
+import net.gravitydevelopment.anticheat.check.CheckType;
+import net.gravitydevelopment.anticheat.util.User;
+import net.gravitydevelopment.anticheat.check.CheckResult;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;

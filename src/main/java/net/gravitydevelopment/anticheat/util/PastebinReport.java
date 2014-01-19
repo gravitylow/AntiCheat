@@ -102,7 +102,7 @@ public class PastebinReport {
     }
 
     private void appendLogs() {
-        List<String> logs = AntiCheat.getManager().getLastLogs();
+        List<String> logs = AntiCheat.getManager().getLoggingManager().getLastLogs();
         if (logs.size() == 0) {
             append("No recent logs.");
             return;

@@ -9,9 +9,9 @@ public class PacketManager {
 
     private ProtocolManager protocolManager;
     private AntiCheat plugin;
-    private AnticheatManager manager;
+    private AntiCheatManager manager;
 
-    public PacketManager(ProtocolManager protocolManager, AntiCheat plugin, AnticheatManager manager) {
+    public PacketManager(ProtocolManager protocolManager, AntiCheat plugin, AntiCheatManager manager) {
         this.protocolManager = protocolManager;
         this.plugin = plugin;
         this.manager = manager;

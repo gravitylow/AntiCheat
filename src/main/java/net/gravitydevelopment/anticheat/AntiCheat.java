@@ -21,9 +21,9 @@ package net.gravitydevelopment.anticheat;
 import com.comphenix.protocol.ProtocolLibrary;
 import net.gravitydevelopment.anticheat.config.Configuration;
 import net.gravitydevelopment.anticheat.event.*;
-import net.gravitydevelopment.anticheat.manage.AnticheatManager;
+import net.gravitydevelopment.anticheat.manage.AntiCheatManager;
 import net.gravitydevelopment.anticheat.manage.PacketManager;
-import net.gravitydevelopment.anticheat.manage.User;
+import net.gravitydevelopment.anticheat.util.User;
 import net.gravitydevelopment.anticheat.util.Utilities;
 import net.gravitydevelopment.anticheat.xray.XRayListener;
 import net.gravitydevelopment.anticheat.xray.XRayTracker;
@@ -41,7 +41,7 @@ import java.util.List;
 
 public class AntiCheat extends JavaPlugin {
 
-    private static AnticheatManager manager;
+    private static AntiCheatManager manager;
     private static AntiCheat plugin;
     private static List<Listener> eventList = new ArrayList<Listener>();
     private static boolean update = false;
@@ -57,7 +57,7 @@ public class AntiCheat extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         loadTime = System.currentTimeMillis();
-        manager = new AnticheatManager(this, getLogger());
+        manager = new AntiCheatManager(this, getLogger());
         eventList.add(new PlayerListener());
         eventList.add(new BlockListener());
         eventList.add(new EntityListener());
@@ -93,7 +93,7 @@ public class AntiCheat extends JavaPlugin {
         verboseLog("Saving user levels...");
         config.getLevels().saveLevelsFromUsers(getManager().getUserManager().getUsers());
 
-        AnticheatManager.close();
+        AntiCheatManager.close();
         getServer().getScheduler().cancelTasks(this);
         cleanup();
     }
@@ -191,7 +191,7 @@ public class AntiCheat extends JavaPlugin {
         return plugin;
     }
 
-    public static AnticheatManager getManager() {
+    public static AntiCheatManager getManager() {
         return manager;
     }
 

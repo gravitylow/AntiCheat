@@ -21,7 +21,7 @@ package net.gravitydevelopment.anticheat.xray;
 import net.gravitydevelopment.anticheat.AntiCheat;
 import net.gravitydevelopment.anticheat.config.Configuration;
 import net.gravitydevelopment.anticheat.manage.CheckManager;
-import net.gravitydevelopment.anticheat.manage.CheckType;
+import net.gravitydevelopment.anticheat.check.CheckType;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

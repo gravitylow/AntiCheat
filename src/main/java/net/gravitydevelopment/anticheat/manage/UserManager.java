@@ -19,8 +19,10 @@
 package net.gravitydevelopment.anticheat.manage;
 
 import net.gravitydevelopment.anticheat.AntiCheat;
+import net.gravitydevelopment.anticheat.check.CheckType;
 import net.gravitydevelopment.anticheat.config.Configuration;
 import net.gravitydevelopment.anticheat.util.Group;
+import net.gravitydevelopment.anticheat.util.User;
 import net.gravitydevelopment.anticheat.util.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,20 +32,20 @@ import java.util.List;
 
 public class UserManager {
     private List<User> users = new ArrayList<User>();
+    private static AntiCheatManager manager;
     private static Configuration config;
     private static final ChatColor GRAY = ChatColor.GRAY;
     private static final ChatColor GOLD = ChatColor.GOLD;
     private static final ChatColor RED = ChatColor.RED;
-    private static List<String> alert;
 
     /**
-     * Initialize the user manager with a given configuration
+     * Initialize the user manager
      *
-     * @param conf Configuration to use
+     * @param manager The AntiCheat Manager
      */
-    public UserManager(Configuration conf) {
-        config = conf;
-        alert = config.getLang().alert.getValue();
+    public UserManager(AntiCheatManager manager) {
+        this.manager = manager;
+        this.config = manager.getConfiguration();
     }
 
     /**
@@ -157,6 +159,15 @@ public class UserManager {
     }
 
     /**
+     * Get the alert to use for a check being failed
+     *
+     * @return check fail alert message
+     */
+    public List<String> getAlert() {
+        return config.getLang().alert.getValue();
+    }
+
+    /**
      * Fire an alert
      *
      * @param user  The user to alert
@@ -165,6 +176,7 @@ public class UserManager {
      */
     public void alert(User user, Group group, CheckType type) {
         ArrayList<String> messageArray = new ArrayList<String>();
+        List<String> alert = getAlert();
         for (int i = 0; i < alert.size(); i++) {
             String message = alert.get(i);
             if (!message.equals("")) {
@@ -215,9 +227,10 @@ public class UserManager {
                         }
                     } else if (event.equalsIgnoreCase("KICK")) {
                         user.getPlayer().kickPlayer(RED + kickReason);
-                        String msg = RED + config.getLang().kickBroadcast.getValue().replaceAll("&player", name);
+                        String msg = RED + config.getLang().kickBroadcast.getValue().replaceAll("&player", name) + " (" + CheckType.getName(type) + ")";
                         if (!msg.equals("")) {
-                            Bukkit.broadcastMessage(msg);
+                            manager.log(msg);
+                            manager.playerLog(msg);
                         }
                     } else if (event.equalsIgnoreCase("WARN")) {
                         List<String> message = warning;
@@ -229,9 +242,10 @@ public class UserManager {
                     } else if (event.equalsIgnoreCase("BAN")) {
                         user.getPlayer().setBanned(true);
                         user.getPlayer().kickPlayer(RED + banReason);
-                        String msg = RED + config.getLang().banBroadcast.getValue().replaceAll("&player", name);
+                        String msg = RED + config.getLang().banBroadcast.getValue().replaceAll("&player", name) + " (" + CheckType.getName(type) + ")";
                         if (!msg.equals("")) {
-                            Bukkit.broadcastMessage(msg);
+                            manager.log(msg);
+                            manager.playerLog(msg);
                         }
                     } else if (event.equalsIgnoreCase("RESET")) {
                         user.resetLevel();

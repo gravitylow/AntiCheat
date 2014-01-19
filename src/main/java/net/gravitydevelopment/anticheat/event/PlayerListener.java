@@ -19,9 +19,9 @@
 package net.gravitydevelopment.anticheat.event;
 
 import net.gravitydevelopment.anticheat.AntiCheat;
-import net.gravitydevelopment.anticheat.manage.CheckType;
-import net.gravitydevelopment.anticheat.manage.User;
-import net.gravitydevelopment.anticheat.util.CheckResult;
+import net.gravitydevelopment.anticheat.check.CheckType;
+import net.gravitydevelopment.anticheat.util.User;
+import net.gravitydevelopment.anticheat.check.CheckResult;
 import net.gravitydevelopment.anticheat.util.Distance;
 import net.gravitydevelopment.anticheat.util.Permission;
 import net.gravitydevelopment.anticheat.util.Utilities;

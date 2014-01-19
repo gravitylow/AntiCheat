@@ -19,6 +19,7 @@
 package net.gravitydevelopment.anticheat.manage;
 
 import net.gravitydevelopment.anticheat.AntiCheat;
+import net.gravitydevelopment.anticheat.check.CheckType;
 import net.gravitydevelopment.anticheat.config.Configuration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -34,16 +35,16 @@ import java.util.Map;
  */
 
 public class CheckManager {
-    private AnticheatManager manager = null;
+    private AntiCheatManager manager = null;
     private Configuration config;
     private static List<CheckType> checkIgnoreList = new ArrayList<CheckType>();
     private static Map<String, List<CheckType>> exemptList = new HashMap<String, List<CheckType>>();
     private static int disabled = 0;
     private static int exempt = 0;
 
-    public CheckManager(AnticheatManager instance, Configuration config) {
-        manager = instance;
-        this.config = config;
+    public CheckManager(AntiCheatManager manager) {
+        this.manager = manager;
+        this.config = manager.getConfiguration();
     }
 
     /**

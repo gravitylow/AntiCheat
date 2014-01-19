@@ -18,8 +18,8 @@
 
 package net.gravitydevelopment.anticheat.api;
 
-import net.gravitydevelopment.anticheat.manage.CheckType;
-import net.gravitydevelopment.anticheat.manage.User;
+import net.gravitydevelopment.anticheat.check.CheckType;
+import net.gravitydevelopment.anticheat.util.User;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -40,18 +40,18 @@ public class CheckFailEvent extends Event {
     }
 
     /**
-     * Get the {@link net.gravitydevelopment.anticheat.manage.User} who failed the check
+     * Get the {@link net.gravitydevelopment.anticheat.util.User} who failed the check
      *
-     * @return a {@link net.gravitydevelopment.anticheat.manage.User}
+     * @return a {@link net.gravitydevelopment.anticheat.util.User}
      */
     public User getUser() {
         return user;
     }
 
     /**
-     * Get the {@link net.gravitydevelopment.anticheat.manage.CheckType} failed
+     * Get the {@link net.gravitydevelopment.anticheat.check.CheckType} failed
      *
-     * @return a {@link net.gravitydevelopment.anticheat.manage.CheckType}
+     * @return a {@link net.gravitydevelopment.anticheat.check.CheckType}
      */
     public CheckType getCheck() {
         return type;

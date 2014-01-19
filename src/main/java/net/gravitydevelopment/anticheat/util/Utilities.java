@@ -57,15 +57,8 @@ public final class Utilities {
                 }
             }
         }
-        if (AntiCheat.getManager().getConfiguration().getConfig().logToConsole.getValue()) {
-            for (String msg : message) {
-                AntiCheat.getManager().log(msg);
-            }
-        }
-        if (AntiCheat.getManager().getConfiguration().getConfig().fileLogLevel.getValue() != 0) {
-            for (String msg : message) {
-                AntiCheat.getManager().log(msg, 1);
-            }
+        for (String msg : message) {
+            AntiCheat.getManager().log(msg);
         }
     }
 

@@ -19,8 +19,8 @@
 package net.gravitydevelopment.anticheat.util.rule;
 
 import net.gravitydevelopment.anticheat.AntiCheat;
-import net.gravitydevelopment.anticheat.manage.CheckType;
-import net.gravitydevelopment.anticheat.manage.User;
+import net.gravitydevelopment.anticheat.check.CheckType;
+import net.gravitydevelopment.anticheat.util.User;
 import net.gravitydevelopment.anticheat.util.Group;
 import net.gravitydevelopment.anticheat.util.Utilities;
 
@@ -40,7 +40,7 @@ import java.util.TreeMap;
  * <br /><br />
  * <p/>
  * <b>Types of variables:</b><br />
- * - Check: Contains all valid checks as listed in {@link net.gravitydevelopment.anticheat.manage.CheckType}, and will return the number of times this user has failed the given check<br />
+ * - Check: Contains all valid checks as listed in {@link net.gravitydevelopment.anticheat.check.CheckType}, and will return the number of times this user has failed the given check<br />
  * - Player: Contains LEVEL, the player's current level and CHECK, the check that was just failed
  * <br /><br />
  * <p/>

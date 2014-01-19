@@ -51,7 +51,7 @@ public class Config extends ConfigurationFile {
     public ConfigValue<String> commandSpamActionOne;
     public ConfigValue<String> commandSpamActionTwo;
 
-    public ConfigValue<Integer> fileLogLevel;
+    public ConfigValue<Boolean> logToFile;
 
     public ConfigValue<List<String>> disabledWorlds;
 
@@ -85,7 +85,7 @@ public class Config extends ConfigurationFile {
         commandSpamActionOne = new ConfigValue<String>("spam.command.action-one");
         commandSpamActionTwo = new ConfigValue<String>("spam.command.action-two");
 
-        fileLogLevel = new ConfigValue<Integer>("system.file-log-level");
+        logToFile = new ConfigValue<Boolean>("system.log-to-file");
 
         disabledWorlds = new ConfigValue<List<String>>("disable-in");
     }

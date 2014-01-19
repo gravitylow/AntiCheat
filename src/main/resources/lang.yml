@@ -12,11 +12,11 @@ chat:
   warning: 'Stop spamming the server or you will be kicked!'
   kick_reason: 'Kicked for spamming'
   ban_reason: 'Banned for spamming'
-  kick_broadcast: '[AntiCheat] &player was kicked for spamming'
-  ban_broadcast: '[AntiCheat] &player was banned for spamming'
+  kick_broadcast: '&player was kicked for spamming'
+  ban_broadcast: '&player was banned for spamming'
 ban:
   ban_reason: 'Banned by AntiCheat'
-  ban_broadcast: '[AntiCheat] &player was banned for hacking.'
+  ban_broadcast: '&player was banned for hacking.'
 kick:
   kick_reason: 'Kicked by AntiCheat'
-  kick_broadcast: '[AntiCheat] &player was kicked for hacking.'
+  kick_broadcast: '&player was kicked for hacking.'

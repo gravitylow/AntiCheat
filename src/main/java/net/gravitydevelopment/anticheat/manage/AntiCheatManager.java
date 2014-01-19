@@ -19,100 +19,52 @@
 package net.gravitydevelopment.anticheat.manage;
 
 import net.gravitydevelopment.anticheat.AntiCheat;
+import net.gravitydevelopment.anticheat.check.Backend;
 import net.gravitydevelopment.anticheat.config.Configuration;
-import net.gravitydevelopment.anticheat.util.FileFormatter;
 import net.gravitydevelopment.anticheat.xray.XRayTracker;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.RegisteredListener;
 
-import java.io.File;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * The internal hub for all managers.
  */
 
-public class AnticheatManager {
+public class AntiCheatManager {
     private static AntiCheat plugin = null;
     private static Configuration configuration;
     private static XRayTracker xrayTracker = null;
     private static UserManager userManager = null;
     private static CheckManager checkManager = null;
+    private static LoggingManager loggingManager = null;
     private static Backend backend = null;
-    private final Logger fileLogger;
     private static Map<String, RegisteredListener[]> eventchains = new ConcurrentHashMap<String, RegisteredListener[]>();
     private static Map<String, Long> eventcache = new ConcurrentHashMap<String, Long>();
-    private static List<String> logs = new CopyOnWriteArrayList<String>();
-    private static Handler fileHandler;
-    private static final int LOG_LEVEL_HIGH = 3;
 
-    public AnticheatManager(AntiCheat instance, Logger logger) {
+    public AntiCheatManager(AntiCheat instance, Logger logger) {
         plugin = instance;
         // now load all the others!!!!!
-        fileLogger = Logger.getLogger("net.gravitydevelopment.anticheat.AntiCheat");
         configuration = new Configuration(plugin, this);
+        loggingManager = new LoggingManager(plugin, logger, configuration);
         xrayTracker = new XRayTracker();
-        userManager = new UserManager(configuration);
-        checkManager = new CheckManager(this, configuration);
+        userManager = new UserManager(this);
+        checkManager = new CheckManager(this);
         backend = new Backend(this);
-        try {
-            File file = new File(plugin.getDataFolder(), "log");
-            if (!file.exists()) {
-                file.mkdir();
-            }
-            fileHandler = new FileHandler(plugin.getDataFolder() + "/log/anticheat.log", true);
-            fileHandler.setFormatter(new FileFormatter());
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, null, ex);
-        }
-        fileLogger.setUseParentHandlers(false);
-        fileLogger.addHandler(fileHandler);
     }
 
     public void log(String message) {
-        log(message, 0);
+        loggingManager.log(message);
     }
 
     public void debugLog(String message) {
-        Bukkit.getConsoleSender().sendMessage("[AntiCheat] " + ChatColor.GRAY + message);
-        logs.add(ChatColor.stripColor(message));
+        loggingManager.debugLog(message);
     }
 
-    public void log(String message, int i) {
-        if (i != 1 && getConfiguration().getConfig().logToConsole.getValue()) {
-            Bukkit.getConsoleSender().sendMessage("[AntiCheat] " + ChatColor.RED + message);
-        }
-        if (i == 0 && getConfiguration().getConfig().fileLogLevel.getValue() == LOG_LEVEL_HIGH) { // Not an alert, normal log message
-            fileLog(message);
-        } else if (getConfiguration().getConfig().fileLogLevel.getValue() != 0) { // alert
-            fileLog(message);
-        }
-        logs.add(ChatColor.stripColor(message));
-    }
-
-    public void fileLog(String message) {
-        fileLogger.info(message);
-    }
-
-    public List<String> getLastLogs() {
-        List<String> log = new CopyOnWriteArrayList<String>();
-        if (logs.size() < 30) {
-            return logs;
-        }
-        for (int i = logs.size() - 1; i >= 0; i--) {
-            log.add(logs.get(i));
-        }
-        logs.clear();
-        return log;
+    public void playerLog(String message) {
+        loggingManager.logToPlayers(message);
     }
 
     public void addEvent(String e, RegisteredListener[] arr) {
@@ -179,8 +131,12 @@ public class AnticheatManager {
         return backend;
     }
 
+    public LoggingManager getLoggingManager() {
+        return loggingManager;
+    }
+
     public static void close() {
-        fileHandler.close();
+        loggingManager.closeHandler();
 
         if (configuration.getConfig().enterprise.getValue()) {
             configuration.getEnterprise().database.shutdown();

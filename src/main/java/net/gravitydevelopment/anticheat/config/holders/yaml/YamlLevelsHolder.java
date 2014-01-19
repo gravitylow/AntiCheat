@@ -22,7 +22,7 @@ import net.gravitydevelopment.anticheat.AntiCheat;
 import net.gravitydevelopment.anticheat.config.Configuration;
 import net.gravitydevelopment.anticheat.config.ConfigurationFile;
 import net.gravitydevelopment.anticheat.config.providers.Levels;
-import net.gravitydevelopment.anticheat.manage.User;
+import net.gravitydevelopment.anticheat.util.User;
 
 import java.util.List;
 
