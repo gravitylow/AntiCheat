@@ -23,14 +23,17 @@ import net.gravitydevelopment.anticheat.manage.AntiCheatManager;
 import net.gravitydevelopment.anticheat.manage.CheckManager;
 import net.gravitydevelopment.anticheat.check.CheckType;
 import net.gravitydevelopment.anticheat.manage.UserManager;
+import net.gravitydevelopment.anticheat.util.Group;
 import net.gravitydevelopment.anticheat.xray.XRayTracker;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 /**
  * Developer's interface for all things AntiCheat.
  */
 
-public class AnticheatAPI {
+public class AntiCheatAPI {
     private static CheckManager chk = AntiCheat.getManager().getCheckManager();
     private static UserManager umr = AntiCheat.getManager().getUserManager();
     private static XRayTracker xtracker = AntiCheat.getManager().getXRayTracker();
@@ -43,7 +46,7 @@ public class AnticheatAPI {
      * @param type Check to start watching for
      */
     public static void activateCheck(CheckType type) {
-        chk.activateCheck(type);
+        chk.activateCheck(type, getCallingClass());
     }
 
     /**
@@ -52,7 +55,7 @@ public class AnticheatAPI {
      * @param type Check to stop watching for
      */
     public static void deactivateCheck(CheckType type) {
-        chk.deactivateCheck(type);
+        chk.deactivateCheck(type, getCallingClass());
     }
 
     /**
@@ -72,7 +75,7 @@ public class AnticheatAPI {
      * @param type   Check to stop watching for
      */
     public static void exemptPlayer(Player player, CheckType type) {
-        chk.exemptPlayer(player, type);
+        chk.exemptPlayer(player, type, getCallingClass());
     }
 
     /**
@@ -82,7 +85,7 @@ public class AnticheatAPI {
      * @param type   Check to start watching for
      */
     public static void unexemptPlayer(Player player, CheckType type) {
-        chk.unexemptPlayer(player, type);
+        chk.unexemptPlayer(player, type, getCallingClass());
     }
 
     /**
@@ -114,20 +117,53 @@ public class AnticheatAPI {
      *
      * @param player Player to check
      * @return player's hack level
+     * @deprecated see {@link #getGroup(org.bukkit.entity.Player)}
      */
+    @Deprecated
     public static int getLevel(Player player) {
         return umr.safeGetLevel(player.getName());
     }
 
 
     /**
-     * Set a player's hack level (Min = 0, Max = 50)
+     * Set a player's hack level
      *
      * @param player Player to set
      * @param level  Group to set to
+     * @deprecated see {@link #resetPlayer(org.bukkit.entity.Player)}
      */
+    @Deprecated
     public static void setLevel(Player player, int level) {
         umr.safeSetLevel(player.getName(), level);
+    }
+
+    /**
+     * Reset a player's hack level to 0
+     *
+     * @param player Player to reset
+     */
+    public static void resetPlayer(Player player) {
+        umr.getUser(player.getName()).resetLevel();
+    }
+
+    /**
+     * Get a user's {@link net.gravitydevelopment.anticheat.util.Group}
+     *
+     * @param player Player whose group to find
+     * @return The player's group
+     */
+    public static Group getGroup(Player player) {
+        return umr.getUser(player.getName()).getGroup();
+    }
+
+    /**
+     * Get all configured Groups
+     *
+     * @return List of all groups
+     * @see net.gravitydevelopment.anticheat.util.Group
+     */
+    public static List<Group> getGroups() {
+        return getManager().getConfiguration().getGroups().getGroups();
     }
 
     // XrayTracker API
@@ -152,5 +188,9 @@ public class AnticheatAPI {
      */
     public static AntiCheatManager getManager() {
         return AntiCheat.getManager();
+    }
+
+    private static String getCallingClass() {
+        return sun.reflect.Reflection.getCallerClass(2).getName();
     }
 }

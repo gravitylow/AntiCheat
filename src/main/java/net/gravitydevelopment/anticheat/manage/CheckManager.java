@@ -52,9 +52,9 @@ public class CheckManager {
      *
      * @param type The CheckType to enable
      */
-    public void activateCheck(CheckType type) {
+    public void activateCheck(CheckType type, String className) {
         if (isActive(type)) {
-            manager.log("The " + type.toString() + " check was activated.");
+            manager.getLoggingManager().logToFile("The " + type.toString() + " check was activated by " + className + ".");
             checkIgnoreList.remove(type);
         }
     }
@@ -64,9 +64,9 @@ public class CheckManager {
      *
      * @param type The CheckType to disable
      */
-    public void deactivateCheck(CheckType type) {
+    public void deactivateCheck(CheckType type, String className) {
         if (!isActive(type)) {
-            manager.log("The " + type.toString() + " check was deactivated.");
+            manager.getLoggingManager().logToFile("The " + type.toString() + " check was deactivated by " + className + ".");
             checkIgnoreList.add(type);
             disabled++;
         }
@@ -88,12 +88,12 @@ public class CheckManager {
      * @param player The player
      * @param type   The check
      */
-    public void exemptPlayer(Player player, CheckType type) {
+    public void exemptPlayer(Player player, CheckType type, String className) {
         if (!isExempt(player, type)) {
             if (!exemptList.containsKey(player.getName())) {
                 exemptList.put(player.getName(), new ArrayList<CheckType>());
             }
-            manager.log(player.getName() + " was exempted from the " + type.toString() + " check.");
+            manager.getLoggingManager().logToFile(player.getName() + " was exempted from the " + type.toString() + " check by " + className + ".");
             exemptList.get(player.getName()).add(type);
             exempt++;
         }
@@ -105,9 +105,9 @@ public class CheckManager {
      * @param player The player
      * @param type   The check
      */
-    public void unexemptPlayer(Player player, CheckType type) {
+    public void unexemptPlayer(Player player, CheckType type, String className) {
         if (isExempt(player, type)) {
-            manager.log(player.getName() + " was re-added to the " + type.toString() + " check.");
+            manager.getLoggingManager().logToFile(player.getName() + " was unexempted from the " + type.toString() + " check by " + className + ".");
             exemptList.get(player.getName()).remove(type);
         }
     }
