@@ -53,7 +53,7 @@ public class CheckManager {
      * @param type The CheckType to enable
      */
     public void activateCheck(CheckType type, String className) {
-        if (isActive(type)) {
+        if (!isActive(type)) {
             manager.getLoggingManager().logToFile("The " + type.toString() + " check was activated by " + className + ".");
             checkIgnoreList.remove(type);
         }
@@ -65,7 +65,7 @@ public class CheckManager {
      * @param type The CheckType to disable
      */
     public void deactivateCheck(CheckType type, String className) {
-        if (!isActive(type)) {
+        if (isActive(type)) {
             manager.getLoggingManager().logToFile("The " + type.toString() + " check was deactivated by " + className + ".");
             checkIgnoreList.add(type);
             disabled++;
