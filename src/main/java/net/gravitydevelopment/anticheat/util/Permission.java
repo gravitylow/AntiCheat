@@ -61,6 +61,7 @@ public enum Permission {
     SYSTEM_ALERT,
     SYSTEM_NOTICE,
     SYSTEM_CALIBRATE,
+    SYSTEM_CHECK,
     SYSTEM_DEBUG,
     SYSTEM_RELOAD;
 

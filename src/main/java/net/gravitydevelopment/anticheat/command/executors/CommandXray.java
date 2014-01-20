@@ -19,13 +19,10 @@
 package net.gravitydevelopment.anticheat.command.executors;
 
 import net.gravitydevelopment.anticheat.command.CommandBase;
-import net.gravitydevelopment.anticheat.util.PastebinReport;
 import net.gravitydevelopment.anticheat.util.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public class CommandXray extends CommandBase {
 

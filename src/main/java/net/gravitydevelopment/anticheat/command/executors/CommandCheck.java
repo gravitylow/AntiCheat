@@ -18,20 +18,17 @@
 
 package net.gravitydevelopment.anticheat.command.executors;
 
-import net.gravitydevelopment.anticheat.AntiCheat;
 import net.gravitydevelopment.anticheat.check.CheckType;
 import net.gravitydevelopment.anticheat.command.CommandBase;
-import net.gravitydevelopment.anticheat.util.Calibrator;
 import net.gravitydevelopment.anticheat.util.Permission;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class CommandCheck extends CommandBase {
 
     private static final String NAME = "AntiCheat Check Management";
     private static final String COMMAND = "check";
     private static final String USAGE = "anticheat check [check] [on/off]";
-    private static final Permission PERMISSION = Permission.SYSTEM_CALIBRATE;
+    private static final Permission PERMISSION = Permission.SYSTEM_CHECK;
     private static final String[] HELP = new String[3];
 
     static {

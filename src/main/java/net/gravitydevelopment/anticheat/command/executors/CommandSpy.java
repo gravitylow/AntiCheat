@@ -28,8 +28,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import java.util.List;
-
 public class CommandSpy extends CommandBase {
 
     private static final String NAME = "AntiCheat Spying";
