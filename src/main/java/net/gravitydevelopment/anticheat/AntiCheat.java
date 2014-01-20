@@ -19,6 +19,7 @@
 package net.gravitydevelopment.anticheat;
 
 import com.comphenix.protocol.ProtocolLibrary;
+import net.gravitydevelopment.anticheat.command.CommandHandler;
 import net.gravitydevelopment.anticheat.config.Configuration;
 import net.gravitydevelopment.anticheat.event.*;
 import net.gravitydevelopment.anticheat.manage.AntiCheatManager;
@@ -45,6 +46,7 @@ public class AntiCheat extends JavaPlugin {
     private static AntiCheat plugin;
     private static List<Listener> eventList = new ArrayList<Listener>();
     private static boolean update = false;
+    private static String updateDetails = null;
     private static Configuration config;
     private static boolean verbose;
     private static boolean developer;
@@ -156,6 +158,9 @@ public class AntiCheat extends JavaPlugin {
                     Updater updater = new Updater(plugin, PROJECT_ID, file, Updater.UpdateType.DEFAULT, false);
                     update = updater.getResult() == Updater.UpdateResult.SUCCESS;
                     verboseLog("Update available: " + update);
+                    if (update) {
+                        updateDetails = updater.getLatestName() + " for " + updater.getLatestGameVersion();
+                    }
                 }
             });
         }
@@ -197,6 +202,10 @@ public class AntiCheat extends JavaPlugin {
 
     public static boolean isUpdated() {
         return !update;
+    }
+
+    public static String getUpdateDetails() {
+        return updateDetails;
     }
 
     public static String getVersion() {
