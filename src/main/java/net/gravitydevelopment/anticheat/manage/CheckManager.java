@@ -54,7 +54,7 @@ public class CheckManager {
      */
     public void activateCheck(CheckType type, String className) {
         if (!isActive(type)) {
-            manager.getLoggingManager().logToFile("The " + type.toString() + " check was activated by " + className + ".");
+            manager.getLoggingManager().logFineInfo("The " + type.toString() + " check was activated by " + className + ".");
             checkIgnoreList.remove(type);
         }
     }
@@ -66,7 +66,7 @@ public class CheckManager {
      */
     public void deactivateCheck(CheckType type, String className) {
         if (isActive(type)) {
-            manager.getLoggingManager().logToFile("The " + type.toString() + " check was deactivated by " + className + ".");
+            manager.getLoggingManager().logFineInfo("The " + type.toString() + " check was deactivated by " + className + ".");
             checkIgnoreList.add(type);
             disabled++;
         }
@@ -93,7 +93,7 @@ public class CheckManager {
             if (!exemptList.containsKey(player.getName())) {
                 exemptList.put(player.getName(), new ArrayList<CheckType>());
             }
-            manager.getLoggingManager().logToFile(player.getName() + " was exempted from the " + type.toString() + " check by " + className + ".");
+            manager.getLoggingManager().logFineInfo(player.getName() + " was exempted from the " + type.toString() + " check by " + className + ".");
             exemptList.get(player.getName()).add(type);
             exempt++;
         }
@@ -107,7 +107,7 @@ public class CheckManager {
      */
     public void unexemptPlayer(Player player, CheckType type, String className) {
         if (isExempt(player, type)) {
-            manager.getLoggingManager().logToFile(player.getName() + " was unexempted from the " + type.toString() + " check by " + className + ".");
+            manager.getLoggingManager().logFineInfo(player.getName() + " was unexempted from the " + type.toString() + " check by " + className + ".");
             exemptList.get(player.getName()).remove(type);
         }
     }

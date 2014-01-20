@@ -766,8 +766,10 @@ public class Backend {
                     break;
                 } else {
                     if (manager.getConfiguration().getConfig().blockChatSpamRepetition.getValue() && m.equalsIgnoreCase(msg) && i == 1) {
+                        manager.getLoggingManager().logFineInfo(player.getName() + " spam-repeated \"" + msg + "\"");
                         return new CheckResult(CheckResult.Result.FAILED, lang.spamWarning.getValue());
                     } else if (manager.getConfiguration().getConfig().blockChatSpamSpeed.getValue() && System.currentTimeMillis() - user.getLastCommandTime() < magic.COMMAND_MIN * 2) {
+                        manager.getLoggingManager().logFineInfo(player.getName() + " spammed quickly \"" + msg + "\"");
                         return new CheckResult(CheckResult.Result.FAILED, lang.spamWarning.getValue());
                     }
                 }

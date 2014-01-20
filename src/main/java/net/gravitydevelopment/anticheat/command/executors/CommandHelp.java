@@ -33,6 +33,7 @@ public class CommandHelp extends CommandBase {
             GRAY + "/anti " + AQUA + "reload",
             GRAY + "/anti " + AQUA + "update",
             GRAY + "/anti " + AQUA + "debug " + AQUA + "<user>",
+            GRAY + "/anti " + AQUA + "check " + GOLD + "[check] [on/off]",
             GRAY + "/anti " + AQUA + "log " + GOLD + "[file/console] [on/off]",
             GRAY + "/anti " + AQUA + "report " + GOLD + "[group/user]",
             GRAY + "/anti " + AQUA + "reload",

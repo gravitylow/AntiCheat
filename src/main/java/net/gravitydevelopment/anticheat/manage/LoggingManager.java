@@ -81,6 +81,11 @@ public class LoggingManager {
         fileLogger.info(message);
     }
 
+    public void logFineInfo(String message) {
+        logToFile(message);
+        logToLogs(message);
+    }
+
     public void logToPlayers(String message) {
         for(Player player : Bukkit.getOnlinePlayers()) {
             if (Permission.SYSTEM_NOTICE.get(player)) {
