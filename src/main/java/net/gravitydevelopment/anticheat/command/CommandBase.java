@@ -99,13 +99,4 @@ public class CommandBase {
     public Permission getPermission() {
         return permission;
     }
-
-    public boolean hasPermission(CommandSender cs) {
-        if (permission.get(cs)) {
-            return true;
-        } else {
-            cs.sendMessage(PERMISSIONS_ERROR + " (" + WHITE + permission.toString() + RED + ")");
-            return false;
-        }
-    }
 }
