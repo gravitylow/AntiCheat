@@ -43,6 +43,7 @@ public class Backend {
     private List<String> isInWater = new ArrayList<String>();
     private List<String> isInWaterCache = new ArrayList<String>();
     private List<String> isAscending = new ArrayList<String>();
+    private Map<String, Integer> interactionCount = new HashMap<String, Integer>();
     private Map<String, Integer> ascensionCount = new HashMap<String, Integer>();
     private Map<String, Double> blocksOverFlight = new HashMap<String, Double>();
     private Map<String, Integer> chatLevel = new HashMap<String, Integer>();
@@ -880,6 +881,7 @@ public class Backend {
         animated.put(player.getName(), System.currentTimeMillis());
         increment(player, blockPunches, magic.BLOCK_PUNCH_MIN);
         itemInHand.put(player.getName(), player.getItemInHand().getType());
+        interactionCount.put(player.getName(), 0);
     }
 
     public void logInstantBreak(final Player player) {
@@ -957,7 +959,13 @@ public class Backend {
         String name = player.getName();
         if (animated.containsKey(name)) {
             long time = System.currentTimeMillis() - animated.get(name);
-            animated.remove(player.getName());
+            int count = interactionCount.get(player.getName()) + 1;
+            interactionCount.put(player.getName(), count);
+
+            if (count > magic.ANIMATION_INTERACT_MAX) {
+                animated.remove(player.getName());
+                return false;
+            }
             return time < magic.ANIMATION_MIN;
         } else {
             return false;

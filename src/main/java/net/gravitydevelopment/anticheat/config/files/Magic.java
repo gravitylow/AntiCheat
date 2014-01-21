@@ -216,6 +216,10 @@ public class Magic extends ConfigurationFile {
      */
     public int SPRINT_FOOD_MIN;
     /**
+     * Maximum times a player can interact between animations; Type=integer, +Leniency=Increase.
+     */
+    public int ANIMATION_INTERACT_MAX;
+    /**
      * Minimum time between animations; Type=system, +Leniency=Increase.
      */
     public int ANIMATION_MIN;
@@ -427,6 +431,7 @@ public class Magic extends ConfigurationFile {
         WATER_ASCENSION_VIOLATION_MAX = new ConfigValue<Integer>("WATER_ASCENSION_VIOLATION_MAX").getValue();
         WATER_SPEED_VIOLATION_MAX = new ConfigValue<Integer>("WATER_SPEED_VIOLATION_MAX").getValue();
         SPRINT_FOOD_MIN = new ConfigValue<Integer>("SPRINT_FOOD_MIN").getValue();
+        ANIMATION_INTERACT_MAX = new ConfigValue<Integer>("ANIMATION_INTERACT_MAX").getValue();
         ANIMATION_MIN = new ConfigValue<Integer>("ANIMATION_MIN").getValue();
         COMMAND_MIN = new ConfigValue<Integer>("COMMAND_MIN").getValue();
         COMMAND_REPEAT_MIN = new ConfigValue<Integer>("COMMAND_REPEAT_MIN").getValue();
