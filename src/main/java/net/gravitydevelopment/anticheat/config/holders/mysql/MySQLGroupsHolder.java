@@ -46,7 +46,7 @@ public class MySQLGroupsHolder extends ConfigurationTable implements Groups {
         groups = new ArrayList<Group>();
 
         String sqlCreate = "CREATE TABLE IF NOT EXISTS " + getFullTable() + "(" +
-                "  `id` INT NOT NULL," +
+                "  `id` INT NOT NULL AUTO_INCREMENT," +
                 "  `name` VARCHAR(45) NOT NULL," +
                 "  `level` INT NOT NULL," +
                 "  `color` VARCHAR(45) NOT NULL," +
