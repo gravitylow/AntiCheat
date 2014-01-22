@@ -140,8 +140,8 @@ public class Rule {
         SortedMap<String, Object> map = new TreeMap<String, Object>();
         map.put("player_check", type.name().toLowerCase());
         map.put("player_level", user.getLevel());
-        map.put("player_group", user.getGroup().getName());
-        map.put("player_name", user.getName());
+        map.put("player_group", user.getGroup() != null ? user.getGroup().getName().toLowerCase() : "low");
+        map.put("player_name", user.getName().toLowerCase());
         for (CheckType t : CheckType.values()) {
             map.put("check_" + t.name().toLowerCase(), t.getUses(user.getName()));
         }
@@ -149,8 +149,6 @@ public class Rule {
     }
 
     protected void setVariable(String variable, String value, User user) {
-        // Only variable that can be set for now, may change in the future
-        // others wouldn't make any sense to set
         if (variable.equals("player_level") && Utilities.isInt(value)) {
             user.setLevel(Integer.parseInt(value));
         } else if (variable.equals("player_group") && Utilities.isInt(value)) {

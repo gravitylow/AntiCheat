@@ -104,8 +104,8 @@ public class Backend {
         this.magic = magic;
     }
 
-    public void resetChatLevel(Player player) {
-        chatLevel.put(player.getName(), 0);
+    public void resetChatLevel(User user) {
+        chatLevel.put(user.getName(), 0);
     }
 
     public void garbageClean(Player player) {

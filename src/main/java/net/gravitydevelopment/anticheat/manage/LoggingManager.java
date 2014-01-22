@@ -78,7 +78,7 @@ public class LoggingManager {
     }
 
     public void logToFile(String message) {
-        fileLogger.info(message);
+        fileLogger.info(ChatColor.stripColor(message));
     }
 
     public void logFineInfo(String message) {
