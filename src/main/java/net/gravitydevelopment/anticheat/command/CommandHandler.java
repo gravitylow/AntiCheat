@@ -56,12 +56,12 @@ public class CommandHandler implements CommandExecutor {
             }
             for (CommandBase base : commands) {
                 if (base.getCommand().equalsIgnoreCase(command)) {
-                    base.execute(cs, newArgs);
+                    base.run(cs, newArgs);
                 }
             }
         } else {
             // Send help
-            commands.get(0).execute(cs, null);
+            commands.get(0).run(cs, null);
         }
         return true;
     }
