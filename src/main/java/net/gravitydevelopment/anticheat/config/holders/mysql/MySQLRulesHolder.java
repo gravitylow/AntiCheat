@@ -43,7 +43,7 @@ public class MySQLRulesHolder extends ConfigurationTable implements Rules {
     public void open() {
         String sqlCreate = "CREATE TABLE IF NOT EXISTS " + getFullTable() + "(" +
                 "  `id` INT NOT NULL AUTO_INCREMENT," +
-                "  `rule` VARCHAR(45) NOT NULL," +
+                "  `rule` VARCHAR(256) NOT NULL," +
                 "  PRIMARY KEY (`id`));";
 
         String sqlLoad = "SELECT * FROM " + getFullTable();
