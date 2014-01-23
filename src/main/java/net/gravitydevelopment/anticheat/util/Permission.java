@@ -83,7 +83,7 @@ public enum Permission {
     }
 
     public String whichPermission(CommandSender cs) {
-        for (String s : new String[]{toString(), getBase(), PERMISSION_ALL}) {
+        for (String s : new String[]{PERMISSION_ALL, getBase(), toString()}) {
             if (cs.hasPermission(s)) {
                 return s;
             }
