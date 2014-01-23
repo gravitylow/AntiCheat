@@ -33,12 +33,10 @@ import java.sql.SQLException;
 public class Database {
 
     private static final String EVENTS_TABLE = "logs";
-    private static final String USERS_TABLE = "users";
 
     private String sqlLogEvent;
     private String sqlCleanEvents;
     private String sqlCreateEvents;
-    private String sqlCreateUsers;
 
     public enum DatabaseType {
         MySQL,
@@ -96,13 +94,6 @@ public class Database {
                 "  `user` VARCHAR(45) NOT NULL," +
                 "  `check_type` VARCHAR(45) NOT NULL," +
                 "  PRIMARY KEY (`id`));";
-
-        sqlCreateUsers = "CREATE TABLE IF NOT EXISTS " + prefix + USERS_TABLE + "(" +
-                "  `id` INT NOT NULL AUTO_INCREMENT," +
-                "  `username` VARCHAR(45) NOT NULL," +
-                "  `password` VARCHAR(256) NOT NULL," +
-                "  `privileges` VARCHAR(45) NOT NULL DEFAULT 'admin'," +
-                "  PRIMARY KEY (`id`));";
     }
 
     public DatabaseType getType() {
@@ -141,7 +132,6 @@ public class Database {
             eventBatch = connection.prepareStatement(sqlLogEvent);
 
             connection.prepareStatement(sqlCreateEvents).executeUpdate();
-            connection.prepareStatement(sqlCreateUsers).executeUpdate();
 
             connection.setAutoCommit(false);
 
