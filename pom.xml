@@ -119,5 +119,4 @@
             <url>file:///var/lib/jenkins/repo</url>
         </repository>
     </distributionManagement>
-
 </project>

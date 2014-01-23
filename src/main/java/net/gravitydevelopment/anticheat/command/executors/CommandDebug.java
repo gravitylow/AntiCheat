@@ -45,6 +45,10 @@ public class CommandDebug extends CommandBase {
         Player player = null;
         if (args.length == 1) {
             player = Bukkit.getPlayer(args[0]);
+        } else {
+            if (cs instanceof Player) {
+                player = (Player) cs;
+            }
         }
 
         cs.sendMessage(GRAY + "Please wait while I collect some data...");
