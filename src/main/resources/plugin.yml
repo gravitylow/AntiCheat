@@ -12,9 +12,9 @@ commands:
     usage: /anticheat help
     aliases: anti
 permissions:
-  anticheat.notice:
+  anticheat.system.notice:
     description: See broadcasts when a player is kicked or banned for hacking
-  anticheat.alert:
+  anticheat.system.alert:
     description: See alerts when a player might be cheating
   anticheat.system.help:
     description: Access the help message
@@ -89,7 +89,7 @@ permissions:
     description: Allow players to use auto-sneak
     default: false
   anticheat.check.speed:
-    description: Use this with anticheat.check.flyhack to allow more speed
+    description: Allow players to speed
     default: false
   anticheat.check.spider:
     description: Allow players to climb non-climbable surfaces
@@ -128,13 +128,13 @@ permissions:
     description: Allow players to become slimeballs and clip down through blocks
     default: false
   anticheat.check.fastinventory:
-    description: Allows players to use fastloot and similar inventory hacks
+    description: Allow players to use fastloot and similar inventory hacks
     default: false
   anticheat.check.autotool:
-    description: Allows players to use autotool to switch tools quickly
+    description: Allow players to use autotool to switch tools quickly
     default: false
   anticheat.check.fastanimation:
-    description: Allows players to attack or interact very quickly
+    description: Allow players to attack or interact very quickly
     default: false
   anticheat.check.exempt:
     description: Total exemption from checks
