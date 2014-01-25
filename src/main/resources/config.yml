@@ -42,6 +42,9 @@ system:
   event-chains: true
   # Should Enterprise options be enabled? Only set this to true if you're an advanced user.
   enterprise: false
+# Use /anticheat check for a list of valid checks
+disabled-checks:
+- EXAMPLE_CHECK
 disable-in:
 - example-world
 - example-world-2

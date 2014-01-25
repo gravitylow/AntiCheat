@@ -39,12 +39,19 @@ public class CheckManager {
     private Configuration config;
     private static List<CheckType> checkIgnoreList = new ArrayList<CheckType>();
     private static Map<String, List<CheckType>> exemptList = new HashMap<String, List<CheckType>>();
-    private static int disabled = 0;
-    private static int exempt = 0;
 
     public CheckManager(AntiCheatManager manager) {
         this.manager = manager;
         this.config = manager.getConfiguration();
+
+        for (String string : config.getConfig().disabledChecks.getValue()) {
+            for (CheckType type : CheckType.values()) {
+                if (type.toString().equalsIgnoreCase(string)) {
+                    checkIgnoreList.add(type);
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -68,7 +75,6 @@ public class CheckManager {
         if (isActive(type)) {
             manager.getLoggingManager().logFineInfo("The " + type.toString() + " check was deactivated by " + className + ".");
             checkIgnoreList.add(type);
-            disabled++;
         }
     }
 
@@ -95,7 +101,6 @@ public class CheckManager {
             }
             manager.getLoggingManager().logFineInfo(player.getName() + " was exempted from the " + type.toString() + " check by " + className + ".");
             exemptList.get(player.getName()).add(type);
-            exempt++;
         }
     }
 
@@ -186,27 +191,5 @@ public class CheckManager {
             }
         }
         return false;
-    }
-
-    /**
-     * Get the number of exempt players
-     *
-     * @return exempt players
-     */
-    public int getExempt() {
-        int x = exempt;
-        exempt = 0;
-        return x;
-    }
-
-    /**
-     * Get the number of disabled checks
-     *
-     * @return disabled checks
-     */
-    public int getDisabled() {
-        int x = disabled;
-        disabled = 0;
-        return x;
     }
 }

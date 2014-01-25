@@ -54,6 +54,7 @@ public class Config extends ConfigurationFile {
     public ConfigValue<Boolean> logToFile;
 
     public ConfigValue<List<String>> disabledWorlds;
+    public ConfigValue<List<String>> disabledChecks;
 
     public Config(AntiCheat plugin, Configuration config) {
         super(plugin, config, FILENAME);
@@ -88,5 +89,6 @@ public class Config extends ConfigurationFile {
         logToFile = new ConfigValue<Boolean>("system.log-to-file");
 
         disabledWorlds = new ConfigValue<List<String>>("disable-in");
+        disabledChecks = new ConfigValue<List<String>>("disabled-checks");
     }
 }

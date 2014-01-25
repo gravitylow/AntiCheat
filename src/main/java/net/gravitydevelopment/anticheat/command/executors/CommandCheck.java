@@ -23,6 +23,8 @@ import net.gravitydevelopment.anticheat.command.CommandBase;
 import net.gravitydevelopment.anticheat.util.Permission;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+
 public class CommandCheck extends CommandBase {
 
     private static final String NAME = "AntiCheat Check Management";
@@ -72,8 +74,16 @@ public class CommandCheck extends CommandBase {
                     } else {
                         if (newValue) {
                             CHECK_MANAGER.activateCheck(type, cs.getName());
+                            List<String> checks = CONFIG.getConfig().disabledChecks.getValue();
+                            if (checks.contains(type.toString())) {
+                                checks.remove(type.toString());
+                                CONFIG.getConfig().disabledChecks.setValue(checks);
+                            }
                         } else {
                             CHECK_MANAGER.deactivateCheck(type, cs.getName());
+                            List<String> checks = CONFIG.getConfig().disabledChecks.getValue();
+                            checks.add(type.toString());
+                            CONFIG.getConfig().disabledChecks.setValue(checks);
                         }
                         cs.sendMessage(GREEN + type.toString() + strValue + ".");
                     }
