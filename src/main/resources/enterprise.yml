@@ -19,7 +19,7 @@ database:
   # Prefix for the tables
   prefix: 'ac_'
   # Database/Schema to use
-  database: 'minecraft'
+  database: 'anticheat'
 # Logging settings
 log:
   # Upload cheat logs to the database?
