@@ -57,8 +57,11 @@ public class CommandHandler implements CommandExecutor {
             for (CommandBase base : commands) {
                 if (base.getCommand().equalsIgnoreCase(command)) {
                     base.run(cs, newArgs);
+                    break;
                 }
             }
+            // Command not found, send help
+            commands.get(0).run(cs, null);
         } else {
             // Send help
             commands.get(0).run(cs, null);

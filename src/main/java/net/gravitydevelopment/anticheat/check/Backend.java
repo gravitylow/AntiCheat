@@ -373,7 +373,7 @@ public class Backend {
                 if (isInWater.contains(player.getName())) {
                     if (isInWaterCache.contains(player.getName())) {
                         if (player.getNearbyEntities(1, 1, 1).isEmpty()) {
-                            boolean b = false;
+                            boolean b;
                             if (!Utilities.sprintFly(player)) {
                                 b = x > magic.XZ_SPEED_MAX_WATER || z > magic.XZ_SPEED_MAX_WATER;
                             } else {
