@@ -322,7 +322,7 @@ public class PlayerListener extends EventListener {
                     log(result.getMessage(), player, CheckType.FLY);
                 }
             }
-            if (getCheckManager().willCheckQuick(player, CheckType.VCLIP) && event.getFrom().getY() > event.getTo().getY()) {
+            if (getCheckManager().willCheckQuick(player, CheckType.VCLIP) && event.getFrom().getY() > event.getTo().getY() && event.getTo().getY() > 0) {
                 CheckResult result = getBackend().checkVClip(player, new Distance(event.getFrom(), event.getTo()));
                 if (result.failed()) {
                     if (!silentMode()) {
