@@ -29,7 +29,7 @@ public class CommandXray extends CommandBase {
     private static final String NAME = "AntiCheat XRAY Stats";
     private static final String COMMAND = "xray";
     private static final String USAGE = "anticheat xray [user]";
-    private static final Permission PERMISSION = Permission.SYSTEM_UPDATE;
+    private static final Permission PERMISSION = Permission.SYSTEM_XRAY;
     private static final String[] HELP = {
             GRAY + "Use: " + AQUA + "/anticheat xray [user]" + GRAY + " to view xray statistics for a user",
     };
