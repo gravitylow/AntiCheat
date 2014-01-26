@@ -64,12 +64,11 @@ public class Group {
 
     public static Group load(String string) {
         try {
-            if (string.split(":").length == 4) {
-                string = Utilities.removeWhitespace(string);
-                String name = string.split(":")[0];
-                int level = Integer.parseInt(string.split(":")[1]);
-                String color = string.split(":")[2];
-                List<String> actions = Arrays.asList(string.split(":")[3].split(","));
+            if (string.split(" : ").length == 4) {
+                String name = string.split(" : ")[0];
+                int level = Integer.parseInt(string.split(" : ")[1]);
+                String color = string.split(" : ")[2];
+                List<String> actions = Arrays.asList(string.split(" : ")[3].split(","));
                 return new Group(name, level, color, actions);
             } else {
                 throw new Exception();
