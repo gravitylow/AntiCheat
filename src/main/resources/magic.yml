@@ -1,6 +1,6 @@
 # AntiCheat configuration file
 # Please report any bugs: http://dev.bukkit.org/server-mods/anticheat/
-# Documentation for these values is available at http://gravitydevelopment.net/docs/anticheat/net/gravitydevelopment/anticheat/util/Magic.html
+# Documentation for these values is available at http://gravitydevelopment.net/docs/anticheat/net/gravitydevelopment/anticheat/config/files/Magic.html
 ANIMATION_INTERACT_MAX: 3
 ANIMATION_MIN: 200
 ASCENSION_COUNT_MAX: 8
