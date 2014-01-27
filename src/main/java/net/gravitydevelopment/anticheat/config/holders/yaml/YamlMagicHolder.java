@@ -33,11 +33,6 @@ public class YamlMagicHolder extends ConfigurationFile implements InvocationHand
         super(plugin, config, FILENAME);
     }
 
-    @Override
-    public void open() {
-        new ConfigValue<Double>("VERSION").setValue(new ConfigValue<Double>("VERSION").getDefaultValue());
-    }
-
     public Object invoke(Object proxy, Method method, Object[] args) {
         String key = method.getName();
 

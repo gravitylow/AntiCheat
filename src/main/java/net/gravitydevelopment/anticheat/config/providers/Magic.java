@@ -76,7 +76,7 @@ public interface Magic {
      */
     public int PROJECTILE_TIME_MIN();
     /**
-     * Number of projectiles to wait for before checking how int they took to fire off; Type=integer.
+     * Number of projectiles to wait for before checking how long they took to fire off; Type=integer.
      */
     public int PROJECTILE_CHECK();
     /**
@@ -84,7 +84,7 @@ public interface Magic {
      */
     public int DROP_TIME_MIN();
     /**
-     * Number of item drops to wait for before checking how int they took to drop; Type=integer.
+     * Number of item drops to wait for before checking how long they took to drop; Type=integer.
      */
     public int DROP_CHECK();
     /**
