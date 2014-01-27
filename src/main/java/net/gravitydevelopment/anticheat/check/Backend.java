@@ -20,7 +20,7 @@ package net.gravitydevelopment.anticheat.check;
 
 import net.gravitydevelopment.anticheat.AntiCheat;
 import net.gravitydevelopment.anticheat.config.files.Lang;
-import net.gravitydevelopment.anticheat.config.files.Magic;
+import net.gravitydevelopment.anticheat.config.providers.Magic;
 import net.gravitydevelopment.anticheat.manage.AntiCheatManager;
 import net.gravitydevelopment.anticheat.util.User;
 import net.gravitydevelopment.anticheat.util.Distance;
@@ -178,7 +178,7 @@ public class Backend {
         float f = (float) ticks / 20.0F;
         f = (f * f + f * 2.0F) / 3.0F;
         f = f > 1.0F ? 1.0F : f;
-        if (Math.abs(force - f) > magic.BOW_ERROR) {
+        if (Math.abs(force - f) > magic.BOW_ERROR()) {
             return new CheckResult(CheckResult.Result.FAILED, player.getName() + " fired their bow too fast (actual force=" + force + ", calculated force=" + f + ")");
         } else {
             return PASS;
@@ -190,12 +190,12 @@ public class Backend {
         if (!projectileTime.containsKey(player.getName())) {
             projectileTime.put(player.getName(), System.currentTimeMillis());
             return new CheckResult(CheckResult.Result.PASSED);
-        } else if (projectilesShot.get(player.getName()) == magic.PROJECTILE_CHECK) {
+        } else if (projectilesShot.get(player.getName()) == magic.PROJECTILE_CHECK()) {
             long time = System.currentTimeMillis() - projectileTime.get(player.getName());
             projectileTime.remove(player.getName());
             projectilesShot.remove(player.getName());
-            if (time < magic.PROJECTILE_TIME_MIN) {
-                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " wound up a bow too fast (actual time=" + time + ", min time=" + magic.PROJECTILE_TIME_MIN + ")");
+            if (time < magic.PROJECTILE_TIME_MIN()) {
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " wound up a bow too fast (actual time=" + time + ", min time=" + magic.PROJECTILE_TIME_MIN() + ")");
             }
         }
         return PASS;
@@ -206,12 +206,12 @@ public class Backend {
         if (!blockTime.containsKey(player.getName())) {
             blockTime.put(player.getName(), System.currentTimeMillis());
             return new CheckResult(CheckResult.Result.PASSED);
-        } else if (blocksDropped.get(player.getName()) == magic.DROP_CHECK) {
+        } else if (blocksDropped.get(player.getName()) == magic.DROP_CHECK()) {
             long time = System.currentTimeMillis() - blockTime.get(player.getName());
             blockTime.remove(player.getName());
             blocksDropped.remove(player.getName());
-            if (time < magic.DROP_TIME_MIN) {
-                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " dropped an item too fast (actual time=" + time + ", min time=" + magic.DROP_TIME_MIN + ")");
+            if (time < magic.DROP_TIME_MIN()) {
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " dropped an item too fast (actual time=" + time + ", min time=" + magic.DROP_TIME_MIN() + ")");
             }
         }
         return PASS;
@@ -223,12 +223,12 @@ public class Backend {
         } else {
             String string = player.getName() + " reached too far for a block";
             double distance =
-                    player.getGameMode() == GameMode.CREATIVE ? magic.BLOCK_MAX_DISTANCE_CREATIVE
-                            : player.getLocation().getDirection().getY() > 0.9 ? magic.BLOCK_MAX_DISTANCE_CREATIVE
-                            : magic.BLOCK_MAX_DISTANCE;
+                    player.getGameMode() == GameMode.CREATIVE ? magic.BLOCK_MAX_DISTANCE_CREATIVE()
+                            : player.getLocation().getDirection().getY() > 0.9 ? magic.BLOCK_MAX_DISTANCE_CREATIVE()
+                            : magic.BLOCK_MAX_DISTANCE();
             double i = x >= distance ? x : y > distance ? y : z > distance ? z : -1;
             if (i != -1) {
-                return new CheckResult(CheckResult.Result.FAILED, string + " (distance=" + i + ", max=" + magic.BLOCK_MAX_DISTANCE + ")");
+                return new CheckResult(CheckResult.Result.FAILED, string + " (distance=" + i + ", max=" + magic.BLOCK_MAX_DISTANCE() + ")");
             } else {
                 return PASS;
             }
@@ -237,16 +237,16 @@ public class Backend {
 
     public CheckResult checkLongReachDamage(Player player, double x, double y, double z) {
         String string = player.getName() + " reached too far for an entity";
-        double i = x >= magic.ENTITY_MAX_DISTANCE ? x : y > magic.ENTITY_MAX_DISTANCE ? y : z > magic.ENTITY_MAX_DISTANCE ? z : -1;
+        double i = x >= magic.ENTITY_MAX_DISTANCE() ? x : y > magic.ENTITY_MAX_DISTANCE() ? y : z > magic.ENTITY_MAX_DISTANCE() ? z : -1;
         if (i != -1) {
-            return new CheckResult(CheckResult.Result.FAILED, string + " (distance=" + i + ", max=" + magic.ENTITY_MAX_DISTANCE + ")");
+            return new CheckResult(CheckResult.Result.FAILED, string + " (distance=" + i + ", max=" + magic.ENTITY_MAX_DISTANCE() + ")");
         } else {
             return PASS;
         }
     }
 
     public CheckResult checkSpider(Player player, double y) {
-        if (y <= magic.LADDER_Y_MAX && y >= magic.LADDER_Y_MIN && !Utilities.isClimbableBlock(player.getLocation().getBlock())) {
+        if (y <= magic.LADDER_Y_MAX() && y >= magic.LADDER_Y_MIN() && !Utilities.isClimbableBlock(player.getLocation().getBlock())) {
             return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to climb a non-ladder (" + player.getLocation().getBlock().getType() + ")");
         } else {
             return PASS;
@@ -254,8 +254,8 @@ public class Backend {
     }
 
     public CheckResult checkYSpeed(Player player, double y) {
-        if (!isMovingExempt(player) && !player.isInsideVehicle() && !player.isSleeping() && y > magic.Y_SPEED_MAX && !isDoing(player, velocitized, magic.VELOCITY_TIME) && !player.hasPotionEffect(PotionEffectType.JUMP)) {
-            return new CheckResult(CheckResult.Result.FAILED, player.getName() + "'s y speed was too high (speed=" + y + ", max=" + magic.Y_SPEED_MAX + ")");
+        if (!isMovingExempt(player) && !player.isInsideVehicle() && !player.isSleeping() && y > magic.Y_SPEED_MAX() && !isDoing(player, velocitized, magic.VELOCITY_TIME()) && !player.hasPotionEffect(PotionEffectType.JUMP)) {
+            return new CheckResult(CheckResult.Result.FAILED, player.getName() + "'s y speed was too high (speed=" + y + ", max=" + magic.Y_SPEED_MAX() + ")");
         } else {
             return PASS;
         }
@@ -272,9 +272,9 @@ public class Backend {
                 }
 
                 int i = nofallViolation.get(name);
-                if (i >= magic.NOFALL_LIMIT) {
+                if (i >= magic.NOFALL_LIMIT()) {
                     nofallViolation.put(player.getName(), 1);
-                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to avoid fall damage (fall distance = 0 " + i + " times in a row, max=" + magic.NOFALL_LIMIT + ")");
+                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to avoid fall damage (fall distance = 0 " + i + " times in a row, max=" + magic.NOFALL_LIMIT() + ")");
                 } else {
                     return PASS;
                 }
@@ -289,41 +289,41 @@ public class Backend {
     public CheckResult checkXZSpeed(Player player, double x, double z) {
         if (!isSpeedExempt(player) && player.getVehicle() == null) {
             String reason = "";
-            double max = magic.XZ_SPEED_MAX;
+            double max = magic.XZ_SPEED_MAX();
             if (player.getLocation().getBlock().getType() == Material.SOUL_SAND) {
                 if (player.isSprinting()) {
                     reason = "on soulsand while sprinting ";
-                    max = magic.XZ_SPEED_MAX_SOULSAND_SPRINT;
+                    max = magic.XZ_SPEED_MAX_SOULSAND_SPRINT();
                 } else if (player.hasPotionEffect(PotionEffectType.SPEED)) {
                     reason = "on soulsand with speed potion ";
-                    max = magic.XZ_SPEED_MAX_SOULSAND_POTION;
+                    max = magic.XZ_SPEED_MAX_SOULSAND_POTION();
                 } else {
                     reason = "on soulsand ";
-                    max = magic.XZ_SPEED_MAX_SOULSAND;
+                    max = magic.XZ_SPEED_MAX_SOULSAND();
                 }
             } else if (player.isFlying()) {
                 reason = "while flying ";
-                max = magic.XZ_SPEED_MAX_FLY;
+                max = magic.XZ_SPEED_MAX_FLY();
             } else if (player.hasPotionEffect(PotionEffectType.SPEED)) {
                 if (player.isSprinting()) {
                     reason = "with speed potion while sprinting ";
-                    max = magic.XZ_SPEED_MAX_POTION_SPRINT;
+                    max = magic.XZ_SPEED_MAX_POTION_SPRINT();
                 } else {
                     reason = "with speed potion ";
-                    max = magic.XZ_SPEED_MAX_POTION;
+                    max = magic.XZ_SPEED_MAX_POTION();
                 }
             } else if (player.isSprinting()) {
                 reason = "while sprinting ";
-                max = magic.XZ_SPEED_MAX_SPRINT;
+                max = magic.XZ_SPEED_MAX_SPRINT();
             }
 
             float speed = player.getWalkSpeed();
             max += speed > 0 ? player.getWalkSpeed() - 0.2f : 0;
 
             if (x > max || z > max) {
-                int num = this.increment(player, speedViolation, magic.SPEED_MAX);
-                if (num >= magic.SPEED_MAX) {
-                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + "'s speed was too high " + reason + num + " times in a row (max=" + magic.SPEED_MAX + ", speed=" + (x > z ? x : z) + ", max speed=" + max + ")");
+                int num = this.increment(player, speedViolation, magic.SPEED_MAX());
+                if (num >= magic.SPEED_MAX()) {
+                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + "'s speed was too high " + reason + num + " times in a row (max=" + magic.SPEED_MAX() + ", speed=" + (x > z ? x : z) + ", max speed=" + max + ")");
                 } else {
                     return PASS;
                 }
@@ -338,9 +338,9 @@ public class Backend {
 
     public CheckResult checkSneak(Player player, double x, double z) {
         if (player.isSneaking() && !player.isFlying() && !isMovingExempt(player) && !player.isInsideVehicle()) {
-            double i = x > magic.XZ_SPEED_MAX_SNEAK ? x : z > magic.XZ_SPEED_MAX_SNEAK ? z : -1;
+            double i = x > magic.XZ_SPEED_MAX_SNEAK() ? x : z > magic.XZ_SPEED_MAX_SNEAK() ? z : -1;
             if (i != -1) {
-                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " was sneaking too fast (speed=" + i + ", max=" + magic.XZ_SPEED_MAX_SNEAK + ")");
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " was sneaking too fast (speed=" + i + ", max=" + magic.XZ_SPEED_MAX_SNEAK() + ")");
             } else {
                 return PASS;
             }
@@ -351,8 +351,8 @@ public class Backend {
 
     public CheckResult checkSprintHungry(PlayerToggleSprintEvent event) {
         Player player = event.getPlayer();
-        if (event.isSprinting() && player.getGameMode() != GameMode.CREATIVE && player.getFoodLevel() <= magic.SPRINT_FOOD_MIN) {
-            return new CheckResult(CheckResult.Result.FAILED, player.getName() + " sprinted while hungry (food=" + player.getFoodLevel() + ", min=" + magic.SPRINT_FOOD_MIN + ")");
+        if (event.isSprinting() && player.getGameMode() != GameMode.CREATIVE && player.getFoodLevel() <= magic.SPRINT_FOOD_MIN()) {
+            return new CheckResult(CheckResult.Result.FAILED, player.getName() + " sprinted while hungry (food=" + player.getFoodLevel() + ", min=" + magic.SPRINT_FOOD_MIN() + ")");
         } else {
             return PASS;
         }
@@ -375,9 +375,9 @@ public class Backend {
                         if (player.getNearbyEntities(1, 1, 1).isEmpty()) {
                             boolean b;
                             if (!Utilities.sprintFly(player)) {
-                                b = x > magic.XZ_SPEED_MAX_WATER || z > magic.XZ_SPEED_MAX_WATER;
+                                b = x > magic.XZ_SPEED_MAX_WATER() || z > magic.XZ_SPEED_MAX_WATER();
                             } else {
-                                b = x > magic.XZ_SPEED_MAX_WATER_SPRINT || z > magic.XZ_SPEED_MAX_WATER_SPRINT;
+                                b = x > magic.XZ_SPEED_MAX_WATER_SPRINT() || z > magic.XZ_SPEED_MAX_WATER_SPRINT();
                             }
                             if (!b && !Utilities.isFullyInWater(player.getLocation()) && Utilities.isHoveringOverWater(player.getLocation(), 1) && y == 0D && !block.getType().equals(Material.WATER_LILY)) {
                                 b = true;
@@ -385,7 +385,7 @@ public class Backend {
                             if (b) {
                                 if (waterSpeedViolation.containsKey(player.getName())) {
                                     int v = waterSpeedViolation.get(player.getName());
-                                    if (v >= magic.WATER_SPEED_VIOLATION_MAX) {
+                                    if (v >= magic.WATER_SPEED_VIOLATION_MAX()) {
                                         waterSpeedViolation.put(player.getName(), 0);
                                         return new CheckResult(CheckResult.Result.FAILED, player.getName() + " stood on water " + v + " times (can't stand on " + block.getType() + " or " + block.getRelative(BlockFace.DOWN).getType() + ")");
                                     } else {
@@ -407,7 +407,7 @@ public class Backend {
             } else if (block.getRelative(BlockFace.DOWN).isLiquid() && isAscending(player) && Utilities.cantStandAt(block) && Utilities.cantStandAt(block.getRelative(BlockFace.DOWN))) {
                 if (waterAscensionViolation.containsKey(player.getName())) {
                     int v = waterAscensionViolation.get(player.getName());
-                    if (v >= magic.WATER_ASCENSION_VIOLATION_MAX) {
+                    if (v >= magic.WATER_ASCENSION_VIOLATION_MAX()) {
                         waterAscensionViolation.put(player.getName(), 0);
                     } else {
                         waterAscensionViolation.put(player.getName(), v + 1);
@@ -443,7 +443,7 @@ public class Backend {
     }
 
     public CheckResult checkYAxis(Player player, Distance distance) {
-        if (distance.getYDifference() > magic.TELEPORT_MIN || distance.getYDifference() < 0) {
+        if (distance.getYDifference() > magic.TELEPORT_MIN() || distance.getYDifference() < 0) {
             return PASS;
         }
         if (!isMovingExempt(player) && !Utilities.isClimbableBlock(player.getLocation().getBlock()) && !Utilities.isClimbableBlock(player.getLocation().add(0, -1, 0).getBlock()) && !player.isInsideVehicle() && !Utilities.isInWater(player) && !hasJumpPotion(player)) {
@@ -456,7 +456,7 @@ public class Backend {
                 yAxisLastViolation.put(name, 0L);
                 lastYtime.put(name, System.currentTimeMillis());
             } else {
-                if (y1 > lastYcoord.get(name) && yAxisViolations.get(name) > magic.Y_MAXVIOLATIONS && (System.currentTimeMillis() - yAxisLastViolation.get(name)) < magic.Y_MAXVIOTIME) {
+                if (y1 > lastYcoord.get(name) && yAxisViolations.get(name) > magic.Y_MAXVIOLATIONS() && (System.currentTimeMillis() - yAxisLastViolation.get(name)) < magic.Y_MAXVIOTIME()) {
                     Location g = player.getLocation();
                     yAxisViolations.put(name, yAxisViolations.get(name) + 1);
                     yAxisLastViolation.put(name, System.currentTimeMillis());
@@ -467,16 +467,16 @@ public class Backend {
                             player.teleport(g);
                         }
                     }
-                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to fly on y-axis " + yAxisViolations.get(name) + " times (max =" + magic.Y_MAXVIOLATIONS + ")");
+                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to fly on y-axis " + yAxisViolations.get(name) + " times (max =" + magic.Y_MAXVIOLATIONS() + ")");
                 } else {
-                    if (yAxisViolations.get(name) > magic.Y_MAXVIOLATIONS && (System.currentTimeMillis() - yAxisLastViolation.get(name)) > magic.Y_MAXVIOTIME) {
+                    if (yAxisViolations.get(name) > magic.Y_MAXVIOLATIONS() && (System.currentTimeMillis() - yAxisLastViolation.get(name)) > magic.Y_MAXVIOTIME()) {
                         yAxisViolations.put(name, 0);
                         yAxisLastViolation.put(name, 0L);
                     }
                 }
                 long i = System.currentTimeMillis() - lastYtime.get(name);
-                double diff = magic.Y_MAXDIFF + (Utilities.isStair(player.getLocation().add(0, -1, 0).getBlock()) ? 0.5 : 0.0);
-                if ((y1 - lastYcoord.get(name)) > diff && i < magic.Y_TIME) {
+                double diff = magic.Y_MAXDIFF() + (Utilities.isStair(player.getLocation().add(0, -1, 0).getBlock()) ? 0.5 : 0.0);
+                if ((y1 - lastYcoord.get(name)) > diff && i < magic.Y_TIME()) {
                     Location g = player.getLocation();
                     yAxisViolations.put(name, yAxisViolations.get(name) + 1);
                     yAxisLastViolation.put(name, System.currentTimeMillis());
@@ -486,9 +486,9 @@ public class Backend {
                             player.teleport(g);
                         }
                     }
-                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to fly on y-axis in " + i + " ms (min =" + magic.Y_TIME + ")");
+                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to fly on y-axis in " + i + " ms (min =" + magic.Y_TIME() + ")");
                 } else {
-                    if ((y1 - lastYcoord.get(name)) > magic.Y_MAXDIFF + 1 || (System.currentTimeMillis() - lastYtime.get(name)) > magic.Y_TIME) {
+                    if ((y1 - lastYcoord.get(name)) > magic.Y_MAXDIFF() + 1 || (System.currentTimeMillis() - lastYtime.get(name)) > magic.Y_TIME()) {
                         lastYtime.put(name, System.currentTimeMillis());
                         lastYcoord.put(name, y1);
                     }
@@ -509,11 +509,11 @@ public class Backend {
             stepTime.put(name, System.currentTimeMillis());
         }
         increment(player, steps, step);
-        if (step == magic.TIMER_STEP_CHECK) {
+        if (step == magic.TIMER_STEP_CHECK()) {
             long time = System.currentTimeMillis() - stepTime.get(name);
             steps.put(name, 0);
-            if (time < magic.TIMER_TIMEMIN) {
-                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to alter their timer, took " + step + " steps in " + time + " ms (min = " + magic.TIMER_TIMEMIN + " ms)");
+            if (time < magic.TIMER_TIMEMIN()) {
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to alter their timer, took " + step + " steps in " + time + " ms (min = " + magic.TIMER_TIMEMIN() + " ms)");
             }
         }
         return PASS;
@@ -556,7 +556,7 @@ public class Backend {
     }
 
     public CheckResult checkFlight(Player player, Distance distance) {
-        if (distance.getYDifference() > magic.TELEPORT_MIN) {
+        if (distance.getYDifference() > magic.TELEPORT_MIN()) {
             // This was a teleport, so we don't care about it.
             return PASS;
         }
@@ -575,8 +575,8 @@ public class Backend {
                 blocksOverFlight.put(name, (blocksOverFlight.get(name) - distance.getYDifference()));
             }
 
-            if (blocksOverFlight.get(name) > magic.FLIGHT_BLOCK_LIMIT && (y1 <= y2)) {
-                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " flew over " + blocksOverFlight.get(name) + " blocks (max=" + magic.FLIGHT_BLOCK_LIMIT + ")");
+            if (blocksOverFlight.get(name) > magic.FLIGHT_BLOCK_LIMIT() && (y1 <= y2)) {
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " flew over " + blocksOverFlight.get(name) + " blocks (max=" + magic.FLIGHT_BLOCK_LIMIT() + ")");
             }
         } else {
             blocksOverFlight.put(name, 0D);
@@ -595,7 +595,7 @@ public class Backend {
     }
 
     public CheckResult checkAscension(Player player, double y1, double y2) {
-        int max = magic.ASCENSION_COUNT_MAX;
+        int max = magic.ASCENSION_COUNT_MAX();
         String string = "";
         if (player.hasPotionEffect(PotionEffectType.JUMP)) {
             max += 12;
@@ -624,8 +624,8 @@ public class Backend {
             if (!player.getInventory().getItemInHand().containsEnchantment(Enchantment.DIG_SPEED) && !(player.getInventory().getItemInHand().getType() == Material.SHEARS && block.getType() == Material.LEAVES)) {
                 if (blockPunches.get(name) != null && player.getGameMode() != GameMode.CREATIVE) {
                     int i = blockPunches.get(name);
-                    if (i < magic.BLOCK_PUNCH_MIN) {
-                        return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to break a block of " + block.getType() + " after only " + i + " punches (min=" + magic.BLOCK_PUNCH_MIN + ")");
+                    if (i < magic.BLOCK_PUNCH_MIN()) {
+                        return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to break a block of " + block.getType() + " after only " + i + " punches (min=" + magic.BLOCK_PUNCH_MIN() + ")");
                     } else {
                         blockPunches.put(name, 0); // it should reset after EACH block break.
                     }
@@ -636,11 +636,11 @@ public class Backend {
     }
 
     public CheckResult checkFastBreak(Player player, Block block) {
-        int violations = magic.FASTBREAK_MAXVIOLATIONS;
+        int violations = magic.FASTBREAK_MAXVIOLATIONS();
         long timemax = isInstantBreakExempt(player) ? 0 : Utilities.calcSurvivalFastBreak(player.getInventory().getItemInHand(), block.getType());
         if (player.getGameMode() == GameMode.CREATIVE) {
-            violations = magic.FASTBREAK_MAXVIOLATIONS_CREATIVE;
-            timemax = magic.FASTBREAK_TIMEMAX_CREATIVE;
+            violations = magic.FASTBREAK_MAXVIOLATIONS_CREATIVE();
+            timemax = magic.FASTBREAK_TIMEMAX_CREATIVE();
         }
         String name = player.getName();
         if (!fastBreakViolation.containsKey(name)) {
@@ -648,13 +648,13 @@ public class Backend {
         } else {
             Long math = System.currentTimeMillis() - lastBlockBroken.get(name);
             int i = fastBreakViolation.get(name);
-            if (i > violations && math < magic.FASTBREAK_MAXVIOLATIONTIME) {
+            if (i > violations && math < magic.FASTBREAK_MAXVIOLATIONTIME()) {
                 lastBlockBroken.put(name, System.currentTimeMillis());
                 if (!silentMode()) {
                     player.sendMessage(ChatColor.RED + "[AntiCheat] Fastbreaking detected. Please wait 10 seconds before breaking blocks.");
                 }
                 return new CheckResult(CheckResult.Result.FAILED, player.getName() + " broke blocks too fast " + i + " times in a row (max=" + violations + ")");
-            } else if (fastBreakViolation.get(name) > 0 && math > magic.FASTBREAK_MAXVIOLATIONTIME) {
+            } else if (fastBreakViolation.get(name) > 0 && math > magic.FASTBREAK_MAXVIOLATIONTIME()) {
                 fastBreakViolation.put(name, 0);
             }
         }
@@ -676,12 +676,12 @@ public class Backend {
                     }
                     blockBreakHolder.put(name, false);
                 }
-                if (fastBreaks.get(name) >= magic.FASTBREAK_LIMIT && math < timemax) {
+                if (fastBreaks.get(name) >= magic.FASTBREAK_LIMIT() && math < timemax) {
                     int i = fastBreaks.get(name);
                     fastBreaks.put(name, 0);
                     fastBreakViolation.put(name, fastBreakViolation.get(name) + 1);
-                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to break " + i + " blocks in " + math + " ms (max=" + magic.FASTBREAK_LIMIT + " in " + timemax + " ms)");
-                } else if (fastBreaks.get(name) >= magic.FASTBREAK_LIMIT || fastBreakViolation.get(name) > 0) {
+                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to break " + i + " blocks in " + math + " ms (max=" + magic.FASTBREAK_LIMIT() + " in " + timemax + " ms)");
+                } else if (fastBreaks.get(name) >= magic.FASTBREAK_LIMIT() || fastBreakViolation.get(name) > 0) {
                     if (!blockBreakHolder.containsKey(name) || !blockBreakHolder.get(name)) {
                         blockBreakHolder.put(name, true);
                     } else {
@@ -700,7 +700,7 @@ public class Backend {
     }
 
     public CheckResult checkFastPlace(Player player) {
-        int violations = player.getGameMode() == GameMode.CREATIVE ? magic.FASTPLACE_MAXVIOLATIONS_CREATIVE : magic.FASTPLACE_MAXVIOLATIONS;
+        int violations = player.getGameMode() == GameMode.CREATIVE ? magic.FASTPLACE_MAXVIOLATIONS_CREATIVE() : magic.FASTPLACE_MAXVIOLATIONS();
         long time = System.currentTimeMillis();
         String name = player.getName();
         if (!lastBlockPlaceTime.containsKey(name) || !fastPlaceViolation.containsKey(name)) {
@@ -712,13 +712,13 @@ public class Backend {
             AntiCheat.debugLog("Noted that fastPlaceViolation contains key " + name + " with value " + fastPlaceViolation.get(name));
             Long math = System.currentTimeMillis() - lastBlockPlaced.get(name);
             AntiCheat.debugLog("Player lastBlockPlaced value = " + lastBlockPlaced + ", diff=" + math);
-            if (lastBlockPlaced.get(name) > 0 && math < magic.FASTPLACE_MAXVIOLATIONTIME) {
+            if (lastBlockPlaced.get(name) > 0 && math < magic.FASTPLACE_MAXVIOLATIONTIME()) {
                 lastBlockPlaced.put(name, time);
                 if (!silentMode()) {
                     player.sendMessage(ChatColor.RED + "[AntiCheat] Fastplacing detected. Please wait 10 seconds before placing blocks.");
                 }
                 return new CheckResult(CheckResult.Result.FAILED, player.getName() + " placed blocks too fast " + fastBreakViolation.get(name) + " times in a row (max=" + violations + ")");
-            } else if (lastBlockPlaced.get(name) > 0 && math > magic.FASTPLACE_MAXVIOLATIONTIME) {
+            } else if (lastBlockPlaced.get(name) > 0 && math > magic.FASTPLACE_MAXVIOLATIONTIME()) {
                 AntiCheat.debugLog("Reset facePlaceViolation for " + name);
                 fastPlaceViolation.put(name, 0);
             }
@@ -727,11 +727,11 @@ public class Backend {
             long lastTime = lastBlockPlaceTime.get(name);
             long thisTime = time - last;
 
-            if (lastTime != 0 && thisTime < magic.FASTPLACE_TIMEMIN) {
+            if (lastTime != 0 && thisTime < magic.FASTPLACE_TIMEMIN()) {
                 lastBlockPlaceTime.put(name, (time - last));
                 lastBlockPlaced.put(name, time);
                 fastPlaceViolation.put(name, fastPlaceViolation.get(name) + 1);
-                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to place a block " + thisTime + " ms after the last one (min=" + magic.FASTPLACE_TIMEMIN + " ms)");
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " tried to place a block " + thisTime + " ms after the last one (min=" + magic.FASTPLACE_TIMEMIN() + " ms)");
             }
             lastBlockPlaceTime.put(name, (time - last));
         }
@@ -762,14 +762,14 @@ public class Backend {
                 }
                 Long l = user.getMessageTime(i);
 
-                if (System.currentTimeMillis() - l > magic.CHAT_REPEAT_MIN * 100) {
+                if (System.currentTimeMillis() - l > magic.CHAT_REPEAT_MIN() * 100) {
                     user.clearMessages();
                     break;
                 } else {
                     if (manager.getConfiguration().getConfig().blockChatSpamRepetition.getValue() && m.equalsIgnoreCase(msg) && i == 1) {
                         manager.getLoggingManager().logFineInfo(player.getName() + " spam-repeated \"" + msg + "\"");
                         return new CheckResult(CheckResult.Result.FAILED, lang.spamWarning.getValue());
-                    } else if (manager.getConfiguration().getConfig().blockChatSpamSpeed.getValue() && System.currentTimeMillis() - user.getLastCommandTime() < magic.COMMAND_MIN * 2) {
+                    } else if (manager.getConfiguration().getConfig().blockChatSpamSpeed.getValue() && System.currentTimeMillis() - user.getLastCommandTime() < magic.COMMAND_MIN() * 2) {
                         manager.getLoggingManager().logFineInfo(player.getName() + " spammed quickly \"" + msg + "\"");
                         return new CheckResult(CheckResult.Result.FAILED, lang.spamWarning.getValue());
                     }
@@ -791,13 +791,13 @@ public class Backend {
                 }
                 Long l = user.getCommandTime(i);
 
-                if (System.currentTimeMillis() - l > magic.COMMAND_REPEAT_MIN * 100) {
+                if (System.currentTimeMillis() - l > magic.COMMAND_REPEAT_MIN() * 100) {
                     user.clearCommands();
                     break;
                 } else {
                     if (manager.getConfiguration().getConfig().blockCommandSpamRepetition.getValue() && m.equalsIgnoreCase(cmd) && i == 1) {
                         return new CheckResult(CheckResult.Result.FAILED, lang.spamWarning.getValue());
-                    } else if (manager.getConfiguration().getConfig().blockCommandSpamSpeed.getValue() && System.currentTimeMillis() - user.getLastCommandTime() < magic.COMMAND_MIN * 2) {
+                    } else if (manager.getConfiguration().getConfig().blockCommandSpamSpeed.getValue() && System.currentTimeMillis() - user.getLastCommandTime() < magic.COMMAND_MIN() * 2) {
                         return new CheckResult(CheckResult.Result.FAILED, lang.spamWarning.getValue());
                     }
                 }
@@ -819,11 +819,11 @@ public class Backend {
         inventoryClicks.put(name, clicks);
         if (clicks == 1) {
             inventoryTime.put(name, System.currentTimeMillis());
-        } else if (clicks == magic.INVENTORY_CHECK) {
+        } else if (clicks == magic.INVENTORY_CHECK()) {
             long time = System.currentTimeMillis() - inventoryTime.get(name);
             inventoryClicks.put(name, 0);
-            if (time < magic.INVENTORY_TIMEMIN) {
-                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " clicked inventory slots " + clicks + " times in " + time + " ms (max=" + magic.INVENTORY_CHECK + " in " + magic.INVENTORY_TIMEMIN + " ms)");
+            if (time < magic.INVENTORY_TIMEMIN()) {
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " clicked inventory slots " + clicks + " times in " + time + " ms (max=" + magic.INVENTORY_CHECK() + " in " + magic.INVENTORY_TIMEMIN() + " ms)");
             }
         }
         return PASS;
@@ -838,8 +838,8 @@ public class Backend {
     }
 
     public CheckResult checkSprintDamage(Player player) {
-        if (isDoing(player, sprinted, magic.SPRINT_MIN)) {
-            return new CheckResult(CheckResult.Result.FAILED, player.getName() + " sprinted and damaged an entity too fast (min sprint=" + magic.SPRINT_MIN + " ms)");
+        if (isDoing(player, sprinted, magic.SPRINT_MIN())) {
+            return new CheckResult(CheckResult.Result.FAILED, player.getName() + " sprinted and damaged an entity too fast (min sprint=" + magic.SPRINT_MIN() + " ms)");
         } else {
             return PASS;
         }
@@ -858,8 +858,8 @@ public class Backend {
         {
             long l = lastHeal.get(player.getName());
             lastHeal.remove(player.getName());
-            if ((System.currentTimeMillis() - l) < magic.HEAL_TIME_MIN) {
-                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " healed too quickly (time=" + (System.currentTimeMillis() - l) + " ms, min=" + magic.HEAL_TIME_MIN + " ms)");
+            if ((System.currentTimeMillis() - l) < magic.HEAL_TIME_MIN()) {
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " healed too quickly (time=" + (System.currentTimeMillis() - l) + " ms, min=" + magic.HEAL_TIME_MIN() + " ms)");
             }
         }
         return PASS;
@@ -870,8 +870,8 @@ public class Backend {
         {
             long l = startEat.get(player.getName());
             startEat.remove(player.getName());
-            if ((System.currentTimeMillis() - l) < magic.EAT_TIME_MIN) {
-                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " ate too quickly (time=" + (System.currentTimeMillis() - l) + " ms, min=" + magic.EAT_TIME_MIN + " ms)");
+            if ((System.currentTimeMillis() - l) < magic.EAT_TIME_MIN()) {
+                return new CheckResult(CheckResult.Result.FAILED, player.getName() + " ate too quickly (time=" + (System.currentTimeMillis() - l) + " ms, min=" + magic.EAT_TIME_MIN() + " ms)");
             }
         }
         return PASS;
@@ -879,7 +879,7 @@ public class Backend {
 
     public void logAnimation(final Player player) {
         animated.put(player.getName(), System.currentTimeMillis());
-        increment(player, blockPunches, magic.BLOCK_PUNCH_MIN);
+        increment(player, blockPunches, magic.BLOCK_PUNCH_MIN());
         itemInHand.put(player.getName(), player.getItemInHand().getType());
         interactionCount.put(player.getName(), 0);
     }
@@ -889,7 +889,7 @@ public class Backend {
     }
 
     public boolean isInstantBreakExempt(Player player) {
-        return isDoing(player, instantBreakExempt, magic.INSTANT_BREAK_TIME);
+        return isDoing(player, instantBreakExempt, magic.INSTANT_BREAK_TIME());
     }
 
     public void logSprint(final Player player) {
@@ -898,7 +898,7 @@ public class Backend {
 
     public boolean isHoveringOverWaterAfterViolation(Player player) {
         if (waterSpeedViolation.containsKey(player.getName())) {
-            if (waterSpeedViolation.get(player.getName()) >= magic.WATER_SPEED_VIOLATION_MAX && Utilities.isHoveringOverWater(player.getLocation())) {
+            if (waterSpeedViolation.get(player.getName()) >= magic.WATER_SPEED_VIOLATION_MAX() && Utilities.isHoveringOverWater(player.getLocation())) {
                 return true;
             }
         }
@@ -911,7 +911,7 @@ public class Backend {
     }
 
     public boolean justBroke(Player player) {
-        return isDoing(player, brokenBlock, magic.BLOCK_BREAK_MIN);
+        return isDoing(player, brokenBlock, magic.BLOCK_BREAK_MIN());
     }
 
     public void logVelocity(final Player player) {
@@ -919,20 +919,20 @@ public class Backend {
     }
 
     public boolean justVelocity(Player player) {
-        return (velocitized.containsKey(player.getName()) ? (System.currentTimeMillis() - velocitized.get(player.getName())) < magic.VELOCITY_CHECKTIME : false);
+        return (velocitized.containsKey(player.getName()) ? (System.currentTimeMillis() - velocitized.get(player.getName())) < magic.VELOCITY_CHECKTIME() : false);
     }
 
     public boolean extendVelocityTime(final Player player) {
         if (velocitytrack.containsKey(player.getName())) {
             velocitytrack.put(player.getName(), velocitytrack.get(player.getName()) + 1);
-            if (velocitytrack.get(player.getName()) > magic.VELOCITY_MAXTIMES) {
-                velocitized.put(player.getName(), System.currentTimeMillis() + magic.VELOCITY_PREVENT);
+            if (velocitytrack.get(player.getName()) > magic.VELOCITY_MAXTIMES()) {
+                velocitized.put(player.getName(), System.currentTimeMillis() + magic.VELOCITY_PREVENT());
                 manager.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(manager.getPlugin(), new Runnable() {
                     @Override
                     public void run() {
                         velocitytrack.put(player.getName(), 0);
                     }
-                }, magic.VELOCITY_SCHETIME * 20L);
+                }, magic.VELOCITY_SCHETIME() * 20L);
                 return true;
             }
         } else {
@@ -947,7 +947,7 @@ public class Backend {
     }
 
     public boolean justPlaced(Player player) {
-        return isDoing(player, placedBlock, magic.BLOCK_PLACE_MIN);
+        return isDoing(player, placedBlock, magic.BLOCK_PLACE_MIN());
     }
 
     public void resetAnimation(final Player player) {
@@ -962,11 +962,11 @@ public class Backend {
             int count = interactionCount.get(player.getName()) + 1;
             interactionCount.put(player.getName(), count);
 
-            if (count > magic.ANIMATION_INTERACT_MAX) {
+            if (count > magic.ANIMATION_INTERACT_MAX()) {
                 animated.remove(player.getName());
                 return false;
             }
-            return time < magic.ANIMATION_MIN;
+            return time < magic.ANIMATION_MIN();
         } else {
             return false;
         }
@@ -976,16 +976,16 @@ public class Backend {
         long time;
         switch (type) {
             case 1:
-                time = magic.DAMAGE_TIME;
+                time = magic.DAMAGE_TIME();
                 break;
             case 2:
-                time = magic.KNOCKBACK_DAMAGE_TIME;
+                time = magic.KNOCKBACK_DAMAGE_TIME();
                 break;
             case 3:
-                time = magic.EXPLOSION_DAMAGE_TIME;
+                time = magic.EXPLOSION_DAMAGE_TIME();
                 break;
             default:
-                time = magic.DAMAGE_TIME;
+                time = magic.DAMAGE_TIME();
                 break;
 
         }
@@ -994,15 +994,15 @@ public class Backend {
     }
 
     public void logEnterExit(final Player player) {
-        movingExempt.put(player.getName(), System.currentTimeMillis() + magic.ENTERED_EXITED_TIME);
+        movingExempt.put(player.getName(), System.currentTimeMillis() + magic.ENTERED_EXITED_TIME());
     }
 
     public void logToggleSneak(final Player player) {
-        movingExempt.put(player.getName(), System.currentTimeMillis() + magic.SNEAK_TIME);
+        movingExempt.put(player.getName(), System.currentTimeMillis() + magic.SNEAK_TIME());
     }
 
     public void logTeleport(final Player player) {
-        movingExempt.put(player.getName(), System.currentTimeMillis() + magic.TELEPORT_TIME);
+        movingExempt.put(player.getName(), System.currentTimeMillis() + magic.TELEPORT_TIME());
 
         /* Data for fly/speed should be reset */
         nofallViolation.remove(player.getName());
@@ -1014,11 +1014,11 @@ public class Backend {
     }
 
     public void logExitFly(final Player player) {
-        movingExempt.put(player.getName(), System.currentTimeMillis() + magic.EXIT_FLY_TIME);
+        movingExempt.put(player.getName(), System.currentTimeMillis() + magic.EXIT_FLY_TIME());
     }
 
     public void logJoin(final Player player) {
-        movingExempt.put(player.getName(), System.currentTimeMillis() + magic.JOIN_TIME);
+        movingExempt.put(player.getName(), System.currentTimeMillis() + magic.JOIN_TIME());
     }
 
     public boolean isMovingExempt(Player player) {
@@ -1067,8 +1067,8 @@ public class Backend {
     public void processChatSpammer(Player player) {
         User user = manager.getUserManager().getUser(player.getName());
         int level = chatLevel.containsKey(user.getName()) ? chatLevel.get(user.getName()) : 0;
-        if (player != null && player.isOnline() && level >= magic.CHAT_ACTION_ONE_LEVEL) {
-            String event = level >= magic.CHAT_ACTION_TWO_LEVEL ? manager.getConfiguration().getConfig().chatSpamActionTwo.getValue() : manager.getConfiguration().getConfig().chatSpamActionOne.getValue();
+        if (player != null && player.isOnline() && level >= magic.CHAT_ACTION_ONE_LEVEL()) {
+            String event = level >= magic.CHAT_ACTION_TWO_LEVEL() ? manager.getConfiguration().getConfig().chatSpamActionTwo.getValue() : manager.getConfiguration().getConfig().chatSpamActionOne.getValue();
             manager.getUserManager().execute(manager.getUserManager().getUser(player.getName()), Utilities.stringToList(event), CheckType.CHAT_SPAM, lang.spamKickReason.getValue(), Utilities.stringToList(lang.spamWarning.getValue()), lang.spamBanReason.getValue());
         }
         chatLevel.put(user.getName(), level + 1);
@@ -1077,8 +1077,8 @@ public class Backend {
     public void processCommandSpammer(Player player) {
         User user = manager.getUserManager().getUser(player.getName());
         int level = commandLevel.containsKey(user.getName()) ? commandLevel.get(user.getName()) : 0;
-        if (player != null && player.isOnline() && level >= magic.COMMAND_ACTION_ONE_LEVEL) {
-            String event = level >= magic.COMMAND_ACTION_TWO_LEVEL ? manager.getConfiguration().getConfig().commandSpamActionTwo.getValue() : manager.getConfiguration().getConfig().commandSpamActionOne.getValue();
+        if (player != null && player.isOnline() && level >= magic.COMMAND_ACTION_ONE_LEVEL()) {
+            String event = level >= magic.COMMAND_ACTION_TWO_LEVEL() ? manager.getConfiguration().getConfig().commandSpamActionTwo.getValue() : manager.getConfiguration().getConfig().commandSpamActionOne.getValue();
             manager.getUserManager().execute(manager.getUserManager().getUser(player.getName()), Utilities.stringToList(event), CheckType.COMMAND_SPAM, lang.spamKickReason.getValue(), Utilities.stringToList(lang.spamWarning.getValue()), lang.spamBanReason.getValue());
         }
         commandLevel.put(user.getName(), level + 1);

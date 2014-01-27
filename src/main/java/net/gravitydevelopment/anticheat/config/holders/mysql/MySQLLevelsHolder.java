@@ -59,7 +59,7 @@ public class MySQLLevelsHolder extends ConfigurationTable implements Levels {
         sqlUpdate = "SELECT level, last_update FROM " + getFullTable() + " " +
                 "WHERE user = ? AND last_update <> ? AND last_update_server = ?";
 
-        String sqlCreate = "CREATE TABLE IF NOT EXISTS " + getFullTable() + "(" +
+        String sqlCreate = "CREATE TABLE " + getFullTable() + "(" +
                 "  `user` VARCHAR(45) NOT NULL," +
                 "  `level` INT NOT NULL," +
                 "  `last_update` TIMESTAMP NOT NULL DEFAULT NOW()," +
@@ -67,8 +67,10 @@ public class MySQLLevelsHolder extends ConfigurationTable implements Levels {
                 "  PRIMARY KEY (`user`));";
 
         try {
-            getConnection().prepareStatement(sqlCreate).executeUpdate();
-            getConnection().commit();
+            if (!tableExists()) {
+                getConnection().prepareStatement(sqlCreate).executeUpdate();
+                getConnection().commit();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

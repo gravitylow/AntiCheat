@@ -40,3 +40,5 @@ config:
   groups: true
   # Load rules configuration from the database?
   rules: true
+  # Load magic configuration from the database?
+  magic: false

@@ -41,16 +41,21 @@ public class MySQLRulesHolder extends ConfigurationTable implements Rules {
 
     @Override
     public void open() {
-        String sqlCreate = "CREATE TABLE IF NOT EXISTS " + getFullTable() + "(" +
+        String sqlCreate = "CREATE TABLE " + getFullTable() + "(" +
                 "  `id` INT NOT NULL AUTO_INCREMENT," +
                 "  `rule` VARCHAR(256) NOT NULL," +
                 "  PRIMARY KEY (`id`));";
+        String sqlPopulate = "INSERT INTO " + getFullTable() +
+                "  VALUES (1, 'Check_SPIDER < 0 ? Player.KICK : null')";
 
         String sqlLoad = "SELECT * FROM " + getFullTable();
 
         try {
-            getConnection().prepareStatement(sqlCreate).executeUpdate();
-            getConnection().commit();
+            if (!tableExists()) {
+                getConnection().prepareStatement(sqlCreate).executeUpdate();
+                getConnection().prepareStatement(sqlPopulate).executeUpdate();
+                getConnection().commit();
+            }
 
             this.rules = new ArrayList<Rule>();
             ResultSet set = getConnection().prepareStatement(sqlLoad).executeQuery();

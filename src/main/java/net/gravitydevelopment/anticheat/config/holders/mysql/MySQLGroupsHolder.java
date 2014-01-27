@@ -45,7 +45,7 @@ public class MySQLGroupsHolder extends ConfigurationTable implements Groups {
         highestLevel = 0;
         groups = new ArrayList<Group>();
 
-        String sqlCreate = "CREATE TABLE IF NOT EXISTS " + getFullTable() + "(" +
+        String sqlCreate = "CREATE TABLE " + getFullTable() + "(" +
                 "  `id` INT NOT NULL AUTO_INCREMENT," +
                 "  `name` VARCHAR(45) NOT NULL," +
                 "  `level` INT NOT NULL," +
@@ -58,14 +58,15 @@ public class MySQLGroupsHolder extends ConfigurationTable implements Groups {
                 "    (SELECT 1 as id, 'Medium' as name, 20 as level, 'YELLOW' as color, 'WARN' as actions)" +
                 "    UNION ALL " +
                 "    (SELECT 2 as id, 'High' as name, 50 as level, 'RED' as color, 'KICK' as actions)" +
-                "  ) t" +
-                "  WHERE NOT EXISTS (SELECT * FROM " + getFullTable() + ");";
+                "  ) t;";
         String sqlLoad = "SELECT * FROM " + getFullTable();
 
         try {
-            getConnection().prepareStatement(sqlCreate).executeUpdate();
-            getConnection().prepareStatement(sqlPopulate).executeUpdate();
-            getConnection().commit();
+            if (!tableExists()) {
+                getConnection().prepareStatement(sqlCreate).executeUpdate();
+                getConnection().prepareStatement(sqlPopulate).executeUpdate();
+                getConnection().commit();
+            }
 
             ResultSet set = getConnection().prepareStatement(sqlLoad).executeQuery();
             while (set.next()) {
