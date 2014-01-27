@@ -20,10 +20,11 @@ package net.gravitydevelopment.anticheat.util;
 
 import net.gravitydevelopment.anticheat.AntiCheat;
 import net.gravitydevelopment.anticheat.config.Configuration;
-import net.gravitydevelopment.anticheat.config.files.Magic;
+import net.gravitydevelopment.anticheat.config.providers.Magic;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.*;
@@ -141,8 +142,7 @@ public class PastebinReport {
     private void appendMagicDiff() {
         // This is hacky, and I like it
         Magic magic = AntiCheat.getManager().getConfiguration().getMagic();
-        FileConfiguration file = magic.getDefaultConfigFile();
-        append("Version: " + magic.getVersion());
+        FileConfiguration file = YamlConfiguration.loadConfiguration(AntiCheat.getPlugin().getResource("magic.yml"));
         boolean changed = false;
         for (Field field : Magic.class.getFields()) {
             Object defaultValue = file.get(field.getName());

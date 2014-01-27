@@ -19,7 +19,6 @@
 package net.gravitydevelopment.anticheat.config;
 
 import net.gravitydevelopment.anticheat.AntiCheat;
-import net.gravitydevelopment.anticheat.config.files.Magic;
 import net.gravitydevelopment.anticheat.config.yaml.CommentedConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
