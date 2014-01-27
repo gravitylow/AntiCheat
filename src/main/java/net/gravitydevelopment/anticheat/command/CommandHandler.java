@@ -32,7 +32,7 @@ public class CommandHandler implements CommandExecutor {
 
     public CommandHandler() {
         commands.add(new CommandHelp());
-        commands.add(new CommandCalibrate());
+        //commands.add(new CommandCalibrate());
         commands.add(new CommandCheck());
         commands.add(new CommandDebug());
         commands.add(new CommandDeveloper());
