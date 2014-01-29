@@ -220,11 +220,11 @@ public interface Magic {
      */
     public int ANIMATION_MIN();
     /**
-     * Minimum time between commands; Type=system, +Leniency=Increase.
+     * Minimum time between commands; Type=system, +Leniency=Decrease.
      */
     public int COMMAND_MIN();
     /**
-     * MTime before repeating a command is ignored; Type=system, +Leniency=Increase.
+     * Minimum time before repeating a command is ignored; Type=system, +Leniency=Decrease.
      */
     public int COMMAND_REPEAT_MIN();
     /**
