@@ -24,6 +24,8 @@ import net.gravitydevelopment.anticheat.config.ConfigurationFile;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 public class YamlLangHolder extends ConfigurationFile implements InvocationHandler {
@@ -63,6 +65,20 @@ public class YamlLangHolder extends ConfigurationFile implements InvocationHandl
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) {
-        return new ConfigValue<String>(method.getName()).getValue();
+        String key = method.getName();
+
+        if (method.getReturnType() == List.class) {
+            ConfigValue<List<String>> value = new ConfigValue<List<String>>(key);
+            if (value.getValue() != null) {
+                return value.getValue();
+            }
+        } else {
+            ConfigValue<String> value = new ConfigValue<String>(key);
+            if (value.getValue() != null) {
+                return value.getValue();
+            }
+        }
+        AntiCheat.getPlugin().getLogger().severe("The lang value " + key + " couldn't be found.");
+        return "Language error. See console for details.";
     }
 }
