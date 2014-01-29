@@ -164,7 +164,7 @@ public class UserManager {
      * @return check fail alert message
      */
     public List<String> getAlert() {
-        return config.getLang().alert.getValue();
+        return config.getLang().ALERT();
     }
 
     /**
@@ -199,7 +199,7 @@ public class UserManager {
      * @param type    The CheckType that triggered the alert
      */
     public void execute(User user, List<String> actions, CheckType type) {
-        execute(user, actions, type, config.getLang().kickReason.getValue(), config.getLang().playerWarning.getValue(), config.getLang().banReason.getValue());
+        execute(user, actions, type, config.getLang().KICK_REASON(), config.getLang().WARNING(), config.getLang().BAN_REASON());
     }
 
     /**
@@ -227,7 +227,7 @@ public class UserManager {
                         }
                     } else if (event.equalsIgnoreCase("KICK")) {
                         user.getPlayer().kickPlayer(RED + kickReason);
-                        String msg = RED + config.getLang().kickBroadcast.getValue().replaceAll("&player", name) + " (" + CheckType.getName(type) + ")";
+                        String msg = RED + config.getLang().KICK_BROADCAST().replaceAll("&player", name) + " (" + CheckType.getName(type) + ")";
                         if (!msg.equals("")) {
                             manager.log(msg);
                             manager.playerLog(msg);
@@ -242,7 +242,7 @@ public class UserManager {
                     } else if (event.equalsIgnoreCase("BAN")) {
                         user.getPlayer().setBanned(true);
                         user.getPlayer().kickPlayer(RED + banReason);
-                        String msg = RED + config.getLang().banBroadcast.getValue().replaceAll("&player", name) + " (" + CheckType.getName(type) + ")";
+                        String msg = RED + config.getLang().BAN_BROADCAST().replaceAll("&player", name) + " (" + CheckType.getName(type) + ")";
                         if (!msg.equals("")) {
                             manager.log(msg);
                             manager.playerLog(msg);

@@ -42,3 +42,5 @@ config:
   rules: true
   # Load magic configuration from the database?
   magic: false
+  # Load language configuration from the database?
+  lang: false

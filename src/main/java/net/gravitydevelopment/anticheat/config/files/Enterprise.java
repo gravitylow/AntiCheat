@@ -39,6 +39,7 @@ public class Enterprise extends ConfigurationFile {
     public ConfigValue<Boolean> configGroups;
     public ConfigValue<Boolean> configRules;
     public ConfigValue<Boolean> configMagic;
+    public ConfigValue<Boolean> configLang;
 
     public Database database;
 
@@ -60,6 +61,7 @@ public class Enterprise extends ConfigurationFile {
         configGroups = new ConfigValue<Boolean>("config.groups");
         configRules = new ConfigValue<Boolean>("config.rules");
         configMagic = new ConfigValue<Boolean>("config.magic");
+        configLang = new ConfigValue<Boolean>("config.lang");
 
         ConfigValue<String> databaseType = new ConfigValue<String>("database.type");
         ConfigValue<String> databaseHostname = new ConfigValue<String>("database.hostname");

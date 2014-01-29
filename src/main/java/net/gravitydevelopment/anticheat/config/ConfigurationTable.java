@@ -18,7 +18,9 @@
 
 package net.gravitydevelopment.anticheat.config;
 
+import net.gravitydevelopment.anticheat.AntiCheat;
 import net.gravitydevelopment.anticheat.util.enterprise.Database;
+import org.bukkit.Bukkit;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -51,6 +53,16 @@ public class ConfigurationTable {
 
     public void open() {
         // Nothing to do
+    }
+
+    public void reload() {
+        // For after sql inserts have been made
+        Bukkit.getScheduler().runTask(AntiCheat.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+                load();
+            }
+        });
     }
 
     public Database getDatabase() {

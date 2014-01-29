@@ -21,19 +21,9 @@ package net.gravitydevelopment.anticheat.config;
 import net.gravitydevelopment.anticheat.AntiCheat;
 import net.gravitydevelopment.anticheat.config.files.Config;
 import net.gravitydevelopment.anticheat.config.files.Enterprise;
-import net.gravitydevelopment.anticheat.config.files.Lang;
-import net.gravitydevelopment.anticheat.config.holders.mysql.MySQLGroupsHolder;
-import net.gravitydevelopment.anticheat.config.holders.mysql.MySQLLevelsHolder;
-import net.gravitydevelopment.anticheat.config.holders.mysql.MySQLMagicHolder;
-import net.gravitydevelopment.anticheat.config.holders.mysql.MySQLRulesHolder;
-import net.gravitydevelopment.anticheat.config.holders.yaml.YamlGroupsHolder;
-import net.gravitydevelopment.anticheat.config.holders.yaml.YamlLevelsHolder;
-import net.gravitydevelopment.anticheat.config.holders.yaml.YamlMagicHolder;
-import net.gravitydevelopment.anticheat.config.holders.yaml.YamlRulesHolder;
-import net.gravitydevelopment.anticheat.config.providers.Groups;
-import net.gravitydevelopment.anticheat.config.providers.Levels;
-import net.gravitydevelopment.anticheat.config.providers.Magic;
-import net.gravitydevelopment.anticheat.config.providers.Rules;
+import net.gravitydevelopment.anticheat.config.holders.mysql.*;
+import net.gravitydevelopment.anticheat.config.holders.yaml.*;
+import net.gravitydevelopment.anticheat.config.providers.*;
 import net.gravitydevelopment.anticheat.manage.AntiCheatManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -47,8 +37,8 @@ public class Configuration {
     private AntiCheatManager manager;
     private Config config;
     private Enterprise enterprise;
-    private Lang lang;
 
+    private Lang lang;
     private Magic magic;
     private Groups groups;
     private Levels levels;
@@ -64,12 +54,10 @@ public class Configuration {
         plugin.setVerbose(config.verboseStartup.getValue());
         // Now load others
         enterprise = new Enterprise(plugin, this);
-        lang = new Lang(plugin, this);
 
         flatfiles = new ArrayList<ConfigurationFile>() {{
             add(config);
             add(enterprise);
-            add(lang);
         }};
 
         dbfiles = new ArrayList<ConfigurationTable>();
@@ -106,6 +94,20 @@ public class Configuration {
             flatfiles.add((YamlMagicHolder) handler);
         }
 
+        if (config.enterprise.getValue() && enterprise.configLang.getValue()) {
+            handler = new MySQLLangHolder(this);
+            lang = (Lang) Proxy.newProxyInstance(Lang.class.getClassLoader(),
+                    new Class[] { Lang.class },
+                    handler);
+            dbfiles.add((MySQLLangHolder) handler);
+        } else {
+            handler = new YamlLangHolder(plugin, this);
+            lang = (Lang) Proxy.newProxyInstance(Lang.class.getClassLoader(),
+                    new Class[] { Lang.class },
+                    handler);
+            flatfiles.add((YamlLangHolder) handler);
+        }
+
         if (config.enterprise.getValue() && enterprise.syncLevels.getValue()) {
             levels = new MySQLLevelsHolder(this);
             dbfiles.add((MySQLLevelsHolder) levels);
@@ -130,7 +132,7 @@ public class Configuration {
             table.load();
         }
         if (manager.getBackend() != null) {
-            manager.getBackend().updateMagic(magic);
+            manager.getBackend().updateConfig(this);
         }
     }
 

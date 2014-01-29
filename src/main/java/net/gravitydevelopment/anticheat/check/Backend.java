@@ -19,7 +19,8 @@
 package net.gravitydevelopment.anticheat.check;
 
 import net.gravitydevelopment.anticheat.AntiCheat;
-import net.gravitydevelopment.anticheat.config.files.Lang;
+import net.gravitydevelopment.anticheat.config.Configuration;
+import net.gravitydevelopment.anticheat.config.providers.Lang;
 import net.gravitydevelopment.anticheat.config.providers.Magic;
 import net.gravitydevelopment.anticheat.manage.AntiCheatManager;
 import net.gravitydevelopment.anticheat.util.User;
@@ -100,8 +101,9 @@ public class Backend {
         transparent.add((byte) -1);
     }
 
-    public void updateMagic(Magic magic) {
-        this.magic = magic;
+    public void updateConfig(Configuration config) {
+        magic = config.getMagic();
+        lang = config.getLang();
     }
 
     public void resetChatLevel(User user) {
@@ -768,10 +770,10 @@ public class Backend {
                 } else {
                     if (manager.getConfiguration().getConfig().blockChatSpamRepetition.getValue() && m.equalsIgnoreCase(msg) && i == 1) {
                         manager.getLoggingManager().logFineInfo(player.getName() + " spam-repeated \"" + msg + "\"");
-                        return new CheckResult(CheckResult.Result.FAILED, lang.spamWarning.getValue());
+                        return new CheckResult(CheckResult.Result.FAILED, lang.SPAM_WARNING());
                     } else if (manager.getConfiguration().getConfig().blockChatSpamSpeed.getValue() && System.currentTimeMillis() - user.getLastCommandTime() < magic.COMMAND_MIN() * 2) {
                         manager.getLoggingManager().logFineInfo(player.getName() + " spammed quickly \"" + msg + "\"");
-                        return new CheckResult(CheckResult.Result.FAILED, lang.spamWarning.getValue());
+                        return new CheckResult(CheckResult.Result.FAILED, lang.SPAM_WARNING());
                     }
                 }
             }
@@ -796,9 +798,9 @@ public class Backend {
                     break;
                 } else {
                     if (manager.getConfiguration().getConfig().blockCommandSpamRepetition.getValue() && m.equalsIgnoreCase(cmd) && i == 1) {
-                        return new CheckResult(CheckResult.Result.FAILED, lang.spamWarning.getValue());
+                        return new CheckResult(CheckResult.Result.FAILED, lang.SPAM_WARNING());
                     } else if (manager.getConfiguration().getConfig().blockCommandSpamSpeed.getValue() && System.currentTimeMillis() - user.getLastCommandTime() < magic.COMMAND_MIN() * 2) {
-                        return new CheckResult(CheckResult.Result.FAILED, lang.spamWarning.getValue());
+                        return new CheckResult(CheckResult.Result.FAILED, lang.SPAM_WARNING());
                     }
                 }
             }
@@ -1069,7 +1071,7 @@ public class Backend {
         int level = chatLevel.containsKey(user.getName()) ? chatLevel.get(user.getName()) : 0;
         if (player != null && player.isOnline() && level >= magic.CHAT_ACTION_ONE_LEVEL()) {
             String event = level >= magic.CHAT_ACTION_TWO_LEVEL() ? manager.getConfiguration().getConfig().chatSpamActionTwo.getValue() : manager.getConfiguration().getConfig().chatSpamActionOne.getValue();
-            manager.getUserManager().execute(manager.getUserManager().getUser(player.getName()), Utilities.stringToList(event), CheckType.CHAT_SPAM, lang.spamKickReason.getValue(), Utilities.stringToList(lang.spamWarning.getValue()), lang.spamBanReason.getValue());
+            manager.getUserManager().execute(manager.getUserManager().getUser(player.getName()), Utilities.stringToList(event), CheckType.CHAT_SPAM, lang.SPAM_KICK_REASON(), Utilities.stringToList(lang.SPAM_WARNING()), lang.SPAM_BAN_REASON());
         }
         chatLevel.put(user.getName(), level + 1);
     }
@@ -1079,7 +1081,7 @@ public class Backend {
         int level = commandLevel.containsKey(user.getName()) ? commandLevel.get(user.getName()) : 0;
         if (player != null && player.isOnline() && level >= magic.COMMAND_ACTION_ONE_LEVEL()) {
             String event = level >= magic.COMMAND_ACTION_TWO_LEVEL() ? manager.getConfiguration().getConfig().commandSpamActionTwo.getValue() : manager.getConfiguration().getConfig().commandSpamActionOne.getValue();
-            manager.getUserManager().execute(manager.getUserManager().getUser(player.getName()), Utilities.stringToList(event), CheckType.COMMAND_SPAM, lang.spamKickReason.getValue(), Utilities.stringToList(lang.spamWarning.getValue()), lang.spamBanReason.getValue());
+            manager.getUserManager().execute(manager.getUserManager().getUser(player.getName()), Utilities.stringToList(event), CheckType.COMMAND_SPAM, lang.SPAM_KICK_REASON(), Utilities.stringToList(lang.SPAM_WARNING()), lang.SPAM_BAN_REASON());
         }
         commandLevel.put(user.getName(), level + 1);
     }

@@ -59,8 +59,9 @@ public class MySQLMagicHolder extends ConfigurationTable implements InvocationHa
                 "  PRIMARY KEY (`id`));";
 
         String sqlPopulate = "INSERT INTO " + getFullTable() +
-                "  SELECT t.*" +
-                "  FROM (";
+                " (`key`, `value_int`, `value_double`) " +
+                "SELECT t.*" +
+                "FROM (";
 
         Method[] methods = Magic.class.getMethods();
         for (int i=1;i<=methods.length;i++) {
@@ -68,8 +69,8 @@ public class MySQLMagicHolder extends ConfigurationTable implements InvocationHa
             Object value = defaults.get(key);
             String type1 = methods[i-1].getReturnType().getSimpleName();
             String type2 = type1.equals("int") ? "double" : "int";
-            sqlPopulate += "(SELECT " + i + " as id, '" + key + "' as `key`, " + (type1.equals("int") ? value : "null") + " as value_" + type1 + ", " + (type1.equals("double") ? value : "null") + " as value_" + type2 + ") ";
-            if (i < methods.length) sqlPopulate += "UNION ALL ";
+            sqlPopulate += "(SELECT '" + key + "' as `key`, " + (type1.equals("int") ? value : "null") + " as value_" + type1 + ", " + (type1.equals("double") ? value : "null") + " as value_" + type2 + ")";
+            if (i < methods.length) sqlPopulate += " UNION ALL ";
         }
 
         sqlPopulate += ") t;";
@@ -114,29 +115,32 @@ public class MySQLMagicHolder extends ConfigurationTable implements InvocationHa
     public Object invoke(Object proxy, Method method, Object[] args) {
         String key = method.getName();
 
-        if (ints.containsKey(key)) return ints.get(key).intValue();
-        else if (doubles.containsKey(key)) return doubles.get(key).doubleValue();
-        else {
+        if (ints.containsKey(key)) {
+            return ints.get(key).intValue();
+        } else if (doubles.containsKey(key)) {
+            return doubles.get(key).doubleValue();
+        } else if (defaults.getString(key) != null ) {
             if (method.getReturnType().getSimpleName().equals("int")) {
                 int value = defaults.getInt(key);
                 try {
-                    getConnection().prepareStatement("INSERT INTO " + getFullTable() + " (value_int) VALUES (" + value + ")").executeUpdate();
+                    getConnection().prepareStatement("INSERT INTO " + getFullTable() + " (key, value_int) VALUES ('" + key + "' , '" + value + "')").executeUpdate();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+                reload();
                 return value;
             } else if (method.getReturnType().getSimpleName().equals("double")) {
                 double value = defaults.getDouble(key);
                 try {
-                    getConnection().prepareStatement("INSERT INTO " + getFullTable() + " (key, value_double) VALUES (" + key + " , " + value + ")").executeUpdate();
+                    getConnection().prepareStatement("INSERT INTO " + getFullTable() + " (key, value_double) VALUES ('" + key + "' , '" + value + "')").executeUpdate();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+                reload();
                 return value;
-            } else {
-                AntiCheat.getPlugin().getLogger().severe("The magic value " + key + " couldn't be found.");
-                return -1;
             }
         }
+        AntiCheat.getPlugin().getLogger().severe("The magic value " + key + " couldn't be found.");
+        return 0;
     }
 }

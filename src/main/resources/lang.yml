@@ -1,22 +1,18 @@
 # AntiCheat language file
 # Please report any bugs: https://github.com/gravitylow/AntiCheat/issues
-alert:
+ALERT:
 - '&player has just entered the &group hack group.'
 - '&player''s last failed check was: &check.'
 - 'Type ''/anticheat report &player'' for more information.'
-warning:
-  player_warning:
-  - '[AntiCheat] Hacking is not permitted.'
-  - '[AntiCheat] If you continue to hack, action will be taken.'
-chat:
-  warning: 'Stop spamming the server or you will be kicked!'
-  kick_reason: 'Kicked for spamming'
-  ban_reason: 'Banned for spamming'
-  kick_broadcast: '&player was kicked for spamming'
-  ban_broadcast: '&player was banned for spamming'
-ban:
-  ban_reason: 'Banned by AntiCheat'
-  ban_broadcast: '&player was banned for hacking.'
-kick:
-  kick_reason: 'Kicked by AntiCheat'
-  kick_broadcast: '&player was kicked for hacking.'
+WARNING:
+- '[AntiCheat] Hacking is not permitted.'
+- '[AntiCheat] If you continue to hack, action will be taken.'
+BAN_REASON: 'Banned by AntiCheat'
+BAN_BROADCAST: '&player was banned for hacking.'
+KICK_REASON: 'Kicked by AntiCheat'
+KICK_BROADCAST: '&player was kicked for hacking.'
+SPAM_WARNING: 'Stop spamming the server or you will be kicked!'
+SPAM_KICK_REASON: 'Kicked for spamming'
+SPAM_KICK_BROADCAST: '&player was kicked for spamming'
+SPAM_BAN_REASON: 'Banned for spamming'
+SPAM_BAN_BROADCAST: '&player was banned for spamming'
