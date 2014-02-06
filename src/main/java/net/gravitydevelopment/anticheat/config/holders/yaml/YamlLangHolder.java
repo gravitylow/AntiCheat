@@ -24,8 +24,6 @@ import net.gravitydevelopment.anticheat.config.ConfigurationFile;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
 
 public class YamlLangHolder extends ConfigurationFile implements InvocationHandler {
