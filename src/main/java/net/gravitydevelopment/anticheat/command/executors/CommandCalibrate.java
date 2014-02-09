@@ -41,8 +41,6 @@ public class CommandCalibrate extends CommandBase {
 
     @Override
     protected void execute(CommandSender cs, String[] args) {
-        Calibrator c = new Calibrator((Player) cs);
-        SERVER.getPluginManager().registerEvents(c, AntiCheat.getPlugin());
-        c.calibrate();
+        Calibrator c = new Calibrator(AntiCheat.getPlugin(), (Player) cs);
     }
 }
