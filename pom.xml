@@ -31,7 +31,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.1</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
@@ -90,8 +90,20 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.7.2-R0.2-SNAPSHOT</version>
+            <version>1.7.2-R0.3</version>
             <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>2.7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.gravitydevelopment.updater</groupId>
+            <artifactId>updater</artifactId>
+            <version>2.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -100,17 +112,6 @@
             <version>4.11</version>
             <type>jar</type>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>2.7.0</version>
-        </dependency>
-        <dependency>
-            <groupId>net.gravitydevelopment.updater</groupId>
-            <artifactId>updater</artifactId>
-            <version>2.1</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
     <distributionManagement>

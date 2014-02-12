@@ -21,8 +21,6 @@ package net.gravitydevelopment.anticheat.util;
 import net.gravitydevelopment.anticheat.AntiCheat;
 import net.gravitydevelopment.anticheat.check.CheckType;
 import net.gravitydevelopment.anticheat.config.Configuration;
-import net.gravitydevelopment.anticheat.util.Group;
-import net.gravitydevelopment.anticheat.util.Utilities;
 import net.gravitydevelopment.anticheat.util.rule.Rule;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
