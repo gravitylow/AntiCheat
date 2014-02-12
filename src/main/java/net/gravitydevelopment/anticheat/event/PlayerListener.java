@@ -45,7 +45,7 @@ public class PlayerListener extends EventListener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        if (getCheckManager().willCheck(player, CheckType.COMMAND_SPAM) || !Permission.getCommandExempt(player, event.getMessage().split(" ")[0])) {
+        if (getCheckManager().willCheck(player, CheckType.COMMAND_SPAM) && !Permission.getCommandExempt(player, event.getMessage().split(" ")[0])) {
             CheckResult result = getBackend().checkCommandSpam(player, event.getMessage());
             if (result.failed()) {
                 event.setCancelled(!silentMode());
