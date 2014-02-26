@@ -336,6 +336,21 @@ public final class Utilities {
     }
 
     /**
+     * Determine whether a String can be cast to a Double
+     *
+     * @param string text to check
+     * @return true if double
+     */
+    public static boolean isDouble(String string) {
+        try {
+            Double.parseDouble(string);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    /**
      * Calculate the time in milliseconds that it should take to break the given block with the given tool
      *
      * @param tool  tool to check

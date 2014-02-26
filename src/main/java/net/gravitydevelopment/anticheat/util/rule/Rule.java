@@ -23,6 +23,7 @@ import net.gravitydevelopment.anticheat.check.CheckType;
 import net.gravitydevelopment.anticheat.util.User;
 import net.gravitydevelopment.anticheat.util.Group;
 import net.gravitydevelopment.anticheat.util.Utilities;
+import org.bukkit.GameMode;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -40,9 +41,26 @@ import java.util.TreeMap;
  * <br /><br />
  * <p/>
  * <b>Types of variables:</b><br />
- * - Check: Contains all valid checks as listed in {@link net.gravitydevelopment.anticheat.check.CheckType}, and will return the number of times this user has failed the given check<br />
- * - Player: Contains LEVEL, the player's current level and CHECK, the check that was just failed
- * <br /><br />
+ * <ul>
+ *   <li>Check
+ *     <ul>
+ *       <li>Contains all valid checks as listed in {@link net.gravitydevelopment.anticheat.check.CheckType}</li>
+ *       <li>Will return the number of times this user has failed the given check</li>
+ *       <li><b>Example:</b> Check_SPRINT</li>
+ *     </ul>
+ *   </li>
+ *   <li>Player
+ *     <ul>
+ *       <li>Contains NAME, the name of the player</li>
+ *       <li>Contains LEVEL, the player's current level</li>
+ *       <li>Contains GROUP, the name of the player's current hack group</li>
+ *       <li>Contains CHECK, the check that was just failed</li>
+ *       <li>Contains GAMEMODE, the player's current Game Mode (Survival, Creative, Adventure)/li>
+ *       <li>Contains WORLD, the name of the world the player is in/li>
+ *       <li>Contains HEALTH, the player's current health/li>
+ *     </ul>
+ *   </li>
+ * </ul>
  * <p/>
  * There are also functions you can use to execute an action within AntiCheat<br />
  * Functions are denoted with the type followed by a period followed by the function name.<br />
@@ -142,6 +160,9 @@ public class Rule {
         map.put("player_level", user.getLevel());
         map.put("player_group", user.getGroup() != null ? user.getGroup().getName().toLowerCase() : "low");
         map.put("player_name", user.getName().toLowerCase());
+        map.put("player_gamemode", user.getPlayer().getGameMode().toString());
+        map.put("player_world", user.getPlayer().getWorld().getName());
+        map.put("player_health", user.getPlayer().getHealth());
         for (CheckType t : CheckType.values()) {
             map.put("check_" + t.name().toLowerCase(), t.getUses(user.getName()));
         }
@@ -157,6 +178,14 @@ public class Rule {
                     user.setLevel(group.getLevel());
                 }
             }
+        } else if (variable.equals("player_gamemode")) {
+            try {
+                GameMode mode = GameMode.valueOf(value);
+                user.getPlayer().setGameMode(mode);
+            } catch (IllegalArgumentException ex) {
+            }
+        } else if (variable.equals("player_health") && Utilities.isDouble(value)) {
+            user.getPlayer().setHealth(Double.parseDouble(value));
         }
     }
 
