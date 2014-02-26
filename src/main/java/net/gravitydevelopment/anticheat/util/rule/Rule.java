@@ -52,12 +52,13 @@ import java.util.TreeMap;
  *   <li>Player
  *     <ul>
  *       <li>Contains NAME, the name of the player</li>
- *       <li>Contains LEVEL, the player's current level</li>
- *       <li>Contains GROUP, the name of the player's current hack group</li>
+ *       <li>Contains LEVEL*, the player's current level</li>
+ *       <li>Contains GROUP*, the name of the player's current hack group</li>
  *       <li>Contains CHECK, the check that was just failed</li>
- *       <li>Contains GAMEMODE, the player's current Game Mode (Survival, Creative, Adventure)/li>
+ *       <li>Contains GAMEMODE*, the player's current Game Mode (Survival, Creative, Adventure)/li>
  *       <li>Contains WORLD, the name of the world the player is in/li>
- *       <li>Contains HEALTH, the player's current health/li>
+ *       <li>Contains HEALTH*, the player's current health/li>
+ *       <li>A * denotes that this value can be set, for example Player_HEALTH = 20.0/li>
  *     </ul>
  *   </li>
  * </ul>
