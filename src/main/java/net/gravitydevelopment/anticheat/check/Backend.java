@@ -411,10 +411,10 @@ public class Backend {
                     int v = waterAscensionViolation.get(player.getName());
                     if (v >= magic.WATER_ASCENSION_VIOLATION_MAX()) {
                         waterAscensionViolation.put(player.getName(), 0);
+                        return new CheckResult(CheckResult.Result.FAILED, player.getName() + " stood on water " + v + " times (can't stand on " + block.getType() + " or " + block.getRelative(BlockFace.DOWN).getType() + ")");
                     } else {
                         waterAscensionViolation.put(player.getName(), v + 1);
                     }
-                    return new CheckResult(CheckResult.Result.FAILED, player.getName() + " stood on water " + v + " times (can't stand on " + block.getType() + " or " + block.getRelative(BlockFace.DOWN).getType() + ")");
                 } else {
                     waterAscensionViolation.put(player.getName(), 1);
                 }
