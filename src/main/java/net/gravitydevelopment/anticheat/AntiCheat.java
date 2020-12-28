@@ -81,7 +81,7 @@ public class AntiCheat extends JavaPlugin {
             public void run() {
                 if (Bukkit.getPluginManager().getPlugin("NoCheatPlus") != null) {
                     getLogger().severe("You are also running NoCheatPlus!");
-                    getLogger().severe("NoCheatPlus has been known to conflict with AntiCheat's results and create false cheat detections.");
+                    getLogger().severe("NoCheatPlus has been known to conflict with AntiCheat's results and can create false cheat detections.");
                     getLogger().severe("Please remove or disable NoCheatPlus to silence this warning.");
                 }
             }
